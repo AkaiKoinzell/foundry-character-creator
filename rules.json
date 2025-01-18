@@ -1,52 +1,5 @@
 {
   "races": {
-    "Dwarf": {
-      "bonus": {
-        "constitution": 2
-      },
-      "traits": [
-        "Darkvision: You can see in dim light within 60 feet as if it were bright light, and in darkness as if it were dim light.",
-        "Dwarven Resilience: Advantage on saving throws against poison, and resistance against poison damage.",
-        "Dwarven Combat Training: Proficiency with battleaxe, handaxe, light hammer, and warhammer.",
-        "Tool Proficiency: Proficiency with smith's tools, brewer’s supplies, or mason’s tools.",
-        "Stonecunning: Proficiency in History checks related to stonework, with double proficiency bonus.",
-        "Languages: Common and Dwarvish."
-      ],
-      "subraces": {
-        "Hill Dwarf": {
-          "bonus": {
-            "wisdom": 1
-          },
-          "traits": [
-            "Dwarven Toughness: Your hit point maximum increases by 1, and increases by 1 every time you gain a level."
-          ]
-        }
-      }
-    },
-    "Elf": {
-      "bonus": {
-        "dexterity": 2
-      },
-      "traits": [
-        "Darkvision: You can see in dim light within 60 feet as if it were bright light, and in darkness as if it were dim light.",
-        "Keen Senses: Proficiency in Perception.",
-        "Fey Ancestry: Advantage on saving throws against being charmed, and magic can't put you to sleep.",
-        "Trance: Elves meditate instead of sleep. They gain the same benefit as a human does from 8 hours of sleep.",
-        "Languages: Common and Elvish."
-      ],
-      "subraces": {
-        "High Elf": {
-          "bonus": {
-            "intelligence": 1
-          },
-          "traits": [
-            "Elf Weapon Training: Proficiency with longsword, shortsword, shortbow, and longbow.",
-            "Cantrip: You know one cantrip of your choice from the wizard spell list.",
-            "Extra Language: You can speak, read, and write one extra language of your choice."
-          ]
-        }
-      }
-    },
     "Human": {
       "bonus": {
         "strength": 1,
@@ -55,83 +8,16 @@
         "intelligence": 1,
         "wisdom": 1,
         "charisma": 1
-      },
-      "traits": [
-        "Languages: Common and one extra language of your choice."
-      ]
-    },
-    "Dragonborn": {
-      "bonus": {
-        "strength": 2,
-        "charisma": 1
-      },
-      "traits": [
-        "Draconic Ancestry: Choose one type of dragon from the Draconic Ancestry table.",
-        "Breath Weapon: You can exhale destructive energy as a 15-foot cone or 5 by 30 ft. line depending on your dragon type.",
-        "Damage Resistance: Resistance to the damage type associated with your draconic ancestry.",
-        "Languages: Common and Draconic."
-      ]
-    },
-    "Gnome": {
-      "bonus": {
-        "intelligence": 2
-      },
-      "traits": [
-        "Darkvision: You can see in dim light within 60 feet as if it were bright light, and in darkness as if it were dim light.",
-        "Gnome Cunning: Advantage on all Intelligence, Wisdom, and Charisma saving throws against magic.",
-        "Languages: Common and Gnomish."
-      ],
-      "subraces": {
-        "Rock Gnome": {
-          "bonus": {
-            "constitution": 1
-          },
-          "traits": [
-            "Artificer's Lore: Add double proficiency bonus to Intelligence (History) checks related to magic items and devices.",
-            "Tinker: Proficiency with tinker’s tools. You can create small clockwork devices."
-          ]
-        }
       }
     },
-    "Half-Elf": {
+    "Elf": {
       "bonus": {
-        "charisma": 2,
-        "other": [1, 1]  
+        "intelligence": 1
       },
-      "traits": [
-        "Darkvision: You can see in dim light within 60 feet as if it were bright light, and in darkness as if it were dim light.",
-        "Fey Ancestry: Advantage on saving throws against being charmed, and magic can't put you to sleep.",
-        "Skill Versatility: Gain proficiency in two skills of your choice.",
-        "Languages: Common, Elvish, and one extra language of your choice."
-      ]
-    },
-    "Half-Orc": {
-      "bonus": {
-        "strength": 2,
-        "constitution": 1
-      },
-      "traits": [
-        "Darkvision: You can see in dim light within 60 feet as if it were bright light, and in darkness as if it were dim light.",
-        "Menacing: Proficiency in the Intimidation skill.",
-        "Relentless Endurance: When reduced to 0 hit points, drop to 1 hit point instead. Usable once per long rest.",
-        "Savage Attacks: Extra damage on critical hits with melee attacks.",
-        "Languages: Common and Orc."
-      ]
-    },
-    "Tiefling": {
-      "bonus": {
-        "intelligence": 1,
-        "charisma": 2
-      },
-      "traits": [
-        "Darkvision: You can see in dim light within 60 feet as if it were bright light, and in darkness as if it were dim light.",
-        "Hellish Resistance: Resistance to fire damage.",
-        "Infernal Legacy: You know the *Thaumaturgy* cantrip. At 3rd level, you can cast *Hellish Rebuke* once per long rest. At 5th level, you can cast *Darkness* once per long rest.",
-        "Languages: Common and Infernal."
-      ]
+      "abilities": ["Darkvision", "Fey Ancestry"]
     }
+    // Aggiungi altre razze qui...
   },
-
   "classes": {
     "Artificer": {
       "tools": 3,
@@ -141,5 +27,6 @@
       "tools": 1,
       "abilities": ["Second Wind", "Action Surge"]
     }
+    // Aggiungi altre classi qui...
   }
 }

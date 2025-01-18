@@ -75,22 +75,3 @@ function updateSubclasses() {
             }
         })
         .catch(error => console.error(`Errore nel caricamento della sottoclasse ${selectedClass}:`, error));
-}
-// Caricamento sottoclassi dinamico function updateSubclasses() { const selectedClass = document.getElementById("classSelect").value; const subclassSelect = document.getElementById("subclassSelect");
-if (!selectedClass) {
-    subclassSelect.style.display = "none";
-    return;
-}
-
-fetch(`data/classes/${selectedClass}.json`)
-    .then(response => response.json())
-    .then(data => {
-        if (data.subclasses && data.subclasses.length > 0) {
-            populateDropdown("subclassSelect", data.subclasses);
-            subclassSelect.style.display = "block";
-        } else {
-            subclassSelect.style.display = "none";
-        }
-    })
-    .catch(error => console.error(`Errore nel caricamento della sottoclasse ${selectedClass}:`, error));
-

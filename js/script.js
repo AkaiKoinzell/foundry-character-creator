@@ -31,7 +31,7 @@ function loadDropdownData(jsonPath, selectId) {
             if (!data.races || typeof data.races !== "object") {
                 throw new Error(`Formato JSON errato in ${jsonPath}`);
             }
-            populateDropdown(selectId, data.list);
+            populateDropdown(selectId, Object.keys(data.races));
         })
         .catch(error => console.error(`Errore caricando ${jsonPath}:`, error));
 }

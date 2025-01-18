@@ -74,11 +74,41 @@ function updateSubraces() {
     }
 
     let selectedRace = raceSelect.value;
+    console.log(`Razza selezionata: ${selectedRace}`);
+
     if (!selectedRace) {
         console.warn("Nessuna razza selezionata.");
         subraceSelect.style.display = "none";
         return;
     }
+
+    let raceFilePath = `data/races/${selectedRace}.json`;
+    console.log(`Tentativo di caricamento: ${raceFilePath}`);
+
+    fetch(raceFilePath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`File ${raceFilePath} non trovato!`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(`Dati caricati per ${selectedRace}:`, data);
+            let subraces = data.subraces || [];
+
+            subraceSelect.innerHTML = '<option value="">Seleziona una sottorazza...</option>';
+
+            subraces.forEach(subrace => {
+                let option = document.createElement("option");
+                option.value = subrace.name;
+                option.textContent = subrace.name;
+                subraceSelect.appendChild(option);
+            });
+
+            subraceSelect.style.display = subraces.length > 0 ? "block" : "none";
+        })
+        .catch(error => console.error(`Errore caricando ${raceFilePath}:`, error));
+}
 
     // Carica il file JSON della razza scelta per ottenere le sottorazze
     fetch(`../data/races/${selectedRace}.json`)

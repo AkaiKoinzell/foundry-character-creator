@@ -1,3 +1,5 @@
 {
-    "Dwarf": "data/races/dwarf.json"
+    "races": {
+        "Dwarf": "data/races/dwarf.json"
+    }
 }

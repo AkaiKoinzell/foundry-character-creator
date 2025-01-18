@@ -53,57 +53,6 @@ function populateDropdown(selectId, options) {
 
     console.log(`Dropdown #${selectId} aggiornato con ${options.length} opzioni!`);
 }
-function updateSubraces() {
-    console.log("updateSubraces chiamata!");
-
-    let raceSelect = document.getElementById("raceSelect");
-    let subraceSelect = document.getElementById("subraceSelect");
-
-    if (!raceSelect || !subraceSelect) {
-        console.error("Elementi non trovati nel DOM.");
-        return;
-    }
-
-    let raceFilePath = raceSelect.value; // Percorso del file JSON
-    console.log(`Tentativo di caricamento: ${raceFilePath}`);
-
-    if (!raceFilePath) {
-        console.warn("Nessuna razza selezionata.");
-        subraceSelect.style.display = "none";
-        return;
-    }
-
-    fetch(raceFilePath)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`File ${raceFilePath} non trovato!`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log(`Dati caricati per ${raceFilePath}:`, data);
-            
-            // Controlliamo se il JSON contiene il campo subraces
-            let subraces = data.subraces || [];
-
-            subraceSelect.innerHTML = '<option value="">Seleziona una sottorazza...</option>';
-
-            if (subraces.length > 0) {
-                subraces.forEach(subrace => {
-                    let option = document.createElement("option");
-                    option.value = subrace.name;
-                    option.textContent = subrace.name;
-                    subraceSelect.appendChild(option);
-                });
-
-                subraceSelect.style.display = "block";
-            } else {
-                console.warn(`Nessuna sottorazza trovata per ${raceFilePath}`);
-                subraceSelect.style.display = "none";
-            }
-        })
-        .catch(error => console.error(`Errore caricando ${raceFilePath}:`, error));
-}
 // Caricamento sottoclassi dinamico
 function updateSubraces() {
     console.log("updateSubraces chiamata!");
@@ -164,4 +113,64 @@ function updateSubraces() {
             console.log(`Sottorazze caricate con successo: ${subraces.length}`);
         })
         .catch(error => console.error(`Errore caricando ${raceFilePath}:`, error));
+}
+function updateSubclasses() {
+    console.log("updateSubclasses chiamata!");
+
+    let classSelect = document.getElementById("classSelect");
+    let subclassSelect = document.getElementById("subclassSelect");
+
+    if (!classSelect || !subclassSelect) {
+        console.error("Elementi non trovati nel DOM.");
+        return;
+    }
+
+    let selectedClass = classSelect.value;
+    console.log(`Classe selezionata: ${selectedClass}`);
+
+    if (!selectedClass) {
+        console.warn("Nessuna classe selezionata.");
+        subclassSelect.innerHTML = '<option value="">Nessuna sottoclasse disponibile</option>';
+        subclassSelect.style.display = "none";
+        return;
+    }
+
+    let classFilePath = selectedClass;
+    console.log(`Tentativo di caricamento: ${classFilePath}`);
+
+    fetch(classFilePath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`File ${classFilePath} non trovato!`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(`Dati caricati per ${selectedClass}:`, data);
+
+            let subclasses = data.subclasses || [];
+
+            if (subclasses.length === 0) {
+                console.warn(`Nessuna sottoclasse trovata per ${selectedClass}`);
+                subclassSelect.innerHTML = '<option value="">Nessuna sottoclasse disponibile</option>';
+                subclassSelect.style.display = "none";
+                return;
+            }
+
+            // Puliamo il dropdown
+            subclassSelect.innerHTML = '<option value="">Seleziona una sottoclasse...</option>';
+
+            // Aggiunge opzioni per ogni sottoclasse
+            subclasses.forEach(subclass => {
+                let option = document.createElement("option");
+                option.value = subclass.name;
+                option.textContent = `${subclass.name} (${subclass.features.join(", ")})`; // Mostra le abilità accanto al nome
+                option.dataset.features = JSON.stringify(subclass.features); // Salva le abilità nei dati dell'opzione
+                subclassSelect.appendChild(option);
+            });
+
+            subclassSelect.style.display = "block";
+            console.log(`Sottoclassi caricate con successo: ${subclasses.length}`);
+        })
+        .catch(error => console.error(`Errore caricando ${classFilePath}:`, error));
 }

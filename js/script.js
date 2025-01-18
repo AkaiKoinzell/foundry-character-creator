@@ -82,7 +82,7 @@ function updateSubraces() {
         return;
     }
 
-    let raceFilePath = `data/races/${selectedRace}`;
+    let raceFilePath = selectedRace;
     console.log(`Tentativo di caricamento: ${raceFilePath}`);
 
     fetch(raceFilePath)

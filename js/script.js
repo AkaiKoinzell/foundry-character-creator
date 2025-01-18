@@ -105,45 +105,63 @@ function updateSubraces() {
         .catch(error => console.error(`Errore caricando ${raceFilePath}:`, error));
 }
 // Caricamento sottoclassi dinamico
-function updateSubclasses() {
-    console.log("updateSubclasses chiamata!");
+function updateSubraces() {
+    console.log("updateSubraces chiamata!");
 
-    let classSelect = document.getElementById("classSelect");
-    let subclassSelect = document.getElementById("subclassSelect");
+    let raceSelect = document.getElementById("raceSelect");
+    let subraceSelect = document.getElementById("subraceSelect");
 
-    if (!classSelect || !subclassSelect) {
+    if (!raceSelect || !subraceSelect) {
         console.error("Elementi non trovati nel DOM.");
         return;
     }
 
-    let classFilePath = classSelect.value;
-    if (!classFilePath) {
-        console.warn("Nessuna classe selezionata.");
-        subclassSelect.style.display = "none";
+    let selectedRace = raceSelect.value;
+    console.log(`Razza selezionata: ${selectedRace}`);
+
+    if (!selectedRace) {
+        console.warn("Nessuna razza selezionata.");
+        subraceSelect.innerHTML = '<option value="">Nessuna sottorazza disponibile</option>';
+        subraceSelect.style.display = "none";
         return;
     }
 
-    fetch(classFilePath)
+    let raceFilePath = selectedRace; 
+    console.log(`Tentativo di caricamento: ${raceFilePath}`);
+
+    fetch(raceFilePath)
         .then(response => {
             if (!response.ok) {
-                throw new Error(`File ${classFilePath} non trovato!`);
+                throw new Error(`File ${raceFilePath} non trovato!`);
             }
             return response.json();
         })
         .then(data => {
-            console.log(`Dati caricati per ${classFilePath}:`, data);
-            let subclasses = data.subclasses || [];
+            console.log(`Dati caricati per ${selectedRace}:`, data);
 
-            subclassSelect.innerHTML = '<option value="">Seleziona una sottoclasse...</option>';
+            let subraces = data.subraces || [];
 
-            subclasses.forEach(subclass => {
+            if (subraces.length === 0) {
+                console.warn(`Nessuna sottorazza trovata per ${selectedRace}`);
+                subraceSelect.innerHTML = '<option value="">Nessuna sottorazza disponibile</option>';
+                subraceSelect.style.display = "none";
+                return;
+            }
+
+            // Puliamo il dropdown
+            subraceSelect.innerHTML = '<option value="">Seleziona una sottorazza...</option>';
+            
+            // Aggiunge opzioni per ogni sottorazza
+            subraces.forEach(subrace => {
                 let option = document.createElement("option");
-                option.value = subclass.name;
-                option.textContent = subclass.name;
-                subclassSelect.appendChild(option);
+                option.value = subrace.name;
+                option.textContent = `${subrace.name} (${subrace.traits.join(", ")})`; // Mostra i tratti accanto al nome
+                option.dataset.traits = JSON.stringify(subrace.traits); // Salva i tratti nei dati dell'opzione
+                subraceSelect.appendChild(option);
             });
 
-            subclassSelect.style.display = subclasses.length > 0 ? "block" : "none";
+            subraceSelect.style.display = "block";
+            console.log(`Sottorazze caricate con successo: ${subraces.length}`);
         })
-        .catch(error => console.error(`Errore caricando ${classFilePath}:`, error));
+        .catch(error => console.error(`Errore caricando ${raceFilePath}:`, error));
 }

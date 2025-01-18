@@ -17,21 +17,26 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function loadDropdownData(jsonPath, selectId) {
-    console.log(`Tentativo di caricamento: ${jsonPath}`);
-
     fetch(jsonPath)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Errore HTTP ${response.status} - File non trovato: ${jsonPath}`);
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
             console.log(`Dati ricevuti da ${jsonPath}:`, data);
-            if (!data.races || typeof data.races !== "object") {
+
+            // Se il JSON ha una struttura con chiavi invece di una lista, trasformiamolo in array
+            let options = [];
+
+            if (data.list && Array.isArray(data.list)) {
+                options = data.list; // Se è già un array, usalo così com'è
+            } else if (data.races && typeof data.races === "object") {
+                // Trasforma le chiavi dell'oggetto in un array di oggetti
+                options = Object.keys(data.races).map(name => ({ name, path: data.races[name] }));
+            }
+
+            if (!options.length) {
                 throw new Error(`Formato JSON errato in ${jsonPath}`);
             }
-            populateDropdown(selectId, Object.keys(data.races));
+
+            populateDropdown(selectId, options);
         })
         .catch(error => console.error(`Errore caricando ${jsonPath}:`, error));
 }
@@ -39,20 +44,22 @@ function loadDropdownData(jsonPath, selectId) {
 function populateDropdown(selectId, options) {
     const select = document.getElementById(selectId);
     if (!select) {
-        console.error(`Elemento #${selectId} non trovato`);
+        console.error(`Elemento #${selectId} non trovato!`);
         return;
     }
 
-    select.innerHTML = '<option value="">Seleziona...</option>';
+    select.innerHTML = '<option value="">Seleziona...</option>'; // Resetta il dropdown
+
     options.forEach(option => {
         let opt = document.createElement("option");
-        opt.value = option.value || option;
-        opt.textContent = option.name || option;
+        opt.value = option.path || option.name; // Usa path se esiste, altrimenti solo il nome
+        opt.textContent = option.name;
         select.appendChild(opt);
     });
 
     console.log(`Dropdown #${selectId} aggiornato con ${options.length} opzioni!`);
 }
+
 function updateSubraces() {
     console.log("updateSubraces chiamata!");
 

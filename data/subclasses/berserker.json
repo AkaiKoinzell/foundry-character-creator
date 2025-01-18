@@ -1,0 +1,10 @@
+{
+    "name": "Berserker",
+    "description": "The Berserker is a path of untrammeled fury, slick with blood...",
+    "features_by_level": {
+      "3": ["Frenzy"],
+      "6": ["Mindless Rage"],
+      "10": ["Intimidating Presence"],
+      "14": ["Retaliation"]
+    }
+  }

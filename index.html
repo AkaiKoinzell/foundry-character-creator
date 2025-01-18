@@ -1,43 +1,171 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Creazione Personaggio DnD</title>
-  <link rel="stylesheet" href="css/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creazione Personaggio D&D</title>
 </head>
 <body>
-  <h1>Creazione Personaggio per FoundryVTT</h1>
-  <form id="character-form">
-    <label for="name">Nome Personaggio:</label>
-    <input type="text" id="name" name="name"><br>
 
-    <label for="class">Classe:</label>
-    <select id="class" name="class">
-      <option value="Sorcerer">Sorcerer</option>
-      <option value="Fighter">Fighter</option>
-      <option value="Wizard">Wizard</option>
-      <!-- Aggiungi altre classi -->
-    </select><br>
+    <h2>Creazione Personaggio</h2>
+
+    <label for="character-name">Nome del Personaggio:</label>
+    <input type="text" id="character-name" name="character-name" placeholder="Inserisci il nome del tuo personaggio"><br><br>
 
     <label for="race">Razza:</label>
-    <select id="race" name="race">
-      <option value="Human">Umano</option>
-      <option value="Elf">Elfo</option>
-      <!-- Aggiungi altre razze -->
-    </select><br>
+    <select id="race" name="race" onchange="updateSubraces()">
+        <option value="human">Umano</option>
+        <option value="elf">Elfo</option>
+        <option value="dwarf">Nano</option>
+    </select>
 
-    <label for="strength">Forza:</label>
-    <input type="number" id="strength" name="strength" placeholder="Forza"><br>
+    <div id="subrace-container" style="display: none;">
+        <label for="subrace">Sottorazza:</label>
+        <select id="subrace" name="subrace"></select>
+    </div>
 
-    <label for="dexterity">Destrezza:</label>
-    <input type="number" id="dexterity" name="dexterity" placeholder="Destrezza"><br>
+    <br>
 
-    <button type="submit">Genera Personaggio</button>
-  </form>
+    <label for="class">Classe:</label>
+    <select id="class" name="class" onchange="updateSubclasses(); updateSpells();">
+        <option value="barbarian">Barbaro</option>
+        <option value="bard">Bardo</option>
+        <option value="wizard">Mago</option>
+    </select>
 
-  <div id="download-link"></div>
+    <div id="subclass-container" style="display: none;">
+        <label for="subclass">Sottoclasse:</label>
+        <select id="subclass" name="subclass" onchange="loadSubclassData()"></select>
+    </div>
 
-  <script src="js/app.js"></script>
+    <br>
+
+    <label for="level">Livello del Personaggio:</label>
+    <select id="level" name="level">
+        <script>
+            for (let i = 1; i <= 20; i++) {
+                document.write(`<option value="${i}">${i}</option>`);
+            }
+        </script>
+    </select>
+
+    <h3>Distribuzione Punti Caratteristica</h3>
+    <p>Punti rimanenti: <span id="remaining-points">27</span></p>
+
+    <div id="attributes">
+        <label>Forza: <span id="strength-value">8</span></label>
+        <button onclick="adjustAttribute('strength', 1)">+</button>
+        <button onclick="adjustAttribute('strength', -1)">-</button>
+
+        <label>Destrezza: <span id="dexterity-value">8</span></label>
+        <button onclick="adjustAttribute('dexterity', 1)">+</button>
+        <button onclick="adjustAttribute('dexterity', -1)">-</button>
+    </div>
+
+    <h3>Incantesimi Disponibili</h3>
+    <div id="spell-list"></div>
+
+    <br>
+
+    <button onclick="generateCharacterJSON()">Genera JSON</button>
+
+    <div id="download-link"></div>
+
+    <script>
+        let remainingPoints = 27;
+        const attributes = { "strength": 8, "dexterity": 8 };
+
+        function adjustAttribute(attribute, change) {
+            let newValue = attributes[attribute] + change;
+            if (newValue < 8 || newValue > 15) return;
+            attributes[attribute] = newValue;
+            document.getElementById(`${attribute}-value`).textContent = newValue;
+        }
+
+        function updateSubraces() {
+            const selectedRace = document.getElementById("race").value;
+            fetch(`/races/${selectedRace}.json`)
+                .then(response => response.json())
+                .then(raceData => {
+                    let subraceSelect = document.getElementById("subrace");
+                    let subraceContainer = document.getElementById("subrace-container");
+                    subraceSelect.innerHTML = "";
+                    if (raceData.subraces.length > 0) {
+                        subraceContainer.style.display = "block";
+                        raceData.subraces.forEach(subrace => {
+                            let option = document.createElement("option");
+                            option.value = subrace.toLowerCase().replace(/ /g, "_");
+                            option.text = subrace;
+                            subraceSelect.appendChild(option);
+                        });
+                    } else {
+                        subraceContainer.style.display = "none";
+                    }
+                });
+        }
+
+        function updateSubclasses() {
+            const selectedClass = document.getElementById("class").value;
+            fetch(`/classes/${selectedClass}.json`)
+                .then(response => response.json())
+                .then(classData => {
+                    let subclassSelect = document.getElementById("subclass");
+                    let subclassContainer = document.getElementById("subclass-container");
+                    subclassSelect.innerHTML = "";
+                    if (classData.subclasses.length > 0) {
+                        subclassContainer.style.display = "block";
+                        classData.subclasses.forEach(subclass => {
+                            let option = document.createElement("option");
+                            option.value = subclass.toLowerCase().replace(/ /g, "_");
+                            option.text = subclass;
+                            subclassSelect.appendChild(option);
+                        });
+                    } else {
+                        subclassContainer.style.display = "none";
+                    }
+                });
+        }
+
+        function updateSpells() {
+            const selectedClass = document.getElementById("class").value;
+            fetch(`/spells/${selectedClass}_spells.json`)
+                .then(response => response.json())
+                .then(spellData => {
+                    let spellListContainer = document.getElementById("spell-list");
+                    spellListContainer.innerHTML = "";
+                    Object.keys(spellData.spell_list).forEach(level => {
+                        let levelTitle = document.createElement("h4");
+                        levelTitle.textContent = `Livello ${level}:`;
+                        spellListContainer.appendChild(levelTitle);
+                        let spellUl = document.createElement("ul");
+                        spellData.spell_list[level].forEach(spell => {
+                            let li = document.createElement("li");
+                            li.textContent = spell;
+                            spellUl.appendChild(li);
+                        });
+                        spellListContainer.appendChild(spellUl);
+                    });
+                });
+        }
+
+        function generateCharacterJSON() {
+            const character = {
+                name: document.getElementById("character-name").value,
+                race: document.getElementById("race").value,
+                subrace: document.getElementById("subrace-container").style.display === "none" ? null : document.getElementById("subrace").value,
+                class: document.getElementById("class").value,
+                subclass: document.getElementById("subclass-container").style.display === "none" ? null : document.getElementById("subclass").value,
+                level: document.getElementById("level").value,
+                attributes: attributes
+            };
+            const jsonBlob = new Blob([JSON.stringify(character, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(jsonBlob);
+            link.download = "character.json";
+            link.textContent = "Scarica il JSON del personaggio";
+            document.getElementById("download-link").appendChild(link);
+        }
+    </script>
+
 </body>
 </html>

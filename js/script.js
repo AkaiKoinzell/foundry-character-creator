@@ -54,22 +54,28 @@ function populateDropdown(selectId, options) {
     console.log(`Dropdown #${selectId} aggiornato con ${options.length} opzioni!`);
 }
 
-// Caricamento sottorazze dinamico
-function updateSubraces() {
-    const race = document.getElementById("raceSelect").value;
-    const subraceSelect = document.getElementById("subraceSelect");
+// Caricamento sottoclassi dinamico
+function updateSubclasses() {
+    const selectedClass = document.getElementById("classSelect").value;
+    const subclassSelect = document.getElementById("subclassSelect");
 
-    if (!race) {
-        subraceSelect.style.display = "none";
+    if (!selectedClass) {
+        subclassSelect.style.display = "none";
         return;
     }
 
-    fetch(`data/races/${race}.json`)
+    fetch(`data/classes/${selectedClass}.json`)
         .then(response => response.json())
         .then(data => {
-            if (data.subraces && data.subraces.length > 0) {
-                populateDropdown("subraceSelect", data.subraces); subraceSelect.style.display = "block"; } else { subraceSelect.style.display = "none"; } }) .catch(error => console.error(Errore nel caricamento della sottorazza ${race}:, error)); }
-
+            if (data.subclasses && data.subclasses.length > 0) {
+                populateDropdown("subclassSelect", data.subclasses);
+                subclassSelect.style.display = "block";
+            } else {
+                subclassSelect.style.display = "none";
+            }
+        })
+        .catch(error => console.error(`Errore nel caricamento della sottoclasse ${selectedClass}:`, error));
+}
 // Caricamento sottoclassi dinamico function updateSubclasses() { const selectedClass = document.getElementById("classSelect").value; const subclassSelect = document.getElementById("subclassSelect");
 if (!selectedClass) {
     subclassSelect.style.display = "none";

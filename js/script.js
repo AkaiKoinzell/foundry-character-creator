@@ -15,21 +15,28 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("raceSelect").addEventListener("change", updateSubraces);
     document.getElementById("classSelect").addEventListener("change", updateSubclasses);
 });
-
-function loadDropdownData(jsonPath, selectId, key) {
+function loadDropdownData(jsonPath, selectId) {
     fetch(jsonPath)
         .then(response => response.json())
         .then(data => {
             console.log(`Dati ricevuti da ${jsonPath}:`, data);
 
-            if (!data[key]) {
+            // Se il JSON ha una struttura con chiavi invece di una lista, trasformiamolo in array
+            let options = [];
+
+            if (data.list && Array.isArray(data.list)) {
+                options = data.list; // Se è già un array, usalo così com'è
+            } else if (data.races && typeof data.races === "object") {
+                options = Object.keys(data.races).map(name => ({ name, path: data.races[name] }));
+            } else if (data.classes && typeof data.classes === "object") {
+                options = Object.keys(data.classes).map(name => ({ name, path: data.classes[name] }));
+            } else {
                 throw new Error(`Formato JSON errato in ${jsonPath}`);
             }
 
-            let options = Object.keys(data[key]).map(name => ({
-                name,
-                path: data[key][name]
-            }));
+            if (!options.length) {
+                throw new Error(`Formato JSON errato in ${jsonPath}`);
+            }
 
             populateDropdown(selectId, options);
         })

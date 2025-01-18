@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Funzione per caricare le razze
     async function loadRaceData(race) {
         try {
-            let response = await fetch(`races/${race.toLowerCase()}.json`);
+            let response = await fetch(`data/races/${race.toLowerCase()}.json`);
             let data = await response.json();
 
             console.log("Razza selezionata:", data); // Debug
@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Funzione per caricare la sottorazza
     async function loadSubraceData(subrace) {
         try {
-            let response = await fetch(`subraces/${subrace.toLowerCase().replace(" ", "_")}.json`);
+            let response = await fetch(`data/subraces/${subrace.toLowerCase().replace(" ", "_")}.json`);
             let data = await response.json();
 
             console.log("Sottorazza selezionata:", data); // Debug
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Funzione per caricare la classe
     async function loadClassData(className) {
         try {
-            let response = await fetch(`classes/${className.toLowerCase()}.json`);
+            let response = await fetch(`data/classes/${className.toLowerCase()}.json`);
             let data = await response.json();
 
             console.log("Classe selezionata:", data); // Debug

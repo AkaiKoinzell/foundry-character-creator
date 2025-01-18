@@ -75,3 +75,4 @@ function updateSubclasses() {
             }
         })
         .catch(error => console.error(`Errore nel caricamento della sottoclasse ${selectedClass}:`, error));
+}

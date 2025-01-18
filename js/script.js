@@ -1,4 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
+    console.log("Script.js caricato!");
+
+    // Controlla se i dropdown esistono
+    if (!document.getElementById("raceSelect") || !document.getElementById("classSelect")) {
+        console.error("Elementi #raceSelect o #classSelect non trovati nel DOM!");
+        return;
+    }
+
     // Caricamento iniziale delle razze e classi
     loadDropdownData("data/races.json", "raceSelect");
     loadDropdownData("data/classes.json", "classSelect");
@@ -9,13 +17,23 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function loadDropdownData(jsonPath, selectId) {
+    console.log(`Tentativo di caricamento: ${jsonPath}`);
+
     fetch(jsonPath)
-        .then(response => response.json())
-        .then(data => {
-            console.log(`Dati caricati da ${jsonPath}:`, data);
-            populateDropdown(selectId, data.list); // Il JSON deve avere {"list": [...]}
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Errore HTTP ${response.status} - File non trovato: ${jsonPath}`);
+            }
+            return response.json();
         })
-        .catch(error => console.error(`Errore nel caricamento di ${jsonPath}:`, error));
+        .then(data => {
+            console.log(`Dati ricevuti da ${jsonPath}:`, data);
+            if (!data.list || !Array.isArray(data.list)) {
+                throw new Error(`Formato JSON errato in ${jsonPath}`);
+            }
+            populateDropdown(selectId, data.list);
+        })
+        .catch(error => console.error(`Errore caricando ${jsonPath}:`, error));
 }
 
 function populateDropdown(selectId, options) {
@@ -25,10 +43,7 @@ function populateDropdown(selectId, options) {
         return;
     }
 
-    // Svuota il dropdown e aggiungi l'opzione iniziale
     select.innerHTML = '<option value="">Seleziona...</option>';
-
-    // Popola le opzioni
     options.forEach(option => {
         let opt = document.createElement("option");
         opt.value = option.value || option;
@@ -36,10 +51,10 @@ function populateDropdown(selectId, options) {
         select.appendChild(opt);
     });
 
-    console.log(`Dropdown #${selectId} aggiornato!`);
+    console.log(`Dropdown #${selectId} aggiornato con ${options.length} opzioni!`);
 }
 
-// Funzione per aggiornare le sottorazze quando cambia la razza
+// Caricamento sottorazze dinamico
 function updateSubraces() {
     const race = document.getElementById("raceSelect").value;
     const subraceSelect = document.getElementById("subraceSelect");
@@ -53,34 +68,4 @@ function updateSubraces() {
         .then(response => response.json())
         .then(data => {
             if (data.subraces && data.subraces.length > 0) {
-                populateDropdown("subraceSelect", data.subraces);
-                subraceSelect.style.display = "block";
-            } else {
-                subraceSelect.style.display = "none";
-            }
-        })
-        .catch(error => console.error(`Errore nel caricamento della sottorazza ${race}:`, error));
-}
-
-// Funzione per aggiornare le sottoclassi quando cambia la classe
-function updateSubclasses() {
-    const selectedClass = document.getElementById("classSelect").value;
-    const subclassSelect = document.getElementById("subclassSelect");
-
-    if (!selectedClass) {
-        subclassSelect.style.display = "none";
-        return;
-    }
-
-    fetch(`data/classes/${selectedClass}.json`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.subclasses && data.subclasses.length > 0) {
-                populateDropdown("subclassSelect", data.subclasses);
-                subclassSelect.style.display = "block";
-            } else {
-                subclassSelect.style.display = "none";
-            }
-        })
-        .catch(error => console.error(`Errore nel caricamento della sottoclasse ${selectedClass}:`, error));
-}
+                populateDropdown("sub

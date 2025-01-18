@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Carica le razze dal file JSON
     function loadRaces() {
-        fetch("data/races.json")  // Assicurati che il file esista
+        fetch("..data/races.json")  // Assicurati che il file esista
             .then(response => response.json())
             .then(data => {
                 raceSelect.innerHTML = '<option value="">Seleziona una razza</option>';
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Carica le classi dal file JSON
     function loadClasses() {
-        fetch("data/classes.json")  // Assicurati che il file esista
+        fetch("..data/classes.json")  // Assicurati che il file esista
             .then(response => response.json())
             .then(data => {
                 classSelect.innerHTML = '<option value="">Seleziona una classe</option>';
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        let racePath = `data/races/${selectedRace.toLowerCase()}.json`;
+        let racePath = `..data/races/${selectedRace.toLowerCase()}.json`;
         fetch(racePath)
             .then(response => response.json())
             .then(data => {
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        let classPath = `data/classes/${selectedClass.toLowerCase()}.json`;
+        let classPath = `..data/classes/${selectedClass.toLowerCase()}.json`;
         fetch(classPath)
             .then(response => response.json())
             .then(data => {

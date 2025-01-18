@@ -1,6 +1,3 @@
 {
     "Barbarian": "data/classes/barbarian.json",
-    "Fighter": "data/classes/fighter.json",
-    "Wizard": "data/classes/wizard.json",
-    "Rogue": "data/classes/rogue.json"
 }

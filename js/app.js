@@ -1,10 +1,11 @@
+// Funzione per caricare le regole da un file JSON
 function loadRules() {
   return fetch('rules.json')  // Assicurati che il file 'rules.json' sia nel percorso corretto
     .then(response => response.json())
     .catch(error => {
       console.error("Errore nel caricamento delle regole:", error);
       return null;
-    }); // Funzione per caricare le regole da un file JSON
+    });
 }
 
 // Funzione per applicare i bonus e tratti della razza al personaggio
@@ -20,7 +21,8 @@ function applyRaceBonus(race, character, rules) {
     character.traits = raceData.traits || [];
     
     // Se la razza ha una sottorazza, applica anche i tratti della sottorazza
-    const subrace = document.getElementById("subrace") ? document.getElementById("subrace").value : null;
+    const subraceElement = document.getElementById("subrace");
+    const subrace = subraceElement ? subraceElement.value : null;  // Controlla se 'subrace' è presente
     if (subrace && raceData.subraces && raceData.subraces[subrace]) {
       const subraceData = raceData.subraces[subrace];
       if (subraceData) {

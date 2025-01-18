@@ -1,3 +1,5 @@
 {
-    "Barbarian": "data/classes/barbarian.json"
+    "classes": {
+        "Barbarian": "data/classes/barbarian.json"
+    }
 }

@@ -2,19 +2,19 @@
     "name": "Barbarian",
     "hit_dice": "1d12",
     "hit_points": {
-      "1st_level": "12 + Constitution modifier",
-      "higher_levels": "1d12 (or 7) + Constitution modifier per barbarian level after 1st"
+        "1st_level": "12 + Constitution modifier",
+        "higher_levels": "1d12 (or 7) + Constitution modifier per barbarian level after 1st"
     },
     "proficiencies": {
-      "armor": ["Light armor", "Medium armor", "Shields"],
-      "weapons": ["Simple weapons", "Martial weapons"],
-      "saving_throws": ["Strength", "Constitution"],
-      "skills": ["Choose two from Animal Handling, Athletics, Intimidation, Nature, Perception, Survival"]
+        "armor": ["Light armor", "Medium armor", "Shields"],
+        "weapons": ["Simple weapons", "Martial weapons"],
+        "saving_throws": ["Strength", "Constitution"],
+        "skills": ["Choose two from Animal Handling, Athletics, Intimidation, Nature, Perception, Survival"]
     },
     "equipment": [
-      "(a) a greataxe or (b) any martial melee weapon",
-      "(a) two handaxes or (b) any simple weapon",
-      "An explorer’s pack and four javelins"
+        "(a) a greataxe or (b) any martial melee weapon",
+        "(a) two handaxes or (b) any simple weapon",
+        "An explorer’s pack and four javelins"
     ],
     "subclasses": [
         {
@@ -27,10 +27,10 @@
         }
     ],
     "features_by_level": {
-      "1": ["Rage", "Unarmored Defense"],
-      "2": ["Reckless Attack", "Danger Sense"],
-      "3": ["Primal Path"],
-      "5": ["Extra Attack", "Fast Movement"],
-      "15": ["Persistent Rage"]
-    },
-  }
+        "1": ["Rage", "Unarmored Defense"],
+        "2": ["Reckless Attack", "Danger Sense"],
+        "3": ["Primal Path"],
+        "5": ["Extra Attack", "Fast Movement"],
+        "15": ["Persistent Rage"]
+    }
+}

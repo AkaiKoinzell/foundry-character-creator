@@ -1,21 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const raceSelect = document.getElementById("race");
-    const subraceSelect = document.getElementById("subrace");
-    const classSelect = document.getElementById("class");
-    const subclassSelect = document.getElementById("subclass");
-    const levelSelect = document.getElementById("level");
-    const pointsRemainingSpan = document.getElementById("points-remaining");
-    let pointsRemaining = 27;
-    let baseStats = {
-        "strength": 8,
-        "dexterity": 8,
-        "constitution": 8,
-        "intelligence": 8,
-        "wisdom": 8,
-        "charisma": 8
-    };
-
-    // Funzione per caricare le razze
+// Funzione per caricare le razze
     async function loadRaceData(race) {
         try {
             let response = await fetch(`/races/${race.toLowerCase()}.json`);
@@ -127,3 +110,18 @@ document.addEventListener("DOMContentLoaded", function () {
         if (selectedClass) loadClassData(selectedClass);
     });
 });
+  
+    // Crea il JSON
+    const jsonString = JSON.stringify(character, null, 2);
+  
+    // Crea un Blob (file) a partire dal JSON
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${character.name}_character.json`;  // Nome del file JSON
+    link.textContent = `Clicca per scaricare il file JSON del personaggio: ${character.name}`;
+  
+    // Mostra il link per il download
+    document.getElementById("download-link").innerHTML = '';
+    document.getElementById("download-link").appendChild(link);
+  });

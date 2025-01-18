@@ -1,0 +1,32 @@
+{
+  "races": {
+    "Human": {
+      "bonus": {
+        "strength": 1,
+        "dexterity": 1,
+        "constitution": 1,
+        "intelligence": 1,
+        "wisdom": 1,
+        "charisma": 1
+      }
+    },
+    "Elf": {
+      "bonus": {
+        "intelligence": 1
+      },
+      "abilities": ["Darkvision", "Fey Ancestry"]
+    }
+    // Aggiungi altre razze qui...
+  },
+  "classes": {
+    "Artificer": {
+      "tools": 3,
+      "abilities": ["Spellcasting", "Infuse Magic"]
+    },
+    "Fighter": {
+      "tools": 1,
+      "abilities": ["Second Wind", "Action Surge"]
+    }
+    // Aggiungi altre classi qui...
+  }
+}

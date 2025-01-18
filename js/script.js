@@ -111,7 +111,7 @@ function updateSubraces() {
 }
 
     // Carica il file JSON della razza scelta per ottenere le sottorazze
-    fetch(`../data/races/${selectedRace}`)
+    fetch(`../data/races/${selectedRace}.json`)
         .then(response => response.json())
         .then(data => {
             console.log(`Dati caricati per ${selectedRace}:`, data);
@@ -151,7 +151,7 @@ function updateSubclasses() {
     }
 
     // Carica il file JSON della classe scelta per ottenere le sottoclassi
-    fetch(`../data/classes/${selectedClass}`)
+    fetch(`../data/classes/${selectedClass}.json`)
         .then(response => response.json())
         .then(data => {
             console.log(`Dati caricati per ${selectedClass}:`, data);

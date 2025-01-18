@@ -28,7 +28,7 @@ function loadDropdownData(jsonPath, selectId) {
         })
         .then(data => {
             console.log(`Dati ricevuti da ${jsonPath}:`, data);
-            if (!data.list || !Array.isArray(data.list)) {
+            if (!data.races || typeof data.races !== "object") {
                 throw new Error(`Formato JSON errato in ${jsonPath}`);
             }
             populateDropdown(selectId, data.list);

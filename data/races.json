@@ -1,0 +1,7 @@
+{
+    "Dwarf": "data/races/dwarf.json",
+    "Elf": "data/races/elf.json",
+    "Human": "data/races/human.json",
+    "Dragonborn": "data/races/dragonborn.json",
+    "Tiefling": "data/races/tiefling.json"
+}

@@ -5,6 +5,16 @@
       "1st_level": "12 + Constitution modifier",
       "higher_levels": "1d12 (or 7) + Constitution modifier per barbarian level after 1st"
     },
+     "subclasses": [
+        {
+            "name": "Path of the Berserker",
+            "features": ["Frenzy", "Mindless Rage", "Intimidating Presence", "Retaliation"]
+        },
+        {
+            "name": "Path of the Totem Warrior",
+            "features": ["Spirit Seeker", "Totem Spirit", "Aspect of the Beast", "Totemic Attunement"]
+        }
+    ]
     "proficiencies": {
       "armor": ["Light armor", "Medium armor", "Shields"],
       "weapons": ["Simple weapons", "Martial weapons"],

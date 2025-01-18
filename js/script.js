@@ -35,7 +35,6 @@ function loadDropdownData(jsonPath, selectId, key) {
         })
         .catch(error => console.error(`Errore caricando ${jsonPath}:`, error));
 }
-
 function populateDropdown(selectId, options) {
     const select = document.getElementById(selectId);
     if (!select) {
@@ -54,7 +53,6 @@ function populateDropdown(selectId, options) {
 
     console.log(`Dropdown #${selectId} aggiornato con ${options.length} opzioni!`);
 }
-
 function updateSubraces() {
     console.log("updateSubraces chiamata!");
 
@@ -66,8 +64,14 @@ function updateSubraces() {
         return;
     }
 
-    let raceFilePath = raceSelect.value;
+    let raceFilePath = raceSelect.value; // Percorso del file JSON
     console.log(`Tentativo di caricamento: ${raceFilePath}`);
+
+    if (!raceFilePath) {
+        console.warn("Nessuna razza selezionata.");
+        subraceSelect.style.display = "none";
+        return;
+    }
 
     fetch(raceFilePath)
         .then(response => {
@@ -78,22 +82,28 @@ function updateSubraces() {
         })
         .then(data => {
             console.log(`Dati caricati per ${raceFilePath}:`, data);
+            
+            // Controlliamo se il JSON contiene il campo subraces
             let subraces = data.subraces || [];
 
             subraceSelect.innerHTML = '<option value="">Seleziona una sottorazza...</option>';
 
-            subraces.forEach(subrace => {
-                let option = document.createElement("option");
-                option.value = subrace.name;
-                option.textContent = subrace.name;
-                subraceSelect.appendChild(option);
-            });
+            if (subraces.length > 0) {
+                subraces.forEach(subrace => {
+                    let option = document.createElement("option");
+                    option.value = subrace.name;
+                    option.textContent = subrace.name;
+                    subraceSelect.appendChild(option);
+                });
 
-            subraceSelect.style.display = subraces.length > 0 ? "block" : "none";
+                subraceSelect.style.display = "block";
+            } else {
+                console.warn(`Nessuna sottorazza trovata per ${raceFilePath}`);
+                subraceSelect.style.display = "none";
+            }
         })
         .catch(error => console.error(`Errore caricando ${raceFilePath}:`, error));
 }
-
 // Caricamento sottoclassi dinamico
 function updateSubclasses() {
     console.log("updateSubclasses chiamata!");

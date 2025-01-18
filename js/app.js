@@ -1,11 +1,10 @@
-// Funzione per caricare le regole da un file JSON
 function loadRules() {
   return fetch('rules.json')  // Assicurati che il file 'rules.json' sia nel percorso corretto
     .then(response => response.json())
     .catch(error => {
       console.error("Errore nel caricamento delle regole:", error);
       return null;
-    });
+    }); // Funzione per caricare le regole da un file JSON
 }
 
 // Funzione per applicare i bonus e tratti della razza al personaggio

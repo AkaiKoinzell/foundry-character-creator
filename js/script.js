@@ -1,21 +1,52 @@
 document.addEventListener("DOMContentLoaded", function () {
     const raceSelect = document.getElementById("race");
+    const classSelect = document.getElementById("class");
     const subraceContainer = document.getElementById("subrace-container");
     const subraceSelect = document.getElementById("subrace");
-    const classSelect = document.getElementById("class");
     const subclassContainer = document.getElementById("subclass-container");
     const subclassSelect = document.getElementById("subclass");
-    const levelSelect = document.getElementById("level");
-    const pointsRemaining = document.getElementById("points-remaining");
-    const attributes = document.querySelectorAll(".attribute");
-    const generateButton = document.getElementById("generate-json");
 
-    let availablePoints = 27;
+    // Carica le razze dal file JSON
+    function loadRaces() {
+        fetch("data/races.json")  // Assicurati che il file esista
+            .then(response => response.json())
+            .then(data => {
+                raceSelect.innerHTML = '<option value="">Seleziona una razza</option>';
+                Object.keys(data).forEach(race => {
+                    let option = document.createElement("option");
+                    option.value = race;
+                    option.textContent = race;
+                    raceSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error("Errore nel caricamento delle razze:", error));
+    }
 
+    // Carica le classi dal file JSON
+    function loadClasses() {
+        fetch("data/classes.json")  // Assicurati che il file esista
+            .then(response => response.json())
+            .then(data => {
+                classSelect.innerHTML = '<option value="">Seleziona una classe</option>';
+                Object.keys(data).forEach(className => {
+                    let option = document.createElement("option");
+                    option.value = className;
+                    option.textContent = className;
+                    classSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error("Errore nel caricamento delle classi:", error));
+    }
+
+    // Carica le sottorazze della razza selezionata
     function updateSubraces() {
-        let selectedRace = raceSelect.value.toLowerCase();
-        let racePath = `data/races/${selectedRace}.json`;
+        let selectedRace = raceSelect.value;
+        if (!selectedRace) {
+            subraceContainer.style.display = "none";
+            return;
+        }
 
+        let racePath = `data/races/${selectedRace.toLowerCase()}.json`;
         fetch(racePath)
             .then(response => response.json())
             .then(data => {
@@ -36,10 +67,15 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(error => console.error("Errore nel caricamento delle sottorazze:", error));
     }
 
+    // Carica le sottoclassi della classe selezionata
     function updateSubclasses() {
-        let selectedClass = classSelect.value.toLowerCase();
-        let classPath = `data/classes/${selectedClass}.json`;
+        let selectedClass = classSelect.value;
+        if (!selectedClass) {
+            subclassContainer.style.display = "none";
+            return;
+        }
 
+        let classPath = `data/classes/${selectedClass.toLowerCase()}.json`;
         fetch(classPath)
             .then(response => response.json())
             .then(data => {
@@ -60,60 +96,11 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(error => console.error("Errore nel caricamento delle sottoclassi:", error));
     }
 
-    function updatePoints() {
-        let total = 27;
-        attributes.forEach(attr => {
-            let value = parseInt(attr.querySelector("span").textContent);
-            total -= (value - 8);
-        });
-        availablePoints = total;
-        pointsRemaining.textContent = availablePoints;
-    }
-
-    attributes.forEach(attr => {
-        let plus = attr.querySelector(".plus");
-        let minus = attr.querySelector(".minus");
-        let value = attr.querySelector("span");
-
-        plus.addEventListener("click", function () {
-            let newValue = parseInt(value.textContent) + 1;
-            if (availablePoints > 0 && newValue <= 15) {
-                value.textContent = newValue;
-                updatePoints();
-            }
-        });
-
-        minus.addEventListener("click", function () {
-            let newValue = parseInt(value.textContent) - 1;
-            if (newValue >= 8) {
-                value.textContent = newValue;
-                updatePoints();
-            }
-        });
-    });
-
-    generateButton.addEventListener("click", function () {
-        let characterData = {
-            name: document.getElementById("character-name").value,
-            race: raceSelect.value,
-            subrace: subraceContainer.style.display === "block" ? subraceSelect.value : null,
-            class: classSelect.value,
-            subclass: subclassContainer.style.display === "block" ? subclassSelect.value : null,
-            level: parseInt(levelSelect.value),
-            attributes: {}
-        };
-
-        attributes.forEach(attr => {
-            let attrName = attr.dataset.attribute;
-            let attrValue = parseInt(attr.querySelector("span").textContent);
-            characterData.attributes[attrName] = attrValue;
-        });
-
-        console.log("Generated Character JSON:", characterData);
-        alert("Personaggio creato! Controlla la console per i dettagli.");
-    });
-
+    // Event listeners per aggiornare sottorazze e sottoclassi al cambio di selezione
     raceSelect.addEventListener("change", updateSubraces);
     classSelect.addEventListener("change", updateSubclasses);
-    updatePoints();
+
+    // Caricamento iniziale delle razze e classi
+    loadRaces();
+    loadClasses();
 });

@@ -14,7 +14,7 @@
             "name": "Path of the Totem Warrior",
             "features": ["Spirit Seeker", "Totem Spirit", "Aspect of the Beast", "Totemic Attunement"]
         }
-    ]
+    ],
     "proficiencies": {
       "armor": ["Light armor", "Medium armor", "Shields"],
       "weapons": ["Simple weapons", "Martial weapons"],

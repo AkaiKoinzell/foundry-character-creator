@@ -1,15 +1,33 @@
-// Funzione per caricare le razze
+document.addEventListener("DOMContentLoaded", function () {
+    const raceSelect = document.getElementById("race");
+    const subraceSelect = document.getElementById("subrace");
+    const classSelect = document.getElementById("class");
+    const subclassSelect = document.getElementById("subclass");
+    const pointsRemainingSpan = document.getElementById("points-remaining");
+    let pointsRemaining = 27;
+    let baseStats = {
+        "strength": 10,
+        "dexterity": 10,
+        "constitution": 10,
+        "intelligence": 10,
+        "wisdom": 10,
+        "charisma": 10
+    };
+
+    // Funzione per caricare le razze
     async function loadRaceData(race) {
         try {
-            let response = await fetch(`/races/${race.toLowerCase()}.json`);
+            let response = await fetch(`races/${race.toLowerCase()}.json`);
             let data = await response.json();
+
+            console.log("Razza selezionata:", data); // Debug
 
             // Mostra/Nasconde il selettore delle sottorazze
             if (data.subraces && data.subraces.length > 0) {
                 subraceSelect.innerHTML = `<option value="">Seleziona Sottorazza</option>`;
                 data.subraces.forEach(sub => {
                     let option = document.createElement("option");
-                    option.value = sub;
+                    option.value = sub.toLowerCase().replace(" ", "_");
                     option.textContent = sub;
                     subraceSelect.appendChild(option);
                 });
@@ -29,8 +47,10 @@
     // Funzione per caricare la sottorazza
     async function loadSubraceData(subrace) {
         try {
-            let response = await fetch(`/subraces/${subrace.toLowerCase().replace(" ", "_")}.json`);
+            let response = await fetch(`subraces/${subrace.toLowerCase().replace(" ", "_")}.json`);
             let data = await response.json();
+
+            console.log("Sottorazza selezionata:", data); // Debug
 
             // Applica i bonus di sottorazza
             applyStatBonuses(data.bonus);
@@ -42,15 +62,17 @@
     // Funzione per caricare la classe
     async function loadClassData(className) {
         try {
-            let response = await fetch(`/classes/${className.toLowerCase()}.json`);
+            let response = await fetch(`classes/${className.toLowerCase()}.json`);
             let data = await response.json();
+
+            console.log("Classe selezionata:", data); // Debug
 
             // Mostra/Nasconde il selettore delle sottoclassi
             if (data.subclasses && data.subclasses.length > 0) {
                 subclassSelect.innerHTML = `<option value="">Seleziona Sottoclasse</option>`;
                 data.subclasses.forEach(sub => {
                     let option = document.createElement("option");
-                    option.value = sub;
+                    option.value = sub.toLowerCase().replace(" ", "_");
                     option.textContent = sub;
                     subclassSelect.appendChild(option);
                 });
@@ -68,12 +90,10 @@
     function applyStatBonuses(bonuses) {
         if (!bonuses) return;
 
-        // Resetta le statistiche ai valori base prima di applicare nuovi bonus
         let currentStats = { ...baseStats };
         
         for (let stat in bonuses) {
             if (stat === "other") {
-                // Se ci sono bonus personalizzabili, chiedi all'utente di assegnarli
                 let remainingBonus = [...bonuses["other"]];
                 while (remainingBonus.length > 0) {
                     let selectedStat = prompt(`Scegli una caratteristica per il bonus +${remainingBonus[0]}: (forza, destrezza, costituzione, intelligenza, saggezza, carisma)`);
@@ -88,8 +108,7 @@
             }
         }
 
-        // Aggiorna i punti rimanenti
-        let usedPoints = Object.values(currentStats).reduce((a, b) => a + (b - 8), 0);
+        let usedPoints = Object.values(currentStats).reduce((a, b) => a + (b - 10), 0);
         pointsRemaining = 27 - usedPoints;
         pointsRemainingSpan.textContent = pointsRemaining;
     }
@@ -110,18 +129,3 @@
         if (selectedClass) loadClassData(selectedClass);
     });
 });
-  
-    // Crea il JSON
-    const jsonString = JSON.stringify(character, null, 2);
-  
-    // Crea un Blob (file) a partire dal JSON
-    const blob = new Blob([jsonString], { type: 'application/json' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `${character.name}_character.json`;  // Nome del file JSON
-    link.textContent = `Clicca per scaricare il file JSON del personaggio: ${character.name}`;
-  
-    // Mostra il link per il download
-    document.getElementById("download-link").innerHTML = '';
-    document.getElementById("download-link").appendChild(link);
-  });

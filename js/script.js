@@ -68,4 +68,23 @@ function updateSubraces() {
         .then(response => response.json())
         .then(data => {
             if (data.subraces && data.subraces.length > 0) {
-                populateDropdown("sub
+                populateDropdown("subraceSelect", data.subraces); subraceSelect.style.display = "block"; } else { subraceSelect.style.display = "none"; } }) .catch(error => console.error(Errore nel caricamento della sottorazza ${race}:, error)); }
+
+// Caricamento sottoclassi dinamico function updateSubclasses() { const selectedClass = document.getElementById("classSelect").value; const subclassSelect = document.getElementById("subclassSelect");
+if (!selectedClass) {
+    subclassSelect.style.display = "none";
+    return;
+}
+
+fetch(`data/classes/${selectedClass}.json`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.subclasses && data.subclasses.length > 0) {
+            populateDropdown("subclassSelect", data.subclasses);
+            subclassSelect.style.display = "block";
+        } else {
+            subclassSelect.style.display = "none";
+        }
+    })
+    .catch(error => console.error(`Errore nel caricamento della sottoclasse ${selectedClass}:`, error));
+

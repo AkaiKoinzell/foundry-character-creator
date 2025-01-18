@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     console.log("Script.js caricato!");
 
-    // Controlla se i dropdown esistono
+    // Controlliamo se gli elementi esistono
     if (!document.getElementById("raceSelect") || !document.getElementById("classSelect")) {
         console.error("Elementi #raceSelect o #classSelect non trovati nel DOM!");
         return;
@@ -52,6 +52,43 @@ function populateDropdown(selectId, options) {
     });
 
     console.log(`Dropdown #${selectId} aggiornato con ${options.length} opzioni!`);
+}
+function updateSubraces() {
+    console.log("updateSubraces chiamata!");
+
+    let raceSelect = document.getElementById("raceSelect");
+    let subraceSelect = document.getElementById("subraceSelect");
+
+    if (!raceSelect || !subraceSelect) {
+        console.error("Elementi non trovati nel DOM.");
+        return;
+    }
+
+    let selectedRace = raceSelect.value;
+    if (!selectedRace) {
+        console.warn("Nessuna razza selezionata.");
+        return;
+    }
+
+    // Carica il file JSON della razza scelta per ottenere le sottorazze
+    fetch(`data/races/${selectedRace}.json`)
+        .then(response => response.json())
+        .then(data => {
+            console.log(`Dati caricati per ${selectedRace}:`, data);
+            let subraces = data.subraces || [];
+
+            subraceSelect.innerHTML = '<option value="">Seleziona una sottorazza...</option>';
+
+            subraces.forEach(subrace => {
+                let option = document.createElement("option");
+                option.value = subrace.name;
+                option.textContent = subrace.name;
+                subraceSelect.appendChild(option);
+            });
+
+            subraceSelect.style.display = subraces.length > 0 ? "block" : "none";
+        })
+        .catch(error => console.error("Errore caricando le sottorazze:", error));
 }
 
 // Caricamento sottoclassi dinamico

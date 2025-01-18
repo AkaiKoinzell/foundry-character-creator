@@ -14,7 +14,7 @@
     "equipment": [
         "(a) a greataxe or (b) any martial melee weapon",
         "(a) two handaxes or (b) any simple weapon",
-        "An explorer’s pack and four javelins"
+        "An explorer's pack and four javelins"
     ],
     "subclasses": [
         {
@@ -27,10 +27,10 @@
         }
     ],
     "features_by_level": {
-        "1": ["Rage", "Unarmored Defense"],
-        "2": ["Reckless Attack", "Danger Sense"],
-        "3": ["Primal Path"],
-        "5": ["Extra Attack", "Fast Movement"],
-        "15": ["Persistent Rage"]
+        "level_1": ["Rage", "Unarmored Defense"],
+        "level_2": ["Reckless Attack", "Danger Sense"],
+        "level_3": ["Primal Path"],
+        "level_5": ["Extra Attack", "Fast Movement"],
+        "level_15": ["Persistent Rage"]
     }
 }

@@ -5,19 +5,32 @@
     "senses": {
         "darkvision": 60
     },
-    "ability_bonus": { "con": 2 },
+    "ability_bonus": {
+        "con": 2
+    },
     "traits": [
-        "Dwarven Resilience",
-        "Dwarven Combat Training",
-        "Tool Proficiency",
-        "Stonecunning"
+        {
+            "name": "Dwarven Resilience",
+            "description": "You have advantage on saving throws against poison, and you have resistance against poison damage."
+        },
+        {
+            "name": "Dwarven Combat Training",
+            "description": "You have proficiency with the battleaxe, handaxe, light hammer, and warhammer."
+        },
+        {
+            "name": "Tool Proficiency",
+            "description": "You gain proficiency with the artisan's tools of your choice: smith's tools, brewer's supplies, or mason's tools."
+        },
+        {
+            "name": "Stonecunning",
+            "description": "Whenever you make an Intelligence (History) check related to the origin of stonework, you are considered proficient and add double your proficiency bonus."
+        }
     ],
     "languages": ["Common", "Dwarvish"],
     "subraces": [
         {
             "name": "Hill Dwarf",
             "ability_score_increase": {
-                "con": 2,
                 "wis": 1
             },
             "traits": [

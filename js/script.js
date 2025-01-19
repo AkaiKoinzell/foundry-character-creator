@@ -126,7 +126,7 @@ function generateFinalJson() {
 
     // Mostra un'alert o stampa il JSON in una textarea (opzionale)
     alert("JSON generato! Guarda la console.");
-
+}
 // ---- POINT BUY SYSTEM ----
 var totalPoints = 27;
 

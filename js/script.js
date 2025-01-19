@@ -215,50 +215,53 @@ function initializeValues() {
 function applyRacialBonuses() {
     console.log("⚡ applyRacialBonuses() chiamata!");
 
-    // Ottieni i valori selezionati nei dropdown
     let bonus1 = document.getElementById("racialBonus1").value;
     let bonus2 = document.getElementById("racialBonus2").value;
     let bonus3 = document.getElementById("racialBonus3").value;
 
-    // Verifica che i dropdown esistano
     if (!bonus1 || !bonus2 || !bonus3) {
-        console.error("❌ Errore: uno o più elementi dei bonus razza non esistono.");
+        console.error("❌ Errore: uno o più elementi dei bonus razza non sono stati selezionati.");
+        alert("Devi selezionare tutti e tre i bonus razza!");
+        return;
+    }
+
+    // 🔴 Controllo: nessuna caratteristica deve essere selezionata più di due volte!
+    let selections = [bonus1, bonus2, bonus3];
+    let counts = {};
+    selections.forEach(bonus => {
+        counts[bonus] = (counts[bonus] || 0) + 1;
+    });
+
+    let invalidSelections = Object.values(counts).some(count => count > 2);
+    if (invalidSelections) {
+        console.error("❌ Errore: una caratteristica è stata selezionata più di due volte.");
+        alert("Puoi assegnare al massimo +2 a una caratteristica e +1 a un'altra, oppure +1 a tre diverse!");
         return;
     }
 
     console.log(`Bonus selezionati: ${bonus1}, ${bonus2}, ${bonus3}`);
 
-    // Reset di tutti i bonus razziali
     let abilityFields = ["str", "dex", "con", "int", "wis", "cha"];
-    abilityFields.forEach(stat => {
-        document.getElementById(stat + "RaceModifier").value = "0";
-    });
-
-    // Logica di assegnazione punti
     let bonusDistribution = {
         str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0
     };
 
-    // Applica i bonus razziali
+    // 🔹 Assegna i bonus rispettando la logica delle distribuzioni
     if (bonus1 === bonus2) {
-        // Caso +2 a una caratteristica e +1 a un'altra
         bonusDistribution[bonus1] += 2;
         bonusDistribution[bonus3] += 1;
     } else {
-        // Caso +1 a tre caratteristiche diverse
         bonusDistribution[bonus1] += 1;
         bonusDistribution[bonus2] += 1;
         bonusDistribution[bonus3] += 1;
     }
 
-    // Assegna i valori aggiornati ai campi della tabella
     abilityFields.forEach(stat => {
-        document.getElementById(stat + "RaceModifier").value = bonusDistribution[stat];
+        document.getElementById(stat + "RaceModifier").textContent = bonusDistribution[stat]; // Usa textContent!
     });
 
     console.log("✅ Bonus razziali applicati:", bonusDistribution);
 
-    // Aggiorna i punteggi finali
     updateFinalScores();
 }
 

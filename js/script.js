@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("Script.js caricato!");
+    console.log("✅ Script.js caricato!");
 
     // Carica la lista delle razze e classi
     loadDropdownData("data/races.json", "raceSelect", "races");
@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Listener per aggiornare sottorazze e sottoclassi dinamicamente
     document.getElementById("raceSelect").addEventListener("change", updateSubraces);
+    document.getElementById("raceSelect").addEventListener("change", displayRaceTraits);
+    document.getElementById("subraceSelect").addEventListener("change", displaySubraceTraits);
     document.getElementById("classSelect").addEventListener("change", updateSubclasses);
 
     // Genera JSON finale
@@ -23,22 +25,22 @@ function loadDropdownData(jsonPath, selectId, key) {
     fetch(jsonPath)
         .then(response => response.json())
         .then(data => {
-            console.log(`Dati ricevuti da ${jsonPath}:`, data);
+            console.log(`📜 Dati ricevuti da ${jsonPath}:`, data);
             if (!data[key]) {
-                console.error(`Chiave ${key} non trovata in ${jsonPath}`);
+                console.error(`❌ Chiave ${key} non trovata in ${jsonPath}`);
                 return;
             }
             let options = Object.keys(data[key]).map(name => ({ name, path: data[key][name] }));
             populateDropdown(selectId, options);
         })
-        .catch(error => console.error(`Errore caricando ${jsonPath}:`, error));
+        .catch(error => console.error(`❌ Errore caricando ${jsonPath}:`, error));
 }
 
 // Funzione per popolare i dropdown
 function populateDropdown(selectId, options) {
     const select = document.getElementById(selectId);
     if (!select) {
-        console.error(`Elemento #${selectId} non trovato!`);
+        console.error(`❌ Elemento #${selectId} non trovato!`);
         return;
     }
     select.innerHTML = '<option value="">Seleziona...</option>';
@@ -50,26 +52,92 @@ function populateDropdown(selectId, options) {
     });
 }
 
-// Aggiorna le sottorazze
-function updateSubraces() {
+// ** MOSTRA I TRATTI DELLA RAZZA **
+function displayRaceTraits() {
     let racePath = document.getElementById("raceSelect").value;
-    let subraceSelect = document.getElementById("subraceSelect");
-    let racialBonusDiv = document.getElementById("racialBonusSelection");
+    let raceTraitsDiv = document.getElementById("raceTraits");
 
     if (!racePath) {
-        subraceSelect.innerHTML = '<option value="">Nessuna sottorazza disponibile</option>';
-        subraceSelect.style.display = "none";
-        racialBonusDiv.style.display = "none";  
-        resetRacialBonuses();  
+        raceTraitsDiv.innerHTML = "<p>Seleziona una razza per vedere i tratti.</p>";
         return;
     }
 
     fetch(racePath)
         .then(response => response.json())
         .then(data => {
-            console.log("Dati razza caricati:", data);
-            subraceSelect.innerHTML = '<option value="">Seleziona una sottorazza</option>';
+            console.log("📜 Dati razza caricati:", data);
 
+            let traitsHtml = `<h3>Tratti di ${data.name}</h3>`;
+            traitsHtml += `<p><strong>Velocità:</strong> ${data.speed} ft</p>`;
+            if (data.senses && data.senses.darkvision) {
+                traitsHtml += `<p><strong>Scurovisione:</strong> ${data.senses.darkvision} ft</p>`;
+            }
+
+            if (data.traits && data.traits.length > 0) {
+                traitsHtml += `<p><strong>Tratti:</strong></p><ul>`;
+                data.traits.forEach(trait => {
+                    traitsHtml += `<li><strong>${trait.name}:</strong> ${trait.description}</li>`;
+                });
+                traitsHtml += `</ul>`;
+            }
+
+            if (data.languages && data.languages.length > 0) {
+                traitsHtml += `<p><strong>Lingue Concesse:</strong> ${data.languages.join(", ")}</p>`;
+            }
+
+            raceTraitsDiv.innerHTML = traitsHtml;
+        })
+        .catch(error => console.error("❌ Errore caricando i tratti della razza:", error));
+}
+
+// ** MOSTRA I TRATTI DELLA SOTTORAZZA **
+function displaySubraceTraits() {
+    let racePath = document.getElementById("raceSelect").value;
+    let subraceName = document.getElementById("subraceSelect").value;
+    let subraceTraitsDiv = document.getElementById("subraceTraits");
+
+    if (!racePath || !subraceName) {
+        subraceTraitsDiv.innerHTML = "";
+        return;
+    }
+
+    fetch(racePath)
+        .then(response => response.json())
+        .then(data => {
+            let subraceData = data.subraces.find(sub => sub.name === subraceName);
+            if (!subraceData) return;
+
+            console.log("📜 Dati sottorazza caricati:", subraceData);
+
+            let traitsHtml = `<h3>Tratti di ${subraceData.name}</h3>`;
+            if (subraceData.traits && subraceData.traits.length > 0) {
+                traitsHtml += `<p><strong>Tratti:</strong></p><ul>`;
+                subraceData.traits.forEach(trait => {
+                    traitsHtml += `<li><strong>${trait.name}:</strong> ${trait.description}</li>`;
+                });
+                traitsHtml += `</ul>`;
+            }
+
+            subraceTraitsDiv.innerHTML = traitsHtml;
+        })
+        .catch(error => console.error("❌ Errore caricando i tratti della sottorazza:", error));
+}
+
+// ** AGGIORNA LE SOTTORAZZE **
+function updateSubraces() {
+    let racePath = document.getElementById("raceSelect").value;
+    let subraceSelect = document.getElementById("subraceSelect");
+
+    if (!racePath) {
+        subraceSelect.innerHTML = '<option value="">Nessuna sottorazza disponibile</option>';
+        subraceSelect.style.display = "none";
+        return;
+    }
+
+    fetch(racePath)
+        .then(response => response.json())
+        .then(data => {
+            subraceSelect.innerHTML = '<option value="">Seleziona una sottorazza</option>';
             if (data.subraces) {
                 data.subraces.forEach(subrace => {
                     let option = document.createElement("option");
@@ -79,92 +147,11 @@ function updateSubraces() {
                 });
                 subraceSelect.style.display = data.subraces.length > 0 ? "block" : "none";
             }
-
-            // Mostra il selettore dei bonus di razza
-            racialBonusDiv.style.display = "block";
-
-            // 🔹 Aggiunge le proficiency per strumenti
-            if (data.proficiencies?.tools?.options) {
-                let toolSelect = document.getElementById("toolSelect");
-                toolSelect.innerHTML = '<option value="">Seleziona uno strumento</option>';
-                data.proficiencies.tools.options.forEach(tool => {
-                    let option = document.createElement("option");
-                    option.value = tool;
-                    option.textContent = tool.split(":")[2]; // Mostra solo il nome dello strumento
-                    toolSelect.appendChild(option);
-                });
-                toolSelect.style.display = "block";
-            }
-
-            // 🔹 Aggiunge le lingue
-            let languageContainer = document.getElementById("languageSelection");
-            languageContainer.innerHTML = `<p>Lingue Concesse: ${data.proficiencies.languages.join(", ")}</p>`;
-            if (data.languages) {
-            console.log("Lingue concesse:", data.languages);
-            document.getElementById("languagesDisplay").textContent = "Lingue Concesse: " + data.languages.join(", ");
-} else {
-           console.warn("⚠️ Nessuna lingua trovata per questa sottorazza.");
-           document.getElementById("languagesDisplay").textContent = "Lingue Concesse: Nessuna";
-}
-            resetRacialBonuses();
         })
-        .catch(error => console.error("Errore caricando le sottorazze:", error));
+        .catch(error => console.error("❌ Errore caricando le sottorazze:", error));
 }
 
-function displayRaceTraits() {
-    let raceName = document.getElementById("raceSelect").value;
-    let raceTraitsDiv = document.getElementById("raceTraits");
-
-    if (!raceName) {
-        raceTraitsDiv.innerHTML = "";
-        return;
-    }
-
-    fetch("data/races.json")
-        .then(response => response.json())
-        .then(data => {
-            let raceData = data.races[raceName];
-
-            if (!raceData) {
-                console.error("❌ Errore: Razza non trovata nei dati JSON");
-                raceTraitsDiv.innerHTML = "<p style='color: red;'>Errore nel caricamento della razza.</p>";
-                return;
-            }
-
-            console.log(`🔹 Dati razza caricati:`, raceData);
-
-            // Creiamo la visualizzazione
-            let traitsHtml = `<h3>Tratti di ${raceName}</h3>`;
-
-            // ✅ Visione e Movimento
-            traitsHtml += `<p><strong>Velocità:</strong> ${raceData.speed} ft</p>`;
-            if (raceData.vision && raceData.vision.darkvision) {
-                traitsHtml += `<p><strong>Scurovisione:</strong> ${raceData.vision.darkvision} ft</p>`;
-            }
-
-            // ✅ Tratti Base
-            if (raceData.traits && raceData.traits.length > 0) {
-                traitsHtml += `<p><strong>Tratti:</strong></p><ul>`;
-                raceData.traits.forEach(trait => {
-                    traitsHtml += `<li>${trait}</li>`;
-                });
-                traitsHtml += `</ul>`;
-            }
-
-            // ✅ Lingue
-            if (raceData.languages && raceData.languages.length > 0) {
-                traitsHtml += `<p><strong>Lingue Concesse:</strong> ${raceData.languages.join(", ")}</p>`;
-            }
-
-            // ✅ Mostra il tutto nel div
-            raceTraitsDiv.innerHTML = traitsHtml;
-        })
-        .catch(error => console.error("❌ Errore nel caricamento dei dati delle razze:", error));
-        console.log("🔍 displayRaceTraits() chiamata!");
-        console.log("🔹 Razza selezionata:", document.getElementById("raceSelect").value);
-        console.log("🔹 Dati della razza:", raceData);
-}
-// Aggiorna le sottoclassi
+// ** AGGIORNA LE SOTTOCLASSI **
 function updateSubclasses() {
     let classPath = document.getElementById("classSelect").value;
     let subclassSelect = document.getElementById("subclassSelect");
@@ -178,7 +165,6 @@ function updateSubclasses() {
     fetch(classPath)
         .then(response => response.json())
         .then(data => {
-            console.log("Dati sottoclassi:", data);
             subclassSelect.innerHTML = '<option value="">Seleziona una sottoclasse</option>';
             data.subclasses.forEach(subclass => {
                 let option = document.createElement("option");
@@ -188,9 +174,8 @@ function updateSubclasses() {
             });
             subclassSelect.style.display = data.subclasses.length > 0 ? "block" : "none";
         })
-        .catch(error => console.error("Errore caricando le sottoclassi:", error));
+        .catch(error => console.error("❌ Errore caricando le sottoclassi:", error));
 }
-
 // Genera il JSON finale
 function generateFinalJson() {
     let character = {

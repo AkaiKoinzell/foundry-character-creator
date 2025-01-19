@@ -154,6 +154,9 @@ function displayRaceTraits() {
             raceTraitsDiv.innerHTML = traitsHtml;
         })
         .catch(error => console.error("❌ Errore nel caricamento dei dati delle razze:", error));
+        console.log("🔍 displayRaceTraits() chiamata!");
+        console.log("🔹 Razza selezionata:", document.getElementById("raceSelect").value);
+        console.log("🔹 Dati della razza:", raceData);
 }
 // Aggiorna le sottoclassi
 function updateSubclasses() {

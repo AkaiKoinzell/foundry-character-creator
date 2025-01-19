@@ -186,7 +186,7 @@ function updateFinalScores() {
 
     abilities.forEach(function(ability) {
         let basePoints = parseInt(document.getElementById(ability + "Points").textContent);
-        let raceModifier = parseInt(document.getElementById(ability + "RaceModifier").textContent) || 0; // 🔹 FIXATO textContent
+        let raceModifier = parseInt(document.getElementById(ability + "RaceModifier").textContent); // 🔹 FIXATO textContent
         let backgroundTalent = parseInt(document.getElementById(ability + "BackgroundTalent").value) || 0;
         let finalScore = basePoints + raceModifier + backgroundTalent;
 

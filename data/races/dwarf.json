@@ -1,22 +1,43 @@
 {
-  "races": {
-    "Dwarf": {
-      "ability_bonus": { "con": 2 },
-      "speed": 25,
-      "vision": { "darkvision": 60 },
-      "traits": [
-        "Dwarven Resilience",
-        "Dwarven Combat Training",
-        "Tool Proficiency",
-        "Stonecunning"
-      ],
-      "languages": ["Common", "Dwarvish"],
-      "subraces": {
-        "Hill Dwarf": {
-          "ability_bonus": { "wis": 1 },
-          "traits": ["Dwarven Toughness"]
+    "name": "Dwarf",
+    "size": "Medium",
+    "speed": 25,
+    "senses": {
+        "darkvision": 60
+    },
+    "ability_bonus": { "con": 2 },
+    "traits": [
+        {
+            "name": "Dwarven Resilience",
+            "description": "You have advantage on saving throws against poison, and you have resistance against poison damage.",
+            "grants": ["dr:poison"]
+        },
+        {
+            "name": "Dwarven Combat Training",
+            "description": "You have proficiency with the battleaxe, handaxe, light hammer, and warhammer.",
+            "grants": ["weapon:sim:handaxe", "weapon:sim:lighthammer", "weapon:mar:battleaxe", "weapon:mar:warhammer"]
         }
-      }
-    }
-  }
+    ],
+    "proficiencies": {
+        "tools": {
+            "choose": 1,
+            "options": ["tool:art:brewer", "tool:art:mason", "tool:art:smith"]
+        },
+        "languages": ["Common", "Dwarvish"]
+    },
+    "subraces": [
+        {
+            "name": "Hill Dwarf",
+            "ability_score_increase": {
+                "con": 2,
+                "wis": 1
+            },
+            "traits": [
+                {
+                    "name": "Dwarven Toughness",
+                    "description": "Your hit point maximum increases by 1, and it increases by 1 every time you gain a level."
+                }
+            ]
+        }
+    ]
 }

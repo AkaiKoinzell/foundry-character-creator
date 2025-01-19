@@ -99,7 +99,13 @@ function updateSubraces() {
             // 🔹 Aggiunge le lingue
             let languageContainer = document.getElementById("languageSelection");
             languageContainer.innerHTML = `<p>Lingue Concesse: ${data.proficiencies.languages.join(", ")}</p>`;
-
+            if (data.languages) {
+            console.log("Lingue concesse:", data.languages);
+            document.getElementById("languagesDisplay").textContent = "Lingue Concesse: " + data.languages.join(", ");
+} else {
+           console.warn("⚠️ Nessuna lingua trovata per questa sottorazza.");
+           document.getElementById("languagesDisplay").textContent = "Lingue Concesse: Nessuna";
+}
             resetRacialBonuses();
         })
         .catch(error => console.error("Errore caricando le sottorazze:", error));

@@ -64,54 +64,201 @@
     </select>
 
 </body>
+    
+<title>Sistema Point Buy per il server di Tales from Ivory</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    th, td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    #pointsRemaining {
+        font-size: 20px;
+        font-weight: bold;
+    }
+    @media screen and (max-width: 768px) {
+        body {
+            margin: 10px;
+        }
+        table, th, td {
+            font-size: 14px;
+            padding: 6px;
+        }
+        h2, p {
+            text-align: center;
+        }
+        td button {
+            display: block;
+            margin: 5px 0;
+            width: 100%;
+        }
+        input[type="number"] {
+            width: 100%;
+        }
+    }
+    @media screen and (max-width: 480px) {
+        table, th, td {
+            font-size: 12px;
+            padding: 4px;
+        }
+        td button {
+            margin: 3px 0;
+        }
+        input[type="number"] {
+            width: 100%;
+        }
+    }
+</style>
+</head>
+<body onload="initializeValues()">
 
-
-<h3>Distribuzione Punti Caratteristica</h3>
-<p>Punti rimanenti: <span id="pointsRemaining">27</span></p>
+<h2 style="text-align: center;">Sistema Point Buy per il server di Tales from Ivory</h2>
+<p style="text-align: center;"><span style="font-weight: bold;">Total Points Remaining:</span> <span id="pointsRemaining">27</span></p>
+<p style="text-align: center;">Assegna i tuoi punti tra i punteggi di caratteristica (FOR, DES, COS, INT, SAG, CAR). Hai 27 punti da spendere.</p>
 
 <table>
     <tr>
-        <th>Caratteristica</th>
-        <th>Punti Base</th>
-        <th>Bonus Razza</th>
-        <th>Bonus BG</th>
-        <th>Punteggio Finale</th>
-        <th>Modifica</th>
+        <th>Caratteristiche</th>
+        <th>Spendi i tuoi punti</th>
+        <th>Punteggi Iniziali</th>
+        <th>Punteggi di Razza</th>
+        <th>Talento di BG</th>
+        <th>Punteggi Finali</th>
     </tr>
     <tr>
-        <td>Forza</td>
+        <td>FOR</td>
+        <td><button onclick="adjustPoints('str', 'add')">+</button><button onclick="adjustPoints('str', 'subtract')">-</button></td>
         <td><span id="strPoints">8</span></td>
         <td><input type="number" id="strRaceModifier" value="0" min="0" max="2" oninput="updateFinalScores()"></td>
         <td><input type="number" id="strBackgroundTalent" value="0" min="0" max="1" oninput="updateFinalScores()"></td>
         <td id="strFinalScore">8</td>
-        <td>
-            <button onclick="adjustPoints('str', 'add')">+</button>
-            <button onclick="adjustPoints('str', 'subtract')">-</button>
-        </td>
     </tr>
     <tr>
-        <td>Destrezza</td>
+        <td>DES</td>
+        <td><button onclick="adjustPoints('dex', 'add')">+</button><button onclick="adjustPoints('dex', 'subtract')">-</button></td>
         <td><span id="dexPoints">8</span></td>
         <td><input type="number" id="dexRaceModifier" value="0" min="0" max="2" oninput="updateFinalScores()"></td>
         <td><input type="number" id="dexBackgroundTalent" value="0" min="0" max="1" oninput="updateFinalScores()"></td>
         <td id="dexFinalScore">8</td>
-        <td>
-            <button onclick="adjustPoints('dex', 'add')">+</button>
-            <button onclick="adjustPoints('dex', 'subtract')">-</button>
-        </td>
     </tr>
     <tr>
-        <td>Costituzione</td>
+        <td>COS</td>
+        <td><button onclick="adjustPoints('con', 'add')">+</button><button onclick="adjustPoints('con', 'subtract')">-</button></td>
         <td><span id="conPoints">8</span></td>
         <td><input type="number" id="conRaceModifier" value="0" min="0" max="2" oninput="updateFinalScores()"></td>
         <td><input type="number" id="conBackgroundTalent" value="0" min="0" max="1" oninput="updateFinalScores()"></td>
         <td id="conFinalScore">8</td>
-        <td>
-            <button onclick="adjustPoints('con', 'add')">+</button>
-            <button onclick="adjustPoints('con', 'subtract')">-</button>
-        </td>
+    </tr>
+    <tr>
+        <td>INT</td>
+        <td><button onclick="adjustPoints('int', 'add')">+</button><button onclick="adjustPoints('int', 'subtract')">-</button></td>
+        <td><span id="intPoints">8</span></td>
+        <td><input type="number" id="intRaceModifier" value="0" min="0" max="2" oninput="updateFinalScores()"></td>
+        <td><input type="number" id="intBackgroundTalent" value="0" min="0" max="1" oninput="updateFinalScores()"></td>
+        <td id="intFinalScore">8</td>
+    </tr>
+    <tr>
+        <td>SAG</td>
+        <td><button onclick="adjustPoints('wis', 'add')">+</button><button onclick="adjustPoints('wis', 'subtract')">-</button></td>
+        <td><span id="wisPoints">8</span></td>
+        <td><input type="number" id="wisRaceModifier" value="0" min="0" max="2" oninput="updateFinalScores()"></td>
+        <td><input type="number" id="wisBackgroundTalent" value="0" min="0" max="1" oninput="updateFinalScores()"></td>
+        <td id="wisFinalScore">8</td>
+    </tr>
+    <tr>
+        <td>CAR</td>
+        <td><button onclick="adjustPoints('cha', 'add')">+</button><button onclick="adjustPoints('cha', 'subtract')">-</button></td>
+        <td><span id="chaPoints">8</span></td>
+        <td><input type="number" id="chaRaceModifier" value="0" min="0" max="2" oninput="updateFinalScores()"></td>
+        <td><input type="number" id="chaBackgroundTalent" value="0" min="0" max="1" oninput="updateFinalScores()"></td>
+        <td id="chaFinalScore">8</td>
     </tr>
 </table>
+
+<script>
+    var totalPoints = 27;
+
+    function adjustPoints(ability, action) {
+        var pointsSpan = document.getElementById(ability + "Points");
+        var points = parseInt(pointsSpan.textContent);
+
+        if (action === 'add' && totalPoints > 0 && points < 15) {
+            if (points >= 13 && points < 14) {
+                if (totalPoints >= 2) {
+                    totalPoints -= 2;
+                    points++;
+                }
+            } else if (points >= 14 && points < 15) {
+                if (totalPoints >= 2) {
+                    totalPoints -= 2;
+                    points++;
+                }
+            } else {
+                totalPoints--;
+                points++;
+            }
+        } else if (action === 'subtract' && points > 8) {
+            if (points > 13 && points <= 15) {
+                totalPoints += 2;
+                points--;
+            } else {
+                totalPoints++;
+                points--;
+            }
+        }
+
+        pointsSpan.textContent = points;
+        document.getElementById("pointsRemaining").textContent = totalPoints;
+        updateFinalScores(); // Aggiorniamo anche i punteggi finali quando si aggiungono o sottraggono punti
+    }
+
+    function updateFinalScores() {
+        var abilities = ["str", "dex", "con", "int", "wis", "cha"];
+
+        abilities.forEach(function(ability) {
+            var pointsSpan = document.getElementById(ability + "Points");
+            var raceModifierInput = document.getElementById(ability + "RaceModifier");
+            var backgroundTalentInput = document.getElementById(ability + "BackgroundTalent");
+            
+            var raceModifier = parseInt(raceModifierInput.value) || 0;
+            var backgroundTalent = parseInt(backgroundTalentInput.value) || 0;
+
+            var finalScore = parseInt(pointsSpan.textContent) + raceModifier + backgroundTalent;
+            var finalScoreElement = document.getElementById(ability + "FinalScore");
+
+            if (finalScore === 18) {
+                finalScoreElement.textContent = "Errore";
+                finalScoreElement.style.color = "red";
+            } else {
+                finalScoreElement.textContent = finalScore;
+                finalScoreElement.style.color = "";
+            }
+        });
+    }
+
+    function initializeValues() {
+        var abilities = ["str", "dex", "con", "int", "wis", "cha"];
+        abilities.forEach(function(ability) {
+            document.getElementById(ability + "RaceModifier").value = "0";
+            document.getElementById(ability + "BackgroundTalent").value = "0";
+        });
+
+        updateFinalScores();
+    }
+</script>
+
+</body>
     <br><br>
     
         <button id="generateJson">Genera JSON</button>

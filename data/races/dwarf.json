@@ -6,23 +6,12 @@
         "darkvision": 60
     },
     "ability_bonus": { "con": 2 },
-    "traits": [
-        {
-            "name": "Dwarven Resilience",
-            "description": "You have advantage on saving throws against poison, and you have resistance against poison damage.",
-            "grants": ["dr:poison"]
-        },
-        {
-            "name": "Dwarven Combat Training",
-            "description": "You have proficiency with the battleaxe, handaxe, light hammer, and warhammer.",
-            "grants": ["weapon:sim:handaxe", "weapon:sim:lighthammer", "weapon:mar:battleaxe", "weapon:mar:warhammer"]
-        }
-    ],
-    "proficiencies": {
-        "tools": {
-            "choose": 1,
-            "options": ["tool:art:brewer", "tool:art:mason", "tool:art:smith"]
-        },
+         "traits": [
+        "Dwarven Resilience",
+        "Dwarven Combat Training",
+        "Tool Proficiency",
+        "Stonecunning"
+      ],
         "languages": ["Common", "Dwarvish"]
     },
     "subraces": [

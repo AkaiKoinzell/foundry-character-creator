@@ -1,9 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const raceSelect = document.getElementById("race");
-    const subraceSelect = document.getElementById("subrace");
-    const classSelect = document.getElementById("class");
-    const subclassSelect = document.getElementById("subclass");
+    console.log("App.js caricato!");
+
+    const raceSelect = document.getElementById("raceSelect");
+    const subraceSelect = document.getElementById("subraceSelect");
+    const classSelect = document.getElementById("classSelect");
+    const subclassSelect = document.getElementById("subclassSelect");
     const pointsRemainingSpan = document.getElementById("points-remaining");
+
     let pointsRemaining = 27;
     let baseStats = {
         "strength": 10,
@@ -14,21 +17,21 @@ document.addEventListener("DOMContentLoaded", function () {
         "charisma": 10
     };
 
-    // Funzione per caricare le razze
-    async function loadRaceData(race) {
+    // Funzione per caricare una razza e aggiornare sottorazze e bonus
+    async function loadRaceData(racePath) {
         try {
-            let response = await fetch(`..data/races/${race.toLowerCase()}.json`);
+            let response = await fetch(racePath);
             let data = await response.json();
 
-            console.log("Razza selezionata:", data); // Debug
+            console.log("Razza selezionata:", data);
 
             // Mostra/Nasconde il selettore delle sottorazze
             if (data.subraces && data.subraces.length > 0) {
-                subraceSelect.innerHTML = `<option value="">Seleziona Sottorazza</option>`;
+                subraceSelect.innerHTML = '<option value="">Seleziona una sottorazza</option>';
                 data.subraces.forEach(sub => {
                     let option = document.createElement("option");
-                    option.value = sub.toLowerCase().replace(" ", "_");
-                    option.textContent = sub;
+                    option.value = sub.name;
+                    option.textContent = sub.name;
                     subraceSelect.appendChild(option);
                 });
                 subraceSelect.style.display = "block";
@@ -44,36 +47,39 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Funzione per caricare la sottorazza
-    async function loadSubraceData(subrace) {
+    // Funzione per caricare una sottorazza e aggiornare i bonus
+    async function loadSubraceData(subraceName) {
         try {
-            let response = await fetch(`..data/subraces/${subrace.toLowerCase().replace(" ", "_")}.json`);
+            let racePath = raceSelect.value;
+            if (!racePath) return;
+
+            let response = await fetch(racePath);
             let data = await response.json();
 
-            console.log("Sottorazza selezionata:", data); // Debug
-
-            // Applica i bonus di sottorazza
-            applyStatBonuses(data.bonus);
+            let selectedSubrace = data.subraces.find(sub => sub.name === subraceName);
+            if (selectedSubrace) {
+                console.log("Sottorazza selezionata:", selectedSubrace);
+                applyStatBonuses(selectedSubrace.traits);
+            }
         } catch (error) {
             console.error("Errore nel caricamento della sottorazza:", error);
         }
     }
 
-    // Funzione per caricare la classe
-    async function loadClassData(className) {
+    // Funzione per caricare una classe e aggiornare sottoclassi
+    async function loadClassData(classPath) {
         try {
-            let response = await fetch(`..data/classes/${className.toLowerCase()}.json`);
+            let response = await fetch(classPath);
             let data = await response.json();
 
-            console.log("Classe selezionata:", data); // Debug
+            console.log("Classe selezionata:", data);
 
-            // Mostra/Nasconde il selettore delle sottoclassi
             if (data.subclasses && data.subclasses.length > 0) {
-                subclassSelect.innerHTML = `<option value="">Seleziona Sottoclasse</option>`;
+                subclassSelect.innerHTML = '<option value="">Seleziona una sottoclasse</option>';
                 data.subclasses.forEach(sub => {
                     let option = document.createElement("option");
-                    option.value = sub.toLowerCase().replace(" ", "_");
-                    option.textContent = sub;
+                    option.value = sub.name;
+                    option.textContent = sub.name;
                     subclassSelect.appendChild(option);
                 });
                 subclassSelect.style.display = "block";
@@ -86,23 +92,17 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Funzione per applicare i bonus alle statistiche
+    // Funzione per applicare i bonus alle caratteristiche
     function applyStatBonuses(bonuses) {
         if (!bonuses) return;
 
         let currentStats = { ...baseStats };
-        
+
         for (let stat in bonuses) {
-            if (stat === "other") {
-                let remainingBonus = [...bonuses["other"]];
-                while (remainingBonus.length > 0) {
-                    let selectedStat = prompt(`Scegli una caratteristica per il bonus +${remainingBonus[0]}: (forza, destrezza, costituzione, intelligenza, saggezza, carisma)`);
-                    if (selectedStat in currentStats) {
-                        currentStats[selectedStat] += remainingBonus.shift();
-                    } else {
-                        alert("Caratteristica non valida, riprova.");
-                    }
-                }
+            if (Array.isArray(bonuses[stat])) {
+                bonuses[stat].forEach(bonus => {
+                    currentStats[bonus] = (currentStats[bonus] || 10) + 1; // Aggiunge 1 per ogni caratteristica nella lista
+                });
             } else {
                 currentStats[stat] += bonuses[stat];
             }

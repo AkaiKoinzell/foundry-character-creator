@@ -95,3 +95,64 @@ function generateFinalJson() {
 
     console.log("JSON finale:", JSON.stringify(character, null, 2));
 }
+    var totalPoints = 27;
+    function adjustPoints(ability, action) {
+        var pointsSpan = document.getElementById(ability + "Points");
+        var points = parseInt(pointsSpan.textContent);
+        if (action === 'add' && totalPoints > 0 && points < 15) {
+            if (points >= 13 && points < 14) {
+                if (totalPoints >= 2) {
+                    totalPoints -= 2;
+                    points++;
+                }
+            } else if (points >= 14 && points < 15) {
+                if (totalPoints >= 2) {
+                    totalPoints -= 2;
+                    points++;
+                }
+            } else {
+                totalPoints--;
+                points++;
+            }
+        } else if (action === 'subtract' && points > 8) {
+            if (points > 13 && points <= 15) {
+                totalPoints += 2;
+                points--;
+            } else {
+                totalPoints++;
+                points--;
+            }
+        }
+        pointsSpan.textContent = points;
+        document.getElementById("pointsRemaining").textContent = totalPoints;
+        updateFinalScores();
+    }
+    function updateFinalScores() {
+        var abilities = ["str", "dex", "con", "int", "wis", "cha"];
+        abilities.forEach(function(ability) {
+            var pointsSpan = document.getElementById(ability + "Points");
+            var raceModifierInput = document.getElementById(ability + "RaceModifier");
+            var backgroundTalentInput = document.getElementById(ability + "BackgroundTalent");
+            var raceModifier = parseInt(raceModifierInput.value) || 0;
+            var backgroundTalent = parseInt(backgroundTalentInput.value) || 0;
+            var finalScore = parseInt(pointsSpan.textContent) + raceModifier + backgroundTalent;
+            var finalScoreElement = document.getElementById(ability + "FinalScore");
+            if (finalScore === 18) {
+                finalScoreElement.textContent = "Errore";
+                finalScoreElement.style.color = "red";
+            } else {
+                finalScoreElement.textContent = finalScore;
+                finalScoreElement.style.color = "";
+            }
+        });
+    }
+    function initializeValues() {
+        var abilities = ["str", "dex", "con", "int", "wis", "cha"];
+        abilities.forEach(function(ability) {
+            document.getElementById(ability + "RaceModifier").value = "0";
+            document.getElementById(ability + "BackgroundTalent").value = "0";
+        });
+        updateFinalScores();
+    }
+    initializeValues(); // Inizializza i valori quando la pagina viene caricata
+});

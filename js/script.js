@@ -124,18 +124,22 @@ function generateFinalJson() {
     console.log("✅ JSON finale generato:");
     console.log(JSON.stringify(character, null, 2));
 
-    // Crea il file JSON come Blob
-    let jsonBlob = new Blob([JSON.stringify(character, null, 2)], { type: "application/json" });
+    // Nome file dinamico
+    let filename = character.name.replace(/[^a-z0-9]/gi, '_').toLowerCase() + "_character.json";
 
-    // Crea un link temporaneo per il download
-    let a = document.createElement("a");
-    a.href = URL.createObjectURL(jsonBlob);
-    a.download = character.name.replace(/[^a-z0-9]/gi, '_').toLowerCase() + "_character.json"; // Nome del file basato sul nome del personaggio
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a); // Rimuove il link temporaneo
+    // Scarica il file JSON
+    downloadJsonFile(filename, character);
 
     alert("JSON generato e scaricato!");
+}
+function downloadJsonFile(filename, jsonData) {
+    let jsonBlob = new Blob([JSON.stringify(jsonData, null, 2)], { type: "application/json" });
+    let a = document.createElement("a");
+    a.href = URL.createObjectURL(jsonBlob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 }
 // ---- POINT BUY SYSTEM ----
 var totalPoints = 27;

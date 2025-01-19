@@ -3,82 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creazione Personaggio D&D</title>
+    <title>Creazione Personaggio</title>
+    <script defer src="js/script.js"></script>
 </head>
 <body>
 
     <h1>Creazione Personaggio</h1>
 
-    <!-- Nome del Personaggio -->
     <label for="characterName">Nome del Personaggio:</label>
-    <input type="text" id="characterName" placeholder="Inserisci il nome del tuo pers">
+    <input type="text" id="characterName" placeholder="Inserisci il nome del tuo personaggio">
 
-    <!-- Selezione Razza -->
+    <br><br>
+
     <label for="raceSelect">Razza:</label>
     <select id="raceSelect">
         <option value="">Seleziona una razza</option>
     </select>
 
-    <!-- Selezione Sottorazza (Viene mostrata solo se necessario) -->
-    <label for="subraceSelect" id="subraceLabel" style="display: none;">Sottorazza:</label>
-    <select id="subraceSelect" style="display: none;"></select>
+    <label for="subraceSelect">Sottorazza:</label>
+    <select id="subraceSelect" style="display: none;">
+        <option value="">Seleziona una sottorazza</option>
+    </select>
 
-    <!-- Selezione Classe -->
+    <br><br>
+
     <label for="classSelect">Classe:</label>
     <select id="classSelect">
         <option value="">Seleziona una classe</option>
     </select>
 
-    <!-- Selezione Sottoclasse (Viene mostrata solo se necessario) -->
-    <label for="subclassSelect" id="subclassLabel" style="display: none;">Sottoclasse:</label>
-    <select id="subclassSelect" style="display: none;"></select>
-
-    <!-- Selezione Livello -->
-    <label for="levelSelect">Livello del Personaggio:</label>
-    <select id="levelSelect">
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="6">6</option>
-        <option value="7">7</option>
-        <option value="8">8</option>
-        <option value="9">9</option>
-        <option value="10">10</option>
-        <option value="11">11</option>
-        <option value="12">12</option>
-        <option value="13">13</option>
-        <option value="14">14</option>
-        <option value="15">15</option>
-        <option value="16">16</option>
-        <option value="17">17</option>
-        <option value="18">18</option>
-        <option value="19">19</option>
-        <option value="20">20</option>
+    <label for="subclassSelect">Sottoclasse:</label>
+    <select id="subclassSelect" style="display: none;">
+        <option value="">Seleziona una sottoclasse</option>
     </select>
 
-    <!-- Distribuzione Punti Caratteristica -->
-    <h2>Distribuzione Punti Caratteristica</h2>
-    <p>Punti rimanenti: <span id="remainingPoints">27</span></p>
-    <div id="abilityScores">
-        <div>Forza: <span id="strScore">10</span> <button onclick="adjustScore('str', +1)">+</button> <button onclick="adjustScore('str', -1)">-</button></div>
-        <div>Destrezza: <span id="dexScore">10</span> <button onclick="adjustScore('dex', +1)">+</button> <button onclick="adjustScore('dex', -1)">-</button></div>
-        <div>Costituzione: <span id="conScore">10</span> <button onclick="adjustScore('con', +1)">+</button> <button onclick="adjustScore('con', -1)">-</button></div>
-        <div>Intelligenza: <span id="intScore">10</span> <button onclick="adjustScore('int', +1)">+</button> <button onclick="adjustScore('int', -1)">-</button></div>
-        <div>Saggezza: <span id="wisScore">10</span> <button onclick="adjustScore('wis', +1)">+</button> <button onclick="adjustScore('wis', -1)">-</button></div>
-        <div>Carisma: <span id="chaScore">10</span> <button onclick="adjustScore('cha', +1)">+</button> <button onclick="adjustScore('cha', -1)">-</button></div>
-    </div>
+    <br><br>
 
-    <!-- Incantesimi Disponibili -->
-    <h2>Incantesimi Disponibili</h2>
-    <div id="spellsList">
-        <p>Nessun incantesimo disponibile.</p>
-    </div>
-
-    <!-- Bottone per Generare JSON -->
     <button id="generateJson">Genera JSON</button>
 
 </body>
-    <script src="js/script.js" defer></script>
 </html>

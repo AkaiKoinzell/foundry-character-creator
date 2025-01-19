@@ -56,6 +56,7 @@ function updateSubraces() {
     if (!racePath) {
         subraceSelect.innerHTML = '<option value="">Nessuna sottorazza disponibile</option>';
         subraceSelect.style.display = "none";
+        document.getElementById("racialBonusSelection").style.display = "none";
         return;
     }
 
@@ -70,7 +71,11 @@ function updateSubraces() {
                 option.textContent = subrace.name;
                 subraceSelect.appendChild(option);
             });
+
             subraceSelect.style.display = data.subraces.length > 0 ? "block" : "none";
+
+            // Mostra il selettore dei bonus di razza
+            document.getElementById("racialBonusSelection").style.display = "block";
         })
         .catch(error => console.error("Errore caricando le sottorazze:", error));
 }
@@ -182,5 +187,40 @@ function initializeValues() {
         document.getElementById(ability + "RaceModifier").value = "0";
         document.getElementById(ability + "BackgroundTalent").value = "0";
     });
+    updateFinalScores();
+}
+function applyRacialBonuses() {
+    let bonus1 = document.getElementById("racialBonus1").value;
+    let bonus2 = document.getElementById("racialBonus2").value;
+    let bonus3 = document.getElementById("racialBonus3").value;
+
+    // Reset dei bonus prima di applicarli
+    let racialBonuses = { str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0 };
+
+    if (!bonus1 || !bonus2 || !bonus3) {
+        alert("Seleziona tutte e tre le caratteristiche per distribuire il bonus razziale.");
+        return;
+    }
+
+    if (bonus1 === bonus2 && bonus1 === bonus3) {
+        alert("Non puoi assegnare tutti i bonus alla stessa caratteristica!");
+        return;
+    }
+
+    // Verifica combinazione valida
+    if (bonus1 === bonus2 || bonus1 === bonus3 || bonus2 === bonus3) {
+        racialBonuses[bonus1] += 2;
+        racialBonuses[bonus2] += 1;
+    } else {
+        racialBonuses[bonus1] += 1;
+        racialBonuses[bonus2] += 1;
+        racialBonuses[bonus3] += 1;
+    }
+
+    // Applica i bonus ai campi HTML
+    for (let stat in racialBonuses) {
+        document.getElementById(stat + "RaceModifier").value = racialBonuses[stat];
+    }
+
     updateFinalScores();
 }

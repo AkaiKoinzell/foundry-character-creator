@@ -106,14 +106,26 @@ function updateSubclasses() {
 function generateFinalJson() {
     let character = {
         name: document.getElementById("characterName").value || "Senza Nome",
-        race: document.getElementById("raceSelect").selectedOptions[0].text,
+        level: document.getElementById("levelSelect").value || "1",
+        race: document.getElementById("raceSelect").selectedOptions[0]?.text || "Nessuna",
         subrace: document.getElementById("subraceSelect").selectedOptions[0]?.text || "Nessuna",
-        class: document.getElementById("classSelect").selectedOptions[0].text,
-        subclass: document.getElementById("subclassSelect").selectedOptions[0]?.text || "Nessuna"
+        class: document.getElementById("classSelect").selectedOptions[0]?.text || "Nessuna",
+        subclass: document.getElementById("subclassSelect").selectedOptions[0]?.text || "Nessuna",
+        stats: {
+            strength: document.getElementById("strFinalScore").textContent,
+            dexterity: document.getElementById("dexFinalScore").textContent,
+            constitution: document.getElementById("conFinalScore").textContent,
+            intelligence: document.getElementById("intFinalScore").textContent,
+            wisdom: document.getElementById("wisFinalScore").textContent,
+            charisma: document.getElementById("chaFinalScore").textContent
+        }
     };
 
-    console.log("JSON finale:", JSON.stringify(character, null, 2));
-}
+    console.log("✅ JSON finale generato:");
+    console.log(JSON.stringify(character, null, 2));
+
+    // Mostra un'alert o stampa il JSON in una textarea (opzionale)
+    alert("JSON generato! Guarda la console.");
 
 // ---- POINT BUY SYSTEM ----
 var totalPoints = 27;

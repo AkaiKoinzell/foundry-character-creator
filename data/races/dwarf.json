@@ -6,13 +6,13 @@
         "darkvision": 60
     },
     "ability_bonus": { "con": 2 },
-         "traits": [
+    "traits": [
         "Dwarven Resilience",
         "Dwarven Combat Training",
         "Tool Proficiency",
         "Stonecunning"
-      ],
-        "languages": ["Common", "Dwarvish"]
+    ],
+    "languages": ["Common", "Dwarvish"],
     "subraces": [
         {
             "name": "Hill Dwarf",
@@ -28,3 +28,4 @@
             ]
         }
     ]
+}

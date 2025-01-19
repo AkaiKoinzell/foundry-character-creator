@@ -211,41 +211,37 @@ function initializeValues() {
     });
     updateFinalScores();
 }
-function applyRacialBonuses() {
-    // Ottieni i valori selezionati nei dropdown
-    let bonus1 = document.getElementById("raceBonus1").value;
-    let bonus2 = document.getElementById("raceBonus2").value;
-    let bonus3 = document.getElementById("raceBonus3").value;
 
-    // Reset di tutti i bonus di razza a 0 prima di applicare i nuovi
+function applyRacialBonuses() {
+    console.log("⚡ applyRacialBonuses() chiamata!");
+
+    let bonus1Field = document.getElementById("raceBonus1");
+    let bonus2Field = document.getElementById("raceBonus2");
+    let bonus3Field = document.getElementById("raceBonus3");
+
+    if (!bonus1Field || !bonus2Field || !bonus3Field) {
+        console.error("❌ Errore: uno o più elementi dei bonus razza non esistono.");
+        return;
+    }
+
+    let bonus1 = bonus1Field.value;
+    let bonus2 = bonus2Field.value;
+    let bonus3 = bonus3Field.value;
+
+    console.log("Bonus selezionati:", bonus1, bonus2, bonus3);
+
+    // Reset di tutti i bonus di razza
     let abilityFields = ["str", "dex", "con", "int", "wis", "cha"];
     abilityFields.forEach(stat => {
         document.getElementById(stat + "RaceModifier").value = "0";
     });
 
-    // Controllo combinazioni valide
-    if (bonus1 === bonus2 && bonus1 === bonus3) {
-        alert("Errore: Non puoi assegnare tutti e tre i punti alla stessa caratteristica!");
-        return;
-    }
+    // Assegna i bonus
+    document.getElementById(bonus1 + "RaceModifier").value = "2";
+    document.getElementById(bonus2 + "RaceModifier").value = "1";
+    document.getElementById(bonus3 + "RaceModifier").value = "0";
 
-    if (bonus1 === bonus2 || bonus1 === bonus3 || bonus2 === bonus3) {
-        // Caso +2 a una caratteristica e +1 a un'altra
-        let mainBonus = bonus1;
-        let secondaryBonus = bonus2 !== bonus1 ? bonus2 : bonus3;
-
-        document.getElementById(mainBonus + "RaceModifier").value = "2";
-        document.getElementById(secondaryBonus + "RaceModifier").value = "1";
-    } else {
-        // Caso +1 a tre caratteristiche diverse
-        document.getElementById(bonus1 + "RaceModifier").value = "1";
-        document.getElementById(bonus2 + "RaceModifier").value = "1";
-        document.getElementById(bonus3 + "RaceModifier").value = "1";
-    }
-        console.log("⚡ applyRacialBonuses() chiamata!");
-
-    // Aggiorna i punteggi finali
-    updateFinalScores();
+    updateFinalScores(); // Aggiorna i punteggi finali
 }
 
 function resetRacialBonuses() {

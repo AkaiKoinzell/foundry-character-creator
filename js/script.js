@@ -123,20 +123,26 @@ function generateFinalJson() {
             intelligence: document.getElementById("intFinalScore").textContent,
             wisdom: document.getElementById("wisFinalScore").textContent,
             charisma: document.getElementById("chaFinalScore").textContent
+        },
+        racial_bonus: {
+            strength: document.getElementById("strRaceModifier").value,
+            dexterity: document.getElementById("dexRaceModifier").value,
+            constitution: document.getElementById("conRaceModifier").value,
+            intelligence: document.getElementById("intRaceModifier").value,
+            wisdom: document.getElementById("wisRaceModifier").value,
+            charisma: document.getElementById("chaRaceModifier").value
         }
     };
 
     console.log("✅ JSON finale generato:");
     console.log(JSON.stringify(character, null, 2));
 
-    // Nome file dinamico
     let filename = character.name.replace(/[^a-z0-9]/gi, '_').toLowerCase() + "_character.json";
-
-    // Scarica il file JSON
     downloadJsonFile(filename, character);
 
     alert("JSON generato e scaricato!");
 }
+
 function downloadJsonFile(filename, jsonData) {
     let jsonBlob = new Blob([JSON.stringify(jsonData, null, 2)], { type: "application/json" });
     let a = document.createElement("a");

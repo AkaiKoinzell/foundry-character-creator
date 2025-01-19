@@ -42,4 +42,74 @@
     <button id="generateJson">Genera JSON</button>
 
 </body>
+<label for="levelSelect">Livello del Personaggio:</label>
+<select id="levelSelect">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+    <option value="6">6</option>
+    <option value="7">7</option>
+    <option value="8">8</option>
+    <option value="9">9</option>
+    <option value="10">10</option>
+    <option value="11">11</option>
+    <option value="12">12</option>
+    <option value="13">13</option>
+    <option value="14">14</option>
+    <option value="15">15</option>
+    <option value="16">16</option>
+    <option value="17">17</option>
+    <option value="18">18</option>
+    <option value="19">19</option>
+    <option value="20">20</option>
+</select>
+
+<h3>Distribuzione Punti Caratteristica</h3>
+<p>Punti rimanenti: <span id="pointsRemaining">27</span></p>
+
+<table>
+    <tr>
+        <th>Caratteristica</th>
+        <th>Punti Base</th>
+        <th>Bonus Razza</th>
+        <th>Bonus BG</th>
+        <th>Punteggio Finale</th>
+        <th>Modifica</th>
+    </tr>
+    <tr>
+        <td>Forza</td>
+        <td><span id="strPoints">8</span></td>
+        <td><input type="number" id="strRaceModifier" value="0" min="0" max="2" oninput="updateFinalScores()"></td>
+        <td><input type="number" id="strBackgroundTalent" value="0" min="0" max="1" oninput="updateFinalScores()"></td>
+        <td id="strFinalScore">8</td>
+        <td>
+            <button onclick="adjustPoints('str', 'add')">+</button>
+            <button onclick="adjustPoints('str', 'subtract')">-</button>
+        </td>
+    </tr>
+    <tr>
+        <td>Destrezza</td>
+        <td><span id="dexPoints">8</span></td>
+        <td><input type="number" id="dexRaceModifier" value="0" min="0" max="2" oninput="updateFinalScores()"></td>
+        <td><input type="number" id="dexBackgroundTalent" value="0" min="0" max="1" oninput="updateFinalScores()"></td>
+        <td id="dexFinalScore">8</td>
+        <td>
+            <button onclick="adjustPoints('dex', 'add')">+</button>
+            <button onclick="adjustPoints('dex', 'subtract')">-</button>
+        </td>
+    </tr>
+    <tr>
+        <td>Costituzione</td>
+        <td><span id="conPoints">8</span></td>
+        <td><input type="number" id="conRaceModifier" value="0" min="0" max="2" oninput="updateFinalScores()"></td>
+        <td><input type="number" id="conBackgroundTalent" value="0" min="0" max="1" oninput="updateFinalScores()"></td>
+        <td id="conFinalScore">8</td>
+        <td>
+            <button onclick="adjustPoints('con', 'add')">+</button>
+            <button onclick="adjustPoints('con', 'subtract')">-</button>
+        </td>
+    </tr>
+</table>
 </html>

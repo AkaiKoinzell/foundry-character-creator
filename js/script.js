@@ -104,6 +104,57 @@ function updateSubraces() {
         })
         .catch(error => console.error("Errore caricando le sottorazze:", error));
 }
+
+function displayRaceTraits() {
+    let raceName = document.getElementById("raceSelect").value;
+    let raceTraitsDiv = document.getElementById("raceTraits");
+
+    if (!raceName) {
+        raceTraitsDiv.innerHTML = "";
+        return;
+    }
+
+    fetch("data/races.json")
+        .then(response => response.json())
+        .then(data => {
+            let raceData = data.races[raceName];
+
+            if (!raceData) {
+                console.error("❌ Errore: Razza non trovata nei dati JSON");
+                raceTraitsDiv.innerHTML = "<p style='color: red;'>Errore nel caricamento della razza.</p>";
+                return;
+            }
+
+            console.log(`🔹 Dati razza caricati:`, raceData);
+
+            // Creiamo la visualizzazione
+            let traitsHtml = `<h3>Tratti di ${raceName}</h3>`;
+
+            // ✅ Visione e Movimento
+            traitsHtml += `<p><strong>Velocità:</strong> ${raceData.speed} ft</p>`;
+            if (raceData.vision && raceData.vision.darkvision) {
+                traitsHtml += `<p><strong>Scurovisione:</strong> ${raceData.vision.darkvision} ft</p>`;
+            }
+
+            // ✅ Tratti Base
+            if (raceData.traits && raceData.traits.length > 0) {
+                traitsHtml += `<p><strong>Tratti:</strong></p><ul>`;
+                raceData.traits.forEach(trait => {
+                    traitsHtml += `<li>${trait}</li>`;
+                });
+                traitsHtml += `</ul>`;
+            }
+
+            // ✅ Lingue
+            if (raceData.languages && raceData.languages.length > 0) {
+                traitsHtml += `<p><strong>Lingue Concesse:</strong> ${raceData.languages.join(", ")}</p>`;
+            }
+
+            // ✅ Mostra il tutto nel div
+            raceTraitsDiv.innerHTML = traitsHtml;
+        })
+        .catch(error => console.error("❌ Errore nel caricamento dei dati delle razze:", error));
+}
 // Aggiorna le sottoclassi
 function updateSubclasses() {
     let classPath = document.getElementById("classSelect").value;

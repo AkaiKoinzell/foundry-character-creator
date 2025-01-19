@@ -215,9 +215,9 @@ function initializeValues() {
 function applyRacialBonuses() {
     console.log("⚡ applyRacialBonuses() chiamata!");
 
-    let bonus1Field = document.getElementById("raceBonus1");
-    let bonus2Field = document.getElementById("raceBonus2");
-    let bonus3Field = document.getElementById("raceBonus3");
+    let bonus1Field = document.getElementById("racialBonus1");
+    let bonus2Field = document.getElementById("racialBonus2");
+    let bonus3Field = document.getElementById("racialBonus3");
 
     if (!bonus1Field || !bonus2Field || !bonus3Field) {
         console.error("❌ Errore: uno o più elementi dei bonus razza non esistono.");

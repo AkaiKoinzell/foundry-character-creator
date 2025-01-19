@@ -14,6 +14,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Inizializza il Point Buy System
     initializeValues();
+
+    window.applyRacialBonuses = applyRacialBonuses;
 });
 
 // Funzione per caricare dati dai JSON

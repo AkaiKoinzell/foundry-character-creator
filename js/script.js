@@ -59,17 +59,17 @@ function updateSubraces() {
     if (!racePath) {
         subraceSelect.innerHTML = '<option value="">Nessuna sottorazza disponibile</option>';
         subraceSelect.style.display = "none";
-        racialBonusDiv.style.display = "none";  // Nascondi il blocco se non c'è razza
-        resetRacialBonuses();  // 🔹 Resetta i bonus se la razza viene cambiata
+        racialBonusDiv.style.display = "none";  
+        resetRacialBonuses();  
         return;
     }
 
     fetch(racePath)
         .then(response => response.json())
         .then(data => {
-            console.log("Dati sottorazze:", data);
+            console.log("Dati razza caricati:", data);
             subraceSelect.innerHTML = '<option value="">Seleziona una sottorazza</option>';
-            
+
             if (data.subraces) {
                 data.subraces.forEach(subrace => {
                     let option = document.createElement("option");
@@ -83,12 +83,27 @@ function updateSubraces() {
             // Mostra il selettore dei bonus di razza
             racialBonusDiv.style.display = "block";
 
-            // Reset dei bonus quando si cambia razza
+            // 🔹 Aggiunge le proficiency per strumenti
+            if (data.proficiencies?.tools?.options) {
+                let toolSelect = document.getElementById("toolSelect");
+                toolSelect.innerHTML = '<option value="">Seleziona uno strumento</option>';
+                data.proficiencies.tools.options.forEach(tool => {
+                    let option = document.createElement("option");
+                    option.value = tool;
+                    option.textContent = tool.split(":")[2]; // Mostra solo il nome dello strumento
+                    toolSelect.appendChild(option);
+                });
+                toolSelect.style.display = "block";
+            }
+
+            // 🔹 Aggiunge le lingue
+            let languageContainer = document.getElementById("languageSelection");
+            languageContainer.innerHTML = `<p>Lingue Concesse: ${data.proficiencies.languages.join(", ")}</p>`;
+
             resetRacialBonuses();
         })
         .catch(error => console.error("Errore caricando le sottorazze:", error));
 }
-
 // Aggiorna le sottoclassi
 function updateSubclasses() {
     let classPath = document.getElementById("classSelect").value;

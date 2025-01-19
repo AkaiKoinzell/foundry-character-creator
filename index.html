@@ -58,17 +58,33 @@
         <option value="20">20</option>
     </select>
 
-    <!-- Distribuzione Punti Caratteristica -->
-    <h2>Distribuzione Punti Caratteristica</h2>
-    <p>Punti rimanenti: <span id="remainingPoints">27</span></p>
-    <div id="abilityScores">
-        <div>Forza: <span id="strScore">10</span> <button onclick="adjustScore('str', +1)">+</button> <button onclick="adjustScore('str', -1)">-</button></div>
-        <div>Destrezza: <span id="dexScore">10</span> <button onclick="adjustScore('dex', +1)">+</button> <button onclick="adjustScore('dex', -1)">-</button></div>
-        <div>Costituzione: <span id="conScore">10</span> <button onclick="adjustScore('con', +1)">+</button> <button onclick="adjustScore('con', -1)">-</button></div>
-        <div>Intelligenza: <span id="intScore">10</span> <button onclick="adjustScore('int', +1)">+</button> <button onclick="adjustScore('int', -1)">-</button></div>
-        <div>Saggezza: <span id="wisScore">10</span> <button onclick="adjustScore('wis', +1)">+</button> <button onclick="adjustScore('wis', -1)">-</button></div>
-        <div>Carisma: <span id="chaScore">10</span> <button onclick="adjustScore('cha', +1)">+</button> <button onclick="adjustScore('cha', -1)">-</button></div>
-    </div>
+<!-- SELEZIONE DELLE CARATTERISTICHE -->
+<h2 style="text-align: center;">Distribuzione Punti Caratteristica</h2>
+<p style="text-align: center;"><strong>Punti rimanenti:</strong> <span id="pointsRemaining">27</span></p>
+
+<!-- TABELLONE POINT BUY SYSTEM -->
+<table>
+    <tr>
+        <th>Caratteristica</th>
+        <th>Modifica</th>
+        <th>Base</th>
+        <th>Bonus Razza</th>
+        <th>Bonus Talento</th>
+        <th>Finale</th>
+    </tr>
+    <tr>
+        <td>Forza</td>
+        <td>
+            <button onclick="adjustPoints('str', 'add')">+</button>
+            <button onclick="adjustPoints('str', 'subtract')">-</button>
+        </td>
+        <td><span id="strPoints">8</span></td>
+        <td><input type="number" id="strRaceModifier" value="0" min="0" max="2"></td>
+        <td><input type="number" id="strBackgroundTalent" value="0" min="0" max="1"></td>
+        <td id="strFinalScore">8</td>
+    </tr>
+    <!-- RIPETI PER DESTREZZA, COSTITUZIONE, ECC. -->
+</table>
 
     <!-- Incantesimi Disponibili -->
     <h2>Incantesimi Disponibili</h2>

@@ -215,33 +215,51 @@ function initializeValues() {
 function applyRacialBonuses() {
     console.log("⚡ applyRacialBonuses() chiamata!");
 
-    let bonus1Field = document.getElementById("racialBonus1");
-    let bonus2Field = document.getElementById("racialBonus2");
-    let bonus3Field = document.getElementById("racialBonus3");
+    // Ottieni i valori selezionati nei dropdown
+    let bonus1 = document.getElementById("racialBonus1").value;
+    let bonus2 = document.getElementById("racialBonus2").value;
+    let bonus3 = document.getElementById("racialBonus3").value;
 
-    if (!bonus1Field || !bonus2Field || !bonus3Field) {
+    // Verifica che i dropdown esistano
+    if (!bonus1 || !bonus2 || !bonus3) {
         console.error("❌ Errore: uno o più elementi dei bonus razza non esistono.");
         return;
     }
 
-    let bonus1 = bonus1Field.value;
-    let bonus2 = bonus2Field.value;
-    let bonus3 = bonus3Field.value;
+    console.log(`Bonus selezionati: ${bonus1}, ${bonus2}, ${bonus3}`);
 
-    console.log("Bonus selezionati:", bonus1, bonus2, bonus3);
-
-    // Reset di tutti i bonus di razza
+    // Reset di tutti i bonus razziali
     let abilityFields = ["str", "dex", "con", "int", "wis", "cha"];
     abilityFields.forEach(stat => {
         document.getElementById(stat + "RaceModifier").value = "0";
     });
 
-    // Assegna i bonus
-    document.getElementById(bonus1 + "RaceModifier").value = "2";
-    document.getElementById(bonus2 + "RaceModifier").value = "1";
-    document.getElementById(bonus3 + "RaceModifier").value = "0";
+    // Logica di assegnazione punti
+    let bonusDistribution = {
+        str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0
+    };
 
-    updateFinalScores(); // Aggiorna i punteggi finali
+    // Applica i bonus razziali
+    if (bonus1 === bonus2) {
+        // Caso +2 a una caratteristica e +1 a un'altra
+        bonusDistribution[bonus1] += 2;
+        bonusDistribution[bonus3] += 1;
+    } else {
+        // Caso +1 a tre caratteristiche diverse
+        bonusDistribution[bonus1] += 1;
+        bonusDistribution[bonus2] += 1;
+        bonusDistribution[bonus3] += 1;
+    }
+
+    // Assegna i valori aggiornati ai campi della tabella
+    abilityFields.forEach(stat => {
+        document.getElementById(stat + "RaceModifier").value = bonusDistribution[stat];
+    });
+
+    console.log("✅ Bonus razziali applicati:", bonusDistribution);
+
+    // Aggiorna i punteggi finali
+    updateFinalScores();
 }
 
 function resetRacialBonuses() {

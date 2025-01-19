@@ -3,43 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creazione Personaggio</title>
-    <script defer src="js/script.js"></script>
+    <title>Creazione Personaggio D&D</title>
 </head>
 <body>
 
     <h1>Creazione Personaggio</h1>
 
+    <!-- Nome del Personaggio -->
     <label for="characterName">Nome del Personaggio:</label>
-    <input type="text" id="characterName" placeholder="Inserisci il nome del tuo personaggio">
+    <input type="text" id="characterName" placeholder="Inserisci il nome del tuo pers">
 
-    <br><br>
-
+    <!-- Selezione Razza -->
     <label for="raceSelect">Razza:</label>
     <select id="raceSelect">
         <option value="">Seleziona una razza</option>
     </select>
 
-    <label for="subraceSelect">Sottorazza:</label>
-    <select id="subraceSelect" style="display: none;">
-        <option value="">Seleziona una sottorazza</option>
-    </select>
+    <!-- Selezione Sottorazza (Viene mostrata solo se necessario) -->
+    <label for="subraceSelect" id="subraceLabel" style="display: none;">Sottorazza:</label>
+    <select id="subraceSelect" style="display: none;"></select>
 
-    <br><br>
-
+    <!-- Selezione Classe -->
     <label for="classSelect">Classe:</label>
     <select id="classSelect">
         <option value="">Seleziona una classe</option>
     </select>
 
-    <label for="subclassSelect">Sottoclasse:</label>
-    <select id="subclassSelect" style="display: none;">
-        <option value="">Seleziona una sottoclasse</option>
+    <!-- Selezione Sottoclasse (Viene mostrata solo se necessario) -->
+    <label for="subclassSelect" id="subclassLabel" style="display: none;">Sottoclasse:</label>
+    <select id="subclassSelect" style="display: none;"></select>
+
+    <!-- Selezione Livello -->
+    <label for="levelSelect">Livello del Personaggio:</label>
+    <select id="levelSelect">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+        <option value="17">17</option>
+        <option value="18">18</option>
+        <option value="19">19</option>
+        <option value="20">20</option>
     </select>
 
-    <br><br>
+<!-- SELEZIONE DELLE CARATTERISTICHE -->
+<h2 style="text-align: center;">Distribuzione Punti Caratteristica</h2>
+<p style="text-align: center;"><strong>Punti rimanenti:</strong> <span id="pointsRemaining">27</span></p>
 
+<!-- TABELLONE POINT BUY SYSTEM -->
+<table>
+    <tr>
+        <th>Caratteristica</th>
+        <th>Modifica</th>
+        <th>Base</th>
+        <th>Bonus Razza</th>
+        <th>Bonus Talento</th>
+        <th>Finale</th>
+    </tr>
+    <tr>
+        <td>Forza</td>
+        <td>
+            <button onclick="adjustPoints('str', 'add')">+</button>
+            <button onclick="adjustPoints('str', 'subtract')">-</button>
+        </td>
+        <td><span id="strPoints">8</span></td>
+        <td><input type="number" id="strRaceModifier" value="0" min="0" max="2"></td>
+        <td><input type="number" id="strBackgroundTalent" value="0" min="0" max="1"></td>
+        <td id="strFinalScore">8</td>
+    </tr>
+    <!-- RIPETI PER DESTREZZA, COSTITUZIONE, ECC. -->
+</table>
+
+    <!-- Incantesimi Disponibili -->
+    <h2>Incantesimi Disponibili</h2>
+    <div id="spellsList">
+        <p>Nessun incantesimo disponibile.</p>
+    </div>
+
+    <!-- Bottone per Generare JSON -->
     <button id="generateJson">Genera JSON</button>
 
 </body>
+    <script src="js/script.js" defer></script>
 </html>

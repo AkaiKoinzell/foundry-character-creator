@@ -181,6 +181,7 @@ function adjustPoints(ability, action) {
 
 function updateFinalScores() {
     var abilities = ["str", "dex", "con", "int", "wis", "cha"];
+    
     abilities.forEach(function(ability) {
         var basePoints = parseInt(document.getElementById(ability + "Points").textContent);
         var raceModifier = parseInt(document.getElementById(ability + "RaceModifier").value) || 0;
@@ -188,8 +189,14 @@ function updateFinalScores() {
         var finalScore = basePoints + raceModifier + backgroundTalent;
 
         var finalScoreElement = document.getElementById(ability + "FinalScore");
-        finalScoreElement.textContent = finalScore > 18 ? "Errore" : finalScore;
-        finalScoreElement.style.color = finalScore > 18 ? "red" : "";
+        finalScoreElement.textContent = finalScore;
+
+        // Verifica se supera 18 e segna errore
+        if (finalScore > 18) {
+            finalScoreElement.style.color = "red";
+        } else {
+            finalScoreElement.style.color = "";
+        }
     });
 }
 
@@ -208,28 +215,27 @@ function applyRaceBonuses() {
     let bonus2 = document.getElementById("raceBonus2").value;
     let bonus3 = document.getElementById("raceBonus3").value;
 
-    // Reset di tutti i bonus di razza a 0
+    // Reset di tutti i bonus di razza a 0 prima di applicare i nuovi
     let abilityFields = ["str", "dex", "con", "int", "wis", "cha"];
     abilityFields.forEach(stat => {
         document.getElementById(stat + "RaceModifier").value = "0";
     });
 
-    // Verifica che i bonus siano validi (non devono essere nulli o duplicati in modo errato)
+    // Controllo combinazioni valide
     if (bonus1 === bonus2 && bonus1 === bonus3) {
-        alert("Errore: Non puoi mettere tutti e tre i bonus sulla stessa caratteristica!");
+        alert("Errore: Non puoi assegnare tutti e tre i punti alla stessa caratteristica!");
         return;
     }
 
     if (bonus1 === bonus2 || bonus1 === bonus3 || bonus2 === bonus3) {
-        // +2 a una caratteristica e +1 a un'altra
-        document.getElementById(bonus1 + "RaceModifier").value = "2";
-        if (bonus2 !== bonus1) {
-            document.getElementById(bonus2 + "RaceModifier").value = "1";
-        } else {
-            document.getElementById(bonus3 + "RaceModifier").value = "1";
-        }
+        // Caso +2 a una caratteristica e +1 a un'altra
+        let mainBonus = bonus1;
+        let secondaryBonus = bonus2 !== bonus1 ? bonus2 : bonus3;
+
+        document.getElementById(mainBonus + "RaceModifier").value = "2";
+        document.getElementById(secondaryBonus + "RaceModifier").value = "1";
     } else {
-        // +1 a tre caratteristiche diverse
+        // Caso +1 a tre caratteristiche diverse
         document.getElementById(bonus1 + "RaceModifier").value = "1";
         document.getElementById(bonus2 + "RaceModifier").value = "1";
         document.getElementById(bonus3 + "RaceModifier").value = "1";

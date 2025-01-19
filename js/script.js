@@ -240,6 +240,7 @@ function applyRacialBonuses() {
         document.getElementById(bonus2 + "RaceModifier").value = "1";
         document.getElementById(bonus3 + "RaceModifier").value = "1";
     }
+        console.log("⚡ applyRacialBonuses() chiamata!");
 
     // Aggiorna i punteggi finali
     updateFinalScores();

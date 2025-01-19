@@ -209,7 +209,7 @@ function initializeValues() {
     });
     updateFinalScores();
 }
-function applyRaceBonuses() {
+function applyRacialBonuses() {
     // Ottieni i valori selezionati nei dropdown
     let bonus1 = document.getElementById("raceBonus1").value;
     let bonus2 = document.getElementById("raceBonus2").value;

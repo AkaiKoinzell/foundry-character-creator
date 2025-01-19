@@ -58,6 +58,7 @@ function updateSubraces() {
         subraceSelect.innerHTML = '<option value="">Nessuna sottorazza disponibile</option>';
         subraceSelect.style.display = "none";
         racialBonusDiv.style.display = "none";  // Nascondi il blocco se non c'è razza
+        resetRacialBonuses();  // 🔹 Resetta i bonus se la razza viene cambiata
         return;
     }
 
@@ -216,8 +217,10 @@ function applyRacialBonuses() {
         return;
     }
 
+    // Resetta tutti i bonus a zero prima di riassegnarli
     let racialBonuses = { str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0 };
 
+    // Assegna i bonus correttamente
     if (bonus1 === bonus2 || bonus1 === bonus3 || bonus2 === bonus3) {
         racialBonuses[bonus1] += 2;
         racialBonuses[bonus2] += 1;
@@ -227,9 +230,9 @@ function applyRacialBonuses() {
         racialBonuses[bonus3] += 1;
     }
 
-    // Applica i bonus di razza
+    // Applica i bonus di razza e aggiorna il DOM (i <span>)
     for (let stat in racialBonuses) {
-        document.getElementById(stat + "RaceModifier").value = racialBonuses[stat];
+        document.getElementById(stat + "RaceModifier").textContent = racialBonuses[stat];  // Aggiorna solo visualmente
     }
 
     updateFinalScores();
@@ -242,7 +245,7 @@ function resetRacialBonuses() {
 
     let abilities = ["str", "dex", "con", "int", "wis", "cha"];
     abilities.forEach(ability => {
-        document.getElementById(ability + "RaceModifier").value = "0";
+        document.getElementById(ability + "RaceModifier").textContent = "0"; // Aggiorna solo la visualizzazione
     });
 
     updateFinalScores();

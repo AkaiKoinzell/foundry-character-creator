@@ -11,23 +11,35 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Genera JSON finale
     document.getElementById("generateJson").addEventListener("click", generateFinalJson);
+
+    // Inizializza il Point Buy System
+    initializeValues();
 });
 
+// Funzione per caricare dati dai JSON
 function loadDropdownData(jsonPath, selectId, key) {
     fetch(jsonPath)
         .then(response => response.json())
         .then(data => {
             console.log(`Dati ricevuti da ${jsonPath}:`, data);
+            if (!data[key]) {
+                console.error(`Chiave ${key} non trovata in ${jsonPath}`);
+                return;
+            }
             let options = Object.keys(data[key]).map(name => ({ name, path: data[key][name] }));
             populateDropdown(selectId, options);
         })
         .catch(error => console.error(`Errore caricando ${jsonPath}:`, error));
 }
 
+// Funzione per popolare i dropdown
 function populateDropdown(selectId, options) {
     const select = document.getElementById(selectId);
+    if (!select) {
+        console.error(`Elemento #${selectId} non trovato!`);
+        return;
+    }
     select.innerHTML = '<option value="">Seleziona...</option>';
-    
     options.forEach(option => {
         let opt = document.createElement("option");
         opt.value = option.path;
@@ -36,11 +48,13 @@ function populateDropdown(selectId, options) {
     });
 }
 
+// Aggiorna le sottorazze
 function updateSubraces() {
     let racePath = document.getElementById("raceSelect").value;
     let subraceSelect = document.getElementById("subraceSelect");
 
     if (!racePath) {
+        subraceSelect.innerHTML = '<option value="">Nessuna sottorazza disponibile</option>';
         subraceSelect.style.display = "none";
         return;
     }
@@ -48,6 +62,7 @@ function updateSubraces() {
     fetch(racePath)
         .then(response => response.json())
         .then(data => {
+            console.log("Dati sottorazze:", data);
             subraceSelect.innerHTML = '<option value="">Seleziona una sottorazza</option>';
             data.subraces.forEach(subrace => {
                 let option = document.createElement("option");
@@ -60,11 +75,13 @@ function updateSubraces() {
         .catch(error => console.error("Errore caricando le sottorazze:", error));
 }
 
+// Aggiorna le sottoclassi
 function updateSubclasses() {
     let classPath = document.getElementById("classSelect").value;
     let subclassSelect = document.getElementById("subclassSelect");
 
     if (!classPath) {
+        subclassSelect.innerHTML = '<option value="">Nessuna sottoclasse disponibile</option>';
         subclassSelect.style.display = "none";
         return;
     }
@@ -72,6 +89,7 @@ function updateSubclasses() {
     fetch(classPath)
         .then(response => response.json())
         .then(data => {
+            console.log("Dati sottoclassi:", data);
             subclassSelect.innerHTML = '<option value="">Seleziona una sottoclasse</option>';
             data.subclasses.forEach(subclass => {
                 let option = document.createElement("option");
@@ -84,6 +102,7 @@ function updateSubclasses() {
         .catch(error => console.error("Errore caricando le sottoclassi:", error));
 }
 
+// Genera il JSON finale
 function generateFinalJson() {
     let character = {
         name: document.getElementById("characterName").value || "Senza Nome",
@@ -95,6 +114,7 @@ function generateFinalJson() {
 
     console.log("JSON finale:", JSON.stringify(character, null, 2));
 }
+
 // ---- POINT BUY SYSTEM ----
 var totalPoints = 27;
 
@@ -103,55 +123,29 @@ function adjustPoints(ability, action) {
     var points = parseInt(pointsSpan.textContent);
 
     if (action === 'add' && totalPoints > 0 && points < 15) {
-        if (points >= 13 && points < 14) {
-            if (totalPoints >= 2) {
-                totalPoints -= 2;
-                points++;
-            }
-        } else if (points >= 14 && points < 15) {
-            if (totalPoints >= 2) {
-                totalPoints -= 2;
-                points++;
-            }
-        } else {
-            totalPoints--;
-            points++;
-        }
+        totalPoints -= (points >= 13 ? 2 : 1);
+        points++;
     } else if (action === 'subtract' && points > 8) {
-        if (points > 13 && points <= 15) {
-            totalPoints += 2;
-            points--;
-        } else {
-            totalPoints++;
-            points--;
-        }
+        totalPoints += (points > 13 ? 2 : 1);
+        points--;
     }
 
     pointsSpan.textContent = points;
     document.getElementById("pointsRemaining").textContent = totalPoints;
-
-    // Aggiorna i valori finali delle caratteristiche
     updateFinalScores();
 }
 
 function updateFinalScores() {
     var abilities = ["str", "dex", "con", "int", "wis", "cha"];
-
     abilities.forEach(function(ability) {
         var basePoints = parseInt(document.getElementById(ability + "Points").textContent);
         var raceModifier = parseInt(document.getElementById(ability + "RaceModifier").value) || 0;
         var backgroundTalent = parseInt(document.getElementById(ability + "BackgroundTalent").value) || 0;
-
         var finalScore = basePoints + raceModifier + backgroundTalent;
-        var finalScoreElement = document.getElementById(ability + "FinalScore");
 
-        if (finalScore > 18) {
-            finalScoreElement.textContent = "Errore";
-            finalScoreElement.style.color = "red";
-        } else {
-            finalScoreElement.textContent = finalScore;
-            finalScoreElement.style.color = "";
-        }
+        var finalScoreElement = document.getElementById(ability + "FinalScore");
+        finalScoreElement.textContent = finalScore > 18 ? "Errore" : finalScore;
+        finalScoreElement.style.color = finalScore > 18 ? "red" : "";
     });
 }
 
@@ -162,15 +156,5 @@ function initializeValues() {
         document.getElementById(ability + "RaceModifier").value = "0";
         document.getElementById(ability + "BackgroundTalent").value = "0";
     });
-
     updateFinalScores();
 }
-
-document.addEventListener("DOMContentLoaded", function () {
-    initializeValues();
-});
-
-        updateFinalScores();
-    }
-    initializeValues(); // Inizializza i valori quando la pagina viene caricata
-});

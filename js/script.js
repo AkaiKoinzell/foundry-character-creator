@@ -202,39 +202,40 @@ function initializeValues() {
     });
     updateFinalScores();
 }
-function applyRacialBonuses() {
-    let bonus1 = document.getElementById("racialBonus1").value;
-    let bonus2 = document.getElementById("racialBonus2").value;
-    let bonus3 = document.getElementById("racialBonus3").value;
+function applyRaceBonuses() {
+    // Ottieni i valori selezionati nei dropdown
+    let bonus1 = document.getElementById("raceBonus1").value;
+    let bonus2 = document.getElementById("raceBonus2").value;
+    let bonus3 = document.getElementById("raceBonus3").value;
 
-    if (!bonus1 || !bonus2 || !bonus3) {
-        alert("Seleziona tutte e tre le caratteristiche per distribuire il bonus razziale.");
-        return;
-    }
+    // Reset di tutti i bonus di razza a 0
+    let abilityFields = ["str", "dex", "con", "int", "wis", "cha"];
+    abilityFields.forEach(stat => {
+        document.getElementById(stat + "RaceModifier").value = "0";
+    });
 
+    // Verifica che i bonus siano validi (non devono essere nulli o duplicati in modo errato)
     if (bonus1 === bonus2 && bonus1 === bonus3) {
-        alert("Non puoi assegnare tutti i bonus alla stessa caratteristica!");
+        alert("Errore: Non puoi mettere tutti e tre i bonus sulla stessa caratteristica!");
         return;
     }
 
-    // Resetta tutti i bonus a zero prima di riassegnarli
-    let racialBonuses = { str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0 };
-
-    // Assegna i bonus correttamente
     if (bonus1 === bonus2 || bonus1 === bonus3 || bonus2 === bonus3) {
-        racialBonuses[bonus1] += 2;
-        racialBonuses[bonus2] += 1;
+        // +2 a una caratteristica e +1 a un'altra
+        document.getElementById(bonus1 + "RaceModifier").value = "2";
+        if (bonus2 !== bonus1) {
+            document.getElementById(bonus2 + "RaceModifier").value = "1";
+        } else {
+            document.getElementById(bonus3 + "RaceModifier").value = "1";
+        }
     } else {
-        racialBonuses[bonus1] += 1;
-        racialBonuses[bonus2] += 1;
-        racialBonuses[bonus3] += 1;
+        // +1 a tre caratteristiche diverse
+        document.getElementById(bonus1 + "RaceModifier").value = "1";
+        document.getElementById(bonus2 + "RaceModifier").value = "1";
+        document.getElementById(bonus3 + "RaceModifier").value = "1";
     }
 
-    // Applica i bonus di razza e aggiorna il DOM (i <span>)
-    for (let stat in racialBonuses) {
-        document.getElementById(stat + "RaceModifier").textContent = racialBonuses[stat];  // Aggiorna solo visualmente
-    }
-
+    // Aggiorna i punteggi finali
     updateFinalScores();
 }
 

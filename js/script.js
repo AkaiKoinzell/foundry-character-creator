@@ -182,24 +182,25 @@ function adjustPoints(ability, action) {
 }
 
 function updateFinalScores() {
-    var abilities = ["str", "dex", "con", "int", "wis", "cha"];
-    
-    abilities.forEach(function(ability) {
-        var basePoints = parseInt(document.getElementById(ability + "Points").textContent);
-        var raceModifier = parseInt(document.getElementById(ability + "RaceModifier").value) || 0;
-        var backgroundTalent = parseInt(document.getElementById(ability + "BackgroundTalent").value) || 0;
-        var finalScore = basePoints + raceModifier + backgroundTalent;
+    let abilities = ["str", "dex", "con", "int", "wis", "cha"];
 
-        var finalScoreElement = document.getElementById(ability + "FinalScore");
+    abilities.forEach(function(ability) {
+        let basePoints = parseInt(document.getElementById(ability + "Points").textContent);
+        let raceModifier = parseInt(document.getElementById(ability + "RaceModifier").textContent) || 0; // 🔹 FIXATO textContent
+        let backgroundTalent = parseInt(document.getElementById(ability + "BackgroundTalent").value) || 0;
+        let finalScore = basePoints + raceModifier + backgroundTalent;
+
+        let finalScoreElement = document.getElementById(ability + "FinalScore");
         finalScoreElement.textContent = finalScore;
 
-        // Verifica se supera 18 e segna errore
         if (finalScore > 18) {
             finalScoreElement.style.color = "red";
         } else {
             finalScoreElement.style.color = "";
         }
     });
+
+    console.log("🔄 Punteggi Finali aggiornati!");
 }
 
 // Inizializza i valori e aggiorna i punteggi

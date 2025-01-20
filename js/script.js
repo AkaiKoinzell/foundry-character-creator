@@ -120,6 +120,9 @@ function displayRaceTraits() {
             }
 
             raceTraitsDiv.innerHTML = traitsHtml;
+                         // 🔥 Mostra il selettore dei bonus razziali!
+            racialBonusDiv.style.display = "block";
+            resetRacialBonuses(); // Resetta i bonus ogni volta che si cambia razza
         })
         .catch(error => console.error("❌ Errore caricando i tratti della razza:", error));
 }

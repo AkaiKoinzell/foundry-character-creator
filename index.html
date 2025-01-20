@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creazione Personaggio</title>
+    <title>Creazione Personaggio per il server di Tales from Ivory</title>
     <script defer src="js/script.js"></script>
     <style>
         body {
@@ -65,15 +65,8 @@
         <option value="">Seleziona una razza</option>
     </select>
 
-    <label for="subraceSelect">Sottorazza:</label>
-    <select id="subraceSelect" style="display: none;">
-        <option value="">Seleziona una sottorazza</option>
-    </select>
-
     <!-- Contenitore per mostrare i tratti della razza -->
     <div id="raceTraits"></div>
-    <!-- Contenitore per mostrare i tratti della sottorazza -->
-    <div id="subraceTraits"></div>
     <div id="languageSelection"></div>
     <br><br>
 
@@ -88,7 +81,7 @@
     </select>
     <br><br>
 
-  <h2 style="text-align: center;">Sistema Point Buy per il server di Tales from Ivory</h2>
+  <h2 style="text-align: center;">Sistema Point Buy</h2>
 <p style="text-align: center;"><span style="font-weight: bold;">Total Points Remaining:</span> <span id="pointsRemaining">27</span></p>
 <p style="text-align: center;">Assegna i tuoi punti tra i punteggi di caratteristica (FOR, DES, COS, INT, SAG, CAR). Hai 27 punti da spendere.</p>
 <div id="racialBonusSelection" style="display: none;">

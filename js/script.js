@@ -58,6 +58,17 @@ function populateDropdown(selectId, options) {
 }
 
 // ** MOSTRA I TRATTI DELLA RAZZA **
+function displayRaceTraits() {
+    let racePath = document.getElementById("raceSelect").value;
+    let raceTraitsDiv = document.getElementById("raceTraits");
+    let racialBonusDiv = document.getElementById("racialBonusSelection"); // Ensure bonus selection is shown
+
+    if (!racePath) {
+        raceTraitsDiv.innerHTML = "<p>Seleziona una razza per vedere i tratti.</p>";
+        racialBonusDiv.style.display = "none"; // Hide racial bonus selection if no race is chosen
+        resetRacialBonuses();
+        return;
+    }
 fetch(racePath)
         .then(response => response.json())
         .then(data => {

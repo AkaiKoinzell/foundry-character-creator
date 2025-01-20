@@ -13,6 +13,9 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("racialBonus1").addEventListener("change", applyRacialBonuses);
     document.getElementById("racialBonus2").addEventListener("change", applyRacialBonuses);
     document.getElementById("racialBonus3").addEventListener("change", applyRacialBonuses);
+    document.getElementById("levelSelect").addEventListener("change", function () {
+    displayRaceTraits(); // Ricarica i tratti della razza in base al nuovo livello
+});
 
     // Genera JSON finale
     document.getElementById("generateJson").addEventListener("click", generateFinalJson);
@@ -206,6 +209,9 @@ function updateSubraces() {
 function updateSubclasses() {
     let classPath = document.getElementById("classSelect").value;
     let subclassSelect = document.getElementById("subclassSelect");
+        document.getElementById("subraceSelect").innerHTML = '<option value="">Seleziona una sottorazza</option>';
+        document.getElementById("subraceSelect").style.display = "none";
+
 
     if (!classPath) {
         subclassSelect.innerHTML = '<option value="">Nessuna sottoclasse disponibile</option>';

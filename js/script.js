@@ -103,17 +103,39 @@ function displayRaceTraits() {
                 document.getElementById("languageSelection").innerHTML = languageHtml;
             }
 
-            // Handle Spellcasting Ability Selection
+            // 🧙 **Handle Spellcasting Choices**
             if (data.spellcasting) {
-                let spellSelect = data.spellcasting.ability_choices
+                // 🎯 Select Spellcasting Ability (for any race with spellcasting)
+                let spellAbilitySelect = data.spellcasting.ability_choices
                     .map(ability => `<option value="${ability}">${ability}</option>`)
                     .join("");
-                
                 traitsHtml += `<p><strong>Abilità di lancio:</strong> 
                     <select id="castingAbility">
-                        ${spellSelect}
+                        ${spellAbilitySelect}
                     </select>
                 </p>`;
+
+                // 🔥 Handle Cantrip Choices (if available)
+                if (data.spellcasting.spell) {
+                    let spellOptions = data.spellcasting.spell
+                        .map(spell => `<option value="${spell}">${spell}</option>`)
+                        .join("");
+                    traitsHtml += `<p><strong>Scegli un Cantrip:</strong> 
+                        <select id="cantripSelection">
+                            ${spellOptions}
+                        </select>
+                    </p>`;
+                }
+
+                // ✨ Handle Level-up Spells (if available)
+                if (data.spellcasting.level_up_spells) {
+                    traitsHtml += `<p><strong>Incantesimi Bonus per Livelli:</strong></p><ul>`;
+                    data.spellcasting.level_up_spells.forEach(spellData => {
+                        traitsHtml += `<li><strong>Livello ${spellData.level}:</strong> ${spellData.spell} 
+                        (Usi: ${spellData.uses}, Ripristino: ${spellData.refresh})</li>`;
+                    });
+                    traitsHtml += `</ul>`;
+                }
             }
 
             raceTraitsDiv.innerHTML = traitsHtml;

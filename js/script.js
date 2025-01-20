@@ -86,6 +86,7 @@ function displayRaceTraits() {
             }
 
             raceTraitsDiv.innerHTML = traitsHtml;
+            racialBonusDiv.style.display = "block"; // Mostra il div quando una razza è selezionata
         })
         .catch(error => console.error("❌ Errore caricando i tratti della razza:", error));
 }

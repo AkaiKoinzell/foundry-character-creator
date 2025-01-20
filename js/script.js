@@ -100,7 +100,12 @@ function displayRaceTraits() {
 
             if (data.languages) {
                 let fixedLanguages = data.languages.fixed ? data.languages.fixed.join(", ") : "";
-                let languageContainer = `<p><strong>Lingue Concesse:</strong> ${fixedLanguages}</p>`;
+                let languageContainer = document.getElementById("languageSelection");
+                if (languageContainer) {
+                    languageContainer.innerHTML = "Lingue disponibili...";
+                } else {
+                    console.error("❌ Errore: #languageSelection non trovato nel DOM.");
+                }
             
                 if (data.languages.choice > 0) {
                     languageContainer += `<p>Scegli ${data.languages.choice} lingua/e extra:</p>`;
@@ -123,6 +128,7 @@ function displayRaceTraits() {
             }
             
             raceTraitsDiv.innerHTML = traitsHtml;
+            let racialBonusDiv = document.getElementById("racialBonusSelection");
             racialBonusDiv.style.display = "block"; // Mostra il div quando una razza è selezionata
         })
         .catch(error => console.error("❌ Errore caricando i tratti della razza:", error));

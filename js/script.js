@@ -10,6 +10,9 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("raceSelect").addEventListener("change", displayRaceTraits);
     document.getElementById("subraceSelect").addEventListener("change", displaySubraceTraits);
     document.getElementById("classSelect").addEventListener("change", updateSubclasses);
+    document.getElementById("racialBonus1").addEventListener("change", applyRacialBonuses);
+    document.getElementById("racialBonus2").addEventListener("change", applyRacialBonuses);
+    document.getElementById("racialBonus3").addEventListener("change", applyRacialBonuses);
 
     // Genera JSON finale
     document.getElementById("generateJson").addEventListener("click", generateFinalJson);
@@ -128,13 +131,16 @@ function displaySubraceTraits() {
 function updateSubraces() {
     let racePath = document.getElementById("raceSelect").value;
     let subraceSelect = document.getElementById("subraceSelect");
+    let racialBonusDiv = document.getElementById("racialBonusSelection"); // Selettore bonus razziali
 
     if (!racePath) {
         subraceSelect.innerHTML = '<option value="">Nessuna sottorazza disponibile</option>';
         subraceSelect.style.display = "none";
+        racialBonusDiv.style.display = "none"; // Nasconde il blocco dei bonus razziali se non c'è razza
+        resetRacialBonuses();
         return;
     }
-
+    
     fetch(racePath)
         .then(response => response.json())
         .then(data => {
@@ -148,6 +154,9 @@ function updateSubraces() {
                 });
                 subraceSelect.style.display = data.subraces.length > 0 ? "block" : "none";
             }
+             // 🔥 Mostra il selettore dei bonus razziali!
+            racialBonusDiv.style.display = "block";
+            resetRacialBonuses(); // Resetta i bonus ogni volta che si cambia razza
         })
         .catch(error => console.error("❌ Errore caricando le sottorazze:", error));
 }
@@ -283,7 +292,7 @@ function applyRacialBonuses() {
 
     if (!bonus1 || !bonus2 || !bonus3) {
         console.error("❌ Errore: uno o più elementi dei bonus razza non sono stati selezionati.");
-        alert("Devi selezionare tutti e tre i bonus razza!");
+        alert("⚠️ Devi selezionare tutti e tre i bonus razza!");
         return;
     }
 

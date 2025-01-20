@@ -7,12 +7,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Listener per aggiornare sottorazze e sottoclassi dinamicamente
     document.getElementById("raceSelect").addEventListener("change", function() {
-        updateSubraces();
-        displayRaceTraits();
-        document.getElementById("subraceSelect").innerHTML = '<option value="">Seleziona una sottorazza</option>'; // Resetta il dropdown
-        document.getElementById("subraceSelect").style.display = "none"; // Nasconde il dropdown se non è disponibile
-    });
-    document.getElementById("subraceSelect").addEventListener("change", displaySubraceTraits);
+    displayRaceTraits();
+});
     document.getElementById("classSelect").addEventListener("change", updateSubclasses);
     document.getElementById("racialBonus1").addEventListener("change", applyRacialBonuses);
     document.getElementById("racialBonus2").addEventListener("change", applyRacialBonuses);
@@ -67,19 +63,10 @@ function populateDropdown(selectId, options) {
 function displayRaceTraits() {
     let racePath = document.getElementById("raceSelect").value;
     let raceTraitsDiv = document.getElementById("raceTraits");
-    let subraceTraitsDiv = document.getElementById("subraceTraits"); // RESET SUBRAZZA
     let languageContainer = document.getElementById("languageSelection");
-    let racialBonusDiv = document.getElementById("racialBonusSelection");
-    let subraceSelect = document.getElementById("subraceSelect");
 
-    // 🔹 Mantiene la sottorazza selezionata prima di aggiornare la lista
-    let previousSubrace = subraceSelect.value;
-
-    subraceSelect.innerHTML = '<option value="">Seleziona una sottorazza</option>';
-    
     if (!racePath) {
         raceTraitsDiv.innerHTML = "<p>Seleziona una razza per vedere i tratti.</p>";
-        subraceTraitsDiv.innerHTML = ""; // Resetta i tratti della sottorazza
         return;
     }
 
@@ -90,19 +77,15 @@ function displayRaceTraits() {
 
             let traitsHtml = `<h3>Tratti di ${data.name}</h3>`;
 
-            if (typeof data.speed === "number") {
-                traitsHtml += `<p><strong>Velocità:</strong> ${data.speed} ft</p>`;
-            } else if (typeof data.speed === "object") {
-                let speedText = Object.entries(data.speed)
-                    .map(([type, value]) => `<strong>${type}:</strong> ${value}`)
-                    .join(", ");
-                traitsHtml += `<p><strong>Velocità:</strong> ${speedText}</p>`;
-            }
+            // Display Speed
+            traitsHtml += `<p><strong>Velocità:</strong> ${data.speed} ft</p>`;
 
+            // Display Darkvision if present
             if (data.senses && data.senses.darkvision) {
-                traitsHtml += `<p><strong>Scurovisione:</strong> ${data.senses.darkvision} ft</p>`;
+                traitsHtml += `<p><strong>Visione:</strong> ${data.senses.darkvision} ft</p>`;
             }
 
+            // Display Traits
             if (data.traits && data.traits.length > 0) {
                 traitsHtml += `<p><strong>Tratti:</strong></p><ul>`;
                 data.traits.forEach(trait => {
@@ -111,181 +94,44 @@ function displayRaceTraits() {
                 traitsHtml += `</ul>`;
             }
 
-            // 🔹 Lingue
-            if (data.languages) {
-                let fixedLanguages = data.languages.fixed ? data.languages.fixed.join(", ") : "";
-                let languageHtml = `<p><strong>Lingue Concesse:</strong> ${fixedLanguages}</p>`;
-
-                if (data.languages.choice > 0) {
-                    languageHtml += `<p>Scegli ${data.languages.choice} lingua/e extra:</p>`;
-
-                    loadLanguages(languages => {
-                        let options = languages.map(lang => `<option value="${lang}">${lang}</option>`).join("");
-                        let select = `<select>${options}</select>`;
-                        document.getElementById("languageSelection").innerHTML = languageHtml + select;
-                    });
-                } else {
-                    document.getElementById("languageSelection").innerHTML = languageHtml;
-                }
-            }
-
-            // 🔹 Aggiornare sottorazze (senza resettare se possibile)
-            subraceSelect.innerHTML = '<option value="">Seleziona una sottorazza</option>';
-            if (data.subraces && data.subraces.length > 0) {
-                data.subraces.forEach(subrace => {
-                    let option = document.createElement("option");
-                    option.value = subrace.name;
-                    option.textContent = subrace.name;
-                    subraceSelect.appendChild(option);
+            // Handle Languages
+            let languageHtml = `<p><strong>Lingue Concesse:</strong> ${data.languages.fixed.join(", ")}</p>`;
+            if (data.languages.choice > 0) {
+                languageHtml += `<p>Scegli ${data.languages.choice} lingua/e extra:</p>`;
+                loadLanguages(languages => {
+                    let options = languages.map(lang => `<option value="${lang}">${lang}</option>`).join("");
+                    let select = `<select>${options}</select>`;
+                    languageContainer.innerHTML = languageHtml + select;
                 });
-
-                subraceSelect.style.display = "block";
-
-                // 🔥 Riassegna la sottorazza selezionata se ancora valida
-                if (previousSubrace && [...subraceSelect.options].some(opt => opt.value === previousSubrace)) {
-                    subraceSelect.value = previousSubrace;
-                }
             } else {
-                subraceSelect.style.display = "none";
+                languageContainer.innerHTML = languageHtml;
             }
 
-            // 🔹 Controllo del livello per le capacità magiche
-            let characterLevel = parseInt(document.getElementById("levelSelect").value) || 1;
-            if (data.spellcasting && characterLevel >= (data.spellcasting.level_requirement || 1)) {
-                traitsHtml += `<h4>Capacità Magiche</h4>`;
-                traitsHtml += `<p><strong>Incantesimo:</strong> ${data.spellcasting.spell} (${data.spellcasting.uses})</p>`;
-
-                // Creazione dropdown per la scelta dell'abilità di lancio
-                let abilityOptions = data.spellcasting.ability_choices
+            // Handle Spellcasting Ability Selection (if available)
+            if (data.spellcasting) {
+                let spellSelect = data.spellcasting.ability_choices
                     .map(ability => `<option value="${ability}">${ability}</option>`)
                     .join("");
-
+                
                 traitsHtml += `<p><strong>Abilità di lancio:</strong> 
                     <select id="castingAbility">
-                        ${abilityOptions}
+                        ${spellSelect}
                     </select>
                 </p>`;
             }
 
             raceTraitsDiv.innerHTML = traitsHtml;
-            subraceTraitsDiv.innerHTML = ""; // RESET SOTTO RAZZA
-            racialBonusDiv.style.display = "block";
-
-            // Se esiste già una sottorazza selezionata, aggiorna i suoi tratti
-            if (subraceSelect.value) {
-                displaySubraceTraits();
-            }
         })
         .catch(error => console.error("❌ Errore caricando i tratti della razza:", error));
 }
 
-// ** MOSTRA I TRATTI DELLA SOTTORAZZA **
-function displaySubraceTraits() {
-    let racePath = document.getElementById("raceSelect").value;
-    let subraceName = document.getElementById("subraceSelect").value;
-    let subraceTraitsDiv = document.getElementById("subraceTraits");
-
-    if (!racePath || !subraceName) {
-        subraceTraitsDiv.innerHTML = "";
-        return;
-    }
-
-    fetch(racePath)
-        .then(response => response.json())
-        .then(data => {
-            let subraceData = data.subraces.find(sub => sub.name === subraceName);
-            if (!subraceData) return;
-
-            console.log("📜 Dati sottorazza caricati:", subraceData);
-
-            let traitsHtml = `<h3>Tratti di ${subraceData.name}</h3>`;
-            if (subraceData.traits && subraceData.traits.length > 0) {
-                traitsHtml += `<p><strong>Tratti:</strong></p><ul>`;
-                subraceData.traits.forEach(trait => {
-                    traitsHtml += `<li><strong>${trait.name}:</strong> ${trait.description}</li>`;
-                });
-                traitsHtml += `</ul>`;
-            }
-
-            subraceTraitsDiv.innerHTML = traitsHtml;
-        })
-        .catch(error => console.error("❌ Errore caricando i tratti della sottorazza:", error));
-}
-
-// ** AGGIORNA LE SOTTORAZZE **
-function updateSubraces() {
-    let racePath = document.getElementById("raceSelect").value;
-    let subraceSelect = document.getElementById("subraceSelect");
-    let racialBonusDiv = document.getElementById("racialBonusSelection");
-
-    // Resetta il selettore delle sottorazze ogni volta che cambia la razza
-    subraceSelect.innerHTML = '<option value="">Seleziona una sottorazza</option>';
-    subraceSelect.style.display = "none";
-
-    if (!racePath) {
-        racialBonusDiv.style.display = "none"; // Nasconde il blocco dei bonus razziali se non c'è razza
-        resetRacialBonuses();
-        return;
-    }
-
-    fetch(racePath)
-        .then(response => response.json())
-        .then(data => {
-            subraceSelect.innerHTML = '<option value="">Seleziona una sottorazza</option>';
-            if (data.subraces && data.subraces.length > 0) {
-                data.subraces.forEach(subrace => {
-                    let option = document.createElement("option");
-                    option.value = subrace.name;
-                    option.textContent = subrace.name;
-                    subraceSelect.appendChild(option);
-                });
-                subraceSelect.style.display = "block";
-            } else {
-                subraceSelect.style.display = "none"; // Nasconde il dropdown se non ci sono sottorazze
-            }
-
-            racialBonusDiv.style.display = "block";
-            resetRacialBonuses(); // Resetta i bonus ogni volta che si cambia razza
-        })
-        .catch(error => console.error("❌ Errore caricando le sottorazze:", error));
-}
-// ** AGGIORNA LE SOTTOCLASSI **
-function updateSubclasses() {
-    let classPath = document.getElementById("classSelect").value;
-    let subclassSelect = document.getElementById("subclassSelect");
-        document.getElementById("subraceSelect").innerHTML = '<option value="">Seleziona una sottorazza</option>';
-        document.getElementById("subraceSelect").style.display = "none";
-
-
-    if (!classPath) {
-        subclassSelect.innerHTML = '<option value="">Nessuna sottoclasse disponibile</option>';
-        subclassSelect.style.display = "none";
-        return;
-    }
-
-    fetch(classPath)
-        .then(response => response.json())
-        .then(data => {
-            subclassSelect.innerHTML = '<option value="">Seleziona una sottoclasse</option>';
-            data.subclasses.forEach(subclass => {
-                let option = document.createElement("option");
-                option.value = subclass.name;
-                option.textContent = subclass.name;
-                subclassSelect.appendChild(option);
-            });
-            subclassSelect.style.display = data.subclasses.length > 0 ? "block" : "none";
-        })
-        .catch(error => console.error("❌ Errore caricando le sottoclassi:", error));
-}
 // Genera il JSON finale
 function generateFinalJson() {
     let character = {
         name: document.getElementById("characterName").value || "Senza Nome",
         level: document.getElementById("levelSelect").value || "1",
         race: document.getElementById("raceSelect").selectedOptions[0]?.text || "Nessuna",
-        subrace: document.getElementById("subraceSelect").selectedOptions[0]?.text || "Nessuna",
         class: document.getElementById("classSelect").selectedOptions[0]?.text || "Nessuna",
-        subclass: document.getElementById("subclassSelect").selectedOptions[0]?.text || "Nessuna",
         stats: {
             strength: document.getElementById("strFinalScore").textContent,
             dexterity: document.getElementById("dexFinalScore").textContent,
@@ -301,6 +147,9 @@ function generateFinalJson() {
             intelligence: document.getElementById("intRaceModifier").value,
             wisdom: document.getElementById("wisRaceModifier").value,
             charisma: document.getElementById("chaRaceModifier").value
+        },
+        languages: {
+            selected: document.getElementById("languageSelection").value || []
         }
     };
 

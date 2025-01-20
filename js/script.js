@@ -71,7 +71,13 @@ function displayRaceTraits() {
             console.log("📜 Dati razza caricati:", data);
 
             let traitsHtml = `<h3>Tratti di ${data.name}</h3>`;
-            traitsHtml += `<p><strong>Velocità:</strong> ${data.speed} ft</p>`;
+            // 🔹 Controllo se speed è un numero o un oggetto
+           if (typeof data.speed === "number") {
+               traitsHtml += `<p><strong>Velocità:</strong> ${data.speed} ft</p>`;
+            } else if (typeof data.speed === "object") {
+                let speedText = Object.entries(data.speed).map(([type, value]) => `${type}: ${value}`).join(", ");
+                traitsHtml += `<p><strong>Velocità:</strong> ${speedText}</p>`;
+            }
             if (data.senses && data.senses.darkvision) {
                 traitsHtml += `<p><strong>Scurovisione:</strong> ${data.senses.darkvision} ft</p>`;
             }
@@ -84,10 +90,24 @@ function displayRaceTraits() {
                 traitsHtml += `</ul>`;
             }
 
-            if (data.languages && data.languages.length > 0) {
-                traitsHtml += `<p><strong>Lingue Concesse:</strong> ${data.languages.join(", ")}</p>`;
+            if (data.languages) {
+                let fixedLanguages = data.languages.fixed ? data.languages.fixed.join(", ") : "";
+                let languageChoices = data.languages.choice ? `<p>Scegli ${data.languages.choice} lingua/e extra:</p>` : "";
+    
+                let options = data.languages.options ? data.languages.options.map(lang => `<option value="${lang}">${lang}</option>`).join("") : "";
+
+                traitsHtml += `<p><strong>Lingue Concesse:</strong> ${fixedLanguages}</p>`;
+                if (languageChoices) {
+                    traitsHtml += `${languageChoices}<select>${options}</select>`;
+                }
             }
 
+            if (data.spellcasting) {
+                traitsHtml += `<h4>Capacità Magiche</h4>`;
+                traitsHtml += `<p><strong>Incantesimo:</strong> ${data.spellcasting.spell} (${data.spellcasting.uses})</p>`;
+                traitsHtml += `<p><strong>Abilità di lancio:</strong> Scegli tra ${data.spellcasting.ability_choices.join(", ")}</p>`;
+            }
+            
             raceTraitsDiv.innerHTML = traitsHtml;
             racialBonusDiv.style.display = "block"; // Mostra il div quando una razza è selezionata
         })

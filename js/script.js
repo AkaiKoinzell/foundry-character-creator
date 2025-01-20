@@ -176,6 +176,9 @@ function updateSubraces() {
     let racePath = document.getElementById("raceSelect").value;
     let subraceSelect = document.getElementById("subraceSelect");
     let racialBonusDiv = document.getElementById("racialBonusSelection"); // Selettore bonus razziali
+    document.getElementById("subraceSelect").innerHTML = '<option value="">Seleziona una sottorazza</option>';
+    document.getElementById("subraceSelect").style.display = "none";
+
 
     if (!racePath) {
         subraceSelect.innerHTML = '<option value="">Nessuna sottorazza disponibile</option>';

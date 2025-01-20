@@ -103,9 +103,9 @@ function displayRaceTraits() {
                 document.getElementById("languageSelection").innerHTML = languageHtml;
             }
 
-            // 🧙 **Handle Spellcasting Choices**
+           // 🧙 **Handle Spellcasting Choices**
             if (data.spellcasting) {
-                // 🎯 Select Spellcasting Ability (for any race with spellcasting)
+                // 🎯 Select Spellcasting Ability
                 let spellAbilitySelect = data.spellcasting.ability_choices
                     .map(ability => `<option value="${ability}">${ability}</option>`)
                     .join("");
@@ -115,9 +115,9 @@ function displayRaceTraits() {
                     </select>
                 </p>`;
 
-                // 🔥 Handle Cantrip Choices (if available)
-                if (data.spellcasting.spell) {
-                    let spellOptions = data.spellcasting.spell
+                // 🔥 Handle **Cantrip Choice from a Specific List** (Astral Elf)
+                if (data.spellcasting.spell_choices) {
+                    let spellOptions = data.spellcasting.spell_choices
                         .map(spell => `<option value="${spell}">${spell}</option>`)
                         .join("");
                     traitsHtml += `<p><strong>Scegli un Cantrip:</strong> 
@@ -127,7 +127,22 @@ function displayRaceTraits() {
                     </p>`;
                 }
 
-                // ✨ Handle Level-up Spells (if available)
+                // 📖 Handle **Cantrip Choice from Wizard Spell List** (High Elf)
+                if (data.name === "High Elf") {
+                    loadWizardCantrips(cantripList => {
+                        let options = cantripList
+                            .map(spell => `<option value="${spell}">${spell}</option>`)
+                            .join("");
+                        traitsHtml += `<p><strong>Scegli un Cantrip dalla lista del Mago:</strong> 
+                            <select id="wizardCantripSelection">
+                                ${options}
+                            </select>
+                        </p>`;
+                        raceTraitsDiv.innerHTML = traitsHtml;
+                    });
+                }
+
+                // ✨ Handle **Level-Up Spells** (Drow, Aarakocra)
                 if (data.spellcasting.level_up_spells) {
                     traitsHtml += `<p><strong>Incantesimi Bonus per Livelli:</strong></p><ul>`;
                     data.spellcasting.level_up_spells.forEach(spellData => {
@@ -135,6 +150,12 @@ function displayRaceTraits() {
                         (Usi: ${spellData.uses}, Ripristino: ${spellData.refresh})</li>`;
                     });
                     traitsHtml += `</ul>`;
+                }
+
+                // 🌀 Handle **Spells Gained at Higher Levels** (Aarakocra’s Gust of Wind)
+                if (data.spellcasting.level_requirement && data.spellcasting.spell) {
+                    traitsHtml += `<p><strong>Dal livello ${data.spellcasting.level_requirement}:</strong> 
+                        puoi lanciare <strong>${data.spellcasting.spell}</strong> una volta per long rest.</p>`;
                 }
             }
 

@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("racialBonus3").addEventListener("change", applyRacialBonuses);
     document.getElementById("levelSelect").addEventListener("change", function () {
     displayRaceTraits(); // Ricarica i tratti della razza in base al nuovo livello
+    displaySubraceTraits(); // Ricarica i tratti della sottorazza selezionata
 });
 
     // Genera JSON finale

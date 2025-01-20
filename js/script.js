@@ -74,7 +74,7 @@ fetch(racePath)
         .then(data => {
             console.log("📜 Dati razza caricati:", data);
 
-            let traitsHtml = <h3>Tratti di ${data.name}</h3>;
+            let traitsHtml = `<h3>Tratti di ${data.name}</h3>`; // ✅ Correct
 
             // Display Speed
             traitsHtml += <p><strong>Velocità:</strong> ${data.speed} ft</p>;

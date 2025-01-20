@@ -58,36 +58,54 @@ function populateDropdown(selectId, options) {
 }
 
 // ** MOSTRA I TRATTI DELLA RAZZA **
-function displayRaceTraits() {
-    let racePath = document.getElementById("raceSelect").value;
-    let raceTraitsDiv = document.getElementById("raceTraits");
-    let racialBonusDiv = document.getElementById("racialBonusSelection"); // Ensure bonus selection is shown
-
-    if (!racePath) {
-        raceTraitsDiv.innerHTML = "<p>Seleziona una razza per vedere i tratti.</p>";
-        racialBonusDiv.style.display = "none"; // Hide racial bonus selection if no race is chosen
-        resetRacialBonuses();
-        return;
-    }
-
-    fetch(racePath)
+fetch(racePath)
         .then(response => response.json())
         .then(data => {
             console.log("📜 Dati razza caricati:", data);
 
-            let traitsHtml = `<h3>Tratti di ${data.name}</h3>`;
-            traitsHtml += `<p><strong>Velocità:</strong> ${data.speed} ft</p>`;
+            let traitsHtml = <h3>Tratti di ${data.name}</h3>;
 
+            // Display Speed
+            traitsHtml += <p><strong>Velocità:</strong> ${data.speed} ft</p>;
+
+            // Display Darkvision if present
             if (data.senses && data.senses.darkvision) {
-                traitsHtml += `<p><strong>Visione:</strong> ${data.senses.darkvision} ft</p>`;
+                traitsHtml += <p><strong>Visione:</strong> ${data.senses.darkvision} ft</p>;
             }
 
+            // Display Traits
             if (data.traits && data.traits.length > 0) {
-                traitsHtml += `<p><strong>Tratti:</strong></p><ul>`;
+                traitsHtml += <p><strong>Tratti:</strong></p><ul>;
                 data.traits.forEach(trait => {
-                    traitsHtml += `<li><strong>${trait.name}:</strong> ${trait.description}</li>`;
+                    traitsHtml += <li><strong>${trait.name}:</strong> ${trait.description}</li>;
                 });
-                traitsHtml += `</ul>`;
+                traitsHtml += </ul>;
+            }
+
+            // Handle Languages
+            let languageHtml = <p><strong>Lingue Concesse:</strong> ${data.languages.fixed.join(", ")}</p>;
+            if (data.languages.choice > 0) {
+                languageHtml += <p>Scegli ${data.languages.choice} lingua/e extra:</p>;
+                loadLanguages(languages => {
+                    let options = languages.map(lang => <option value="${lang}">${lang}</option>).join("");
+                    let select = <select>${options}</select>;
+                    languageContainer.innerHTML = languageHtml + select;
+                });
+            } else {
+                languageContainer.innerHTML = languageHtml;
+            }
+
+            // Handle Spellcasting Ability Selection (if available)
+            if (data.spellcasting) {
+                let spellSelect = data.spellcasting.ability_choices
+                    .map(ability => <option value="${ability}">${ability}</option>)
+                    .join("");
+                
+                traitsHtml += <p><strong>Abilità di lancio:</strong> 
+                    <select id="castingAbility">
+                        ${spellSelect}
+                    </select>
+                </p>;
             }
 
             raceTraitsDiv.innerHTML = traitsHtml;

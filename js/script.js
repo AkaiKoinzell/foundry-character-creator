@@ -72,10 +72,12 @@ function displayRaceTraits() {
 
             let traitsHtml = `<h3>Tratti di ${data.name}</h3>`;
             // 🔹 Controllo se speed è un numero o un oggetto
-           if (typeof data.speed === "number") {
-               traitsHtml += `<p><strong>Velocità:</strong> ${data.speed} ft</p>`;
+            if (typeof data.speed === "number") {
+                traitsHtml += `<p><strong>Velocità:</strong> ${data.speed} ft</p>`;
             } else if (typeof data.speed === "object") {
-                let speedText = Object.entries(data.speed).map(([type, value]) => `${type}: ${value}`).join(", ");
+                let speedText = Object.entries(data.speed)
+                    .map(([type, value]) => `<strong>${type}:</strong> ${value}`)
+                    .join(", ");
                 traitsHtml += `<p><strong>Velocità:</strong> ${speedText}</p>`;
             }
             if (data.senses && data.senses.darkvision) {

@@ -9,7 +9,9 @@
         { "name": "Healing Hands", "description": "As an action, you can touch a creature and restore a number of hit points equal to your level. You can use this trait once per long rest." },
         { "name": "Light Bearer", "description": "You know the Light cantrip. Charisma is your spellcasting ability for it." }
     ],
-    "languages": ["Common", "Celestial"],
+   "languages": {
+        "fixed": ["Common", "Celestial"]
+       },
     "subraces": [
         {
             "name": "Protector Aasimar",

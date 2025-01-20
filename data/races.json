@@ -1,8 +1,6 @@
 {
     "races": {
         "Dwarf": "data/races/dwarf.json",
-        "Elf": "data/races/elf.json",
-        "Aarakocra": "data/races/aarakocra.json",
-        "Human": "data/races/human.json"
+        "Aarakocra": "data/races/aarakocra.json"
     }
 }

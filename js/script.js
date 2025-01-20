@@ -84,25 +84,37 @@ function displayRaceTraits() {
                 traitsHtml += `<p><strong>Scurovisione:</strong> ${data.senses.darkvision} ft</p>`;
             }
 
+            // 🔹 Ottiene il livello del personaggio
+            let characterLevel = parseInt(document.getElementById("levelSelect").value) || 1;
+            
             if (data.traits && data.traits.length > 0) {
                 traitsHtml += `<p><strong>Tratti:</strong></p><ul>`;
                 data.traits.forEach(trait => {
-                    traitsHtml += `<li><strong>${trait.name}:</strong> ${trait.description}</li>`;
+                    // 🔹 Mostra solo i tratti che il PG può ottenere al suo livello attuale
+                    if (!trait.level_requirement || trait.level_requirement <= characterLevel) {
+                        traitsHtml += `<li><strong>${trait.name}:</strong> ${trait.description}</li>`;
+                    }
                 });
                 traitsHtml += `</ul>`;
             }
 
             if (data.languages) {
                 let fixedLanguages = data.languages.fixed ? data.languages.fixed.join(", ") : "";
-                let languageChoices = data.languages.choice ? `<p>Scegli ${data.languages.choice} lingua/e extra:</p>` : "";
-    
-                let options = data.languages.options ? data.languages.options.map(lang => `<option value="${lang}">${lang}</option>`).join("") : "";
-
-                traitsHtml += `<p><strong>Lingue Concesse:</strong> ${fixedLanguages}</p>`;
-                if (languageChoices) {
-                    traitsHtml += `${languageChoices}<select>${options}</select>`;
+                let languageContainer = `<p><strong>Lingue Concesse:</strong> ${fixedLanguages}</p>`;
+            
+                if (data.languages.choice > 0) {
+                    languageContainer += `<p>Scegli ${data.languages.choice} lingua/e extra:</p>`;
+            
+                    loadLanguages(languages => {
+                        let options = languages.map(lang => `<option value="${lang}">${lang}</option>`).join("");
+                        let select = `<select>${options}</select>`;
+                        document.getElementById("languageSelection").innerHTML = languageContainer + select;
+                    });
+                } else {
+                    document.getElementById("languageSelection").innerHTML = languageContainer;
                 }
             }
+
 
             if (data.spellcasting) {
                 traitsHtml += `<h4>Capacità Magiche</h4>`;
@@ -368,4 +380,17 @@ function resetRacialBonuses() {
     });
 
     updateFinalScores();
+}
+
+function loadLanguages(callback) {
+    fetch("data/languages.json")
+        .then(response => response.json())
+        .then(data => {
+            if (data.languages) {
+                callback(data.languages);
+            } else {
+                console.error("❌ Errore: nessuna lingua trovata nel file JSON.");
+            }
+        })
+        .catch(error => console.error("❌ Errore caricando le lingue:", error));
 }

@@ -99,7 +99,7 @@
       "languages": {
         "fixed": ["Common", "Elvish", "Aquan"]
       }
-    }
+    },
     {
       "name": "Shadar-kai",
       "ability_bonus": { "dex": 2, "con": 1 },

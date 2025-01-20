@@ -125,12 +125,25 @@ function displayRaceTraits() {
                 }
             }
 
+            // 🔹 Controllo del livello per le capacità magiche
             let characterLevel = parseInt(document.getElementById("levelSelect").value) || 1;
-            if (data.spellcasting && characterLevel >= 3) {
+            
+            if (data.spellcasting && characterLevel >= (data.spellcasting.level_requirement || 1)) {
                 traitsHtml += `<h4>Capacità Magiche</h4>`;
                 traitsHtml += `<p><strong>Incantesimo:</strong> ${data.spellcasting.spell} (${data.spellcasting.uses})</p>`;
-                traitsHtml += `<p><strong>Abilità di lancio:</strong> Scegli tra ${data.spellcasting.ability_choices.join(", ")}</p>`;
+            
+                // Creazione dropdown per la scelta dell'abilità di lancio
+                let abilityOptions = data.spellcasting.ability_choices
+                    .map(ability => `<option value="${ability}">${ability}</option>`)
+                    .join("");
+            
+                traitsHtml += `<p><strong>Abilità di lancio:</strong> 
+                    <select id="castingAbility">
+                        ${abilityOptions}
+                    </select>
+                </p>`;
             }
+
 
             raceTraitsDiv.innerHTML = traitsHtml;
             subraceTraitsDiv.innerHTML = ""; // RESET SOTTO RAZZA

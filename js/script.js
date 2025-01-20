@@ -61,11 +61,12 @@ function populateDropdown(selectId, options) {
 function displayRaceTraits() {
     let racePath = document.getElementById("raceSelect").value;
     let raceTraitsDiv = document.getElementById("raceTraits");
-    let languageContainer = document.getElementById("languageSelection");
-    let racialBonusDiv = document.getElementById("racialBonusSelection"); // Selettore bonus razziali
+    let racialBonusDiv = document.getElementById("racialBonusSelection"); // Ensure bonus selection is shown
 
     if (!racePath) {
         raceTraitsDiv.innerHTML = "<p>Seleziona una razza per vedere i tratti.</p>";
+        racialBonusDiv.style.display = "none"; // Hide racial bonus selection if no race is chosen
+        resetRacialBonuses();
         return;
     }
 
@@ -75,16 +76,12 @@ function displayRaceTraits() {
             console.log("📜 Dati razza caricati:", data);
 
             let traitsHtml = `<h3>Tratti di ${data.name}</h3>`;
-
-            // Display Speed
             traitsHtml += `<p><strong>Velocità:</strong> ${data.speed} ft</p>`;
 
-            // Display Darkvision if present
             if (data.senses && data.senses.darkvision) {
                 traitsHtml += `<p><strong>Visione:</strong> ${data.senses.darkvision} ft</p>`;
             }
 
-            // Display Traits
             if (data.traits && data.traits.length > 0) {
                 traitsHtml += `<p><strong>Tratti:</strong></p><ul>`;
                 data.traits.forEach(trait => {
@@ -93,39 +90,15 @@ function displayRaceTraits() {
                 traitsHtml += `</ul>`;
             }
 
-            // Handle Languages
-            let languageHtml = `<p><strong>Lingue Concesse:</strong> ${data.languages.fixed.join(", ")}</p>`;
-            if (data.languages.choice > 0) {
-                languageHtml += `<p>Scegli ${data.languages.choice} lingua/e extra:</p>`;
-                loadLanguages(languages => {
-                    let options = languages.map(lang => `<option value="${lang}">${lang}</option>`).join("");
-                    let select = `<select>${options}</select>`;
-                    languageContainer.innerHTML = languageHtml + select;
-                });
-            } else {
-                languageContainer.innerHTML = languageHtml;
-            }
-
-            // Handle Spellcasting Ability Selection (if available)
-            if (data.spellcasting) {
-                let spellSelect = data.spellcasting.ability_choices
-                    .map(ability => `<option value="${ability}">${ability}</option>`)
-                    .join("");
-                
-                traitsHtml += `<p><strong>Abilità di lancio:</strong> 
-                    <select id="castingAbility">
-                        ${spellSelect}
-                    </select>
-                </p>`;
-            }
-
             raceTraitsDiv.innerHTML = traitsHtml;
-                         // 🔥 Mostra il selettore dei bonus razziali!
-            racialBonusDiv.style.display = "block";
-            resetRacialBonuses(); // Resetta i bonus ogni volta che si cambia razza
+            
+            // 🛠 Show and reset racial bonuses
+            racialBonusDiv.style.display = "block"; 
+            resetRacialBonuses(); 
         })
         .catch(error => console.error("❌ Errore caricando i tratti della razza:", error));
 }
+
 // ** AGGIORNA LE SOTTOCLASSI **
 function updateSubclasses() {
     let classPath = document.getElementById("classSelect").value;
@@ -258,58 +231,62 @@ function applyRacialBonuses() {
     let bonus3 = document.getElementById("racialBonus3").value;
 
     if (!bonus1 || !bonus2 || !bonus3) {
-        console.error("❌ Errore: uno o più elementi dei bonus razza non sono stati selezionati.");
+        console.error("❌ Errore: tutti i bonus razza devono essere selezionati.");
+        alert("⚠️ Devi selezionare tutti e tre i bonus razziali!");
         return;
     }
 
-    // 🔴 Controllo: nessuna caratteristica deve essere selezionata più di due volte!
     let selections = [bonus1, bonus2, bonus3];
     let counts = {};
     selections.forEach(bonus => {
         counts[bonus] = (counts[bonus] || 0) + 1;
     });
 
-    let invalidSelections = Object.values(counts).some(count => count > 2);
-    if (invalidSelections) {
-        console.error("❌ Errore: una caratteristica è stata selezionata più di due volte.");
-        alert("⚠️ Puoi assegnare al massimo +2 a una caratteristica e +1 a un'altra, oppure +1 a tre diverse!");
+    // 🔴 Validate distribution (+2/+1 or +1/+1/+1)
+    let values = Object.values(counts);
+    let validDistribution = 
+        (values.includes(2) && values.includes(1) && values.length === 2) || // +2/+1
+        (values.every(val => val === 1) && values.length === 3); // +1/+1/+1
+
+    if (!validDistribution) {
+        console.error("❌ Errore: distribuzione non valida.");
+        alert("⚠️ Puoi assegnare +2 a una caratteristica e +1 a un'altra, oppure +1 a tre diverse!");
         return;
     }
 
-    console.log(`Bonus selezionati: ${bonus1}, ${bonus2}, ${bonus3}`);
-
-    let abilityFields = ["str", "dex", "con", "int", "wis", "cha"];
-    let bonusDistribution = {
-        str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0
+    // 🛠 Apply bonuses
+    let abilityFields = {
+        str: document.getElementById("strRaceModifier"),
+        dex: document.getElementById("dexRaceModifier"),
+        con: document.getElementById("conRaceModifier"),
+        int: document.getElementById("intRaceModifier"),
+        wis: document.getElementById("wisRaceModifier"),
+        cha: document.getElementById("chaRaceModifier"),
     };
 
-    // 🔹 Assegna i bonus rispettando la logica delle distribuzioni
-    if (bonus1 === bonus2) {
-        bonusDistribution[bonus1] += 2;
-        bonusDistribution[bonus3] += 1;
-    } else {
-        bonusDistribution[bonus1] += 1;
-        bonusDistribution[bonus2] += 1;
-        bonusDistribution[bonus3] += 1;
-    }
+    // Reset all racial modifiers
+    Object.values(abilityFields).forEach(field => field.textContent = "0");
 
-    abilityFields.forEach(stat => {
-        document.getElementById(stat + "RaceModifier").textContent = bonusDistribution[stat]; // Usa textContent!
+    // Apply the calculated bonuses
+    Object.keys(counts).forEach(stat => {
+        if (abilityFields[stat]) {
+            abilityFields[stat].textContent = counts[stat]; // Update display
+        }
     });
 
-    console.log("✅ Bonus razziali applicati:", bonusDistribution);
-
+    console.log("✅ Bonus razziali applicati:", counts);
     updateFinalScores();
 }
+
 
 function resetRacialBonuses() {
     document.getElementById("racialBonus1").value = "";
     document.getElementById("racialBonus2").value = "";
     document.getElementById("racialBonus3").value = "";
 
-    let abilities = ["str", "dex", "con", "int", "wis", "cha"];
-    abilities.forEach(ability => {
-        document.getElementById(ability + "RaceModifier").textContent = "0"; // Aggiorna solo la visualizzazione
+    let abilityFields = ["str", "dex", "con", "int", "wis", "cha"];
+    abilityFields.forEach(ability => {
+        document.getElementById(ability + "RaceModifier").textContent = "0"; // Reset
     });
 
     updateFinalScores();

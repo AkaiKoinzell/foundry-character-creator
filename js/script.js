@@ -167,8 +167,13 @@ function displayRaceTraits() {
             }
 
             raceTraitsDiv.innerHTML = traitsHtml;
-            subraceTraitsDiv.innerHTML = ""; // Resetta i tratti della sottorazza
+            subraceTraitsDiv.innerHTML = ""; // RESET SOTTO RAZZA
             racialBonusDiv.style.display = "block";
+
+            // Se esiste già una sottorazza selezionata, aggiorna i suoi tratti
+            if (subraceSelect.value) {
+                displaySubraceTraits();
+            }
         })
         .catch(error => console.error("❌ Errore caricando i tratti della razza:", error));
 }

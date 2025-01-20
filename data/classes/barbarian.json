@@ -1,21 +1,5 @@
 {
     "name": "Barbarian",
-    "hit_dice": "1d12",
-    "hit_points": {
-        "1st_level": "12 + Constitution modifier",
-        "higher_levels": "1d12 (or 7) + Constitution modifier per barbarian level after 1st"
-    },
-    "proficiencies": {
-        "armor": ["Light armor", "Medium armor", "Shields"],
-        "weapons": ["Simple weapons", "Martial weapons"],
-        "saving_throws": ["Strength", "Constitution"],
-        "skills": ["Choose two from Animal Handling, Athletics, Intimidation, Nature, Perception, Survival"]
-    },
-    "equipment": [
-        "(a) a greataxe or (b) any martial melee weapon",
-        "(a) two handaxes or (b) any simple weapon",
-        "An explorer's pack and four javelins"
-    ],
     "subclasses": [
         {
             "name": "Path of the Berserker",
@@ -25,12 +9,5 @@
             "name": "Path of the Totem Warrior",
             "features": ["Spirit Seeker", "Totem Spirit", "Aspect of the Beast", "Totemic Attunement"]
         }
-    ],
-    "features_by_level": {
-        "level_1": ["Rage", "Unarmored Defense"],
-        "level_2": ["Reckless Attack", "Danger Sense"],
-        "level_3": ["Primal Path"],
-        "level_5": ["Extra Attack", "Fast Movement"],
-        "level_15": ["Persistent Rage"]
-    }
+    ]
 }

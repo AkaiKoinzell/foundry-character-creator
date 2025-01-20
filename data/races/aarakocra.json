@@ -25,14 +25,14 @@
         {
             "name": "Wind Caller",
             "description": "Starting at 3rd level, you can cast the gust of wind spell with this trait, without requiring a material component. Once you cast the spell with this trait, you can't do so again until you finish a long rest. You can also cast the spell using any spell slots you have of 2nd level or higher.",
-            "level_requirement": 1
+            "level_requirement": 3
         }
     ],
     "spellcasting": {
         "spell": "Gust of Wind",
         "uses": "1 per long rest",
         "ability_choices": ["Intelligence", "Wisdom", "Charisma"],
-        "level_requirement": 1
+        "level_requirement": 3
     },
     "languages": {
         "fixed": ["Common"],

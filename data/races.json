@@ -3,6 +3,6 @@
         "Aarakocra": "data/races/aarakocra.json",
         "Aasimar": "data/races/aasimar.json",
         "Dwarf": "data/races/dwarf.json",
-        "Elf": "data/races/elf.json"
+        "Astral Elf": "data/races/astralelf.json"
     }
 }

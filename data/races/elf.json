@@ -1,123 +1,50 @@
 {
-  "name": "Elf",
-  "size": "Medium",
-  "speed": 30,
-  "ability_bonus": { "dex": 2 },
-  "senses": { "darkvision": 60 },
-  "traits": [
-    { "name": "Age", "description": "Elves reach physical maturity at the same age as humans, but claim adulthood around 100 years old. They can live up to 750 years." },
-    { "name": "Size", "description": "Elves range from under 5 to over 6 feet tall and have slender builds. Your size is Medium." },
-    { "name": "Keen Senses", "description": "You have proficiency in the Perception skill." },
-    { "name": "Fey Ancestry", "description": "You have advantage on saving throws against being charmed, and magic can't put you to sleep." },
-    { "name": "Trance", "description": "Elves do not sleep but enter a meditative state for 4 hours a day. This functions as a long rest." }
-  ],
-  "languages": {
-    "fixed": ["Common", "Elvish"]
-  },
-  "subraces": [
-    {
-      "name": "Astral Elf",
-      "ability_bonus": {
-        "options": [
-          { "choice": 2, "values": ["any"] },
-          { "choice": 1, "values": ["any"] },
-          { "choice": 3, "values": ["any"] }
+    "name": "Astral Elf",
+    "source": "AAG, page 10",
+    "ability_scores": {
+        "choice": [
+            { "option": "Choose any +2; choose any other +1" },
+            { "option": "Choose three different +1" }
         ]
-      },
-      "traits": [
-        { "name": "Astral Fire", "description": "You know one of the following cantrips: Dancing Lights, Light, or Sacred Flame. Choose Intelligence, Wisdom, or Charisma as your spellcasting ability for it." },
-        { "name": "Starlight Step", "description": "As a bonus action, you can magically teleport up to 30 feet to an unoccupied space you can see. You can use this trait a number of times equal to your proficiency bonus, regaining all expended uses on a long rest." },
-        { "name": "Astral Trance", "description": "You don’t need to sleep, and magic can’t put you to sleep. You can finish a long rest in 4 hours if you spend them in meditation. When you finish this trance, you gain proficiency in one skill and one weapon or tool of your choice, which lasts until your next long rest." }
-      ],
-      "languages": {
+    },
+    "creature_type": "Humanoid",
+    "size": "Medium",
+    "speed": 30,
+    "senses": { "darkvision": 60 },
+    "traits": [
+        {
+            "name": "Astral Fire",
+            "description": "You know one of the following cantrips: Dancing Lights, Light, or Sacred Flame. Choose Intelligence, Wisdom, or Charisma as your spellcasting ability for it."
+        },
+        {
+            "name": "Fey Ancestry",
+            "description": "You have advantage on saving throws to avoid or end the charmed condition on yourself."
+        },
+        {
+            "name": "Keen Senses",
+            "description": "You have proficiency in the Perception skill."
+        },
+        {
+            "name": "Starlight Step",
+            "description": "As a bonus action, you can magically teleport up to 30 feet to an unoccupied space you can see. You can use this trait a number of times equal to your proficiency bonus, regaining all expended uses on a long rest."
+        },
+        {
+            "name": "Astral Trance",
+            "description": "You don’t need to sleep, and magic can’t put you to sleep. You can finish a long rest in 4 hours if you spend them in meditation."
+        },
+        {
+            "name": "Astral Memory",
+            "description": "When you finish a long rest, choose one skill proficiency and one weapon or tool proficiency from the Player’s Handbook. You retain these proficiencies until your next long rest."
+        }
+    ],
+    "languages": {
         "fixed": ["Common"],
-        "choice": 1
-      },
-      "spellcasting": {
+        "choice": 1,
+        "options": ["Any language you and your DM agree is appropriate"]
+    },
+    "spellcasting": {
         "level_requirement": 1,
-        "spell": ["Dancing Lights", "Light", "Sacred Flame"],
+        "spell_choices": ["Dancing Lights", "Light", "Sacred Flame"],
         "ability_choices": ["Intelligence", "Wisdom", "Charisma"]
-      }
-    },
-    {
-      "name": "Drow",
-      "ability_bonus": { "dex": 2, "cha": 1 },
-      "senses": { "darkvision": 120 },
-      "traits": [
-        { "name": "Sunlight Sensitivity", "description": "You have disadvantage on attack rolls and on Wisdom (Perception) checks that rely on sight when in direct sunlight." },
-        { "name": "Drow Weapon Training", "description": "You have proficiency with rapiers, shortswords, and hand crossbows." }
-      ],
-      "spellcasting": {
-        "level_requirement": 1,
-        "spell": ["Dancing Lights"],
-        "ability": "Charisma",
-        "level_up_spells": [
-          { "level": 3, "spell": "Faerie Fire", "uses": 1, "refresh": "long rest" },
-          { "level": 5, "spell": "Darkness", "uses": 1, "refresh": "long rest" }
-        ]
-      }
-    },
-    {
-      "name": "Eladrin",
-      "ability_bonus": {
-        "options": [
-          { "choice": 2, "values": ["any"] },
-          { "choice": 1, "values": ["any"] },
-          { "choice": 3, "values": ["any"] }
-        ]
-      },
-      "traits": [
-        { "name": "Fey Step", "description": "As a bonus action, you can magically teleport up to 30 feet to an unoccupied space you can see. You can use this trait a number of times equal to your proficiency bonus, and you regain all expended uses when you finish a long rest. At 3rd level, your Fey Step gains an additional effect based on your chosen season." },
-        { "name": "Season Choice", "description": "Choose your eladrin's season: autumn, winter, spring, or summer. When finishing a long rest, you can change your season." }
-      ],
-      "languages": {
-        "fixed": ["Common"],
-        "choice": 1
-      }
-    },
-    {
-      "name": "High Elf",
-      "ability_bonus": { "dex": 2, "int": 1 },
-      "traits": [
-        { "name": "Elf Weapon Training", "description": "You have proficiency with the longsword, shortsword, shortbow, and longbow." },
-        { "name": "Cantrip", "description": "You know one cantrip of your choice from the wizard spell list. Intelligence is your spellcasting ability for it." }
-      ],
-      "languages": {
-        "fixed": ["Common", "Elvish"],
-        "choice": 1
-      }
-    },
-    {
-      "name": "Sea Elf",
-      "ability_bonus": { "dex": 2, "con": 1 },
-      "speed": { "walk": 30, "swim": 30 },
-      "traits": [
-        { "name": "Sea Elf Training", "description": "You have proficiency with the spear, trident, light crossbow, and net." },
-        { "name": "Child of the Sea", "description": "You have a swimming speed of 30 feet, and you can breathe air and water." },
-        { "name": "Friend of the Sea", "description": "Using gestures and sounds, you can communicate simple ideas with any beast that has an innate swimming speed." }
-      ],
-      "languages": {
-        "fixed": ["Common", "Elvish", "Aquan"]
-      }
-    },
-    {
-      "name": "Shadar-kai",
-      "ability_bonus": { "dex": 2, "con": 1 },
-      "traits": [
-        { "name": "Necrotic Resistance", "description": "You have resistance to necrotic damage." },
-        { "name": "Blessing of the Raven Queen", "description": "As a bonus action, you can magically teleport up to 30 feet to an unoccupied space you can see. Once you use this trait, you can't do so again until you finish a long rest. Starting at 3rd level, you also gain resistance to all damage when you teleport using this trait. The resistance lasts until the start of your next turn." }
-      ]
-    },
-    {
-      "name": "Wood Elf",
-      "ability_bonus": { "dex": 2, "wis": 1 },
-      "speed": 35,
-      "traits": [
-        { "name": "Elf Weapon Training", "description": "You have proficiency with the longsword, shortsword, shortbow, and longbow." },
-        { "name": "Fleet of Foot", "description": "Your base walking speed increases to 35 feet." },
-        { "name": "Mask of the Wild", "description": "You can attempt to hide even when you are only lightly obscured by foliage, heavy rain, falling snow, mist, and other natural phenomena." }
-      ]
     }
-  ],
-  "source": "PHB'14, page 21"
 }

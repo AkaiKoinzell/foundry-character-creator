@@ -70,27 +70,12 @@ function displayRaceTraits() {
     let languageContainer = document.getElementById("languageSelection");
     let racialBonusDiv = document.getElementById("racialBonusSelection");
     let subraceSelect = document.getElementById("subraceSelect");
-    let selectedSubrace = subraceSelect.value; // Salva la sottorazza selezionata
-    
+
+    // 🔹 Mantiene la sottorazza selezionata prima di aggiornare la lista
+    let previousSubrace = subraceSelect.value;
+
     subraceSelect.innerHTML = '<option value="">Seleziona una sottorazza</option>';
     
-    if (data.subraces) {
-        data.subraces.forEach(subrace => {
-            let option = document.createElement("option");
-            option.value = subrace.name;
-            option.textContent = subrace.name;
-            subraceSelect.appendChild(option);
-        });
-    
-        subraceSelect.style.display = data.subraces.length > 0 ? "block" : "none";
-    
-        // Riassegna la sottorazza selezionata se esiste
-        if (selectedSubrace && [...subraceSelect.options].some(opt => opt.value === selectedSubrace)) {
-            subraceSelect.value = selectedSubrace;
-        }
-    }
-
-
     if (!racePath) {
         raceTraitsDiv.innerHTML = "<p>Seleziona una razza per vedere i tratti.</p>";
         subraceTraitsDiv.innerHTML = ""; // Resetta i tratti della sottorazza
@@ -129,10 +114,10 @@ function displayRaceTraits() {
             if (data.languages) {
                 let fixedLanguages = data.languages.fixed ? data.languages.fixed.join(", ") : "";
                 let languageHtml = `<p><strong>Lingue Concesse:</strong> ${fixedLanguages}</p>`;
-            
+
                 if (data.languages.choice > 0) {
                     languageHtml += `<p>Scegli ${data.languages.choice} lingua/e extra:</p>`;
-            
+
                     loadLanguages(languages => {
                         let options = languages.map(lang => `<option value="${lang}">${lang}</option>`).join("");
                         let select = `<select>${options}</select>`;
@@ -143,19 +128,37 @@ function displayRaceTraits() {
                 }
             }
 
+            // 🔹 Aggiornare sottorazze (senza resettare se possibile)
+            subraceSelect.innerHTML = '<option value="">Seleziona una sottorazza</option>';
+            if (data.subraces && data.subraces.length > 0) {
+                data.subraces.forEach(subrace => {
+                    let option = document.createElement("option");
+                    option.value = subrace.name;
+                    option.textContent = subrace.name;
+                    subraceSelect.appendChild(option);
+                });
+
+                subraceSelect.style.display = "block";
+
+                // 🔥 Riassegna la sottorazza selezionata se ancora valida
+                if (previousSubrace && [...subraceSelect.options].some(opt => opt.value === previousSubrace)) {
+                    subraceSelect.value = previousSubrace;
+                }
+            } else {
+                subraceSelect.style.display = "none";
+            }
 
             // 🔹 Controllo del livello per le capacità magiche
             let characterLevel = parseInt(document.getElementById("levelSelect").value) || 1;
-            
             if (data.spellcasting && characterLevel >= (data.spellcasting.level_requirement || 1)) {
                 traitsHtml += `<h4>Capacità Magiche</h4>`;
                 traitsHtml += `<p><strong>Incantesimo:</strong> ${data.spellcasting.spell} (${data.spellcasting.uses})</p>`;
-            
+
                 // Creazione dropdown per la scelta dell'abilità di lancio
                 let abilityOptions = data.spellcasting.ability_choices
                     .map(ability => `<option value="${ability}">${ability}</option>`)
                     .join("");
-            
+
                 traitsHtml += `<p><strong>Abilità di lancio:</strong> 
                     <select id="castingAbility">
                         ${abilityOptions}
@@ -163,9 +166,8 @@ function displayRaceTraits() {
                 </p>`;
             }
 
-
             raceTraitsDiv.innerHTML = traitsHtml;
-            subraceTraitsDiv.innerHTML = ""; // RESET SOTTO RAZZA
+            subraceTraitsDiv.innerHTML = ""; // Resetta i tratti della sottorazza
             racialBonusDiv.style.display = "block";
         })
         .catch(error => console.error("❌ Errore caricando i tratti della razza:", error));

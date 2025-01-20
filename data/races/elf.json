@@ -1,0 +1,27 @@
+{
+    "name": "Elf",
+    "size": "Medium",
+    "speed": 30,
+    "ability_bonus": { "dex": 2 },
+    "senses": { "darkvision": 60 },
+    "traits": [
+        { "name": "Age", "description": "Elves reach physical maturity at the same age as humans, but claim adulthood around 100 years old. They can live up to 750 years." },
+        { "name": "Size", "description": "Elves range from under 5 to over 6 feet tall and have slender builds. Your size is Medium." },
+        { "name": "Keen Senses", "description": "You have proficiency in the Perception skill." },
+        { "name": "Fey Ancestry", "description": "You have advantage on saving throws against being charmed, and magic can't put you to sleep." },
+        { "name": "Trance", "description": "Elves do not sleep but enter a meditative state for 4 hours a day. This functions as a long rest." }
+    ],
+    "languages": {
+        "fixed": ["Common", "Elvish"]
+    },
+    "subraces": [
+        { "name": "Astral" },
+        { "name": "Drow" },
+        { "name": "Eladrin" },
+        { "name": "High Elf" },
+        { "name": "Sea Elf" },
+        { "name": "Shadar-kai" },
+        { "name": "Wood Elf" }
+    ],
+    "source": "PHB'14, page 21"
+}

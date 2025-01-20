@@ -69,6 +69,27 @@ function displayRaceTraits() {
     let subraceTraitsDiv = document.getElementById("subraceTraits"); // RESET SUBRAZZA
     let languageContainer = document.getElementById("languageSelection");
     let racialBonusDiv = document.getElementById("racialBonusSelection");
+    let subraceSelect = document.getElementById("subraceSelect");
+    let selectedSubrace = subraceSelect.value; // Salva la sottorazza selezionata
+    
+    subraceSelect.innerHTML = '<option value="">Seleziona una sottorazza</option>';
+    
+    if (data.subraces) {
+        data.subraces.forEach(subrace => {
+            let option = document.createElement("option");
+            option.value = subrace.name;
+            option.textContent = subrace.name;
+            subraceSelect.appendChild(option);
+        });
+    
+        subraceSelect.style.display = data.subraces.length > 0 ? "block" : "none";
+    
+        // Riassegna la sottorazza selezionata se esiste
+        if (selectedSubrace && [...subraceSelect.options].some(opt => opt.value === selectedSubrace)) {
+            subraceSelect.value = selectedSubrace;
+        }
+    }
+
 
     if (!racePath) {
         raceTraitsDiv.innerHTML = "<p>Seleziona una razza per vedere i tratti.</p>";
@@ -104,26 +125,24 @@ function displayRaceTraits() {
                 traitsHtml += `</ul>`;
             }
 
+            // 🔹 Lingue
             if (data.languages) {
                 let fixedLanguages = data.languages.fixed ? data.languages.fixed.join(", ") : "";
                 let languageHtml = `<p><strong>Lingue Concesse:</strong> ${fixedLanguages}</p>`;
-
+            
                 if (data.languages.choice > 0) {
                     languageHtml += `<p>Scegli ${data.languages.choice} lingua/e extra:</p>`;
-
+            
                     loadLanguages(languages => {
                         let options = languages.map(lang => `<option value="${lang}">${lang}</option>`).join("");
                         let select = `<select>${options}</select>`;
-                        if (languageContainer) {
-                            languageContainer.innerHTML = languageHtml + select;
-                        }
+                        document.getElementById("languageSelection").innerHTML = languageHtml + select;
                     });
                 } else {
-                    if (languageContainer) {
-                        languageContainer.innerHTML = languageHtml;
-                    }
+                    document.getElementById("languageSelection").innerHTML = languageHtml;
                 }
             }
+
 
             // 🔹 Controllo del livello per le capacità magiche
             let characterLevel = parseInt(document.getElementById("levelSelect").value) || 1;

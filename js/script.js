@@ -6,8 +6,12 @@ document.addEventListener("DOMContentLoaded", function () {
     loadDropdownData("data/classes.json", "classSelect", "classes");
 
     // Listener per aggiornare sottorazze e sottoclassi dinamicamente
-    document.getElementById("raceSelect").addEventListener("change", updateSubraces);
-    document.getElementById("raceSelect").addEventListener("change", displayRaceTraits);
+    document.getElementById("raceSelect").addEventListener("change", function() {
+        updateSubraces();
+        displayRaceTraits();
+        document.getElementById("subraceSelect").innerHTML = '<option value="">Seleziona una sottorazza</option>'; // Resetta il dropdown
+        document.getElementById("subraceSelect").style.display = "none"; // Nasconde il dropdown se non è disponibile
+    });
     document.getElementById("subraceSelect").addEventListener("change", displaySubraceTraits);
     document.getElementById("classSelect").addEventListener("change", updateSubclasses);
     document.getElementById("racialBonus1").addEventListener("change", applyRacialBonuses);
@@ -59,15 +63,16 @@ function populateDropdown(selectId, options) {
 }
 
 // ** MOSTRA I TRATTI DELLA RAZZA **
-// ** MOSTRA I TRATTI DELLA RAZZA **
 function displayRaceTraits() {
     let racePath = document.getElementById("raceSelect").value;
     let raceTraitsDiv = document.getElementById("raceTraits");
+    let subraceTraitsDiv = document.getElementById("subraceTraits"); // RESET SUBRAZZA
     let languageContainer = document.getElementById("languageSelection");
     let racialBonusDiv = document.getElementById("racialBonusSelection");
 
     if (!racePath) {
         raceTraitsDiv.innerHTML = "<p>Seleziona una razza per vedere i tratti.</p>";
+        subraceTraitsDiv.innerHTML = ""; // Resetta i tratti della sottorazza
         return;
     }
 
@@ -78,7 +83,6 @@ function displayRaceTraits() {
 
             let traitsHtml = `<h3>Tratti di ${data.name}</h3>`;
 
-            // 🔹 Controllo Velocità
             if (typeof data.speed === "number") {
                 traitsHtml += `<p><strong>Velocità:</strong> ${data.speed} ft</p>`;
             } else if (typeof data.speed === "object") {
@@ -88,12 +92,10 @@ function displayRaceTraits() {
                 traitsHtml += `<p><strong>Velocità:</strong> ${speedText}</p>`;
             }
 
-            // 🔹 Scurovisione
             if (data.senses && data.senses.darkvision) {
                 traitsHtml += `<p><strong>Scurovisione:</strong> ${data.senses.darkvision} ft</p>`;
             }
 
-            // 🔹 Tratti Razziali
             if (data.traits && data.traits.length > 0) {
                 traitsHtml += `<p><strong>Tratti:</strong></p><ul>`;
                 data.traits.forEach(trait => {
@@ -102,7 +104,6 @@ function displayRaceTraits() {
                 traitsHtml += `</ul>`;
             }
 
-            // 🔹 Lingue
             if (data.languages) {
                 let fixedLanguages = data.languages.fixed ? data.languages.fixed.join(", ") : "";
                 let languageHtml = `<p><strong>Lingue Concesse:</strong> ${fixedLanguages}</p>`;
@@ -124,7 +125,6 @@ function displayRaceTraits() {
                 }
             }
 
-            // 🔹 Controllo del livello per le capacità magiche
             let characterLevel = parseInt(document.getElementById("levelSelect").value) || 1;
             if (data.spellcasting && characterLevel >= 3) {
                 traitsHtml += `<h4>Capacità Magiche</h4>`;
@@ -133,7 +133,8 @@ function displayRaceTraits() {
             }
 
             raceTraitsDiv.innerHTML = traitsHtml;
-            racialBonusDiv.style.display = "block"; // Mostra il div quando una razza è selezionata
+            subraceTraitsDiv.innerHTML = ""; // RESET SOTTO RAZZA
+            racialBonusDiv.style.display = "block";
         })
         .catch(error => console.error("❌ Errore caricando i tratti della razza:", error));
 }
@@ -175,39 +176,39 @@ function displaySubraceTraits() {
 function updateSubraces() {
     let racePath = document.getElementById("raceSelect").value;
     let subraceSelect = document.getElementById("subraceSelect");
-    let racialBonusDiv = document.getElementById("racialBonusSelection"); // Selettore bonus razziali
-    document.getElementById("subraceSelect").innerHTML = '<option value="">Seleziona una sottorazza</option>';
-    document.getElementById("subraceSelect").style.display = "none";
+    let racialBonusDiv = document.getElementById("racialBonusSelection");
 
+    // Resetta il selettore delle sottorazze ogni volta che cambia la razza
+    subraceSelect.innerHTML = '<option value="">Seleziona una sottorazza</option>';
+    subraceSelect.style.display = "none";
 
     if (!racePath) {
-        subraceSelect.innerHTML = '<option value="">Nessuna sottorazza disponibile</option>';
-        subraceSelect.style.display = "none";
         racialBonusDiv.style.display = "none"; // Nasconde il blocco dei bonus razziali se non c'è razza
         resetRacialBonuses();
         return;
     }
-    
+
     fetch(racePath)
         .then(response => response.json())
         .then(data => {
             subraceSelect.innerHTML = '<option value="">Seleziona una sottorazza</option>';
-            if (data.subraces) {
+            if (data.subraces && data.subraces.length > 0) {
                 data.subraces.forEach(subrace => {
                     let option = document.createElement("option");
                     option.value = subrace.name;
                     option.textContent = subrace.name;
                     subraceSelect.appendChild(option);
                 });
-                subraceSelect.style.display = data.subraces.length > 0 ? "block" : "none";
+                subraceSelect.style.display = "block";
+            } else {
+                subraceSelect.style.display = "none"; // Nasconde il dropdown se non ci sono sottorazze
             }
-             // 🔥 Mostra il selettore dei bonus razziali!
+
             racialBonusDiv.style.display = "block";
             resetRacialBonuses(); // Resetta i bonus ogni volta che si cambia razza
         })
         .catch(error => console.error("❌ Errore caricando le sottorazze:", error));
 }
-
 // ** AGGIORNA LE SOTTOCLASSI **
 function updateSubclasses() {
     let classPath = document.getElementById("classSelect").value;

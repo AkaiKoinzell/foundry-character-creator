@@ -9,13 +9,11 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("raceSelect").addEventListener("change", function() {
     displayRaceTraits();
 });
-    document.getElementById("classSelect").addEventListener("change", updateSubclasses);
     document.getElementById("racialBonus1").addEventListener("change", applyRacialBonuses);
     document.getElementById("racialBonus2").addEventListener("change", applyRacialBonuses);
     document.getElementById("racialBonus3").addEventListener("change", applyRacialBonuses);
     document.getElementById("levelSelect").addEventListener("change", function () {
     displayRaceTraits(); // Ricarica i tratti della razza in base al nuovo livello
-    displaySubraceTraits(); // Ricarica i tratti della sottorazza selezionata
 });
 
     // Genera JSON finale

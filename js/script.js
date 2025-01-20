@@ -56,9 +56,12 @@ function populateDropdown(selectId, options) {
 }
 
 // ** MOSTRA I TRATTI DELLA RAZZA **
+// ** MOSTRA I TRATTI DELLA RAZZA **
 function displayRaceTraits() {
     let racePath = document.getElementById("raceSelect").value;
     let raceTraitsDiv = document.getElementById("raceTraits");
+    let languageContainer = document.getElementById("languageSelection");
+    let racialBonusDiv = document.getElementById("racialBonusSelection");
 
     if (!racePath) {
         raceTraitsDiv.innerHTML = "<p>Seleziona una razza per vedere i tratti.</p>";
@@ -71,7 +74,8 @@ function displayRaceTraits() {
             console.log("📜 Dati razza caricati:", data);
 
             let traitsHtml = `<h3>Tratti di ${data.name}</h3>`;
-            // 🔹 Controllo se speed è un numero o un oggetto
+
+            // 🔹 Controllo Velocità
             if (typeof data.speed === "number") {
                 traitsHtml += `<p><strong>Velocità:</strong> ${data.speed} ft</p>`;
             } else if (typeof data.speed === "object") {
@@ -80,55 +84,52 @@ function displayRaceTraits() {
                     .join(", ");
                 traitsHtml += `<p><strong>Velocità:</strong> ${speedText}</p>`;
             }
+
+            // 🔹 Scurovisione
             if (data.senses && data.senses.darkvision) {
                 traitsHtml += `<p><strong>Scurovisione:</strong> ${data.senses.darkvision} ft</p>`;
             }
 
-            // 🔹 Ottiene il livello del personaggio
-            let characterLevel = parseInt(document.getElementById("levelSelect").value) || 1;
-            
+            // 🔹 Tratti Razziali
             if (data.traits && data.traits.length > 0) {
                 traitsHtml += `<p><strong>Tratti:</strong></p><ul>`;
                 data.traits.forEach(trait => {
-                    // 🔹 Mostra solo i tratti che il PG può ottenere al suo livello attuale
-                    if (!trait.level_requirement || trait.level_requirement <= characterLevel) {
-                        traitsHtml += `<li><strong>${trait.name}:</strong> ${trait.description}</li>`;
-                    }
+                    traitsHtml += `<li><strong>${trait.name}:</strong> ${trait.description}</li>`;
                 });
                 traitsHtml += `</ul>`;
             }
 
+            // 🔹 Lingue
             if (data.languages) {
                 let fixedLanguages = data.languages.fixed ? data.languages.fixed.join(", ") : "";
-                let languageContainer = document.getElementById("languageSelection");
-                if (languageContainer) {
-                    languageContainer.innerHTML = "Lingue disponibili...";
-                } else {
-                    console.error("❌ Errore: #languageSelection non trovato nel DOM.");
-                }
-            
+                let languageHtml = `<p><strong>Lingue Concesse:</strong> ${fixedLanguages}</p>`;
+
                 if (data.languages.choice > 0) {
-                    languageContainer += `<p>Scegli ${data.languages.choice} lingua/e extra:</p>`;
-            
+                    languageHtml += `<p>Scegli ${data.languages.choice} lingua/e extra:</p>`;
+
                     loadLanguages(languages => {
                         let options = languages.map(lang => `<option value="${lang}">${lang}</option>`).join("");
                         let select = `<select>${options}</select>`;
-                        document.getElementById("languageSelection").innerHTML = languageContainer + select;
+                        if (languageContainer) {
+                            languageContainer.innerHTML = languageHtml + select;
+                        }
                     });
                 } else {
-                    document.getElementById("languageSelection").innerHTML = languageContainer;
+                    if (languageContainer) {
+                        languageContainer.innerHTML = languageHtml;
+                    }
                 }
             }
 
-
-            if (data.spellcasting) {
+            // 🔹 Controllo del livello per le capacità magiche
+            let characterLevel = parseInt(document.getElementById("levelSelect").value) || 1;
+            if (data.spellcasting && characterLevel >= 3) {
                 traitsHtml += `<h4>Capacità Magiche</h4>`;
                 traitsHtml += `<p><strong>Incantesimo:</strong> ${data.spellcasting.spell} (${data.spellcasting.uses})</p>`;
                 traitsHtml += `<p><strong>Abilità di lancio:</strong> Scegli tra ${data.spellcasting.ability_choices.join(", ")}</p>`;
             }
-            
+
             raceTraitsDiv.innerHTML = traitsHtml;
-            let racialBonusDiv = document.getElementById("racialBonusSelection");
             racialBonusDiv.style.display = "block"; // Mostra il div quando una razza è selezionata
         })
         .catch(error => console.error("❌ Errore caricando i tratti della razza:", error));

@@ -292,7 +292,6 @@ function applyRacialBonuses() {
 
     if (!bonus1 || !bonus2 || !bonus3) {
         console.error("❌ Errore: uno o più elementi dei bonus razza non sono stati selezionati.");
-        alert("⚠️ Devi selezionare tutti e tre i bonus razza!");
         return;
     }
 
@@ -306,7 +305,7 @@ function applyRacialBonuses() {
     let invalidSelections = Object.values(counts).some(count => count > 2);
     if (invalidSelections) {
         console.error("❌ Errore: una caratteristica è stata selezionata più di due volte.");
-        alert("Puoi assegnare al massimo +2 a una caratteristica e +1 a un'altra, oppure +1 a tre diverse!");
+        alert("⚠️ Puoi assegnare al massimo +2 a una caratteristica e +1 a un'altra, oppure +1 a tre diverse!");
         return;
     }
 

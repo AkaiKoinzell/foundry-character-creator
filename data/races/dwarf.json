@@ -10,7 +10,11 @@
         { "name": "Tool Proficiency", "description": "You gain proficiency with the artisan's tools of your choice: smith's tools, brewer's supplies, or mason's tools." },
         { "name": "Stonecunning", "description": "Whenever you make an Intelligence (History) check related to the origin of stonework, you are considered proficient in the History skill and add double your proficiency bonus to the check." }
     ],
-    "languages": ["Common", "Dwarvish"],
+    "languages": {
+        "fixed": ["Common", "Dwarvish"],
+        "choice": 1,
+        "options": ["Any other language you and your DM agree is appropriate"]
+    },
     "subraces": [
         {
             "name": "Hill Dwarf",

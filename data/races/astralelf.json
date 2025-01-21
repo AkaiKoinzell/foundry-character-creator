@@ -44,7 +44,10 @@
     },
     "spellcasting": {
         "level_requirement": 1,
-        "spell_choices": ["Dancing Lights", "Light", "Sacred Flame"],
+        "spell_choices": {
+            "type": "fixed_list",
+            "options": ["Dancing Lights", "Light", "Sacred Flame"]
+        },
         "ability_choices": ["Intelligence", "Wisdom", "Charisma"]
     }
 }

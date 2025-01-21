@@ -148,8 +148,12 @@ function displayRaceTraits() {
         .then(data => {
             console.log("📜 Dati razza caricati:", data);
 
+            // Reset del contenuto del contenitore dei tratti e degli incantesimi
+            raceTraitsDiv.innerHTML = ""; // Pulisce i tratti della razza
+            document.getElementById("spellSelectionContainer").innerHTML = ""; // Pulisce il contenitore degli incantesimi
+
             let traitsHtml = `<h3>Tratti di ${data.name}</h3>`;
-    // Gestione dinamica della velocità
+            // Gestione dinamica della velocità
             if (typeof data.speed === "object") {
                 // Combina velocità multiple
                 let speedDetails = [];

@@ -30,9 +30,9 @@
     ],
     "spellcasting": {
         "spell": "Gust of Wind",
+        "level_requirement": 3,
         "uses": "1 per long rest",
         "ability_choices": ["Intelligence", "Wisdom", "Charisma"],
-        "level_requirement": 3
     },
     "languages": {
         "fixed": ["Common"],

@@ -57,6 +57,76 @@ function populateDropdown(selectId, options) {
     });
 }
 
+function loadSpells(callback) {
+    fetch("data/spells.json") // Assicurati che il JSON sia salvato in questa directory
+        .then(response => response.json())
+        .then(data => {
+            console.log("📖 Incantesimi caricati:", data);
+            callback(data);
+        })
+        .catch(error => console.error("❌ Errore nel caricamento degli incantesimi:", error));
+}
+function handleSpellcastingOptions(data, traitsHtml) {
+    if (!data.spellcasting) return traitsHtml;
+
+    let spellcastingHtml = "<h4>📖 Incantesimi</h4>";
+
+    // 🧙‍♂️ **Scelta dei Cantrip o Spell**
+    if (data.spellcasting.spell_choices) {
+        if (data.spellcasting.spell_choices.type === "fixed_list") {
+            // 🔹 Selezione da una lista fissa
+            let spellOptions = data.spellcasting.spell_choices.options
+                .map(spell => `<option value="${spell}">${spell}</option>`)
+                .join("");
+
+            spellcastingHtml += `<p><strong>Scegli un incantesimo:</strong>
+                <select id="spellSelection">${spellOptions}</select>
+            </p>`;
+        } else if (data.spellcasting.spell_choices.type === "class_list") {
+            // 🔹 Selezione da una lista di classe
+            let className = data.spellcasting.spell_choices.class;
+            let spellLevel = data.spellcasting.spell_choices.level;
+
+            loadSpells(spellList => {
+                let availableSpells = spellList
+                    .filter(spell => spell.level === spellLevel && spell.spell_list.includes(className))
+                    .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
+                    .join("");
+
+                document.getElementById("spellSelectionContainer").innerHTML = `<p><strong>Scegli un incantesimo:</strong>
+                    <select id="spellSelection">${availableSpells}</select>
+                </p>`;
+            });
+        }
+    }
+
+    // 🎯 **Scelta dell'abilità di lancio**
+    if (data.spellcasting.ability_choices) {
+        let abilityOptions = data.spellcasting.ability_choices
+            .map(ability => `<option value="${ability}">${ability}</option>`)
+            .join("");
+
+        spellcastingHtml += `<p><strong>Abilità di lancio:</strong>
+            <select id="castingAbility">${abilityOptions}</select>
+        </p>`;
+    }
+
+    // 🔥 **Gestione degli incantesimi bonus per livello**
+    if (data.spellcasting.level_up_spells) {
+        let characterLevel = parseInt(document.getElementById("levelSelect").value) || 1;
+        let availableSpells = data.spellcasting.level_up_spells
+            .filter(spell => characterLevel >= spell.level)
+            .map(spell => `<li><strong>${spell.spell_choices.join(", ")}</strong> (Usi: ${spell.uses}, Ricarica: ${spell.refresh})</li>`)
+            .join("");
+
+        if (availableSpells) {
+            spellcastingHtml += `<p><strong>Incantesimi Bonus:</strong></p><ul>${availableSpells}</ul>`;
+        }
+    }
+
+    return traitsHtml + spellcastingHtml;
+}
+
 // ** MOSTRA I TRATTI DELLA RAZZA **
 function displayRaceTraits() {
     let racePath = document.getElementById("raceSelect").value;
@@ -89,7 +159,11 @@ function displayRaceTraits() {
                 });
                 traitsHtml += `</ul>`;
             }
-
+            traitsHtml = handleSpellcastingOptions(data, traitsHtml);
+            raceTraitsDiv.innerHTML = traitsHtml;
+            racialBonusDiv.style.display = "block";
+            resetRacialBonuses();
+        })
             // Handle Languages
             let languageHtml = `<p><strong>Lingue Concesse:</strong> ${data.languages.fixed.join(", ")}</p>`;
             if (data.languages.choice > 0) {
@@ -102,75 +176,7 @@ function displayRaceTraits() {
             } else {
                 document.getElementById("languageSelection").innerHTML = languageHtml;
             }
-
-               // 🧙 **Handle Spellcasting Choices**
-                if (data.spellcasting) {
-                    // 🎯 Spellcasting Ability (Dropdown solo se ci sono più scelte)
-                    if (data.spellcasting.ability_choices.length > 1) {
-                        let spellAbilitySelect = data.spellcasting.ability_choices
-                            .map(ability => `<option value="${ability}">${ability}</option>`)
-                            .join("");
-                
-                        traitsHtml += `<p><strong>Abilità di lancio:</strong> 
-                            <select id="castingAbility">${spellAbilitySelect}</select>
-                        </p>`;
-                    } else {
-                        traitsHtml += `<p><strong>Abilità di lancio:</strong> ${data.spellcasting.ability_choices[0]}</p>`;
-                    }
-                
-                    // 🎯 Cantrip Choice (Dropdown solo se ci sono più scelte)
-                    if (data.spellcasting.spell_choices.length > 1) {
-                        let spellOptions = data.spellcasting.spell_choices
-                            .map(spell => `<option value="${spell}">${spell}</option>`)
-                            .join("");
-                
-                        traitsHtml += `<p><strong>Scegli un Cantrip:</strong> 
-                            <select id="cantripChoice">${spellOptions}</select>
-                        </p>`;
-                    } else {
-                        traitsHtml += `<p><strong>Cantrip Concesso:</strong> ${data.spellcasting.spell_choices[0]}</p>`;
-                    }
-
-                // 📖 Handle **Cantrip Choice from Wizard Spell List** (High Elf)
-                if (data.name === "High Elf") {
-                    loadWizardCantrips(cantripList => {
-                        let options = cantripList
-                            .map(spell => `<option value="${spell}">${spell}</option>`)
-                            .join("");
-                        traitsHtml += `<p><strong>Scegli un Cantrip dalla lista del Mago:</strong> 
-                            <select id="wizardCantripSelection">
-                                ${options}
-                            </select>
-                        </p>`;
-                        raceTraitsDiv.innerHTML = traitsHtml;
-                    });
-                }
-
-                // ✨ Handle **Level-Up Spells** (Drow, Aarakocra)
-                if (data.spellcasting.level_up_spells) {
-                    traitsHtml += `<p><strong>Incantesimi Bonus per Livelli:</strong></p><ul>`;
-                    data.spellcasting.level_up_spells.forEach(spellData => {
-                        traitsHtml += `<li><strong>Livello ${spellData.level}:</strong> ${spellData.spell} 
-                        (Usi: ${spellData.uses}, Ripristino: ${spellData.refresh})</li>`;
-                    });
-                    traitsHtml += `</ul>`;
-                }
-
-               // 🎩 **Gestione Incantesimi Bonus per Livello**
-                if (data.spellcasting.level_up_spells) {
-                    let levelUpSpellsHtml = "<p><strong>Incantesimi Bonus per Livelli:</strong></p><ul>";
-                
-                    data.spellcasting.level_up_spells.forEach(spellData => {
-                        let spellName = spellData.spell_choices[0] || "Errore nel JSON";
-                        levelUpSpellsHtml += `<li><strong>Livello ${spellData.level}:</strong> ${spellName} (Usi: ${spellData.uses}, Ripristino: ${spellData.refresh})</li>`;
-                    });
-                    
-                    levelUpSpellsHtml += "</ul>";
-                
-                    // Solo se ci sono incantesimi sbloccati, altrimenti nascondiamo la sezione
-                    if (levelUpSpellsHtml.includes("<li>")) {
-                        traitsHtml += levelUpSpellsHtml;
-                    }
+    
         .catch(error => console.error("❌ Errore caricando i tratti della razza:", error));
 }
 

@@ -23,11 +23,11 @@
     },
     "spellcasting": {
         "level_requirement": 1,
-        "spell": ["Dancing Lights"],
-        "ability": "Charisma",
+        "spell_choices": ["Dancing Lights"],
+        "ability_choices": ["Charisma"],
         "level_up_spells": [
-            { "level": 3, "spell": "Faerie Fire", "uses": 1, "refresh": "long rest" },
-            { "level": 5, "spell": "Darkness", "uses": 1, "refresh": "long rest" }
+            { "level": 3, "spell_choices": ["Faerie Fire"], "uses": 1, "refresh": "long rest" },
+            { "level": 5, "spell_choices": ["Darkness"], "uses": 1, "refresh": "long rest" }
         ]
     }
 }

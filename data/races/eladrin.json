@@ -10,6 +10,7 @@
     "creature_type": "Humanoid",
     "size": "Medium",
     "speed": 30,
+    "senses": { "darkvision": 60 },
     "traits": [
         {
             "name": "Fey Step",

@@ -66,15 +66,15 @@ function loadSpells(callback) {
         })
         .catch(error => console.error("❌ Errore nel caricamento degli incantesimi:", error));
 }
+
 function handleSpellcastingOptions(data, traitsHtml) {
     if (!data.spellcasting) return traitsHtml;
 
     let spellcastingHtml = "<h4>📖 Incantesimi</h4>";
 
-    // 🧙‍♂️ **Scelta dei Cantrip o Spell**
+    // **Scelta di un incantesimo**
     if (data.spellcasting.spell_choices) {
         if (data.spellcasting.spell_choices.type === "fixed_list") {
-            // 🔹 Selezione da una lista fissa
             let spellOptions = data.spellcasting.spell_choices.options
                 .map(spell => `<option value="${spell}">${spell}</option>`)
                 .join("");
@@ -83,7 +83,6 @@ function handleSpellcastingOptions(data, traitsHtml) {
                 <select id="spellSelection">${spellOptions}</select>
             </p>`;
         } else if (data.spellcasting.spell_choices.type === "class_list") {
-            // 🔹 Selezione da una lista di classe
             let className = data.spellcasting.spell_choices.class;
             let spellLevel = data.spellcasting.spell_choices.level;
 
@@ -93,14 +92,18 @@ function handleSpellcastingOptions(data, traitsHtml) {
                     .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
                     .join("");
 
-                document.getElementById("spellSelectionContainer").innerHTML = `<p><strong>Scegli un incantesimo:</strong>
-                    <select id="spellSelection">${availableSpells}</select>
-                </p>`;
+                if (availableSpells.length > 0) {
+                    document.getElementById("spellSelectionContainer").innerHTML = `<p><strong>Scegli un incantesimo:</strong>
+                        <select id="spellSelection">${availableSpells}</select>
+                    </p>`;
+                } else {
+                    document.getElementById("spellSelectionContainer").innerHTML = `<p><strong>⚠️ Nessun incantesimo disponibile per questa classe a questo livello!</strong></p>`;
+                }
             });
         }
     }
 
-    // 🎯 **Scelta dell'abilità di lancio**
+    // **Scelta dell'abilità di lancio**
     if (data.spellcasting.ability_choices) {
         let abilityOptions = data.spellcasting.ability_choices
             .map(ability => `<option value="${ability}">${ability}</option>`)
@@ -111,7 +114,7 @@ function handleSpellcastingOptions(data, traitsHtml) {
         </p>`;
     }
 
-    // 🔥 **Gestione degli incantesimi bonus per livello**
+    // **Gestione incantesimi bonus per livello**
     if (data.spellcasting.level_up_spells) {
         let characterLevel = parseInt(document.getElementById("levelSelect").value) || 1;
         let availableSpells = data.spellcasting.level_up_spells
@@ -159,12 +162,11 @@ function displayRaceTraits() {
                 });
                 traitsHtml += `</ul>`;
             }
+
+            // 🧙‍♂️ **Gestione Spellcasting**
             traitsHtml = handleSpellcastingOptions(data, traitsHtml);
-            raceTraitsDiv.innerHTML = traitsHtml;
-            racialBonusDiv.style.display = "block";
-            resetRacialBonuses();
-        })
-            // Handle Languages
+
+            // 🏗️ **Gestione Lingue**
             let languageHtml = `<p><strong>Lingue Concesse:</strong> ${data.languages.fixed.join(", ")}</p>`;
             if (data.languages.choice > 0) {
                 languageHtml += `<p>Scegli ${data.languages.choice} lingua/e extra:</p>`;
@@ -176,7 +178,12 @@ function displayRaceTraits() {
             } else {
                 document.getElementById("languageSelection").innerHTML = languageHtml;
             }
-    
+
+            // Aggiorniamo la pagina con i tratti corretti
+            raceTraitsDiv.innerHTML = traitsHtml;
+            racialBonusDiv.style.display = "block";
+            resetRacialBonuses();
+        })
         .catch(error => console.error("❌ Errore caricando i tratti della razza:", error));
 }
 

@@ -1,23 +1,33 @@
 {
-      "name": "Drow",
-      "ability_bonus": { "dex": 2, "cha": 1 },
-      "senses": { "darkvision": 120 },
-      "traits": [
-        { "name": "Age", "description": "Elves reach physical maturity at the same age as humans, but claim adulthood around 100 years old. They can live up to 750 years." },
-        { "name": "Size", "description": "Elves range from under 5 to over 6 feet tall and have slender builds. Your size is Medium." },
-        { "name": "Keen Senses", "description": "You have proficiency in the Perception skill." },
-        { "name": "Fey Ancestry", "description": "You have advantage on saving throws against being charmed, and magic can't put you to sleep." },
-        { "name": "Trance", "description": "Elves do not sleep but enter a meditative state for 4 hours a day. This functions as a long rest." }
-        { "name": "Sunlight Sensitivity", "description": "You have disadvantage on attack rolls and on Wisdom (Perception) checks that rely on sight when in direct sunlight." },
-        { "name": "Drow Weapon Training", "description": "You have proficiency with rapiers, shortswords, and hand crossbows." }
-      ],
-      "spellcasting": {
+    "name": "Drow",
+    "source": "PHB",
+    "ability_scores": {
+        "fixed": { "dex": 2, "cha": 1 }
+    },
+    "creature_type": "Humanoid",
+    "size": "Medium",
+    "speed": 30,
+    "senses": { "darkvision": 120 },
+    "traits": [
+        {
+            "name": "Sunlight Sensitivity",
+            "description": "You have disadvantage on attack rolls and on Wisdom (Perception) checks that rely on sight when in direct sunlight."
+        },
+        {
+            "name": "Drow Weapon Training",
+            "description": "You have proficiency with rapiers, shortswords, and hand crossbows."
+        }
+    ],
+    "languages": {
+        "fixed": ["Common", "Elvish"]
+    },
+    "spellcasting": {
         "level_requirement": 1,
         "spell": ["Dancing Lights"],
         "ability": "Charisma",
         "level_up_spells": [
-          { "level": 3, "spell": "Faerie Fire", "uses": 1, "refresh": "long rest" },
-          { "level": 5, "spell": "Darkness", "uses": 1, "refresh": "long rest" }
+            { "level": 3, "spell": "Faerie Fire", "uses": 1, "refresh": "long rest" },
+            { "level": 5, "spell": "Darkness", "uses": 1, "refresh": "long rest" }
         ]
-      }
-    },
+    }
+}

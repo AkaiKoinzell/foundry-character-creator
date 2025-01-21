@@ -1,8 +1,12 @@
 {
     "races": {
         "Aarakocra": "data/races/aarakocra.json",
-        "Aasimar": "data/races/aasimar.json",
-        "Dwarf": "data/races/dwarf.json",
+        "Aasimar (Fallen)": "data/races/aasimarfallen.json",
+        "Aasimar (Protector)": "data/races/aasimarprotector.json",
+        "Aasimar (Scourge)": "data/races/aasimarscourge.json",
+        "Dwarf (Duergar)": "data/races/dwarfduergar.json",
+        "Dwarf (Hill)": "data/races/dwarfhill.json",
+        "Dwarf (Mountain)": "data/races/dwarfmountain.json",
         "Elf (Astral)": "data/races/astralelf.json",
         "Elf (Drow)": "data/races/drow.json",
         "Elf (Eladrin)": "data/races/eladrin.json",

@@ -4,6 +4,11 @@
         "Aasimar": "data/races/aasimar.json",
         "Dwarf": "data/races/dwarf.json",
         "Elf (Astral)": "data/races/astralelf.json",
-        "Elf (Drow)": "data/races/drow.json" 
+        "Elf (Drow)": "data/races/drow.json",
+        "Elf (Eladrin)": "data/races/eladrin.json",
+        "Elf (High)": "data/races/highelf.json",
+        "Elf (Sea)": "data/races/seaelf.json",
+        "Elf (Shadar-kai)": "data/races/shadarkaielf.json",
+        "Elf (Wood)": "data/races/woodelf.json"
     }
 }

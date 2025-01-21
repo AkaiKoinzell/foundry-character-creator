@@ -164,7 +164,6 @@ function displayRaceTraits() {
                     traitsHtml += `<p><strong>Dal livello ${data.spellcasting.level_requirement}:</strong> 
                         puoi lanciare <strong>${data.spellcasting.spell}</strong> una volta per long rest.</p>`;
                 }
-            }
 
             raceTraitsDiv.innerHTML = traitsHtml;
             racialBonusDiv.style.display = "block"; 

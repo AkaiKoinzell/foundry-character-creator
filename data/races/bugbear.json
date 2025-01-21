@@ -1,0 +1,19 @@
+    {
+      "name": "Bugbear",
+      "size": "Medium",
+      "speed": 30,
+      "senses": { "darkvision": 60 },
+      "ability_bonus": "Choose one of: (a) Choose any +2; choose any other +1 (b) Choose three different +1",
+      "traits": [
+        { "name": "Fey Ancestry", "description": "You have advantage on saving throws you make to avoid or end the charmed condition on yourself." },
+        { "name": "Long-Limbed", "description": "When you make a melee attack on your turn, your reach for it is 5 feet greater than normal." },
+        { "name": "Powerful Build", "description": "You count as one size larger when determining your carrying capacity and the weight you can push, drag, or lift." },
+        { "name": "Sneaky", "description": "You are proficient in the Stealth skill. In addition, without squeezing, you can move through and stop in a space large enough for a Small creature." },
+        { "name": "Surprise Attack", "description": "If you hit a creature with an attack roll, the creature takes an extra 2d6 damage if it hasn't taken a turn yet in the current combat." }
+      ],
+      "languages": {
+        "fixed": ["Common"],
+        "choice": 1,
+        "options": ["Any language you and your DM agree upon"]
+      }
+    }

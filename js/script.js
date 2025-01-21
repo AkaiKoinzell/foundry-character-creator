@@ -149,12 +149,31 @@ function displayRaceTraits() {
             console.log("📜 Dati razza caricati:", data);
 
             let traitsHtml = `<h3>Tratti di ${data.name}</h3>`;
-            traitsHtml += `<p><strong>Velocità:</strong> ${data.speed} ft</p>`;
-
+    // Gestione dinamica della velocità
+            if (typeof data.speed === "object") {
+                // Combina velocità multiple
+                let speedDetails = [];
+                for (let type in data.speed) {
+                    speedDetails.push(`${type}: ${data.speed[type]} ft`);
+                }
+                traitsHtml += `<p><strong>Velocità:</strong> ${speedDetails.join(", ")}</p>`;
+            } else if (typeof data.speed === "number") {
+                // Velocità come numero semplice
+                traitsHtml += `<p><strong>Velocità:</strong> ${data.speed} ft</p>`;
+            } else if (typeof data.speed === "string") {
+                // Velocità come stringa
+                traitsHtml += `<p><strong>Velocità:</strong> ${data.speed}</p>`;
+            } else {
+                // Valori mancanti o non validi
+                traitsHtml += `<p><strong>Velocità:</strong> Non disponibile</p>`;
+            }
+    
+            // Gestione visione
             if (data.senses && data.senses.darkvision) {
                 traitsHtml += `<p><strong>Visione:</strong> ${data.senses.darkvision} ft</p>`;
             }
-
+    
+            // Gestione tratti
             if (data.traits && data.traits.length > 0) {
                 traitsHtml += `<p><strong>Tratti:</strong></p><ul>`;
                 data.traits.forEach(trait => {

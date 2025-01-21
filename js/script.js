@@ -57,6 +57,58 @@ function populateDropdown(selectId, options) {
     });
 }
 
+function handleSkillChoices(data, traitsHtml) {
+    if (!data.skill_choices) return traitsHtml;
+
+    let skillOptions = data.skill_choices.options
+        .map(skill => `<option value="${skill}">${skill}</option>`)
+        .join("");
+
+    let skillSelectionHtml = `<p><strong>Scegli ${data.skill_choices.number} abilità:</strong></p>`;
+
+    for (let i = 0; i < data.skill_choices.number; i++) {
+        skillSelectionHtml += `<select class="skillChoice" id="skillChoice${i}" data-options='${skillOptions}' onchange="updateSkillOptions()">`;
+        skillSelectionHtml += data.skill_choices.options
+            .map(skill => `<option value="${skill}">${skill}</option>`)
+            .join("");
+        skillSelectionHtml += `</select> `;
+    }
+
+    return traitsHtml + skillSelectionHtml;
+}
+
+function updateSkillOptions() {
+    let allSelects = document.querySelectorAll(".skillChoice");
+    let selectedSkills = new Set();
+
+    // Raccolta di tutte le abilità selezionate
+    allSelects.forEach(select => {
+        if (select.value) {
+            selectedSkills.add(select.value);
+        }
+    });
+
+    // Aggiorna le opzioni per ogni select
+    allSelects.forEach(select => {
+        let currentSelection = select.value; // Memorizza l'opzione selezionata
+        select.innerHTML = ""; // Svuota il select
+
+        let skillOptions = JSON.parse(select.getAttribute("data-options")); // Ottiene l'elenco originale delle opzioni
+        skillOptions.forEach(skill => {
+            // Mostra solo le opzioni che non sono già state selezionate, a meno che non sia l'opzione attualmente selezionata
+            if (!selectedSkills.has(skill) || skill === currentSelection) {
+                let option = document.createElement("option");
+                option.value = skill;
+                option.textContent = skill;
+                if (skill === currentSelection) {
+                    option.selected = true;
+                }
+                select.appendChild(option);
+            }
+        });
+    });
+}
+
 function loadSpells(callback) {
     fetch("data/spells.json") // Assicurati che il JSON sia salvato in questa directory
         .then(response => response.json())

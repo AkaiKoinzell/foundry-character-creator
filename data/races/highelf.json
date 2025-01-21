@@ -24,7 +24,11 @@
     },
     "spellcasting": {
         "level_requirement": 1,
-        "spell_source": "Wizard",
-        "ability": "Intelligence"
+        "spell_choices": {
+            "type": "class_list",
+            "class": "Mago",
+            "level": 0
+        },
+        "ability_choices": ["Intelligence"]
     }
 }

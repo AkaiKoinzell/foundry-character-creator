@@ -103,18 +103,25 @@ function displayRaceTraits() {
                 document.getElementById("languageSelection").innerHTML = languageHtml;
             }
 
-           // 🧙 **Handle Spellcasting Choices**
-            if (data.spellcasting) {
-                // 🎯 Select Spellcasting Ability
-                let spellAbilitySelect = data.spellcasting.ability_choices
-                    .map(ability => `<option value="${ability}">${ability}</option>`)
-                    .join("");
-                traitsHtml += `<p><strong>Abilità di lancio:</strong> 
-                    <select id="castingAbility">
-                        ${spellAbilitySelect}
-                    </select>
-                </p>`;
-
+               // 🧙 **Handle Spellcasting Choices**
+                if (data.spellcasting) {
+                    // 🎯 Select Spellcasting Ability (only if available)
+                    let spellAbilitySelect = "";
+                    if (data.spellcasting.ability_choices) {
+                        spellAbilitySelect = data.spellcasting.ability_choices
+                            .map(ability => `<option value="${ability}">${ability}</option>`)
+                            .join("");
+                
+                        traitsHtml += `<p><strong>Abilità di lancio:</strong> 
+                            <select id="castingAbility">
+                                ${spellAbilitySelect}
+                            </select>
+                        </p>`;
+                    } else if (data.spellcasting.ability) {
+                        // Se la razza ha un'abilità fissa (es. Drow: Charisma)
+                        traitsHtml += `<p><strong>Abilità di lancio:</strong> ${data.spellcasting.ability}</p>`;
+                    }
+                }
                 // 🔥 Handle **Cantrip Choice from a Specific List** (Astral Elf)
                 if (data.spellcasting.spell_choices) {
                     let spellOptions = data.spellcasting.spell_choices

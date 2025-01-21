@@ -6,6 +6,8 @@
         "Aasimar (Scourge)": "data/races/aasimarscourge.json",
         "Bugbear": "data/races/bugbear.json",
         "Centaur": "data/races/centaur.json",
+        "Changeling": "data/races/changeling.json",
+        "Dhampir": "data/races/dhampir.json",
         "Dwarf (Duergar)": "data/races/dwarfduergar.json",
         "Dwarf (Hill)": "data/races/dwarfhill.json",
         "Dwarf (Mountain)": "data/races/dwarfmountain.json",

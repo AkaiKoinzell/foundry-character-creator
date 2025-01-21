@@ -57,13 +57,10 @@ function populateDropdown(selectId, options) {
     });
 }
 
-function handleSkillChoices(data, traitsHtml) {
-    if (!data.skill_choices) return traitsHtml;
+function handleSkillChoices(data) {
+    if (!data.skill_choices) return;
 
-    let skillOptions = data.skill_choices.options
-        .map(skill => `<option value="${skill}">${skill}</option>`)
-        .join("");
-
+    let skillOptions = JSON.stringify(data.skill_choices.options); // Salva l'elenco originale delle abilità
     let skillSelectionHtml = `<p><strong>Scegli ${data.skill_choices.number} abilità:</strong></p>`;
 
     for (let i = 0; i < data.skill_choices.number; i++) {
@@ -73,6 +70,8 @@ function handleSkillChoices(data, traitsHtml) {
             .join("");
         skillSelectionHtml += `</select> `;
     }
+
+    document.getElementById("skillSelectionContainer").innerHTML = skillSelectionHtml;
 
     return traitsHtml + skillSelectionHtml;
 }
@@ -257,6 +256,7 @@ function displayRaceTraits() {
             // Aggiorniamo la pagina con i tratti corretti
             raceTraitsDiv.innerHTML = traitsHtml;
             racialBonusDiv.style.display = "block";
+            handleSkillChoices(data);
             resetRacialBonuses();
         })
         .catch(error => console.error("❌ Errore caricando i tratti della razza:", error));

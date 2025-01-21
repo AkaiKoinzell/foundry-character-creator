@@ -105,34 +105,31 @@ function displayRaceTraits() {
 
                // 🧙 **Handle Spellcasting Choices**
                 if (data.spellcasting) {
-                    // 🎯 Select Spellcasting Ability (only if available)
-                    let spellAbilitySelect = "";
-                    if (data.spellcasting.ability_choices) {
-                        spellAbilitySelect = data.spellcasting.ability_choices
+                    // 🎯 Spellcasting Ability (Dropdown solo se ci sono più scelte)
+                    if (data.spellcasting.ability_choices.length > 1) {
+                        let spellAbilitySelect = data.spellcasting.ability_choices
                             .map(ability => `<option value="${ability}">${ability}</option>`)
                             .join("");
                 
                         traitsHtml += `<p><strong>Abilità di lancio:</strong> 
-                            <select id="castingAbility">
-                                ${spellAbilitySelect}
-                            </select>
+                            <select id="castingAbility">${spellAbilitySelect}</select>
                         </p>`;
-                    } else if (data.spellcasting.ability) {
-                        // Se la razza ha un'abilità fissa (es. Drow: Charisma)
-                        traitsHtml += `<p><strong>Abilità di lancio:</strong> ${data.spellcasting.ability}</p>`;
+                    } else {
+                        traitsHtml += `<p><strong>Abilità di lancio:</strong> ${data.spellcasting.ability_choices[0]}</p>`;
                     }
-                }
-                // 🔥 Handle **Cantrip Choice from a Specific List** (Astral Elf)
-                if (data.spellcasting.spell_choices) {
-                    let spellOptions = data.spellcasting.spell_choices
-                        .map(spell => `<option value="${spell}">${spell}</option>`)
-                        .join("");
-                    traitsHtml += `<p><strong>Scegli un Cantrip:</strong> 
-                        <select id="cantripSelection">
-                            ${spellOptions}
-                        </select>
-                    </p>`;
-                }
+                
+                    // 🎯 Cantrip Choice (Dropdown solo se ci sono più scelte)
+                    if (data.spellcasting.spell_choices.length > 1) {
+                        let spellOptions = data.spellcasting.spell_choices
+                            .map(spell => `<option value="${spell}">${spell}</option>`)
+                            .join("");
+                
+                        traitsHtml += `<p><strong>Scegli un Cantrip:</strong> 
+                            <select id="cantripChoice">${spellOptions}</select>
+                        </p>`;
+                    } else {
+                        traitsHtml += `<p><strong>Cantrip Concesso:</strong> ${data.spellcasting.spell_choices[0]}</p>`;
+                    }
 
                 // 📖 Handle **Cantrip Choice from Wizard Spell List** (High Elf)
                 if (data.name === "High Elf") {
@@ -159,16 +156,21 @@ function displayRaceTraits() {
                     traitsHtml += `</ul>`;
                 }
 
-                // 🌀 Handle **Spells Gained at Higher Levels** (Aarakocra’s Gust of Wind)
-                if (data.spellcasting.level_requirement && data.spellcasting.spell) {
-                    traitsHtml += `<p><strong>Dal livello ${data.spellcasting.level_requirement}:</strong> 
-                        puoi lanciare <strong>${data.spellcasting.spell}</strong> una volta per long rest.</p>`;
-                }
-
-            raceTraitsDiv.innerHTML = traitsHtml;
-            racialBonusDiv.style.display = "block"; 
-            resetRacialBonuses(); 
-        })
+               // 🎩 **Gestione Incantesimi Bonus per Livello**
+                if (data.spellcasting.level_up_spells) {
+                    let levelUpSpellsHtml = "<p><strong>Incantesimi Bonus per Livelli:</strong></p><ul>";
+                
+                    data.spellcasting.level_up_spells.forEach(spellData => {
+                        let spellName = spellData.spell_choices[0] || "Errore nel JSON";
+                        levelUpSpellsHtml += `<li><strong>Livello ${spellData.level}:</strong> ${spellName} (Usi: ${spellData.uses}, Ripristino: ${spellData.refresh})</li>`;
+                    });
+                    
+                    levelUpSpellsHtml += "</ul>";
+                
+                    // Solo se ci sono incantesimi sbloccati, altrimenti nascondiamo la sezione
+                    if (levelUpSpellsHtml.includes("<li>")) {
+                        traitsHtml += levelUpSpellsHtml;
+                    }
         .catch(error => console.error("❌ Errore caricando i tratti della razza:", error));
 }
 

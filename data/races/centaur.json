@@ -1,0 +1,16 @@
+{
+      "name": "Centaur",
+      "size": "Medium",
+      "speed": 40,
+      "creature_type": "Fey",
+      "traits": [
+        { "name": "Charge", "description": "If you move at least 30 feet straight toward a target and then hit it with a melee weapon attack on the same turn, you can immediately follow that attack with a bonus action, making one attack against the target with your hooves." },
+        { "name": "Equine Build", "description": "You count as one size larger when determining your carrying capacity and the weight you can push or drag. Climbing that requires hands and feet costs 4 extra feet of movement." },
+        { "name": "Hooves", "description": "You have hooves that you can use to make unarmed strikes. When you hit with them, the strike deals 1d6 + your Strength modifier bludgeoning damage." },
+        { "name": "Natural Affinity", "description": "You have proficiency in one of the following skills of your choice: Animal Handling, Medicine, Nature, or Survival." }
+      ],
+      "languages": {
+        "fixed": ["Common"],
+        "choice": 1
+      }
+    }

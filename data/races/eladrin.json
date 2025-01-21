@@ -1,0 +1,27 @@
+{
+    "name": "Eladrin",
+    "source": "MPMM",
+    "ability_scores": {
+        "choice": [
+            { "option": "Choose any +2; choose any other +1" },
+            { "option": "Choose three different +1" }
+        ]
+    },
+    "creature_type": "Humanoid",
+    "size": "Medium",
+    "speed": 30,
+    "traits": [
+        {
+            "name": "Fey Step",
+            "description": "As a bonus action, you can magically teleport up to 30 feet to an unoccupied space you can see. You can use this trait a number of times equal to your proficiency bonus, and you regain all expended uses when you finish a long rest. At 3rd level, your Fey Step gains an additional effect based on your chosen season."
+        },
+        {
+            "name": "Season Choice",
+            "description": "Choose your eladrin's season: autumn, winter, spring, or summer. When finishing a long rest, you can change your season."
+        }
+    ],
+    "languages": {
+        "fixed": ["Common", "Elvish"],
+        "choice": 1
+    }
+}

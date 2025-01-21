@@ -4,6 +4,6 @@
         "Aasimar": "data/races/aasimar.json",
         "Dwarf": "data/races/dwarf.json",
         "Elf (Astral)": "data/races/astralelf.json",
-        "Elf (Drow): "data/races/drow.json" 
+        "Elf (Drow)": "data/races/drow.json" 
     }
 }

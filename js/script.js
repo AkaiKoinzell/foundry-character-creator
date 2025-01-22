@@ -187,6 +187,9 @@ function displayRaceTraits() {
     let raceTraitsDiv = document.getElementById("raceTraits");
     let racialBonusDiv = document.getElementById("racialBonusSelection");
 
+    // **Resetta il contenitore delle abilità ogni volta che cambia razza**
+    document.getElementById("skillSelectionContainer").innerHTML = "";
+
     if (!racePath) {
         raceTraitsDiv.innerHTML = "<p>Seleziona una razza per vedere i tratti.</p>";
         racialBonusDiv.style.display = "none"; 

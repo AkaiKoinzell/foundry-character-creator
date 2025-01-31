@@ -7,7 +7,6 @@
         "Bugbear": "data/races/bugbear.json",
         "Centaur": "data/races/centaur.json",
         "Changeling": "data/races/changeling.json",
-        "Deep Gnome": "data/races/gnomedeep.json",
         "Dhampir": "data/races/dhampir.json",
         "Dwarf (Duergar)": "data/races/dwarfduergar.json",
         "Dwarf (Hill)": "data/races/dwarfhill.json",
@@ -18,6 +17,7 @@
         "Elf (High)": "data/races/elfhigh.json",
         "Elf (Sea)": "data/races/elfsea.json",
         "Elf (Shadar-kai)": "data/races/elfshadarkai.json",
-        "Elf (Wood)": "data/races/elfwood.json"
+        "Elf (Wood)": "data/races/elfwood.json",
+        "Gnome (Deep)": "data/races/gnomedeep.json"
     }
 }

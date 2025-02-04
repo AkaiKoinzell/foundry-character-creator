@@ -1,6 +1,23 @@
 {
     "races": {
-        "Dwarf": "data/races/dwarf.json",
-        "Aarakocra": "data/races/aarakocra.json"
+        "Aarakocra": "data/races/aarakocra.json",
+        "Aasimar (Fallen)": "data/races/aasimarfallen.json",
+        "Aasimar (Protector)": "data/races/aasimarprotector.json",
+        "Aasimar (Scourge)": "data/races/aasimarscourge.json",
+        "Bugbear": "data/races/bugbear.json",
+        "Centaur": "data/races/centaur.json",
+        "Changeling": "data/races/changeling.json",
+        "Dhampir": "data/races/dhampir.json",
+        "Dwarf (Duergar)": "data/races/dwarfduergar.json",
+        "Dwarf (Hill)": "data/races/dwarfhill.json",
+        "Dwarf (Mountain)": "data/races/dwarfmountain.json",
+        "Elf (Astral)": "data/races/elfastral.json",
+        "Elf (Drow)": "data/races/elfdrow.json",
+        "Elf (Eladrin)": "data/races/elfeladrin.json",
+        "Elf (High)": "data/races/elfhigh.json",
+        "Elf (Sea)": "data/races/elfsea.json",
+        "Elf (Shadar-kai)": "data/races/elfshadarkai.json",
+        "Elf (Wood)": "data/races/elfwood.json",
+        "Gnome (Deep)": "data/races/gnomedeep.json"
     }
 }

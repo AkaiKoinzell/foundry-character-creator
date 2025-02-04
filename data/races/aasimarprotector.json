@@ -1,0 +1,22 @@
+   {
+      "name": "Aasimar (Protector)",
+      "size": "Medium",
+      "speed": 30,
+      "senses": { "darkvision": 60 },
+      "ability_bonus": { "cha": 2, "wis": 1 },
+      "traits": [
+        { "name": "Celestial Resistance", "description": "You have resistance to necrotic damage and radiant damage." },
+        { "name": "Healing Hands", "description": "As an action, you can touch a creature and restore a number of hit points equal to your level. You can use this trait once per long rest." },
+        { "name": "Light Bearer", "description": "You know the Light cantrip. Charisma is your spellcasting ability for it." },
+        { "name": "Radiant Soul", "description": "Starting at 3rd level, you can use your action to unleash the divine energy within yourself, causing your eyes to glimmer and spectral wings to sprout from your back for 1 minute or until you end it as a bonus action." }
+      ],
+      "languages": {
+        "fixed": ["Common", "Celestial"]
+      },
+      "spellcasting": {
+        "spell": "Lesser Restoration",
+        "uses": "1 per long rest",
+        "ability_choices": ["Charisma"],
+        "level_requirement": 3
+      }
+    }

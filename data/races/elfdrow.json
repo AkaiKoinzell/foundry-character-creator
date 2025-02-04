@@ -1,0 +1,36 @@
+{
+    "name": "Drow",
+    "source": "PHB",
+    "ability_scores": {
+        "fixed": { "dex": 2, "cha": 1 }
+    },
+    "creature_type": "Humanoid",
+    "size": "Medium",
+    "speed": 30,
+    "senses": { "darkvision": 120 },
+    "traits": [
+        {
+            "name": "Sunlight Sensitivity",
+            "description": "You have disadvantage on attack rolls and on Wisdom (Perception) checks that rely on sight when in direct sunlight."
+        },
+        {
+            "name": "Drow Weapon Training",
+            "description": "You have proficiency with rapiers, shortswords, and hand crossbows."
+        }
+    ],
+    "languages": {
+        "fixed": ["Common", "Elvish"]
+    },
+    "spellcasting": {
+        "level_requirement": 1,
+        "spell_choices": {
+            "type": "fixed_list",
+            "options": ["Dancing Lights"]
+        },
+        "ability_choices": ["Charisma"],
+        "level_up_spells": [
+            { "level": 3, "spell_choices": ["Faerie Fire"], "uses": 1, "refresh": "long rest" },
+            { "level": 5, "spell_choices": ["Darkness"], "uses": 1, "refresh": "long rest" }
+        ]
+    }
+}

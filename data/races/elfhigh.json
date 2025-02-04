@@ -1,0 +1,34 @@
+{
+    "name": "High Elf",
+    "source": "PHB",
+    "ability_scores": {
+        "fixed": { "dex": 2, "int": 1 }
+    },
+    "creature_type": "Humanoid",
+    "size": "Medium",
+    "speed": 30,
+    "senses": { "darkvision": 60 },
+    "traits": [
+        {
+            "name": "Elf Weapon Training",
+            "description": "You have proficiency with the longsword, shortsword, shortbow, and longbow."
+        },
+        {
+            "name": "Cantrip",
+            "description": "You know one cantrip of your choice from the wizard spell list. Intelligence is your spellcasting ability for it."
+        }
+    ],
+    "languages": {
+        "fixed": ["Common", "Elvish"],
+        "choice": 1
+    },
+    "spellcasting": {
+        "level_requirement": 1,
+        "spell_choices": {
+            "type": "class_list",
+            "class": "Mago",
+            "level": 0
+        },
+        "ability_choices": ["Intelligence"]
+    }
+}

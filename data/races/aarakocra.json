@@ -14,19 +14,23 @@
     "traits": [
         {
             "name": "Flight",
-            "description": "Because of your wings, you have a flying speed equal to your walking speed. You can't use this flying speed if you're wearing medium or heavy armor."
+            "description": "Because of your wings, you have a flying speed equal to your walking speed. You can't use this flying speed if you're wearing medium or heavy armor.",
+            "level_requirement": 1
         },
         {
             "name": "Talons",
-            "description": "You have talons that you can use to make unarmed strikes. When you hit with them, the strike deals 1d6 + your Strength modifier slashing damage, instead of the bludgeoning damage normal for an unarmed strike."
+            "description": "You have talons that you can use to make unarmed strikes. When you hit with them, the strike deals 1d6 + your Strength modifier slashing damage, instead of the bludgeoning damage normal for an unarmed strike.",
+            "level_requirement": 1
         },
         {
             "name": "Wind Caller",
-            "description": "Starting at 3rd level, you can cast the gust of wind spell with this trait, without requiring a material component. Once you cast the spell with this trait, you can't do so again until you finish a long rest. You can also cast the spell using any spell slots you have of 2nd level or higher."
+            "description": "Starting at 3rd level, you can cast the gust of wind spell with this trait, without requiring a material component. Once you cast the spell with this trait, you can't do so again until you finish a long rest. You can also cast the spell using any spell slots you have of 2nd level or higher.",
+            "level_requirement": 3
         }
     ],
     "spellcasting": {
         "spell": "Gust of Wind",
+        "level_requirement": 3,
         "uses": "1 per long rest",
         "ability_choices": ["Intelligence", "Wisdom", "Charisma"]
     },

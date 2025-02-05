@@ -1,4 +1,6 @@
-// Mapping globale per le extra variant features (questa versione base le mantiene, ma non le utilizza)
+// --------------------------
+// Mapping globale per le extra variant features
+// (Questa versione base mantiene il mapping ma non lo utilizza nello step 2)
 const variantExtraMapping = {
   "Drow Magic": {
     type: "none" // Se viene scelta "Drow Magic", non mostriamo extra (le spell fisse verranno gestite separatamente)
@@ -21,14 +23,16 @@ const variantExtraMapping = {
   }
 };
 
+// --------------------------
+// EVENTI INIZIALI E SETTAGGI
 document.addEventListener("DOMContentLoaded", () => {
   console.log("✅ Script.js caricato!");
 
-  // Carica la lista delle razze e classi
+  // Carica la lista delle razze e delle classi
   loadDropdownData("data/races.json", "raceSelect", "races");
   loadDropdownData("data/classes.json", "classSelect", "classes");
 
-  // Listener per aggiornare sottorazze, bonus e livello
+  // Listener per aggiornare i tratti della razza e i bonus quando cambiano
   document.getElementById("raceSelect").addEventListener("change", displayRaceTraits);
   document.getElementById("racialBonus1").addEventListener("change", applyRacialBonuses);
   document.getElementById("racialBonus2").addEventListener("change", applyRacialBonuses);
@@ -41,15 +45,16 @@ document.addEventListener("DOMContentLoaded", () => {
   // Inizializza il Point Buy System
   initializeValues();
 
-  // Espone le funzioni globalmente per i listener
+  // Espone globalmente alcune funzioni per i listener inline
   window.displayRaceTraits = displayRaceTraits;
   window.applyRacialBonuses = applyRacialBonuses;
 });
 
-//
-// --- handleSpellcastingOptions ---
-// Questa funzione gestisce la visualizzazione della sezione "Spellcasting" se presente nella razza.
-// In questa versione base, se "spellcasting" è definito e se il suo tipo è "filter", raggruppa gli incantesimi per livello.
+// --------------------------
+// Funzione handleSpellcastingOptions
+// Gestisce la visualizzazione della sezione Spellcasting se presente nella razza.
+// In questa versione base, se la razza ha spellcasting in modalità "filter" (cioè con scelte da fare)
+// e se la scelta non è necessaria (fixed_spell o un'unica ability_choice) lo mostra, altrimenti non la visualizza
 function handleSpellcastingOptions(data, traitsHtml) {
   if (data.spellcasting && data.spellcasting.spell_choices && data.spellcasting.spell_choices.type === "filter") {
     const currentLevel = parseInt(document.getElementById("levelSelect").value) || 1;
@@ -92,8 +97,8 @@ function handleSpellcastingOptions(data, traitsHtml) {
   return traitsHtml;
 }
 
-//
-// --- Helper per estrarre il nome di uno spell --- 
+// --------------------------
+// Helper per estrarre il nome di uno spell
 function extractSpellName(data) {
   if (Array.isArray(data)) {
     if (typeof data[0] === "string") {
@@ -108,8 +113,8 @@ function extractSpellName(data) {
   return null;
 }
 
-//
-// --- Filtro Incantesimi ---
+// --------------------------
+// Filtro Incantesimi
 function filterSpells(spells, filterString) {
   const conditions = filterString.split("|");
   return spells.filter(spell => {
@@ -130,15 +135,15 @@ function filterSpells(spells, filterString) {
   });
 }
 
-//
-// --- Utility ---
+// --------------------------
+// Utility per errori
 function handleError(message) {
   console.error("❌ " + message);
   alert("⚠️ " + message);
 }
 
-//
-// --- Caricamento Dati ---
+// --------------------------
+// Caricamento dati per dropdown (razze, classi)
 function loadDropdownData(jsonPath, selectId, key) {
   fetch(jsonPath)
     .then(response => response.json())
@@ -154,8 +159,8 @@ function loadDropdownData(jsonPath, selectId, key) {
     .catch(error => handleError(`Errore caricando ${jsonPath}: ${error}`));
 }
 
-//
-// --- Populate Dropdown ---
+// --------------------------
+// Populate Dropdown
 function populateDropdown(selectId, options) {
   const select = document.getElementById(selectId);
   if (!select) {
@@ -171,8 +176,8 @@ function populateDropdown(selectId, options) {
   });
 }
 
-//
-// --- Conversione dei Dati della Razza ---
+// --------------------------
+// Conversione dei dati della razza
 function convertRaceData(rawData) {
   // Size
   let size = "Unknown";
@@ -358,103 +363,8 @@ function convertRaceData(rawData) {
   };
 }
 
-function updateToolOptions() {
-  const allSelects = document.querySelectorAll(".toolChoice");
-  if (allSelects.length <= 1) return;
-  const selected = new Set();
-  allSelects.forEach(select => {
-    if (select.value) selected.add(select.value);
-  });
-  allSelects.forEach(select => {
-    const current = select.value;
-    select.innerHTML = `<option value="">Seleziona...</option>`;
-    const opts = JSON.parse(select.getAttribute("data-options"));
-    opts.forEach(t => {
-      if (!selected.has(t) || t === current) {
-        const option = document.createElement("option");
-        option.value = t;
-        option.textContent = t;
-        if (t === current) option.selected = true;
-        select.appendChild(option);
-      }
-    });
-  });
-}
-
-// Gestione Tool (strumenti/armi)
-// Questa funzione genera il markup per il dropdown degli strumenti (o armi)
-// solo se nel JSON della razza è presente una sezione "tool_choices".
-function handleToolChoices(data) {
-  if (!data.tool_choices) {
-    // Se non è presente, pulisci il container
-    document.getElementById("toolSelectionContainer").innerHTML = "";
-    return;
-  }
-  
-  // Prepara le opzioni per il dropdown
-  const toolOptions = JSON.stringify(data.tool_choices.options);
-  let toolSelectionHtml = `<p><strong>Scegli uno strumento (o arma):</strong></p>`;
-  
-  // Supponendo che "number" indichi quante selezioni sono richieste (tipicamente 1)
-  for (let i = 0; i < data.tool_choices.number; i++) {
-    toolSelectionHtml += `<select class="toolChoice" id="toolChoice${i}" data-options='${toolOptions}'>`;
-    toolSelectionHtml += `<option value="">Seleziona...</option>`;
-    // Aggiunge ogni opzione al dropdown
-    toolSelectionHtml += data.tool_choices.options
-      .map(t => `<option value="${t}">${t}</option>`)
-      .join("");
-    toolSelectionHtml += `</select> `;
-  }
-  
-  // Inserisci il markup generato nel container dedicato
-  document.getElementById("toolSelectionContainer").innerHTML = toolSelectionHtml;
-}
-// --- Gestione Abilità (Skill Choices) ---
-function handleSkillChoices(data) {
-    if (!data.skill_choices) {
-        console.log("Nessuna skill_choices trovata per questa razza.");
-        return;
-    }
-    console.log("Skill choices trovate:", data.skill_choices);
-    const skillOptions = JSON.stringify(data.skill_choices.options);
-    let skillSelectionHtml = `<p><strong>Scegli ${data.skill_choices.number} abilità:</strong></p>`;
-    for (let i = 0; i < data.skill_choices.number; i++) {
-        skillSelectionHtml += `<select class="skillChoice" id="skillChoice${i}" data-options='${skillOptions}' onchange="updateSkillOptions()">`;
-        skillSelectionHtml += `<option value="">Seleziona...</option>`;
-        skillSelectionHtml += data.skill_choices.options
-            .map(skill => `<option value="${skill}">${skill}</option>`)
-            .join("");
-        skillSelectionHtml += `</select> `;
-    }
-    document.getElementById("skillSelectionContainer").innerHTML = skillSelectionHtml;
-}
-
-function updateSkillOptions() {
-    const allSelects = document.querySelectorAll(".skillChoice");
-    const selectedSkills = new Set();
-    allSelects.forEach(select => {
-        if (select.value) {
-            selectedSkills.add(select.value);
-        }
-    });
-    allSelects.forEach(select => {
-        const currentSelection = select.value;
-        select.innerHTML = "";
-        select.innerHTML += `<option value="">Seleziona...</option>`;
-        const skillOptions = JSON.parse(select.getAttribute("data-options"));
-        skillOptions.forEach(skill => {
-            if (!selectedSkills.has(skill) || skill === currentSelection) {
-                const option = document.createElement("option");
-                option.value = skill;
-                option.textContent = skill;
-                if (skill === currentSelection) option.selected = true;
-                select.appendChild(option);
-            }
-        });
-    });
-}
-//
-// --- Render Tables (Generico) ---
+// --------------------------
+// Render Tables (Generico)
 function renderTables(entries) {
   let html = "";
   if (!entries || !Array.isArray(entries)) return html;
@@ -505,8 +415,8 @@ function renderTables(entries) {
   return html;
 }
 
-//
-// --- Display Race Traits ---
+// --------------------------
+// Display Race Traits (Step 2 – tratti base)
 function displayRaceTraits() {
   const racePath = document.getElementById("raceSelect").value;
   const raceTraitsDiv = document.getElementById("raceTraits");
@@ -516,14 +426,13 @@ function displayRaceTraits() {
   document.getElementById("skillSelectionContainer").innerHTML = "";
   document.getElementById("toolSelectionContainer").innerHTML = "";
   document.getElementById("spellSelectionContainer").innerHTML = "";
+  document.getElementById("variantFeatureSelectionContainer").innerHTML = "";
+  document.getElementById("variantExtraContainer").innerHTML = "";
+  document.getElementById("languageSelection").innerHTML = "";
 
   if (!racePath) {
-    if (raceTraitsDiv) {
-      raceTraitsDiv.innerHTML = "<p>Seleziona una razza per vedere i tratti.</p>";
-    }
-    if (racialBonusDiv) {
-      racialBonusDiv.style.display = "none";
-    }
+    raceTraitsDiv.innerHTML = "<p>Seleziona una razza per vedere i tratti.</p>";
+    racialBonusDiv.style.display = "none";
     resetRacialBonuses();
     return;
   }
@@ -533,6 +442,7 @@ function displayRaceTraits() {
     .then(data => {
       console.log("📜 Dati razza caricati:", data);
       const raceData = convertRaceData(data);
+      console.log("📜 Dati razza convertiti:", raceData);
       let traitsHtml = `<h3>Tratti di ${raceData.name}</h3>`;
 
       // Velocità
@@ -555,7 +465,7 @@ function displayRaceTraits() {
         traitsHtml += `<p><strong>Visione:</strong> ${raceData.senses.darkvision} ft</p>`;
       }
 
-      // Tratti
+      // Tratti generali
       if (raceData.traits && raceData.traits.length > 0) {
         traitsHtml += `<p><strong>Tratti:</strong></p><ul>`;
         raceData.traits.forEach(trait => {
@@ -564,13 +474,24 @@ function displayRaceTraits() {
         traitsHtml += `</ul>`;
       }
 
-      // Tabelle
+      // Tabelle (se presenti)
       const tablesHtml = renderTables(raceData.rawEntries);
       traitsHtml += tablesHtml;
 
-      // Spellcasting (se presente)
+      // Spellcasting: se la razza ha spellcasting e la modalità è "fixed" (cioè non richiede scelte extra)
       if (raceData.spellcasting) {
-        traitsHtml = handleSpellcastingOptions(raceData, traitsHtml);
+        let showSpellInfo = false;
+        if (raceData.spellcasting.fixed_spell) {
+          showSpellInfo = true;
+        }
+        if (raceData.spellcasting.ability_choices &&
+           (!Array.isArray(raceData.spellcasting.ability_choices) ||
+            (Array.isArray(raceData.spellcasting.ability_choices) && raceData.spellcasting.ability_choices.length === 1))) {
+          showSpellInfo = true;
+        }
+        if (showSpellInfo) {
+          traitsHtml = handleSpellcastingOptions(raceData, traitsHtml);
+        }
       }
 
       // Lingue
@@ -581,25 +502,21 @@ function displayRaceTraits() {
           const availableLangs = langs.filter(lang => !raceData.languages.fixed.includes(lang));
           let opts = availableLangs.map(lang => `<option value="${lang}">${lang}</option>`).join("");
           opts = `<option value="">Seleziona...</option>` + opts;
-          const select = `<select id="extraLanguageSelect">${opts}</select>`;
-          document.getElementById("languageSelection").innerHTML = languageHtml + select;
+          const sel = `<select id="extraLanguageSelect">${opts}</select>`;
+          document.getElementById("languageSelection").innerHTML = languageHtml + sel;
         });
       } else {
         document.getElementById("languageSelection").innerHTML = languageHtml;
       }
 
-      if (raceTraitsDiv) {
-        raceTraitsDiv.innerHTML = traitsHtml;
-      }
-      if (racialBonusDiv) {
-        racialBonusDiv.style.display = "block";
-      }
+      // Aggiorna la sezione tratti e bonus
+      raceTraitsDiv.innerHTML = traitsHtml;
+      racialBonusDiv.style.display = "block";
 
-      // Skill Choices
+      // Gestione Skill e Tool choices
       if (raceData.skill_choices) {
         handleSkillChoices(raceData);
       }
-      // Tool Choices
       if (raceData.tool_choices) {
         handleToolChoices(raceData);
       }
@@ -609,8 +526,8 @@ function displayRaceTraits() {
     .catch(error => handleError(`Errore caricando i tratti della razza: ${error}`));
 }
 
-//
-// --- Update Subclasses ---
+// --------------------------
+// Update Subclasses
 function updateSubclasses() {
   const classPath = document.getElementById("classSelect").value;
   const subclassSelect = document.getElementById("subclassSelect");
@@ -634,8 +551,8 @@ function updateSubclasses() {
     .catch(error => handleError(`Errore caricando le sottoclasse: ${error}`));
 }
 
-//
-// --- Generate Final JSON ---
+// --------------------------
+// Generate Final JSON
 function generateFinalJson() {
   let chromaticAncestry = null;
   const ancestrySelect = document.getElementById("ancestrySelect");
@@ -682,8 +599,8 @@ function generateFinalJson() {
   alert("JSON generato e scaricato!");
 }
 
-//
-// --- Download JSON File ---
+// --------------------------
+// Download JSON File
 function downloadJsonFile(filename, jsonData) {
   const jsonBlob = new Blob([JSON.stringify(jsonData, null, 2)], { type: "application/json" });
   const a = document.createElement("a");
@@ -694,8 +611,8 @@ function downloadJsonFile(filename, jsonData) {
   document.body.removeChild(a);
 }
 
-//
-// --- Point Buy System ---
+// --------------------------
+// Point Buy System
 var totalPoints = 27;
 function adjustPoints(ability, action) {
   const pointsSpan = document.getElementById(ability + "Points");

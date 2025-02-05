@@ -409,7 +409,50 @@ function handleToolChoices(data) {
   // Inserisci il markup generato nel container dedicato
   document.getElementById("toolSelectionContainer").innerHTML = toolSelectionHtml;
 }
+/ --- Gestione Abilità (Skill Choices) ---
+function handleSkillChoices(data) {
+    if (!data.skill_choices) {
+        console.log("Nessuna skill_choices trovata per questa razza.");
+        return;
+    }
+    console.log("Skill choices trovate:", data.skill_choices);
+    const skillOptions = JSON.stringify(data.skill_choices.options);
+    let skillSelectionHtml = `<p><strong>Scegli ${data.skill_choices.number} abilità:</strong></p>`;
+    for (let i = 0; i < data.skill_choices.number; i++) {
+        skillSelectionHtml += `<select class="skillChoice" id="skillChoice${i}" data-options='${skillOptions}' onchange="updateSkillOptions()">`;
+        skillSelectionHtml += `<option value="">Seleziona...</option>`;
+        skillSelectionHtml += data.skill_choices.options
+            .map(skill => `<option value="${skill}">${skill}</option>`)
+            .join("");
+        skillSelectionHtml += `</select> `;
+    }
+    document.getElementById("skillSelectionContainer").innerHTML = skillSelectionHtml;
+}
 
+function updateSkillOptions() {
+    const allSelects = document.querySelectorAll(".skillChoice");
+    const selectedSkills = new Set();
+    allSelects.forEach(select => {
+        if (select.value) {
+            selectedSkills.add(select.value);
+        }
+    });
+    allSelects.forEach(select => {
+        const currentSelection = select.value;
+        select.innerHTML = "";
+        select.innerHTML += `<option value="">Seleziona...</option>`;
+        const skillOptions = JSON.parse(select.getAttribute("data-options"));
+        skillOptions.forEach(skill => {
+            if (!selectedSkills.has(skill) || skill === currentSelection) {
+                const option = document.createElement("option");
+                option.value = skill;
+                option.textContent = skill;
+                if (skill === currentSelection) option.selected = true;
+                select.appendChild(option);
+            }
+        });
+    });
+}
 //
 // --- Render Tables (Generico) ---
 function renderTables(entries) {

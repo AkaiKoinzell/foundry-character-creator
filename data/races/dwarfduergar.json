@@ -1,0 +1,181 @@
+{
+	"name": "Dwarf (Duergar)",
+	"source": "MTF",
+	"page": 81,
+	"size": [
+		"M"
+	],
+	"speed": 25,
+	"ability": [
+		{
+			"con": 2,
+			"str": 1
+		}
+	],
+	"age": {
+		"mature": 20,
+		"max": 350
+	},
+	"darkvision": 120,
+	"languageProficiencies": [
+		{
+			"common": true,
+			"dwarvish": true,
+			"undercommon": true
+		}
+	],
+	"toolProficiencies": [
+		{
+			"choose": {
+				"from": [
+					"smith's tools",
+					"brewer's supplies",
+					"mason's tools"
+				]
+			}
+		}
+	],
+	"weaponProficiencies": [
+		{
+			"battleaxe|phb": true,
+			"handaxe|phb": true,
+			"light hammer|phb": true,
+			"warhammer|phb": true
+		}
+	],
+	"resist": [
+		"poison"
+	],
+	"soundClip": {
+		"type": "internal",
+		"path": "races/dwarf.mp3"
+	},
+	"entries": [
+		{
+			"name": "Age",
+			"type": "entries",
+			"entries": [
+				"Dwarves mature at the same rate as humans, but they're considered young until they reach the age of 50. On average, they live about 350 years."
+			]
+		},
+		{
+			"type": "entries",
+			"name": "Size",
+			"entries": [
+				"Dwarves stand between 4 and 5 feet tall and average about 150 pounds. Your size is Medium."
+			]
+		},
+		{
+			"name": "Speed",
+			"entries": [
+				"Your speed is not reduced by wearing heavy armor."
+			],
+			"type": "entries"
+		},
+		{
+			"name": "Superior Darkvision",
+			"entries": [
+				"Accustomed to life underground, you have superior vision in dark and dim conditions. You can see in dim light within 120 feet of you as if it were bright light, and in darkness as if it were dim light. You can't discern color in darkness, only shades of gray."
+			],
+			"data": {
+				"overwrite": "Darkvision"
+			},
+			"type": "entries"
+		},
+		{
+			"name": "Duergar Resilience",
+			"entries": [
+				"You have advantage on saving throws against poison, and you have resistance against poison damage. You also have advantage on saving throws against illusions and against being {@condition charmed} or {@condition paralyzed}."
+			],
+			"data": {
+				"overwrite": "Dwarven Resilience"
+			},
+			"type": "entries"
+		},
+		{
+			"name": "Dwarven Combat Training",
+			"entries": [
+				"You have proficiency with the {@item battleaxe|phb}, {@item handaxe|phb}, {@item light hammer|phb}, and {@item warhammer|phb}."
+			],
+			"type": "entries"
+		},
+		{
+			"name": "Tool Proficiency",
+			"entries": [
+				"You gain proficiency with the artisan's tools of your choice: {@item Smith's tools|phb}, {@item brewer's supplies|phb}, or {@item mason's tools|phb}."
+			],
+			"type": "entries"
+		},
+		{
+			"name": "Stonecunning",
+			"entries": [
+				"Whenever you make an Intelligence ({@skill History}) check related to the origin of stonework, you are considered proficient in the {@skill History} skill and add double your proficiency bonus to the check, instead of your normal proficiency bonus."
+			],
+			"type": "entries"
+		},
+		{
+			"name": "Languages",
+			"entries": [
+				"You can speak, read, and write Common, Dwarvish, and Undercommon."
+			],
+			"data": {
+				"overwrite": "Languages"
+			},
+			"type": "entries"
+		},
+		{
+			"name": "Duergar Magic",
+			"entries": [
+				"When you reach 3rd level, you can cast the {@spell Enlarge/Reduce} spell on yourself once with this trait, using only the spell's enlarge option. When you reach 5th level, you can cast the {@spell Invisibility} spell on yourself once with this trait. You don't need material components for either spell, and you can't cast them while you're in direct sunlight, although sunlight has no effect on them once cast. You regain the ability to cast these spells with this trait when you finish a long rest. Intelligence is your spellcasting ability for these spells."
+			],
+			"type": "entries"
+		},
+		{
+			"name": "Sunlight Sensitivity",
+			"entries": [
+				"You have disadvantage on attack rolls and Wisdom ({@skill Perception}) checks that rely on sight when you, the target of your attack, or whatever you are trying to perceive is in direct sunlight."
+			],
+			"type": "entries"
+		}
+	],
+	"traitTags": [
+		"Sunlight Sensitivity"
+	],
+	"raceName": "Dwarf",
+	"raceSource": "PHB",
+	"otherSources": [
+		{
+			"source": "SCAG",
+			"page": 104
+		}
+	],
+	"reprintedAs": [
+		"Duergar|MPMM"
+	],
+	"additionalSpells": [
+		{
+			"innate": {
+				"3": {
+					"daily": {
+						"1": [
+							"enlarge/reduce"
+						]
+					}
+				},
+				"5": {
+					"daily": {
+						"1": [
+							"invisibility"
+						]
+					}
+				}
+			},
+			"ability": "int"
+		}
+	],
+	"overwrite": {
+		"languageProficiencies": true
+	},
+	"hasFluff": true,
+	"hasFluffImages": false
+}

@@ -1,0 +1,124 @@
+{
+	"name": "Aasimar (Scourge)",
+	"source": "VGM",
+	"page": 105,
+	"otherSources": [
+		{
+			"source": "EGW",
+			"page": 166
+		}
+	],
+	"size": [
+		"M"
+	],
+	"speed": 30,
+	"ability": [
+		{
+			"cha": 2,
+			"con": 1
+		}
+	],
+	"heightAndWeight": {
+		"baseHeight": 56,
+		"heightMod": "2d10",
+		"baseWeight": 110,
+		"weightMod": "2d4"
+	},
+	"age": {
+		"mature": 20,
+		"max": 160
+	},
+	"darkvision": 60,
+	"languageProficiencies": [
+		{
+			"common": true,
+			"celestial": true
+		}
+	],
+	"resist": [
+		"necrotic",
+		"radiant"
+	],
+	"soundClip": {
+		"type": "internal",
+		"path": "races/aasimar.mp3"
+	},
+	"additionalSpells": [
+		{
+			"ability": "cha",
+			"known": {
+				"1": [
+					"light#c"
+				]
+			}
+		}
+	],
+	"entries": [
+		{
+			"name": "Age",
+			"type": "entries",
+			"entries": [
+				"Aasimar mature at the same rate as humans, but they can live up to 160 years."
+			]
+		},
+		{
+			"type": "entries",
+			"name": "Size",
+			"entries": [
+				"Aasimar have the same range of height and weight as humans."
+			]
+		},
+		{
+			"name": "Darkvision",
+			"entries": [
+				"Blessed with a radiant soul, your vision can easily cut through darkness. You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light. You can't discern color in darkness, only shades of gray."
+			],
+			"type": "entries"
+		},
+		{
+			"name": "Celestial Resistance",
+			"entries": [
+				"You have resistance to necrotic damage and radiant damage."
+			],
+			"type": "entries"
+		},
+		{
+			"name": "Healing Hands",
+			"entries": [
+				"As an action, you can touch a creature and cause it to regain a number of hit points equal to your level. Once you use this trait, you can't use it again until you finish a long rest."
+			],
+			"type": "entries"
+		},
+		{
+			"name": "Light Bearer",
+			"entries": [
+				"You know the {@spell light} cantrip. Charisma is your spellcasting ability for it."
+			],
+			"type": "entries"
+		},
+		{
+			"name": "Languages",
+			"entries": [
+				"You can speak, read, and write Common and Celestial."
+			],
+			"type": "entries"
+		},
+		{
+			"name": "Radiant Consumption",
+			"entries": [
+				"Starting at 3rd level, you can use your action to unleash the divine energy within yourself, causing a searing light to radiate from you, pour out of your eyes and mouth, and threaten to char you.",
+				"Your transformation lasts for 1 minute or until you end it as a bonus action. During it, you shed bright light in a 10-foot radius and dim light for an additional 10 feet, and at the end of each of your turns, you and each creature within 10 feet of you take radiant damage equal to half your level (rounded up). In addition, once on each of your turns, you can deal extra radiant damage to one target when you deal damage to it with an attack or a spell. The extra radiant damage equals your level.",
+				"Once you use this trait, you can't use it again until you finish a long rest."
+			],
+			"type": "entries"
+		}
+	],
+	"raceName": "Aasimar",
+	"raceSource": "VGM",
+	"reprintedAs": [
+		"Aasimar|MPMM",
+		"Aasimar|XPHB"
+	],
+	"hasFluff": true,
+	"hasFluffImages": true
+}

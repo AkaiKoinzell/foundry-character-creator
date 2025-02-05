@@ -1,0 +1,124 @@
+{
+	"name": "Gnome (Rock)",
+	"source": "PHB",
+	"page": 37,
+	"size": [
+		"S"
+	],
+	"speed": 25,
+	"ability": [
+		{
+			"int": 2,
+			"con": 1
+		}
+	],
+	"heightAndWeight": {
+		"baseHeight": 35,
+		"heightMod": "2d4",
+		"baseWeight": 35
+	},
+	"age": {
+		"mature": 40,
+		"max": 500
+	},
+	"darkvision": 60,
+	"traitTags": [
+		"Uncommon Race"
+	],
+	"languageProficiencies": [
+		{
+			"common": true,
+			"gnomish": true
+		}
+	],
+	"soundClip": {
+		"type": "internal",
+		"path": "races/gnome.mp3"
+	},
+	"entries": [
+		{
+			"name": "Age",
+			"type": "entries",
+			"entries": [
+				"Gnomes mature at the same rate humans do, and most are expected to settle down into an adult life by around age 40. They can live 350 to almost 500 years."
+			]
+		},
+		{
+			"type": "entries",
+			"name": "Size",
+			"entries": [
+				"Gnomes are between 3 and 4 feet tall and average about 40 pounds. Your size is Small."
+			]
+		},
+		{
+			"name": "Darkvision",
+			"entries": [
+				"Accustomed to life underground, you have superior vision in dark and dim conditions. You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light. You can't discern color in darkness, only shades of gray."
+			],
+			"type": "entries"
+		},
+		{
+			"name": "Gnome Cunning",
+			"entries": [
+				"You have advantage on all Intelligence, Wisdom, and Charisma saving throws against magic."
+			],
+			"type": "entries"
+		},
+		{
+			"name": "Languages",
+			"entries": [
+				"You can speak, read, and write Common and Gnomish. The Gnomish language, which uses the Dwarvish script, is renowned for its technical treatises and its catalogs of knowledge about the natural world."
+			],
+			"type": "entries"
+		},
+		{
+			"name": "Artificer's Lore",
+			"entries": [
+				"Whenever you make an Intelligence ({@skill History}) check related to magic items, alchemical objects, or technological devices, you can add twice your proficiency bonus, instead of any proficiency bonus you normally apply."
+			],
+			"type": "entries"
+		},
+		{
+			"name": "Tinker",
+			"entries": [
+				"You have proficiency with artisan's tools ({@item tinker's tools|phb}). Using those tools, you can spend 1 hour and 10 gp worth of materials to construct a Tiny clockwork device (AC 5, 1 hp). The device ceases to function after 24 hours (unless you spend 1 hour repairing it to keep the device functioning), or when you use your action to dismantle it; at that time, you can reclaim the materials used to create it. You can have up to three such devices active at a time.",
+				"When you create a device, choose one of the following options:",
+				{
+					"type": "entries",
+					"name": "Clockwork Toy",
+					"entries": [
+						"This toy is a clockwork animal, monster, or person, such as a frog, mouse, bird, dragon, or soldier. When placed on the ground, the toy moves 5 feet across the ground on each of your turns in a random direction. It makes noises as appropriate to the creature it represents."
+					]
+				},
+				{
+					"type": "entries",
+					"name": "Fire Starter",
+					"entries": [
+						"The device produces a miniature flame, which you can use to light a candle, torch, or campfire. Using the device requires your action."
+					]
+				},
+				{
+					"type": "entries",
+					"name": "Music Box",
+					"entries": [
+						"When opened, this music box plays a single song at a moderate volume. The box stops playing when it reaches the song's end or when it is closed."
+					]
+				}
+			],
+			"type": "entries"
+		}
+	],
+	"raceName": "Gnome",
+	"raceSource": "PHB",
+	"srd": true,
+	"reprintedAs": [
+		"Gnome|XPHB"
+	],
+	"toolProficiencies": [
+		{
+			"tinker's tools": true
+		}
+	],
+	"hasFluff": true,
+	"hasFluffImages": true
+}

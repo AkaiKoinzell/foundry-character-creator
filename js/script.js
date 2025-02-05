@@ -1,6 +1,5 @@
 // --------------------------
-// Mapping globale per le extra variant features
-// (Questa versione base mantiene il mapping ma non lo utilizza nello step 2)
+// Mapping globale per le extra variant features (questa versione base le mantiene, ma non le utilizza nello step 2)
 const variantExtraMapping = {
   "Drow Magic": {
     type: "none" // Se viene scelta "Drow Magic", non mostriamo extra (le spell fisse verranno gestite separatamente)
@@ -24,77 +23,97 @@ const variantExtraMapping = {
 };
 
 // --------------------------
-// EVENTI INIZIALI E SETTAGGI
+// Inizializzazione e listener
 document.addEventListener("DOMContentLoaded", () => {
   console.log("✅ Script.js caricato!");
 
-  // Carica la lista delle razze e delle classi
+  // Carica le razze e le classi
   loadDropdownData("data/races.json", "raceSelect", "races");
   loadDropdownData("data/classes.json", "classSelect", "classes");
 
-  // Listener per aggiornare i tratti della razza e i bonus quando cambiano
+  // Listener per aggiornare i tratti della razza e i bonus
   document.getElementById("raceSelect").addEventListener("change", displayRaceTraits);
   document.getElementById("racialBonus1").addEventListener("change", applyRacialBonuses);
   document.getElementById("racialBonus2").addEventListener("change", applyRacialBonuses);
   document.getElementById("racialBonus3").addEventListener("change", applyRacialBonuses);
   document.getElementById("levelSelect").addEventListener("change", () => displayRaceTraits());
 
-  // Genera JSON finale
+  // Listener per la generazione del JSON finale
   document.getElementById("generateJson").addEventListener("click", generateFinalJson);
 
   // Inizializza il Point Buy System
   initializeValues();
 
-  // Espone globalmente alcune funzioni per i listener inline
+  // Espone alcune funzioni globalmente per i listener inline
   window.displayRaceTraits = displayRaceTraits;
   window.applyRacialBonuses = applyRacialBonuses;
 });
 
 // --------------------------
-// Funzione handleSpellcastingOptions
-// Gestisce la visualizzazione della sezione Spellcasting se presente nella razza.
-// In questa versione base, se la razza ha spellcasting in modalità "filter" (cioè con scelte da fare)
-// e se la scelta non è necessaria (fixed_spell o un'unica ability_choice) lo mostra, altrimenti non la visualizza
-function handleSpellcastingOptions(data, traitsHtml) {
-  if (data.spellcasting && data.spellcasting.spell_choices && data.spellcasting.spell_choices.type === "filter") {
-    const currentLevel = parseInt(document.getElementById("levelSelect").value) || 1;
-    // Usa l'array salvato in allSpells
-    const filteredSpells = data.spellcasting.allSpells.filter(spell => parseInt(spell.level) <= currentLevel);
-    // Raggruppa gli incantesimi per livello
-    const groupedSpells = {};
-    filteredSpells.forEach(spell => {
-      const lvl = parseInt(spell.level);
-      if (!groupedSpells[lvl]) groupedSpells[lvl] = [];
-      groupedSpells[lvl].push(spell);
-    });
-    const levels = Object.keys(groupedSpells).map(Number).sort((a, b) => a - b);
-    let spellcastingHtml = "<h4>📖 Incantesimi</h4>";
-    levels.forEach(lvl => {
-      const spellsAtLevel = groupedSpells[lvl];
-      if (spellsAtLevel.length === 1) {
-        spellcastingHtml += `<p><strong>Incantesimo di livello ${lvl}:</strong> ${spellsAtLevel[0].name}</p>`;
-      } else if (spellsAtLevel.length > 1) {
-        const options = spellsAtLevel.map(spell => `<option value="${spell.name}">${spell.name} (lvl ${spell.level})</option>`).join("");
-        spellcastingHtml += `<p><strong>Incantesimo di livello ${lvl}:</strong>
-            <select id="spellSelection_level_${lvl}"><option value="">Seleziona...</option>${options}</select>
-            </p>`;
+// Funzione per aggiornare i dropdown delle variant skill (per evitare duplicazioni)
+function updateVariantSkillOptions() {
+  const allVariantSkillSelects = document.querySelectorAll(".variantSkillChoice");
+  if (allVariantSkillSelects.length === 0) return;
+  const selected = new Set();
+  allVariantSkillSelects.forEach(select => {
+    if (select.value) selected.add(select.value);
+  });
+  allVariantSkillSelects.forEach(select => {
+    const current = select.value;
+    select.innerHTML = `<option value="">Seleziona...</option>`;
+    const options = JSON.parse(select.getAttribute("data-options"));
+    options.forEach(skill => {
+      if (!selected.has(skill) || skill === current) {
+        const option = document.createElement("option");
+        option.value = skill;
+        option.textContent = skill;
+        if (skill === current) option.selected = true;
+        select.appendChild(option);
       }
     });
-    let abilityHtml = "";
-    if (data.spellcasting.ability_choices) {
-      if (Array.isArray(data.spellcasting.ability_choices) && data.spellcasting.ability_choices.length === 1) {
-        abilityHtml = `<p><strong>Abilità di lancio:</strong> ${data.spellcasting.ability_choices[0]}</p>`;
-      } else if (Array.isArray(data.spellcasting.ability_choices) && data.spellcasting.ability_choices.length > 1) {
-        const abilityOptions = data.spellcasting.ability_choices.map(ability => `<option value="${ability}">${ability}</option>`).join("");
-        abilityHtml = `<p><strong>Abilità di lancio:</strong>
-            <select id="castingAbility"><option value="">Seleziona...</option>${abilityOptions}</select>
-            </p>`;
+  });
+}
+
+// --------------------------
+// Gestione delle extra variant selections
+function handleVariantExtraSelections() {
+  const variantElem = document.getElementById("variantFeatureChoice");
+  const container = document.getElementById("variantExtraContainer");
+  container.innerHTML = "";
+  if (!variantElem || !variantElem.value) return;
+  const selectedVariant = variantElem.value;
+  if (variantExtraMapping[selectedVariant]) {
+    const mapData = variantExtraMapping[selectedVariant];
+    if (mapData.type === "skills") {
+      let html = `<p><strong>Seleziona ${mapData.count} skill per ${selectedVariant}:</strong></p>`;
+      for (let i = 0; i < mapData.count; i++) {
+        html += `<select class="variantSkillChoice" id="variantSkillChoice${i}" data-options='${JSON.stringify(mapData.options)}' onchange="updateVariantSkillOptions()">
+                    <option value="">Seleziona...</option>`;
+        mapData.options.forEach(s => {
+          html += `<option value="${s}">${s}</option>`;
+        });
+        html += `</select> `;
       }
+      container.innerHTML = html;
+    } else if (mapData.type === "spells") {
+      loadSpells(spellList => {
+        let filtered = filterSpells(spellList, mapData.filter);
+        if (filtered.length === 0) {
+          container.innerHTML = `<p>Nessun incantesimo trovato per il filtro: ${mapData.filter}</p>`;
+        } else {
+          let html = `<p><strong>Seleziona un incantesimo per ${selectedVariant}:</strong></p>`;
+          html += `<select id="variantSpellChoice">
+                    <option value="">Seleziona...</option>`;
+          filtered.forEach(spell => {
+            html += `<option value="${spell.name}">${spell.name}</option>`;
+          });
+          html += `</select>`;
+          container.innerHTML = html;
+        }
+      });
     }
-    return traitsHtml + spellcastingHtml + abilityHtml;
+    // Se il mapping è "none", non mostriamo extra.
   }
-  // Se non c'è spellcasting o non è in modalità "filter", restituisce semplicemente traitsHtml.
-  return traitsHtml;
 }
 
 // --------------------------
@@ -114,7 +133,7 @@ function extractSpellName(data) {
 }
 
 // --------------------------
-// Filtro Incantesimi
+// Filtro incantesimi
 function filterSpells(spells, filterString) {
   const conditions = filterString.split("|");
   return spells.filter(spell => {
@@ -136,14 +155,14 @@ function filterSpells(spells, filterString) {
 }
 
 // --------------------------
-// Utility per errori
+// Utility per la gestione degli errori
 function handleError(message) {
   console.error("❌ " + message);
   alert("⚠️ " + message);
 }
 
 // --------------------------
-// Caricamento dati per dropdown (razze, classi)
+// Caricamento dati per i dropdown (razze, classi)
 function loadDropdownData(jsonPath, selectId, key) {
   fetch(jsonPath)
     .then(response => response.json())
@@ -224,7 +243,7 @@ function convertRaceData(rawData) {
     });
   }
 
-  // Tratti
+  // Tratti – qui prendiamo tutte le entries con nome e contenuto
   let traits = [];
   const rawEntries = rawData.entries || [];
   rawEntries.forEach(entry => {
@@ -474,20 +493,24 @@ function displayRaceTraits() {
         traitsHtml += `</ul>`;
       }
 
-      // Tabelle (se presenti)
+      // Tabelle, se presenti
       const tablesHtml = renderTables(raceData.rawEntries);
       traitsHtml += tablesHtml;
 
-      // Spellcasting: se la razza ha spellcasting e la modalità è "fixed" (cioè non richiede scelte extra)
+      // Spellcasting: Mostra la sezione solo se la razza ha un incantesimo fisso o un’unica opzione per l’abilità di lancio.
       if (raceData.spellcasting) {
+        // Se abbiamo più opzioni per l'abilità di lancio o una modalità "fixed_list" (es. High Elf che deve scegliere un cantrip)
         let showSpellInfo = false;
         if (raceData.spellcasting.fixed_spell) {
           showSpellInfo = true;
         }
-        if (raceData.spellcasting.ability_choices &&
-           (!Array.isArray(raceData.spellcasting.ability_choices) ||
-            (Array.isArray(raceData.spellcasting.ability_choices) && raceData.spellcasting.ability_choices.length === 1))) {
-          showSpellInfo = true;
+        if (raceData.spellcasting.ability_choices) {
+          if (!Array.isArray(raceData.spellcasting.ability_choices) || raceData.spellcasting.ability_choices.length === 1) {
+            showSpellInfo = true;
+          } else {
+            // Se ci sono più opzioni, intendiamo che la scelta verrà fatta nello step 4 (non in questo step)
+            showSpellInfo = false;
+          }
         }
         if (showSpellInfo) {
           traitsHtml = handleSpellcastingOptions(raceData, traitsHtml);
@@ -510,7 +533,7 @@ function displayRaceTraits() {
       }
 
       // Aggiorna la sezione tratti e bonus
-      raceTraitsDiv.innerHTML = traitsHtml;
+      document.getElementById("raceTraits").innerHTML = traitsHtml;
       racialBonusDiv.style.display = "block";
 
       // Gestione Skill e Tool choices

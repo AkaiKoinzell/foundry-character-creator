@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   initializeValues();
 
-  // Esponi globalmente le funzioni se necessario
+  // Espone globalmente le funzioni se necessario
   window.displayRaceTraits = displayRaceTraits;
   window.applyRacialBonuses = applyRacialBonuses;
 });
@@ -194,13 +194,14 @@ function convertRaceData(rawData) {
         description: variantText,
         level_requirement: 1
       });
+      // Inizializza variant_feature_choices solo se non già definita
       if (variant_feature_choices === null && Array.isArray(entry.entries)) {
         variant_feature_choices = entry.entries.map(opt => ({
           name: opt.name,
           description: Array.isArray(opt.entries) ? opt.entries.join(" ") : opt.entries
         }));
       }
-      return;
+      return; // Salta ulteriori elaborazioni di questa entry
     }
     if (entry.entries && Array.isArray(entry.entries) && entry.entries.some(e => typeof e === "object" && e.type === "table")) {
       traits.push(entry);
@@ -355,237 +356,7 @@ function convertRaceData(rawData) {
 // FUNZIONI DI VISUALIZZAZIONE
 // =====================
 
-// Funzione per gestire la visualizzazione degli incantesimi
-function handleSpellcastingOptions(data, traitsHtml) {
-  // Se la modalità è "filter" (per esempio per High Elf o Fairy)
-  if (data.spellcasting && data.spellcasting.spell_choices && data.spellcasting.spell_choices.type === "filter") {
-    let currentLevel = parseInt(document.getElementById("levelSelect").value) || 1;
-    let filtered = data.spellcasting.allSpells.filter(spell => parseInt(spell.level) <= currentLevel);
-    let grouped = {};
-    filtered.forEach(spell => {
-      let lvl = parseInt(spell.level);
-      if (!grouped[lvl]) grouped[lvl] = [];
-      grouped[lvl].push(spell);
-    });
-    let levels = Object.keys(grouped).map(Number).sort((a, b) => a - b);
-    let htmlOut = "<h4>📖 Incantesimi</h4>";
-    levels.forEach(lvl => {
-      let spellsAtLvl = grouped[lvl];
-      if (spellsAtLvl.length === 1) {
-        htmlOut += `<p><strong>Incantesimo di livello ${lvl}:</strong> ${spellsAtLvl[0].name}</p>`;
-      } else if (spellsAtLvl.length > 1) {
-        let opts = spellsAtLvl.map(spell => `<option value="${spell.name}">${spell.name} (lvl ${spell.level})</option>`).join("");
-        htmlOut += `<p><strong>Incantesimo di livello ${lvl}:</strong>
-                    <select id="spellSelection_level_${lvl}"><option value="">Seleziona...</option>${opts}</select>
-                    </p>`;
-      }
-    });
-    let abilityHtml = "";
-    if (data.spellcasting.ability_choices) {
-      if (Array.isArray(data.spellcasting.ability_choices) && data.spellcasting.ability_choices.length === 1) {
-        abilityHtml = `<p><strong>Abilità di lancio:</strong> ${data.spellcasting.ability_choices[0]}</p>`;
-      } else if (Array.isArray(data.spellcasting.ability_choices) && data.spellcasting.ability_choices.length > 1) {
-        let abOpts = data.spellcasting.ability_choices.map(a => `<option value="${a}">${a}</option>`).join("");
-        abilityHtml = `<p><strong>Abilità di lancio:</strong>
-                      <select id="castingAbility"><option value="">Seleziona...</option>${abOpts}</select>
-                      </p>`;
-      }
-    }
-    document.getElementById("spellSelectionContainer").innerHTML = htmlOut + abilityHtml;
-    return traitsHtml;
-  }
-  // Modalità fixed_list / fixed_spell
-  let currentLevel = parseInt(document.getElementById("levelSelect").value) || 1;
-  let availableSpells = [];
-  if (data.spellcasting.spells) {
-    availableSpells = data.spellcasting.spells.filter(spell => parseInt(spell.level) <= currentLevel);
-  } else if (data.spellcasting.fixed_spell) {
-    availableSpells.push({ name: data.spellcasting.fixed_spell, level: currentLevel });
-  }
-  let grouped = {};
-  availableSpells.forEach(spell => {
-    let lvl = parseInt(spell.level);
-    if (!grouped[lvl]) grouped[lvl] = [];
-    grouped[lvl].push(spell);
-  });
-  let levels = Object.keys(grouped).map(Number).sort((a, b) => a - b);
-  let htmlOut = "<h4>📖 Incantesimi</h4>";
-  levels.forEach(lvl => {
-    let spellsAtLvl = grouped[lvl];
-    if (spellsAtLvl.length === 1) {
-      htmlOut += `<p><strong>Incantesimo di livello ${lvl}:</strong> ${spellsAtLvl[0].name}</p>`;
-    } else if (spellsAtLvl.length > 1) {
-      let opts = spellsAtLvl.map(spell => `<option value="${spell.name}">${spell.name} (lvl ${spell.level})</option>`).join("");
-      htmlOut += `<p><strong>Incantesimo di livello ${lvl}:</strong>
-                  <select id="spellSelection_level_${lvl}"><option value="">Seleziona...</option>${opts}</select>
-                  </p>`;
-    }
-  });
-  if (data.spellcasting.ability_choices) {
-    let abilityHtml = "";
-    if (data.spellcasting.ability_choices.length === 1) {
-      abilityHtml = `<p><strong>Abilità di lancio:</strong> ${data.spellcasting.ability_choices[0]}</p>`;
-    } else {
-      let abOpts = data.spellcasting.ability_choices.map(a => `<option value="${a}">${a}</option>`).join("");
-      abilityHtml = `<p><strong>Abilità di lancio:</strong>
-                    <select id="castingAbility"><option value="">Seleziona...</option>${abOpts}</select>
-                    </p>`;
-    }
-    htmlOut += abilityHtml;
-  }
-  if (data.spellcasting.level_up_spells) {
-    let bonus = data.spellcasting.level_up_spells
-      .filter(spell => currentLevel >= spell.level)
-      .map(spell => `<li><strong>${spell.spell_choices.join(", ")}</strong> (Usi: ${spell.uses}, Ricarica: ${spell.refresh})</li>`)
-      .join("");
-    if (bonus) htmlOut += `<p><strong>Incantesimi Bonus:</strong></p><ul>${bonus}</ul>`;
-  }
-  return traitsHtml + htmlOut;
-}
-
-// =====================
-// FUNZIONI PER GESTIRE SKILL, TOOL, VARIANT FEATURE
-// =====================
-function handleSkillChoices(data) {
-  if (!data.skill_choices) {
-    console.log("Nessuna skill_choices trovata per questa razza.");
-    return;
-  }
-  const skillOptions = JSON.stringify(data.skill_choices.options);
-  let html = `<p><strong>Scegli ${data.skill_choices.number} abilità:</strong></p>`;
-  for (let i = 0; i < data.skill_choices.number; i++) {
-    html += `<select class="skillChoice" id="skillChoice${i}" data-options='${skillOptions}' onchange="updateSkillOptions()">
-                <option value="">Seleziona...</option>`;
-    html += data.skill_choices.options
-      .map(s => `<option value="${s}">${s}</option>`)
-      .join("");
-    html += `</select> `;
-  }
-  document.getElementById("skillSelectionContainer").innerHTML = html;
-}
-
-function updateSkillOptions() {
-  const allSelects = document.querySelectorAll(".skillChoice");
-  const selected = new Set();
-  allSelects.forEach(select => {
-    if (select.value) selected.add(select.value);
-  });
-  allSelects.forEach(select => {
-    const current = select.value;
-    select.innerHTML = `<option value="">Seleziona...</option>`;
-    const opts = JSON.parse(select.getAttribute("data-options"));
-    opts.forEach(s => {
-      if (!selected.has(s) || s === current) {
-        const option = document.createElement("option");
-        option.value = s;
-        option.textContent = s;
-        if (s === current) option.selected = true;
-        select.appendChild(option);
-      }
-    });
-  });
-}
-
-function handleToolChoices(data) {
-  if (!data.tool_choices) {
-    document.getElementById("toolSelectionContainer").innerHTML = "";
-    return;
-  }
-  const toolOptions = JSON.stringify(data.tool_choices.options);
-  let html = `<p><strong>Scegli uno strumento (o arma):</strong></p>`;
-  for (let i = 0; i < data.tool_choices.number; i++) {
-    html += `<select class="toolChoice" id="toolChoice${i}" data-options='${toolOptions}'>
-                <option value="">Seleziona...</option>`;
-    html += data.tool_choices.options
-      .map(t => `<option value="${t}">${t}</option>`)
-      .join("");
-    html += `</select> `;
-  }
-  document.getElementById("toolSelectionContainer").innerHTML = html;
-}
-
-function updateToolOptions() {
-  const allSelects = document.querySelectorAll(".toolChoice");
-  if (allSelects.length <= 1) return;
-  const selected = new Set();
-  allSelects.forEach(select => {
-    if (select.value) selected.add(select.value);
-  });
-  allSelects.forEach(select => {
-    const current = select.value;
-    select.innerHTML = `<option value="">Seleziona...</option>`;
-    const opts = JSON.parse(select.getAttribute("data-options"));
-    opts.forEach(t => {
-      if (!selected.has(t) || t === current) {
-        const option = document.createElement("option");
-        option.value = t;
-        option.textContent = t;
-        if (t === current) option.selected = true;
-        select.appendChild(option);
-      }
-    });
-  });
-}
-
-function handleVariantFeatureChoices(data) {
-  if (!data.variant_feature_choices) {
-    document.getElementById("variantFeatureSelectionContainer").innerHTML = "";
-    return;
-  }
-  let html = `<p><strong>Scegli una Variant Feature:</strong></p>`;
-  html += `<select id="variantFeatureChoice">`;
-  html += `<option value="">Seleziona...</option>`;
-  data.variant_feature_choices.forEach(opt => {
-    html += `<option value="${opt.name}">${opt.name}</option>`;
-  });
-  html += `</select>`;
-  document.getElementById("variantFeatureSelectionContainer").innerHTML = html;
-  document.getElementById("variantFeatureChoice").addEventListener("change", handleVariantExtraSelections);
-}
-
-function handleVariantExtraSelections() {
-  const variantElem = document.getElementById("variantFeatureChoice");
-  const container = document.getElementById("variantExtraContainer");
-  container.innerHTML = "";
-  if (!variantElem || !variantElem.value) return;
-  const selectedVariant = variantElem.value;
-  if (variantExtraMapping[selectedVariant]) {
-    const mapData = variantExtraMapping[selectedVariant];
-    if (mapData.type === "skills") {
-      let html = `<p><strong>Seleziona ${mapData.count} skill per ${selectedVariant}:</strong></p>`;
-      for (let i = 0; i < mapData.count; i++) {
-        html += `<select class="variantSkillChoice" id="variantSkillChoice${i}" data-options='${JSON.stringify(mapData.options)}' onchange="updateVariantSkillOptions()">
-                    <option value="">Seleziona...</option>`;
-        mapData.options.forEach(s => {
-          html += `<option value="${s}">${s}</option>`;
-        });
-        html += `</select> `;
-      }
-      container.innerHTML = html;
-    } else if (mapData.type === "spells") {
-      loadSpells(spellList => {
-        let filtered = filterSpells(spellList, mapData.filter);
-        if (filtered.length === 0) {
-          container.innerHTML = `<p>Nessun incantesimo trovato per il filtro: ${mapData.filter}</p>`;
-        } else {
-          let html = `<p><strong>Seleziona un incantesimo per ${selectedVariant}:</strong></p>`;
-          html += `<select id="variantSpellChoice">
-                    <option value="">Seleziona...</option>`;
-          filtered.forEach(spell => {
-            html += `<option value="${spell.name}">${spell.name}</option>`;
-          });
-          html += `</select>`;
-          container.innerHTML = html;
-        }
-      });
-    }
-    // Se il mapping è "none", non si mostra nulla
-  }
-}
-
-// =====================
-// VISUALIZZAZIONE DEI TRATTI DELLA RAZZA
-// =====================
+// Renderizza eventuali tabelle dalle entries
 function renderTables(entries) {
   let html = "";
   if (!entries || !Array.isArray(entries)) return html;
@@ -617,6 +388,7 @@ function renderTables(entries) {
             html += `</tbody>`;
           }
           html += `</table>`;
+          // Se l'entry contiene "ancestry", aggiunge un dropdown
           if (entry.name && entry.name.toLowerCase().includes("ancestry")) {
             let optsHtml = `<option value="">Seleziona...</option>`;
             subEntry.rows.forEach(row => {
@@ -636,11 +408,12 @@ function renderTables(entries) {
   return html;
 }
 
+// Visualizza i tratti della razza selezionata
 function displayRaceTraits() {
   const racePath = document.getElementById("raceSelect").value;
   const raceTraitsDiv = document.getElementById("raceTraits");
+  // Controlla che l'elemento per il bonus razziale esista
   const racialBonusDiv = document.getElementById("racialBonusSelection");
-
   // Pulisce i container extra
   document.getElementById("skillSelectionContainer").innerHTML = "";
   document.getElementById("toolSelectionContainer").innerHTML = "";
@@ -649,8 +422,12 @@ function displayRaceTraits() {
   document.getElementById("variantExtraContainer").innerHTML = "";
 
   if (!racePath) {
-    raceTraitsDiv.innerHTML = "<p>Seleziona una razza per vedere i tratti.</p>";
-    racialBonusDiv.style.display = "none";
+    if (raceTraitsDiv) {
+      raceTraitsDiv.innerHTML = "<p>Seleziona una razza per vedere i tratti.</p>";
+    }
+    if (racialBonusDiv) {
+      racialBonusDiv.style.display = "none";
+    }
     resetRacialBonuses();
     return;
   }
@@ -660,7 +437,6 @@ function displayRaceTraits() {
       console.log("📜 Dati razza caricati:", data);
       const raceData = convertRaceData(data);
       let traitsHtml = `<h3>Tratti di ${raceData.name}</h3>`;
-
       // Velocità
       if (typeof raceData.speed === "object") {
         let speedDetails = [];
@@ -675,12 +451,10 @@ function displayRaceTraits() {
       } else {
         traitsHtml += `<p><strong>Velocità:</strong> Non disponibile</p>`;
       }
-
       // Visione
       if (raceData.senses && raceData.senses.darkvision) {
         traitsHtml += `<p><strong>Visione:</strong> ${raceData.senses.darkvision} ft</p>`;
       }
-
       // Tratti generali
       if (raceData.traits && raceData.traits.length > 0) {
         traitsHtml += `<p><strong>Tratti:</strong></p><ul>`;
@@ -689,16 +463,13 @@ function displayRaceTraits() {
         });
         traitsHtml += `</ul>`;
       }
-
-      // Tabelle (se presenti)
+      // Tabelle
       let tablesHtml = renderTables(raceData.rawEntries);
       traitsHtml += tablesHtml;
-
       // Spellcasting
       if (raceData.spellcasting) {
         traitsHtml = handleSpellcastingOptions(raceData, traitsHtml);
       }
-
       // Lingue
       let languageHtml = `<p><strong>Lingue Concesse:</strong> ${raceData.languages.fixed.join(", ")}</p>`;
       if (raceData.languages.choice > 0) {
@@ -713,11 +484,12 @@ function displayRaceTraits() {
       } else {
         document.getElementById("languageSelection").innerHTML = languageHtml;
       }
-
-      // Aggiorna visualizzazione
-      raceTraitsDiv.innerHTML = traitsHtml;
-      racialBonusDiv.style.display = "block";
-
+      if (raceTraitsDiv) {
+        raceTraitsDiv.innerHTML = traitsHtml;
+      }
+      if (racialBonusDiv) {
+        racialBonusDiv.style.display = "block";
+      }
       // Gestione skill, tool e variant feature
       if (raceData.skill_choices) handleSkillChoices(raceData);
       if (raceData.tool_choices) handleToolChoices(raceData);
@@ -831,7 +603,10 @@ function adjustPoints(ability, action) {
     points--;
   }
   pointsSpan.textContent = points;
-  document.getElementById("pointsRemaining").textContent = totalPoints;
+  const pointsRemaining = document.getElementById("pointsRemaining");
+  if (pointsRemaining) {
+    pointsRemaining.textContent = totalPoints;
+  }
   updateFinalScores();
 }
 

@@ -409,7 +409,7 @@ function handleToolChoices(data) {
   // Inserisci il markup generato nel container dedicato
   document.getElementById("toolSelectionContainer").innerHTML = toolSelectionHtml;
 }
-/ --- Gestione Abilità (Skill Choices) ---
+// --- Gestione Abilità (Skill Choices) ---
 function handleSkillChoices(data) {
     if (!data.skill_choices) {
         console.log("Nessuna skill_choices trovata per questa razza.");

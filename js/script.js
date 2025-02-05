@@ -358,6 +358,58 @@ function convertRaceData(rawData) {
   };
 }
 
+function updateToolOptions() {
+  const allSelects = document.querySelectorAll(".toolChoice");
+  if (allSelects.length <= 1) return;
+  const selected = new Set();
+  allSelects.forEach(select => {
+    if (select.value) selected.add(select.value);
+  });
+  allSelects.forEach(select => {
+    const current = select.value;
+    select.innerHTML = `<option value="">Seleziona...</option>`;
+    const opts = JSON.parse(select.getAttribute("data-options"));
+    opts.forEach(t => {
+      if (!selected.has(t) || t === current) {
+        const option = document.createElement("option");
+        option.value = t;
+        option.textContent = t;
+        if (t === current) option.selected = true;
+        select.appendChild(option);
+      }
+    });
+  });
+}
+
+// Gestione Tool (strumenti/armi)
+// Questa funzione genera il markup per il dropdown degli strumenti (o armi)
+// solo se nel JSON della razza è presente una sezione "tool_choices".
+function handleToolChoices(data) {
+  if (!data.tool_choices) {
+    // Se non è presente, pulisci il container
+    document.getElementById("toolSelectionContainer").innerHTML = "";
+    return;
+  }
+  
+  // Prepara le opzioni per il dropdown
+  const toolOptions = JSON.stringify(data.tool_choices.options);
+  let toolSelectionHtml = `<p><strong>Scegli uno strumento (o arma):</strong></p>`;
+  
+  // Supponendo che "number" indichi quante selezioni sono richieste (tipicamente 1)
+  for (let i = 0; i < data.tool_choices.number; i++) {
+    toolSelectionHtml += `<select class="toolChoice" id="toolChoice${i}" data-options='${toolOptions}'>`;
+    toolSelectionHtml += `<option value="">Seleziona...</option>`;
+    // Aggiunge ogni opzione al dropdown
+    toolSelectionHtml += data.tool_choices.options
+      .map(t => `<option value="${t}">${t}</option>`)
+      .join("");
+    toolSelectionHtml += `</select> `;
+  }
+  
+  // Inserisci il markup generato nel container dedicato
+  document.getElementById("toolSelectionContainer").innerHTML = toolSelectionHtml;
+}
+
 //
 // --- Render Tables (Generico) ---
 function renderTables(entries) {

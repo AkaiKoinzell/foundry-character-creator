@@ -1,10 +1,8 @@
-// step4.js – Selezione dei Tratti Extra
-
 document.addEventListener("DOMContentLoaded", () => {
   const step4Container = document.getElementById("step4");
   if (!step4Container) return;
 
-  // Prepara il markup per lo step 4
+  // Imposta il markup iniziale dello step 4
   step4Container.innerHTML = `
     <h2>Step 4: Selezione dei Tratti Extra</h2>
     <div id="extraSpellcasting"></div>
@@ -13,12 +11,24 @@ document.addEventListener("DOMContentLoaded", () => {
     <div id="extraTools"></div>
   `;
 
-  // Funzione per gestire la visualizzazione degli extra spellcasting
+  // --------------------------
+  // Render Extra Spellcasting
+  // --------------------------
   function renderExtraSpellcasting(raceData) {
-    // Visualizza la sezione Spellcasting solo se la razza ha la proprietà "spellcasting" e se è in modalità "filter"
-    if (raceData.spellcasting && raceData.spellcasting.spell_choices && raceData.spellcasting.spell_choices.type === "filter") {
-      const currentLevel = parseInt(document.getElementById("levelSelect").value) || 1;
-      const filteredSpells = raceData.spellcasting.allSpells.filter(spell => parseInt(spell.level) <= currentLevel);
+    // Controlla se esiste la proprietà spellcasting in modalità "filter"
+    if (
+      raceData.spellcasting &&
+      raceData.spellcasting.spell_choices &&
+      raceData.spellcasting.spell_choices.type === "filter" &&
+      Array.isArray(raceData.spellcasting.allSpells)
+    ) {
+      const levelSelect = document.getElementById("levelSelect");
+      const currentLevel = levelSelect ? parseInt(levelSelect.value) || 1 : 1;
+      // Filtra gli incantesimi in base al livello
+      const filteredSpells = raceData.spellcasting.allSpells.filter(
+        spell => parseInt(spell.level) <= currentLevel
+      );
+      // Raggruppa gli incantesimi per livello
       const groupedSpells = {};
       filteredSpells.forEach(spell => {
         const lvl = parseInt(spell.level);
@@ -30,9 +40,16 @@ document.addEventListener("DOMContentLoaded", () => {
       levels.forEach(lvl => {
         const spellsAtLvl = groupedSpells[lvl];
         if (spellsAtLvl.length === 1) {
+          // Se c'è un solo incantesimo, lo mostriamo come testo fisso
           html += `<p>Incantesimo di livello ${lvl}: ${spellsAtLvl[0].name}</p>`;
         } else if (spellsAtLvl.length > 1) {
-          const options = spellsAtLvl.map(spell => `<option value="${spell.name}">${spell.name} (lvl ${spell.level})</option>`).join("");
+          // Se ci sono più incantesimi, creiamo un dropdown
+          const options = spellsAtLvl
+            .map(
+              spell =>
+                `<option value="${spell.name}">${spell.name} (lvl ${spell.level})</option>`
+            )
+            .join("");
           html += `<p>Incantesimo di livello ${lvl}: 
                     <select id="extraSpellSelection_level_${lvl}">
                       <option value="">Seleziona...</option>
@@ -41,12 +58,17 @@ document.addEventListener("DOMContentLoaded", () => {
                    </p>`;
         }
       });
-      // Abilità di lancio (se presenti)
-      if (raceData.spellcasting.ability_choices && Array.isArray(raceData.spellcasting.ability_choices)) {
+      // Gestione dell'abilità di lancio
+      if (
+        raceData.spellcasting.ability_choices &&
+        Array.isArray(raceData.spellcasting.ability_choices)
+      ) {
         if (raceData.spellcasting.ability_choices.length === 1) {
           html += `<p>Abilità di lancio: ${raceData.spellcasting.ability_choices[0]}</p>`;
         } else if (raceData.spellcasting.ability_choices.length > 1) {
-          const abilityOptions = raceData.spellcasting.ability_choices.map(ability => `<option value="${ability}">${ability}</option>`).join("");
+          const abilityOptions = raceData.spellcasting.ability_choices
+            .map(ability => `<option value="${ability}">${ability}</option>`)
+            .join("");
           html += `<p>Abilità di lancio: 
                     <select id="extraCastingAbility">
                       <option value="">Seleziona...</option>
@@ -61,12 +83,19 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Funzione per le lingue extra
+  // --------------------------
+  // Render Extra Languages
+  // --------------------------
   function renderExtraLanguages(raceData) {
     if (raceData.languages && raceData.languages.choice > 0) {
       loadLanguages(langs => {
-        const availableLangs = langs.filter(lang => !raceData.languages.fixed.includes(lang));
-        const options = availableLangs.map(lang => `<option value="${lang}">${lang}</option>`).join("");
+        // Filtra le lingue già conosciute
+        const availableLangs = langs.filter(
+          lang => !raceData.languages.fixed.includes(lang)
+        );
+        const options = availableLangs
+          .map(lang => `<option value="${lang}">${lang}</option>`)
+          .join("");
         const html = `<h4>Lingue Extra</h4>
                       <select id="extraLanguageSelect">
                         <option value="">Seleziona...</option>
@@ -79,13 +108,40 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Per skills extra e tools extra potresti richiamare funzioni simili o già esistenti (handleSkillChoices, handleToolChoices)
-  // Per questo esempio, qui gestiamo solo spellcasting e lingue extra
+  // --------------------------
+  // (Placeholder) Render Extra Skills
+  // --------------------------
+  function renderExtraSkills(raceData) {
+    // Se nel JSON della razza esiste una proprietà per skills extra, gestiscila qui.
+    // In questo esempio base non abbiamo una proprietà specifica, quindi puliamo il container.
+    document.getElementById("extraSkills").innerHTML = "";
+  }
 
-  // Se i dati della razza sono già stati salvati globalmente (step 2 ha salvato window.currentRaceData)
+  // --------------------------
+  // (Placeholder) Render Extra Tools
+  // --------------------------
+  function renderExtraTools(raceData) {
+    // Analogamente, se esiste una proprietà per tools extra, gestiscila qui.
+    document.getElementById("extraTools").innerHTML = "";
+  }
+
+  // --------------------------
+  // Render dei Tratti Extra se i dati della razza sono già disponibili
+  // --------------------------
   if (window.currentRaceData) {
     renderExtraSpellcasting(window.currentRaceData);
     renderExtraLanguages(window.currentRaceData);
-    // Se desideri gestire skills extra e tools extra, inserisci qui le relative funzioni
+    renderExtraSkills(window.currentRaceData);
+    renderExtraTools(window.currentRaceData);
+  }
+
+  // Se il livello cambia (presente nello step1 o in un header globale), aggiorna la sezione spellcasting
+  const levelSelect = document.getElementById("levelSelect");
+  if (levelSelect) {
+    levelSelect.addEventListener("change", () => {
+      if (window.currentRaceData) {
+        renderExtraSpellcasting(window.currentRaceData);
+      }
+    });
   }
 });

@@ -4,65 +4,127 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Character Creator - Foundry</title>
+  <!-- Includi il file common.js PRIMA degli altri step -->
   <script src="js/common.js" defer></script>
   <style>
-    /* Stili di base per nascondere gli step */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    nav {
+      margin-bottom: 20px;
+    }
     .step {
       display: none;
     }
     .step.active {
       display: block;
     }
-    nav {
-      margin-bottom: 20px;
-    }
     button {
       margin: 5px;
+      padding: 5px 10px;
+      font-size: 16px;
     }
   </style>
 </head>
 <body>
   <h1>Character Creator</h1>
-
+  
   <!-- Navigation -->
   <nav>
-    <button id="btnStep1">Step 1: Nome & Livello</button>
+    <button id="btnStep1">Step 1: Nome &amp; Livello</button>
     <button id="btnStep2">Step 2: Razza</button>
     <button id="btnStep3">Step 3: Point Buy</button>
     <button id="btnStep4">Step 4: Tratti Extra</button>
-    <!-- Puoi aggiungere gli altri step qui -->
-    <button id="btnStep8">Step 8: Recap & Esportazione</button>
+    <!-- Aggiungi altri pulsanti per gli altri step se necessario -->
+    <button id="btnStep8">Step 8: Recap &amp; Esportazione</button>
   </nav>
 
   <!-- Container degli step -->
   <div id="stepContainer">
-    <div id="step1" class="step"></div>
-    <div id="step2" class="step"></div>
-    <div id="step3" class="step"></div>
-    <div id="step4" class="step"></div>
-    <!-- Aggiungi altri div per gli altri step -->
-    <div id="step8" class="step"></div>
+    <!-- Step 1: Nome & Livello -->
+    <div id="step1" class="step active">
+      <h2>Step 1: Nome &amp; Livello</h2>
+      <label for="characterName">Nome del Personaggio:</label>
+      <input type="text" id="characterName" placeholder="Inserisci il nome">
+      <br><br>
+      <label for="levelSelect">Livello del Personaggio:</label>
+      <select id="levelSelect">
+        <!-- Valori 1-20 -->
+        ${[...Array(20)].map((_,i)=>`<option value="${i+1}">${i+1}</option>`).join("")}
+      </select>
+    </div>
+
+    <!-- Step 2: Razza -->
+    <div id="step2" class="step">
+      <h2>Step 2: Scelta della Razza</h2>
+      <!-- Dropdown delle razze (verrà popolato da common.js/step2.js) -->
+      <label for="raceSelect">Razza:</label>
+      <select id="raceSelect"></select>
+      <br><br>
+      <!-- Container per visualizzare i tratti della razza -->
+      <div id="raceTraits"></div>
+    </div>
+
+    <!-- Step 3: Point Buy System -->
+    <div id="step3" class="step">
+      <h2>Step 3: Point Buy System</h2>
+      <!-- Qui dovresti avere gli elementi del point buy (ad es. i punteggi, i pulsanti, ecc.) -->
+      <!-- Il file step3.js gestirà questo step -->
+      <div id="pointBuyContainer">
+        <!-- Esempio di layout -->
+        <p>Punti disponibili: <span id="pointsRemaining">27</span></p>
+        <!-- Qui inserisci il markup per le caratteristiche, per esempio: -->
+        <table>
+          <tr>
+            <th>Caratteristica</th>
+            <th>Punti Base</th>
+            <th>Bonus Razza</th>
+            <th>Talento BG</th>
+            <th>Punteggio Finale</th>
+          </tr>
+          <tr>
+            <td>FOR</td>
+            <td><span id="strPoints">8</span></td>
+            <td><span id="strRaceModifier">0</span></td>
+            <td><input type="number" id="strBackgroundTalent" value="0" min="0"></td>
+            <td id="strFinalScore">8</td>
+          </tr>
+          <!-- Ripeti per DES, COS, INT, SAG, CAR -->
+        </table>
+      </div>
+    </div>
+
+    <!-- Step 4: Tratti Extra -->
+    <div id="step4" class="step">
+      <h2>Step 4: Selezione dei Tratti Extra</h2>
+      <!-- In questo step verranno visualizzate le sezioni extra (spellcasting, lingue extra, skills, tools, ecc.) -->
+      <div id="extraSpellcasting"></div>
+      <div id="extraLanguages"></div>
+      <div id="extraSkills"></div>
+      <div id="extraTools"></div>
+    </div>
+
+    <!-- Step 8: Recap & Esportazione -->
+    <div id="step8" class="step">
+      <h2>Step 8: Recap & Esportazione</h2>
+      <!-- Qui verrà visualizzato un riepilogo completo con tutte le scelte e un pulsante per generare il JSON/PDF -->
+      <div id="recapContainer"></div>
+      <button id="btnGenerateJson">Genera JSON</button>
+    </div>
   </div>
 
-  <!-- Includi qui i file JS degli step -->
+  <!-- Includi i file JS degli step (assicurati che common.js venga caricato PRIMA degli altri) -->
   <script src="js/step1.js" defer></script>
   <script src="js/step2.js" defer></script>
   <script src="js/step3.js" defer></script>
   <script src="js/step4.js" defer></script>
-  <!-- Aggiungi qui gli altri step (step5.js, step6.js, ecc.) -->
   <script src="js/step8.js" defer></script>
-  
+
   <!-- Script per la navigazione fra gli step -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const steps = document.querySelectorAll(".step");
-      const btnStep1 = document.getElementById("btnStep1");
-      const btnStep2 = document.getElementById("btnStep2");
-      const btnStep3 = document.getElementById("btnStep3");
-      const btnStep4 = document.getElementById("btnStep4");
-      const btnStep8 = document.getElementById("btnStep8");
-
-      // Funzione per mostrare un determinato step e nascondere gli altri
       function showStep(stepId) {
         steps.forEach(step => {
           if (step.id === stepId) {
@@ -72,15 +134,13 @@
           }
         });
       }
-
+      document.getElementById("btnStep1").addEventListener("click", () => showStep("step1"));
+      document.getElementById("btnStep2").addEventListener("click", () => showStep("step2"));
+      document.getElementById("btnStep3").addEventListener("click", () => showStep("step3"));
+      document.getElementById("btnStep4").addEventListener("click", () => showStep("step4"));
+      document.getElementById("btnStep8").addEventListener("click", () => showStep("step8"));
       // Inizialmente mostra lo step 1
       showStep("step1");
-
-      btnStep1.addEventListener("click", () => showStep("step1"));
-      btnStep2.addEventListener("click", () => showStep("step2"));
-      btnStep3.addEventListener("click", () => showStep("step3"));
-      btnStep4.addEventListener("click", () => showStep("step4"));
-      btnStep8.addEventListener("click", () => showStep("step8"));
     });
   </script>
 </body>

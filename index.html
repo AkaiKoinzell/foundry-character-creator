@@ -69,31 +69,95 @@
     <!-- Step 3: Point Buy System -->
     <div id="step3" class="step">
       <h2>Step 3: Point Buy System</h2>
-      <!-- Qui dovresti avere gli elementi del point buy (ad es. i punteggi, i pulsanti, ecc.) -->
-      <!-- Il file step3.js gestirà questo step -->
-      <div id="pointBuyContainer">
-        <!-- Esempio di layout -->
-        <p>Punti disponibili: <span id="pointsRemaining">27</span></p>
-        <!-- Qui inserisci il markup per le caratteristiche, per esempio: -->
-        <table>
+      <p>Punti disponibili: <span id="pointsRemaining">27</span></p>
+      <table border="1" style="width:100%; border-collapse: collapse;">
+        <thead>
           <tr>
             <th>Caratteristica</th>
             <th>Punti Base</th>
             <th>Bonus Razza</th>
             <th>Talento BG</th>
             <th>Punteggio Finale</th>
+            <th>Azioni</th>
           </tr>
+        </thead>
+        <tbody>
+          <!-- Riga per Forza (FOR) -->
           <tr>
             <td>FOR</td>
             <td><span id="strPoints">8</span></td>
             <td><span id="strRaceModifier">0</span></td>
-            <td><input type="number" id="strBackgroundTalent" value="0" min="0"></td>
+            <td><input type="number" id="strBackgroundTalent" value="0" min="0" style="width: 50px;"></td>
             <td id="strFinalScore">8</td>
+            <td>
+              <button onclick="adjustPoints('str', 'add')">+</button>
+              <button onclick="adjustPoints('str', 'subtract')">-</button>
+            </td>
           </tr>
-          <!-- Ripeti per DES, COS, INT, SAG, CAR -->
-        </table>
-      </div>
+          <!-- Riga per Destrezza (DES) -->
+          <tr>
+            <td>DES</td>
+            <td><span id="dexPoints">8</span></td>
+            <td><span id="dexRaceModifier">0</span></td>
+            <td><input type="number" id="dexBackgroundTalent" value="0" min="0" style="width: 50px;"></td>
+            <td id="dexFinalScore">8</td>
+            <td>
+              <button onclick="adjustPoints('dex', 'add')">+</button>
+              <button onclick="adjustPoints('dex', 'subtract')">-</button>
+            </td>
+          </tr>
+          <!-- Riga per Costituzione (COS) -->
+          <tr>
+            <td>COS</td>
+            <td><span id="conPoints">8</span></td>
+            <td><span id="conRaceModifier">0</span></td>
+            <td><input type="number" id="conBackgroundTalent" value="0" min="0" style="width: 50px;"></td>
+            <td id="conFinalScore">8</td>
+            <td>
+              <button onclick="adjustPoints('con', 'add')">+</button>
+              <button onclick="adjustPoints('con', 'subtract')">-</button>
+            </td>
+          </tr>
+          <!-- Riga per Intelligenza (INT) -->
+          <tr>
+            <td>INT</td>
+            <td><span id="intPoints">8</span></td>
+            <td><span id="intRaceModifier">0</span></td>
+            <td><input type="number" id="intBackgroundTalent" value="0" min="0" style="width: 50px;"></td>
+            <td id="intFinalScore">8</td>
+            <td>
+              <button onclick="adjustPoints('int', 'add')">+</button>
+              <button onclick="adjustPoints('int', 'subtract')">-</button>
+            </td>
+          </tr>
+          <!-- Riga per Saggezza (SAG) -->
+          <tr>
+            <td>SAG</td>
+            <td><span id="wisPoints">8</span></td>
+            <td><span id="wisRaceModifier">0</span></td>
+            <td><input type="number" id="wisBackgroundTalent" value="0" min="0" style="width: 50px;"></td>
+            <td id="wisFinalScore">8</td>
+            <td>
+              <button onclick="adjustPoints('wis', 'add')">+</button>
+              <button onclick="adjustPoints('wis', 'subtract')">-</button>
+            </td>
+          </tr>
+          <!-- Riga per Carisma (CAR) -->
+          <tr>
+            <td>CAR</td>
+            <td><span id="chaPoints">8</span></td>
+            <td><span id="chaRaceModifier">0</span></td>
+            <td><input type="number" id="chaBackgroundTalent" value="0" min="0" style="width: 50px;"></td>
+            <td id="chaFinalScore">8</td>
+            <td>
+              <button onclick="adjustPoints('cha', 'add')">+</button>
+              <button onclick="adjustPoints('cha', 'subtract')">-</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
+
 
     <!-- Step 4: Tratti Extra -->
     <div id="step4" class="step">

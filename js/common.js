@@ -4,7 +4,7 @@
 // Helper e Funzioni di Utilità
 // -------------------------
 
-// Funzione per gestire gli errori
+// Gestione degli errori: scrive in console e mostra un alert
 function handleError(message) {
   console.error("❌ " + message);
   alert("⚠️ " + message);
@@ -14,7 +14,7 @@ function handleError(message) {
 // Funzioni per il caricamento dei dati
 // -------------------------
 
-// Carica dati da un file JSON e popola un dropdown
+// Carica un file JSON e popola un dropdown (usato per razze, classi, ecc.)
 function loadDropdownData(jsonPath, selectId, key) {
   fetch(jsonPath)
     .then(response => response.json())
@@ -30,7 +30,7 @@ function loadDropdownData(jsonPath, selectId, key) {
     .catch(error => handleError(`Errore caricando ${jsonPath}: ${error}`));
 }
 
-// Popola un dropdown dato un array di opzioni
+// Popola un dropdown con le opzioni fornite
 function populateDropdown(selectId, options) {
   const select = document.getElementById(selectId);
   if (!select) {
@@ -46,7 +46,7 @@ function populateDropdown(selectId, options) {
   });
 }
 
-// Carica il file delle lingue
+// Carica il file JSON delle lingue
 function loadLanguages(callback) {
   fetch("data/languages.json")
     .then(response => response.json())
@@ -114,13 +114,13 @@ function convertRaceData(rawData) {
     }
   });
 
-  // Spellcasting – Gestione degli incantesimi (se presenti)
+  // Spellcasting (se presente)
   let spellsArray = [];
   let abilityChoices = [];
   let spellcasting = {};
   if (rawData.additionalSpells && rawData.additionalSpells.length > 0) {
     rawData.additionalSpells.forEach(spellData => {
-      // Processa gli incantesimi innate
+      // Incantesimi innate
       if (spellData.innate) {
         Object.keys(spellData.innate).forEach(levelKey => {
           const level = parseInt(levelKey);
@@ -140,7 +140,7 @@ function convertRaceData(rawData) {
           }
         });
       }
-      // Processa gli incantesimi noti
+      // Incantesimi noti
       if (spellData.known) {
         Object.keys(spellData.known).forEach(levelKey => {
           const level = parseInt(levelKey);
@@ -151,7 +151,7 @@ function convertRaceData(rawData) {
           }
         });
       }
-      // Processa la scelta dell'abilità di lancio
+      // Abilità di lancio
       if (spellData.ability) {
         if (typeof spellData.ability === "object" && spellData.ability.choose) {
           abilityChoices = spellData.ability.choose;
@@ -245,25 +245,55 @@ function convertRaceData(rawData) {
 }
 
 // -------------------------
-// Funzioni per il parsing delle Spell
+// Funzioni per il rendering di tabelle (es. per alcune entry)
 // -------------------------
-
-// Helper per estrarre il nome di uno spell (rimuove eventuali suffissi)
-function extractSpellName(data) {
-  if (Array.isArray(data)) {
-    if (typeof data[0] === "string") {
-      return data[0].split("#")[0];
+function renderTables(entries) {
+  let html = "";
+  if (!entries || !Array.isArray(entries)) return html;
+  entries.forEach(entry => {
+    if (entry.entries && Array.isArray(entry.entries)) {
+      entry.entries.forEach(subEntry => {
+        if (typeof subEntry === "object" && subEntry.type === "table") {
+          html += `<div class="table-container" style="margin-top:1em; margin-bottom:1em;">`;
+          if (subEntry.caption) {
+            html += `<p><strong>${subEntry.caption}</strong></p>`;
+          }
+          html += `<table border="1" style="width:100%; border-collapse: collapse;">`;
+          if (subEntry.colLabels && Array.isArray(subEntry.colLabels)) {
+            html += `<thead><tr>`;
+            subEntry.colLabels.forEach(label => {
+              html += `<th style="padding: 0.5em; text-align: center;">${label}</th>`;
+            });
+            html += `</tr></thead>`;
+          }
+          if (subEntry.rows && Array.isArray(subEntry.rows)) {
+            html += `<tbody>`;
+            subEntry.rows.forEach(row => {
+              html += `<tr>`;
+              row.forEach(cell => {
+                html += `<td style="padding: 0.5em; text-align: center;">${cell}</td>`;
+              });
+              html += `</tr>`;
+            });
+            html += `</tbody>`;
+          }
+          html += `</table>`;
+          // Se l'entry è relativa a "ancestry", aggiunge un dropdown
+          if (entry.name && entry.name.toLowerCase().includes("ancestry")) {
+            let optsHtml = `<option value="">Seleziona...</option>`;
+            subEntry.rows.forEach(row => {
+              const optVal = JSON.stringify(row);
+              const optLabel = `${row[0]} (${row[1]})`;
+              optsHtml += `<option value='${optVal}'>${optLabel}</option>`;
+            });
+            html += `<p><strong>Seleziona Ancestry:</strong>
+                      <select id="ancestrySelect">${optsHtml}</select>
+                     </p>`;
+          }
+          html += `</div>`;
+        }
+      });
     }
-  } else if (typeof data === "object") {
-    for (let key in data) {
-      const result = extractSpellName(data[key]);
-      if (result) return result;
-    }
-  }
-  return null;
+  });
+  return html;
 }
-
-// -------------------------
-// Esportazione delle funzioni comuni
-// (Se usi moduli ES6, potresti esportarle, altrimenti sono globali)
-// -------------------------

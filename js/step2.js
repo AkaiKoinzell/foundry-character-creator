@@ -4,24 +4,26 @@ document.addEventListener("DOMContentLoaded", () => {
   const step2Container = document.getElementById("step2");
   if (!step2Container) return;
 
-  // Se il dropdown delle razze esiste già (ad es. creato da common.js) lo utilizziamo per visualizzare i tratti
-  // In questo esempio si assume che l’elemento con id "raceSelect" e "raceTraits" siano presenti nello step2
-  // (puoi posizionarli in step2.html o inserirli dinamicamente)
+  // Quando viene cambiata la selezione della razza, richiama displayRaceTraits
+  const raceSelect = document.getElementById("raceSelect");
+  if (raceSelect) {
+    raceSelect.addEventListener("change", displayRaceTraits);
+  }
   
-  // Definisci la funzione globale displayRaceTraits (così può essere richiamata da altri step se necessario)
+  // La funzione displayRaceTraits utilizza le funzioni definite in common.js
   window.displayRaceTraits = function() {
     const racePath = document.getElementById("raceSelect").value;
+    const raceTraitsDiv = document.getElementById("raceTraits");
     if (!racePath) {
-      document.getElementById("raceTraits").innerHTML = "<p>Seleziona una razza per vedere i tratti.</p>";
+      raceTraitsDiv.innerHTML = "<p>Seleziona una razza per vedere i tratti.</p>";
       return;
     }
     fetch(racePath)
       .then(response => response.json())
       .then(data => {
-        // Usa convertRaceData definita in common.js per formattare i dati della razza
+        // Converte i dati della razza
         const raceData = convertRaceData(data);
         let html = `<h3>Tratti di ${raceData.name}</h3>`;
-        
         // Velocità
         if (raceData.speed) {
           if (typeof raceData.speed === "object") {
@@ -33,13 +35,11 @@ document.addEventListener("DOMContentLoaded", () => {
             html += `<p><strong>Velocità:</strong> ${raceData.speed} ft</p>`;
           }
         }
-        
-        // Visione (darkvision)
+        // Visione
         if (raceData.senses && raceData.senses.darkvision) {
           html += `<p><strong>Visione:</strong> ${raceData.senses.darkvision} ft</p>`;
         }
-        
-        // Tratti (entries)
+        // Tratti
         if (raceData.traits && raceData.traits.length > 0) {
           html += `<p><strong>Tratti:</strong></p><ul>`;
           raceData.traits.forEach(trait => {
@@ -47,19 +47,16 @@ document.addEventListener("DOMContentLoaded", () => {
           });
           html += `</ul>`;
         }
-        
-        // Inserisci il risultato nell'elemento con id "raceTraits"
-        document.getElementById("raceTraits").innerHTML = html;
+        // Tabelle (se presenti)
+        const tablesHtml = renderTables(raceData.rawEntries);
+        html += tablesHtml;
+        raceTraitsDiv.innerHTML = html;
+        // Salva globalmente i dati della razza (per usarli negli step successivi)
+        window.currentRaceData = raceData;
       })
       .catch(err => {
         console.error(err);
         handleError("Errore durante il caricamento dei tratti della razza.");
       });
   };
-
-  // Associa il listener al dropdown delle razze (se non già fatto globalmente)
-  const raceSelect = document.getElementById("raceSelect");
-  if (raceSelect) {
-    raceSelect.addEventListener("change", displayRaceTraits);
-  }
 });

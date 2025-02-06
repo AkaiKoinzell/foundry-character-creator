@@ -278,3 +278,164 @@ function extractSpellName(data) {
   }
   return null;
 }
+
+// common.js – Funzioni Comuni
+
+// Funzione per gestire gli errori
+function handleError(message) {
+  console.error("❌ " + message);
+  alert("⚠️ " + message);
+}
+
+// Funzione per caricare dati da un file JSON e popolare un dropdown
+function loadDropdownData(jsonPath, selectId, key) {
+  fetch(jsonPath)
+    .then(response => response.json())
+    .then(data => {
+      console.log(`📜 Dati ricevuti da ${jsonPath}:`, data);
+      if (!data[key]) {
+        handleError(`Chiave ${key} non trovata in ${jsonPath}`);
+        return;
+      }
+      const options = Object.keys(data[key]).map(name => ({ name, path: data[key][name] }));
+      populateDropdown(selectId, options);
+    })
+    .catch(error => handleError(`Errore caricando ${jsonPath}: ${error}`));
+}
+
+// Funzione per popolare un dropdown
+function populateDropdown(selectId, options) {
+  const select = document.getElementById(selectId);
+  if (!select) {
+    handleError(`Elemento #${selectId} non trovato!`);
+    return;
+  }
+  select.innerHTML = `<option value="">Seleziona...</option>`;
+  options.forEach(option => {
+    const opt = document.createElement("option");
+    opt.value = option.path;
+    opt.textContent = option.name;
+    select.appendChild(opt);
+  });
+}
+
+// Funzione per convertire i dati della razza (da JSON grezzo al formato utilizzato)
+function convertRaceData(rawData) {
+  // Converte la proprietà size: se è un array, ad esempio ["M"] → "Medium"
+  let size = "Unknown";
+  if (Array.isArray(rawData.size)) {
+    size = (rawData.size[0] === "M") ? "Medium" :
+           (rawData.size[0] === "S") ? "Small" :
+           rawData.size[0];
+  } else {
+    size = rawData.size || "Unknown";
+  }
+
+  // Gestione della velocità
+  let speed = {};
+  if (rawData.speed) {
+    if (typeof rawData.speed === "object") {
+      for (let key in rawData.speed) {
+        speed[key] = (typeof rawData.speed[key] === "boolean")
+          ? (key === "fly" ? "equal to your walking speed" : "unknown")
+          : rawData.speed[key];
+      }
+    } else {
+      speed = rawData.speed;
+    }
+  }
+
+  // Gestione della visione (darkvision)
+  let senses = {};
+  if (rawData.senses && typeof rawData.senses === "object") {
+    senses = rawData.senses;
+  } else if (rawData.darkvision) {
+    senses.darkvision = rawData.darkvision;
+  }
+
+  // Gestione dei tratti (entries): qui si crea un array di tratti con nome e descrizione
+  let traits = [];
+  const rawEntries = rawData.entries || [];
+  rawEntries.forEach(entry => {
+    if (entry.name && entry.entries) {
+      const description = Array.isArray(entry.entries)
+        ? entry.entries.join(" ")
+        : entry.entries;
+      traits.push({
+        name: entry.name,
+        description: description,
+        level_requirement: 1
+      });
+    }
+  });
+
+  // Lingue
+  let languages = { fixed: [], choice: 0, options: [] };
+  if (rawData.languageProficiencies && rawData.languageProficiencies.length > 0) {
+    const lp = rawData.languageProficiencies[0];
+    for (let lang in lp) {
+      if (lp[lang] === true) {
+        languages.fixed.push(lang.charAt(0).toUpperCase() + lang.slice(1));
+      } else if (typeof lp[lang] === "number") {
+        languages.choice = lp[lang];
+      }
+    }
+    if (languages.choice > 0 && languages.options.length === 0) {
+      languages.options.push("Any other language you and your DM agree is appropriate");
+    }
+  }
+
+  // Skill Choices
+  let skill_choices = null;
+  if (rawData.skillProficiencies && rawData.skillProficiencies.length > 0) {
+    const sp = rawData.skillProficiencies[0].choose;
+    if (sp && sp.from) {
+      const count = sp.count ? sp.count : 1;
+      skill_choices = {
+        number: count,
+        options: sp.from
+      };
+    }
+  }
+
+  // Tool Choices (solo se presente la sezione "choose")
+  let tool_choices = null;
+  if (rawData.toolProficiencies && Array.isArray(rawData.toolProficiencies)) {
+    rawData.toolProficiencies.forEach(tp => {
+      if (tp.choose && tp.choose.from) {
+        tool_choices = {
+          number: 1,
+          options: tp.choose.from
+        };
+      }
+    });
+  }
+
+  return {
+    name: rawData.name,
+    source: rawData.source + (rawData.page ? `, page ${rawData.page}` : ""),
+    size: size,
+    speed: speed,
+    senses: senses,
+    traits: traits,
+    rawEntries: rawEntries,
+    // Spellcasting e altre proprietà specifiche possono essere aggiunte qui se necessario
+    languages: languages,
+    skill_choices: skill_choices,
+    tool_choices: tool_choices
+  };
+}
+
+// Funzione per caricare le lingue dal file JSON
+function loadLanguages(callback) {
+  fetch("data/languages.json")
+    .then(response => response.json())
+    .then(data => {
+      if (data.languages) {
+        callback(data.languages);
+      } else {
+        handleError("Nessuna lingua trovata nel file JSON.");
+      }
+    })
+    .catch(error => handleError(`Errore caricando le lingue: ${error}`));
+}

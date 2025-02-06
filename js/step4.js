@@ -1,11 +1,10 @@
-// Assicurati che le funzioni convertRaceData() e loadLanguages() siano definite globalmente (ad es. in common.js)
-// e che i dati della razza corrente siano salvati in window.currentRaceData (ad esempio, impostati nello Step 2).
+// step4.js – Selezione dei Tratti Extra
 
 document.addEventListener("DOMContentLoaded", () => {
   const step4Container = document.getElementById("step4");
   if (!step4Container) return;
 
-  // Imposta il markup base per lo Step 4
+  // Prepara il markup per lo step 4
   step4Container.innerHTML = `
     <h2>Step 4: Selezione dei Tratti Extra</h2>
     <div id="extraSpellcasting"></div>
@@ -14,8 +13,9 @@ document.addEventListener("DOMContentLoaded", () => {
     <div id="extraTools"></div>
   `;
 
-  // Funzione per visualizzare la sezione Spellcasting extra (se presente)
+  // Funzione per gestire la visualizzazione degli extra spellcasting
   function renderExtraSpellcasting(raceData) {
+    // Visualizza la sezione Spellcasting solo se la razza ha la proprietà "spellcasting" e se è in modalità "filter"
     if (raceData.spellcasting && raceData.spellcasting.spell_choices && raceData.spellcasting.spell_choices.type === "filter") {
       const currentLevel = parseInt(document.getElementById("levelSelect").value) || 1;
       const filteredSpells = raceData.spellcasting.allSpells.filter(spell => parseInt(spell.level) <= currentLevel);
@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
                    </p>`;
         }
       });
+      // Abilità di lancio (se presenti)
       if (raceData.spellcasting.ability_choices && Array.isArray(raceData.spellcasting.ability_choices)) {
         if (raceData.spellcasting.ability_choices.length === 1) {
           html += `<p>Abilità di lancio: ${raceData.spellcasting.ability_choices[0]}</p>`;
@@ -78,12 +79,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Funzioni per skills e tools extra possono essere aggiunte qui se necessario
+  // Per skills extra e tools extra potresti richiamare funzioni simili o già esistenti (handleSkillChoices, handleToolChoices)
+  // Per questo esempio, qui gestiamo solo spellcasting e lingue extra
 
-  // Supponiamo che i dati della razza selezionata siano salvati globalmente in window.currentRaceData (lo imposti nello step 2)
+  // Se i dati della razza sono già stati salvati globalmente (step 2 ha salvato window.currentRaceData)
   if (window.currentRaceData) {
     renderExtraSpellcasting(window.currentRaceData);
     renderExtraLanguages(window.currentRaceData);
-    // Aggiungi altre funzioni per skills o tools se necessario
+    // Se desideri gestire skills extra e tools extra, inserisci qui le relative funzioni
   }
 });

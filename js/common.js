@@ -1,6 +1,8 @@
-// ==================== COMMON FUNCTIONS ====================
+// ==================== COMMON FUNCTIONS (common.js) ====================
 
-// Carica un file JSON e popola un dropdown
+// -------------------------
+// Caricamento dati e popolamento dropdown
+// -------------------------
 function loadDropdownData(jsonPath, selectId, key) {
   fetch(jsonPath)
     .then(response => response.json())
@@ -19,7 +21,6 @@ function loadDropdownData(jsonPath, selectId, key) {
     .catch(error => handleError(`Errore caricando ${jsonPath}: ${error}`));
 }
 
-// Popola un dropdown con le opzioni fornite
 function populateDropdown(selectId, options) {
   const select = document.getElementById(selectId);
   if (!select) {
@@ -35,7 +36,9 @@ function populateDropdown(selectId, options) {
   });
 }
 
-// Converte i dati della razza dal JSON grezzo in un formato standard
+// -------------------------
+// Conversione dei dati della razza (raw JSON → formato standard)
+// -------------------------
 function convertRaceData(rawData) {
   // Size
   let size = "Unknown";
@@ -67,7 +70,7 @@ function convertRaceData(rawData) {
     senses.darkvision = rawData.darkvision;
   }
 
-  // Ability Bonus (semplificato)
+  // Ability Bonus (minimale gestione)
   let ability_bonus = { options: [] };
   if (rawData.ability && Array.isArray(rawData.ability)) {
     rawData.ability.forEach(ability => {
@@ -82,11 +85,12 @@ function convertRaceData(rawData) {
     });
   }
 
-  // Tratti (traits)
+  // Tratti
   let traits = [];
   const rawEntries = rawData.entries || [];
   rawEntries.forEach(entry => {
     if (entry.name && entry.entries) {
+      // Un semplice concatenamento dei testi delle entry
       const description = Array.isArray(entry.entries) ? entry.entries.join(" ") : entry.entries;
       traits.push({
         name: entry.name,
@@ -132,7 +136,7 @@ function convertRaceData(rawData) {
     });
   }
 
-  // Per questo esempio base, lasciamo la spellcasting così com'è (potrebbe essere gestita separatamente)
+  // Spellcasting (qui manteniamo la struttura originale, che potrà essere ulteriormente elaborata)
   let spellcasting = rawData.additionalSpells || null;
 
   return {
@@ -151,7 +155,9 @@ function convertRaceData(rawData) {
   };
 }
 
-// Carica le lingue da un file JSON
+// -------------------------
+// Funzione per caricare le lingue da un file JSON
+// -------------------------
 function loadLanguages(callback) {
   fetch("data/languages.json")
     .then(response => response.json())
@@ -165,13 +171,9 @@ function loadLanguages(callback) {
     .catch(error => handleError(`Errore caricando le lingue: ${error}`));
 }
 
-// Mostra un messaggio d'errore
-function handleError(message) {
-  console.error("❌ " + message);
-  alert("⚠️ " + message);
-}
-
+// -------------------------
 // Helper per estrarre il nome di uno spell (ricorsivamente)
+// -------------------------
 function extractSpellName(data) {
   if (Array.isArray(data)) {
     if (typeof data[0] === "string") {
@@ -187,7 +189,38 @@ function extractSpellName(data) {
 }
 
 // -------------------------
-// Funzioni per il rendering di tabelle (es. per alcune entry)
+// Filtro incantesimi (es. "level=0|class=Wizard")
+// -------------------------
+function filterSpells(spells, filterString) {
+  const conditions = filterString.split("|");
+  return spells.filter(spell => {
+    let valid = true;
+    conditions.forEach(cond => {
+      const parts = cond.split("=");
+      if (parts.length === 2) {
+        const key = parts[0].trim().toLowerCase();
+        const value = parts[1].trim().toLowerCase();
+        if (key === "level") {
+          if (parseInt(spell.level) !== parseInt(value)) valid = false;
+        } else if (key === "class") {
+          if (!spell.spell_list.map(x => x.toLowerCase()).includes(value)) valid = false;
+        }
+      }
+    });
+    return valid;
+  });
+}
+
+// -------------------------
+// Funzione per mostrare un messaggio d'errore
+// -------------------------
+function handleError(message) {
+  console.error("❌ " + message);
+  alert("⚠️ " + message);
+}
+
+// -------------------------
+// Funzione per il rendering di tabelle (es. per alcune entry)
 // -------------------------
 function renderTables(entries) {
   let html = "";
@@ -220,7 +253,7 @@ function renderTables(entries) {
             html += `</tbody>`;
           }
           html += `</table>`;
-          // Se l'entry è relativa a "ancestry", aggiunge un dropdown
+          // Se l'entry riguarda "ancestry", aggiunge un dropdown
           if (entry.name && entry.name.toLowerCase().includes("ancestry")) {
             let optsHtml = `<option value="">Seleziona...</option>`;
             subEntry.rows.forEach(row => {

@@ -1,20 +1,6 @@
-// common.js – Funzioni Comuni
+// ==================== COMMON FUNCTIONS ====================
 
-// -------------------------
-// Helper e Funzioni di Utilità
-// -------------------------
-
-// Gestione degli errori: scrive in console e mostra un alert
-function handleError(message) {
-  console.error("❌ " + message);
-  alert("⚠️ " + message);
-}
-
-// -------------------------
-// Funzioni per il caricamento dei dati
-// -------------------------
-
-// Carica un file JSON e popola un dropdown (usato per razze, classi, ecc.)
+// Carica un file JSON e popola un dropdown
 function loadDropdownData(jsonPath, selectId, key) {
   fetch(jsonPath)
     .then(response => response.json())
@@ -24,7 +10,10 @@ function loadDropdownData(jsonPath, selectId, key) {
         handleError(`Chiave ${key} non trovata in ${jsonPath}`);
         return;
       }
-      const options = Object.keys(data[key]).map(name => ({ name, path: data[key][name] }));
+      const options = Object.keys(data[key]).map(name => ({
+        name: name,
+        path: data[key][name]
+      }));
       populateDropdown(selectId, options);
     })
     .catch(error => handleError(`Errore caricando ${jsonPath}: ${error}`));
@@ -46,32 +35,12 @@ function populateDropdown(selectId, options) {
   });
 }
 
-// Carica il file JSON delle lingue
-function loadLanguages(callback) {
-  fetch("data/languages.json")
-    .then(response => response.json())
-    .then(data => {
-      if (data.languages) {
-        callback(data.languages);
-      } else {
-        handleError("Nessuna lingua trovata nel file JSON.");
-      }
-    })
-    .catch(error => handleError(`Errore caricando le lingue: ${error}`));
-}
-
-// -------------------------
-// Funzioni per il parsing dei dati della razza
-// -------------------------
-
-// Converte i dati grezzi di una razza nel formato atteso
+// Converte i dati della razza dal JSON grezzo in un formato standard
 function convertRaceData(rawData) {
   // Size
   let size = "Unknown";
   if (Array.isArray(rawData.size)) {
-    size = (rawData.size[0] === "M") ? "Medium" :
-           (rawData.size[0] === "S") ? "Small" :
-           rawData.size[0];
+    size = (rawData.size[0] === "M") ? "Medium" : (rawData.size[0] === "S") ? "Small" : rawData.size[0];
   } else {
     size = rawData.size || "Unknown";
   }
@@ -90,7 +59,7 @@ function convertRaceData(rawData) {
     }
   }
 
-  // Senses (es. darkvision)
+  // Senses
   let senses = {};
   if (rawData.senses && typeof rawData.senses === "object") {
     senses = rawData.senses;
@@ -98,14 +67,27 @@ function convertRaceData(rawData) {
     senses.darkvision = rawData.darkvision;
   }
 
-  // Tratti (entries)
+  // Ability Bonus (semplificato)
+  let ability_bonus = { options: [] };
+  if (rawData.ability && Array.isArray(rawData.ability)) {
+    rawData.ability.forEach(ability => {
+      if (ability.choose && ability.choose.weighted) {
+        const weights = ability.choose.weighted.weights;
+        if (weights.length === 2 && weights.includes(2)) {
+          ability_bonus.options.push({ type: "fixed", values: { any: 2, any_other: 1 } });
+        } else if (weights.length === 3) {
+          ability_bonus.options.push({ type: "three", values: { any: 1, any_other: 1, any_other_2: 1 } });
+        }
+      }
+    });
+  }
+
+  // Tratti (traits)
   let traits = [];
   const rawEntries = rawData.entries || [];
   rawEntries.forEach(entry => {
     if (entry.name && entry.entries) {
-      const description = Array.isArray(entry.entries)
-        ? entry.entries.join(" ")
-        : entry.entries;
+      const description = Array.isArray(entry.entries) ? entry.entries.join(" ") : entry.entries;
       traits.push({
         name: entry.name,
         description: description,
@@ -113,79 +95,6 @@ function convertRaceData(rawData) {
       });
     }
   });
-
-  // Spellcasting (se presente)
-  let spellsArray = [];
-  let abilityChoices = [];
-  let spellcasting = {};
-  if (rawData.additionalSpells && rawData.additionalSpells.length > 0) {
-    rawData.additionalSpells.forEach(spellData => {
-      // Incantesimi innate
-      if (spellData.innate) {
-        Object.keys(spellData.innate).forEach(levelKey => {
-          const level = parseInt(levelKey);
-          let spellList;
-          if (typeof spellData.innate[levelKey] === "object") {
-            if (spellData.innate[levelKey].daily && spellData.innate[levelKey].daily["1"]) {
-              spellList = spellData.innate[levelKey].daily["1"];
-            } else {
-              spellList = spellData.innate[levelKey];
-            }
-          } else {
-            spellList = spellData.innate[levelKey];
-          }
-          const spellName = extractSpellName(spellList);
-          if (spellName) {
-            spellsArray.push({ name: spellName, level: level, type: "innate" });
-          }
-        });
-      }
-      // Incantesimi noti
-      if (spellData.known) {
-        Object.keys(spellData.known).forEach(levelKey => {
-          const level = parseInt(levelKey);
-          const spellList = spellData.known[levelKey];
-          const spellName = extractSpellName(spellList);
-          if (spellName) {
-            spellsArray.push({ name: spellName, level: level, type: "known" });
-          }
-        });
-      }
-      // Abilità di lancio
-      if (spellData.ability) {
-        if (typeof spellData.ability === "object" && spellData.ability.choose) {
-          abilityChoices = spellData.ability.choose;
-        } else if (typeof spellData.ability === "string") {
-          abilityChoices = [spellData.ability];
-        }
-      }
-    });
-    if (spellsArray.length > 0) {
-      const distinctLevels = new Set(spellsArray.map(s => s.level));
-      if (distinctLevels.size > 1) {
-        spellcasting = {
-          spell_choices: { type: "filter" },
-          allSpells: spellsArray,
-          ability_choices: abilityChoices,
-          uses: "1 per long rest"
-        };
-      } else if (spellsArray.length === 1) {
-        spellcasting = {
-          fixed_spell: spellsArray[0].name,
-          level_requirement: spellsArray[0].level,
-          uses: "1 per long rest",
-          ability_choices: abilityChoices
-        };
-      } else {
-        spellcasting = {
-          spell_choices: { type: "fixed_list", options: spellsArray.map(s => s.name) },
-          level_requirement: Math.min(...spellsArray.map(s => s.level)),
-          uses: "1 per long rest",
-          ability_choices: abilityChoices
-        };
-      }
-    }
-  }
 
   // Lingue
   let languages = { fixed: [], choice: 0, options: [] };
@@ -209,10 +118,7 @@ function convertRaceData(rawData) {
     const sp = rawData.skillProficiencies[0].choose;
     if (sp && sp.from) {
       const count = sp.count ? sp.count : 1;
-      skill_choices = {
-        number: count,
-        options: sp.from
-      };
+      skill_choices = { number: count, options: sp.from };
     }
   }
 
@@ -221,13 +127,13 @@ function convertRaceData(rawData) {
   if (rawData.toolProficiencies && Array.isArray(rawData.toolProficiencies)) {
     rawData.toolProficiencies.forEach(tp => {
       if (tp.choose && tp.choose.from) {
-        tool_choices = {
-          number: 1,
-          options: tp.choose.from
-        };
+        tool_choices = { number: 1, options: tp.choose.from };
       }
     });
   }
+
+  // Per questo esempio base, lasciamo la spellcasting così com'è (potrebbe essere gestita separatamente)
+  let spellcasting = rawData.additionalSpells || null;
 
   return {
     name: rawData.name,
@@ -235,6 +141,7 @@ function convertRaceData(rawData) {
     size: size,
     speed: speed,
     senses: senses,
+    ability_bonus: ability_bonus,
     traits: traits,
     rawEntries: rawEntries,
     spellcasting: spellcasting,
@@ -242,6 +149,41 @@ function convertRaceData(rawData) {
     skill_choices: skill_choices,
     tool_choices: tool_choices
   };
+}
+
+// Carica le lingue da un file JSON
+function loadLanguages(callback) {
+  fetch("data/languages.json")
+    .then(response => response.json())
+    .then(data => {
+      if (data.languages) {
+        callback(data.languages);
+      } else {
+        handleError("Nessuna lingua trovata nel file JSON.");
+      }
+    })
+    .catch(error => handleError(`Errore caricando le lingue: ${error}`));
+}
+
+// Mostra un messaggio d'errore
+function handleError(message) {
+  console.error("❌ " + message);
+  alert("⚠️ " + message);
+}
+
+// Helper per estrarre il nome di uno spell (ricorsivamente)
+function extractSpellName(data) {
+  if (Array.isArray(data)) {
+    if (typeof data[0] === "string") {
+      return data[0].split("#")[0];
+    }
+  } else if (typeof data === "object") {
+    for (let key in data) {
+      const result = extractSpellName(data[key]);
+      if (result) return result;
+    }
+  }
+  return null;
 }
 
 // -------------------------

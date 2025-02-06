@@ -4,59 +4,63 @@ document.addEventListener("DOMContentLoaded", () => {
   const step2Container = document.getElementById("step2");
   if (!step2Container) return;
 
-  // Quando viene cambiata la selezione della razza, richiama displayRaceTraits
-  const raceSelect = document.getElementById("raceSelect");
-  if (raceSelect) {
-    raceSelect.addEventListener("change", displayRaceTraits);
-  }
-  
-  // La funzione displayRaceTraits utilizza le funzioni definite in common.js
-  window.displayRaceTraits = function() {
-    const racePath = document.getElementById("raceSelect").value;
-    const raceTraitsDiv = document.getElementById("raceTraits");
+  // Carica il dropdown delle razze utilizzando la funzione comune
+  loadDropdownData("data/races.json", "raceSelect", "races");
+
+  // Definisce la funzione per visualizzare i tratti della razza selezionata
+  window.displayRaceTraits = function () {
+    const raceSelect = document.getElementById("raceSelect");
+    if (!raceSelect) return;
+    const racePath = raceSelect.value;
     if (!racePath) {
-      raceTraitsDiv.innerHTML = "<p>Seleziona una razza per vedere i tratti.</p>";
+      document.getElementById("raceTraits").innerHTML =
+        "<p>Seleziona una razza per vedere i tratti.</p>";
       return;
     }
+
+    // Recupera il file JSON della razza selezionata
     fetch(racePath)
       .then(response => response.json())
       .then(data => {
-        // Converte i dati della razza
+        // Converte i dati grezzi in un formato più utilizzabile
         const raceData = convertRaceData(data);
         let html = `<h3>Tratti di ${raceData.name}</h3>`;
-        // Velocità
+
+        // Gestione della velocità
         if (raceData.speed) {
           if (typeof raceData.speed === "object") {
-            const speedDetails = Object.keys(raceData.speed)
-              .map(key => `${key}: ${raceData.speed[key]} ft`)
+            const speeds = Object.entries(raceData.speed)
+              .map(([type, value]) => `${type}: ${value} ft`)
               .join(", ");
-            html += `<p><strong>Velocità:</strong> ${speedDetails}</p>`;
+            html += `<p><strong>Velocità:</strong> ${speeds}</p>`;
           } else {
             html += `<p><strong>Velocità:</strong> ${raceData.speed} ft</p>`;
           }
         }
-        // Visione
+
+        // Gestione della visione (es. darkvision)
         if (raceData.senses && raceData.senses.darkvision) {
           html += `<p><strong>Visione:</strong> ${raceData.senses.darkvision} ft</p>`;
         }
-        // Tratti
+
+        // Visualizza i tratti (traits)
         if (raceData.traits && raceData.traits.length > 0) {
-          html += `<p><strong>Tratti:</strong></p><ul>`;
+          html += "<ul>";
           raceData.traits.forEach(trait => {
             html += `<li><strong>${trait.name}:</strong> ${trait.description || ""}</li>`;
           });
-          html += `</ul>`;
+          html += "</ul>";
         }
-        // Tabelle (se presenti)
-        const tablesHtml = renderTables(raceData.rawEntries);
-        html += tablesHtml;
-        raceTraitsDiv.innerHTML = html;
-        // Salva globalmente i dati della razza (per usarli negli step successivi)
-        window.currentRaceData = raceData;
+
+        // Inserisce il markup dei tratti nell'elemento dedicato
+        document.getElementById("raceTraits").innerHTML = html;
       })
       .catch(err => {
-        console.error(err);
-        handleError("Errore durante il caricamento dei tratti della razza.");
+        console.error("Errore nel caricamento dei dati della razza:", err);
+        handleError("Errore caricando i tratti della razza: " + err);
       });
   };
+
+  // Associa l'evento change al dropdown delle razze
+  document.getElementById("raceSelect").addEventListener("change", displayRaceTraits);
 });

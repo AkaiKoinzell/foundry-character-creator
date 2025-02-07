@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Character Creator - Foundry</title>
-  <!-- Includi il file common.js PRIMA degli altri step -->
-  <script src="js/common.js" defer></script>
+  <!-- Includi il file unificato script.js -->
+  <script src="js/script.js" defer></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -29,14 +29,14 @@
 </head>
 <body>
   <h1>Character Creator</h1>
-  
+
   <!-- Navigation -->
   <nav>
     <button id="btnStep1">Step 1: Nome &amp; Livello</button>
     <button id="btnStep2">Step 2: Razza</button>
     <button id="btnStep3">Step 3: Point Buy</button>
     <button id="btnStep4">Step 4: Tratti Extra</button>
-    <!-- Aggiungi altri pulsanti per gli altri step se necessario -->
+    <!-- Altri step (Step 5, Step 6, ecc.) possono essere aggiunti qui -->
     <button id="btnStep8">Step 8: Recap &amp; Esportazione</button>
   </nav>
 
@@ -44,21 +44,20 @@
   <div id="stepContainer">
     <!-- Step 1: Nome & Livello -->
     <div id="step1" class="step active">
-      <h2>Step 1: Nome &amp; Livello</h2>
+      <h2>Step 1: Inserisci Nome &amp; Livello</h2>
       <label for="characterName">Nome del Personaggio:</label>
       <input type="text" id="characterName" placeholder="Inserisci il nome">
       <br><br>
-      <label for="levelSelect">Livello del Personaggio:</label>
+      <label for="levelSelect">Livello:</label>
       <select id="levelSelect">
-        <!-- Valori 1-20 -->
-        ${[...Array(20)].map((_,i)=>`<option value="${i+1}">${i+1}</option>`).join("")}
+        <!-- Crea le opzioni da 1 a 20 -->
+        ${[...Array(20)].map((_, i) => `<option value="${i+1}">${i+1}</option>`).join('')}
       </select>
     </div>
 
     <!-- Step 2: Razza -->
     <div id="step2" class="step">
       <h2>Step 2: Scelta della Razza</h2>
-      <!-- Dropdown delle razze (verrà popolato da common.js/step2.js) -->
       <label for="raceSelect">Razza:</label>
       <select id="raceSelect"></select>
       <br><br>
@@ -66,6 +65,7 @@
       <div id="raceTraits"></div>
     </div>
 
+    <!-- Step 3: Point Buy System -->
     <!-- Step 3: Point Buy System -->
     <div id="step3" class="step">
        <h2 style="text-align: center;">Sistema Point Buy</h2>
@@ -178,11 +178,10 @@
     <button id="generateJson">Genera JSON</button>
     <br><br>
 
-
     <!-- Step 4: Tratti Extra -->
     <div id="step4" class="step">
       <h2>Step 4: Selezione dei Tratti Extra</h2>
-      <!-- In questo step verranno visualizzate le sezioni extra (spellcasting, lingue extra, skills, tools, ecc.) -->
+      <!-- Questi contenitori verranno popolati dinamicamente dallo script.js in base alla razza selezionata -->
       <div id="extraSpellcasting"></div>
       <div id="extraLanguages"></div>
       <div id="extraSkills"></div>
@@ -191,21 +190,13 @@
 
     <!-- Step 8: Recap & Esportazione -->
     <div id="step8" class="step">
-      <h2>Step 8: Recap & Esportazione</h2>
-      <!-- Qui verrà visualizzato un riepilogo completo con tutte le scelte e un pulsante per generare il JSON/PDF -->
-      <div id="recapContainer"></div>
-      <button id="btnGenerateJson">Genera JSON</button>
+      <h2>Step 8: Recap &amp; Esportazione</h2>
+      <div id="finalRecap"></div>
+      <button id="btnGenerateJson">Esporta JSON</button>
     </div>
   </div>
 
-  <!-- Includi i file JS degli step (assicurati che common.js venga caricato PRIMA degli altri) -->
-  <script src="js/step1.js" defer></script>
-  <script src="js/step2.js" defer></script>
-  <script src="js/step3.js" defer></script>
-  <script src="js/step4.js" defer></script>
-  <script src="js/step8.js" defer></script>
-
-  <!-- Script per la navigazione fra gli step -->
+  <!-- Navigazione fra gli step -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const steps = document.querySelectorAll(".step");
@@ -223,7 +214,7 @@
       document.getElementById("btnStep3").addEventListener("click", () => showStep("step3"));
       document.getElementById("btnStep4").addEventListener("click", () => showStep("step4"));
       document.getElementById("btnStep8").addEventListener("click", () => showStep("step8"));
-      // Inizialmente mostra lo step 1
+      // Inizialmente mostra lo Step 1
       showStep("step1");
     });
   </script>

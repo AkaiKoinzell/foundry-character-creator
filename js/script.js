@@ -26,7 +26,7 @@ const variantExtraMapping = {
 
 // ==================== FUNZIONI PER LE VARIANT FEATURES ====================
 
-// Aggiorna i dropdown delle variant skill (per evitare duplicazioni)
+// Aggiorna i dropdown delle variant skill (evita duplicazioni)
 function updateVariantSkillOptions() {
   const allVariantSkillSelects = document.querySelectorAll(".variantSkillChoice");
   if (allVariantSkillSelects.length === 0) return;
@@ -72,7 +72,7 @@ function handleVariantExtraSelections() {
       container.innerHTML = html;
     } else if (mapData.type === "spells") {
       loadSpells(spellList => {
-        let filtered = filterSpells(spellList, mapData.filter);
+        const filtered = filterSpells(spellList, mapData.filter);
         if (filtered.length === 0) {
           container.innerHTML = `<p>Nessun incantesimo trovato per il filtro: ${mapData.filter}</p>`;
         } else {
@@ -87,15 +87,15 @@ function handleVariantExtraSelections() {
         }
       });
     }
-    // Se il mapping è "none", non si mostra nulla
+    // Se il mapping è "none", non viene mostrato nulla
   }
 }
 
 // ==================== FUNZIONI SPELLCASTING ====================
 
-// Questa funzione gestisce la visualizzazione della sezione "Spellcasting"
-// Se la proprietà spellcasting è presente e il tipo è "filter", raggruppa gli incantesimi per livello
-// e genera i dropdown per la scelta (sia degli incantesimi che dell'abilità di lancio).
+// Gestisce la visualizzazione della sezione "Spellcasting" extra.
+// Se la proprietà spellcasting è definita in modalità "filter", raggruppa gli incantesimi per livello
+// e genera dropdown per la scelta degli incantesimi e dell’abilità di lancio.
 function handleSpellcastingOptions(data, traitsHtml) {
   if (data.spellcasting && data.spellcasting.spell_choices && data.spellcasting.spell_choices.type === "filter") {
     const currentLevel = parseInt(document.getElementById("levelSelect").value) || 1;
@@ -130,11 +130,11 @@ function handleSpellcastingOptions(data, traitsHtml) {
             </p>`;
       }
     }
-    // Inserisce nello step (o nel container dedicato) la sezione Spellcasting extra
+    // Inserisce il markup nel container dedicato (ad es. nell'elemento con id "spellSelectionContainer")
     document.getElementById("spellSelectionContainer").innerHTML = spellcastingHtml + abilityHtml;
     return traitsHtml;
   }
-  // Se non c'è spellcasting in modalità filter, restituisce semplicemente i traits HTML
+  // Se la proprietà spellcasting non è presente o non è in modalità "filter", non modifica i traits
   return traitsHtml;
 }
 
@@ -217,7 +217,7 @@ function populateDropdown(selectId, options) {
   });
 }
 
-// Carica le lingue dal file JSON
+// Carica le lingue da un file JSON
 function loadLanguages(callback) {
   fetch("data/languages.json")
     .then(response => response.json())
@@ -279,12 +279,13 @@ function convertRaceData(rawData) {
     });
   }
 
-  // Tratti
+  // Variant Feature e Tratti
+  let variant_feature_choices = undefined; // Per memorizzare eventuali variant features
   let traits = [];
   const rawEntries = rawData.entries || [];
   rawEntries.forEach(entry => {
+    // Se l'entry è una Variant Feature, formattiamo il testo e prepariamo le opzioni
     if (entry.type === "inset" && entry.name && entry.name.toLowerCase().includes("variant feature")) {
-      // Se è una variant feature, formattiamo il testo e prepariamo le opzioni per il dropdown
       let variantText = "";
       if (Array.isArray(entry.entries)) {
         variantText = entry.entries.map(opt => {
@@ -297,7 +298,6 @@ function convertRaceData(rawData) {
         description: variantText,
         level_requirement: 1
       });
-      // Prepara le opzioni per il dropdown delle variant feature (solo la prima volta)
       if (variant_feature_choices === undefined && Array.isArray(entry.entries)) {
         variant_feature_choices = entry.entries.map(opt => ({
           name: opt.name,
@@ -360,7 +360,6 @@ function convertRaceData(rawData) {
         }
       }
     });
-    // Se esistono incantesimi, elabora la struttura di spellcasting
     if (spellsArray.length > 0) {
       const distinctLevels = new Set(spellsArray.map(s => s.level));
       if (distinctLevels.size > 1) {
@@ -412,10 +411,7 @@ function convertRaceData(rawData) {
     const sp = rawData.skillProficiencies[0].choose;
     if (sp && sp.from) {
       const count = sp.count ? sp.count : 1;
-      skill_choices = {
-        number: count,
-        options: sp.from
-      };
+      skill_choices = { number: count, options: sp.from };
     }
   }
 
@@ -424,10 +420,7 @@ function convertRaceData(rawData) {
   if (rawData.toolProficiencies && Array.isArray(rawData.toolProficiencies)) {
     rawData.toolProficiencies.forEach(tp => {
       if (tp.choose && tp.choose.from) {
-        tool_choices = {
-          number: 1,
-          options: tp.choose.from
-        };
+        tool_choices = { number: 1, options: tp.choose.from };
       }
     });
   }
@@ -500,19 +493,21 @@ function renderTables(entries) {
   return html;
 }
 
-// ==================== DISPLAY RACE TRAITS ====================
+// ==================== DISPLAY DEI TRATTI DELLA RAZZA ====================
 function displayRaceTraits() {
   const racePath = document.getElementById("raceSelect").value;
   const raceTraitsDiv = document.getElementById("raceTraits");
   const racialBonusDiv = document.getElementById("racialBonusSelection");
 
-  // Pulisce i container extra
+  // Pulisce i container extra (skills, tools, spellcasting, variant, lingue)
   document.getElementById("skillSelectionContainer").innerHTML = "";
   document.getElementById("toolSelectionContainer").innerHTML = "";
   document.getElementById("spellSelectionContainer").innerHTML = "";
   document.getElementById("variantFeatureSelectionContainer").innerHTML = "";
   document.getElementById("variantExtraContainer").innerHTML = "";
-  document.getElementById("languageSelection") && (document.getElementById("languageSelection").innerHTML = "");
+  if (document.getElementById("languageSelection")) {
+    document.getElementById("languageSelection").innerHTML = "";
+  }
 
   if (!racePath) {
     raceTraitsDiv.innerHTML = "<p>Seleziona una razza per vedere i tratti.</p>";
@@ -520,13 +515,14 @@ function displayRaceTraits() {
     resetRacialBonuses();
     return;
   }
+
   fetch(racePath)
     .then(response => response.json())
     .then(data => {
       console.log("📜 Dati razza caricati:", data);
-      // Converte i dati della razza in un formato standard
       const raceData = convertRaceData(data);
       let traitsHtml = `<h3>Tratti di ${raceData.name}</h3>`;
+
       // Velocità
       if (raceData.speed) {
         if (typeof raceData.speed === "object") {
@@ -541,10 +537,12 @@ function displayRaceTraits() {
       } else {
         traitsHtml += `<p><strong>Velocità:</strong> Non disponibile</p>`;
       }
+
       // Visione
       if (raceData.senses && raceData.senses.darkvision) {
         traitsHtml += `<p><strong>Visione:</strong> ${raceData.senses.darkvision} ft</p>`;
       }
+
       // Tratti
       if (raceData.traits && raceData.traits.length > 0) {
         traitsHtml += `<p><strong>Tratti:</strong></p><ul>`;
@@ -553,6 +551,7 @@ function displayRaceTraits() {
         });
         traitsHtml += `</ul>`;
       }
+
       // Tabelle (rawEntries)
       const tablesHtml = renderTables(raceData.rawEntries);
       traitsHtml += tablesHtml;
@@ -561,7 +560,7 @@ function displayRaceTraits() {
       if (raceData.spellcasting) {
         traitsHtml = handleSpellcastingOptions(raceData, traitsHtml);
       }
-      
+
       // Lingue
       let languageHtml = "";
       if (raceData.languages && Array.isArray(raceData.languages.fixed) && raceData.languages.fixed.length > 0) {
@@ -576,17 +575,12 @@ function displayRaceTraits() {
           let opts = availableLangs.map(lang => `<option value="${lang}">${lang}</option>`).join("");
           opts = `<option value="">Seleziona...</option>` + opts;
           const select = `<select id="extraLanguageSelect">${opts}</select>`;
-          // Inserisce le lingue extra in un container (assicurati che l'elemento "languageSelection" esista nel tuo HTML)
-          const langContainer = document.getElementById("languageSelection");
-          if (langContainer) {
-            langContainer.innerHTML = languageHtml + select;
+          if (document.getElementById("languageSelection")) {
+            document.getElementById("languageSelection").innerHTML = languageHtml + select;
           }
         });
-      } else {
-        const langContainer = document.getElementById("languageSelection");
-        if (langContainer) {
-          langContainer.innerHTML = languageHtml;
-        }
+      } else if (document.getElementById("languageSelection")) {
+        document.getElementById("languageSelection").innerHTML = languageHtml;
       }
 
       raceTraitsDiv.innerHTML = traitsHtml;
@@ -600,9 +594,8 @@ function displayRaceTraits() {
       if (raceData.tool_choices) {
         handleToolChoices(raceData);
       }
-      
+
       resetRacialBonuses();
-      
       // Salva globalmente i dati della razza per eventuali step successivi (es. Step 4)
       window.currentRaceData = raceData;
     })
@@ -633,7 +626,7 @@ function updateSubclasses() {
     .catch(error => handleError(`Errore caricando le sottoclasse: ${error}`));
 }
 
-// ==================== GENERATE FINAL JSON ====================
+// ==================== GENERAZIONE DEL JSON FINALE ====================
 function generateFinalJson() {
   let chromaticAncestry = null;
   const ancestrySelect = document.getElementById("ancestrySelect");
@@ -694,7 +687,7 @@ function generateFinalJson() {
   alert("JSON generato e scaricato!");
 }
 
-// Scarica il JSON generato come file
+// Scarica il file JSON
 function downloadJsonFile(filename, jsonData) {
   const jsonBlob = new Blob([JSON.stringify(jsonData, null, 2)], { type: "application/json" });
   const a = document.createElement("a");
@@ -796,6 +789,27 @@ function resetRacialBonuses() {
   updateFinalScores();
 }
 
-// Esponi globalmente le funzioni displayRaceTraits e applyRacialBonuses
+// ==================== ESPOSTE GLOBALMENTE PER I LISTENER ====================
 window.displayRaceTraits = displayRaceTraits;
 window.applyRacialBonuses = applyRacialBonuses;
+
+// Inizializza al caricamento della pagina
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("✅ Script.js caricato!");
+  // Carica dropdown per razze e classi
+  loadDropdownData("data/races.json", "raceSelect", "races");
+  loadDropdownData("data/classes.json", "classSelect", "classes");
+  
+  // Imposta listener per il cambio di razza, bonus e livello
+  document.getElementById("raceSelect").addEventListener("change", displayRaceTraits);
+  document.getElementById("racialBonus1").addEventListener("change", applyRacialBonuses);
+  document.getElementById("racialBonus2").addEventListener("change", applyRacialBonuses);
+  document.getElementById("racialBonus3").addEventListener("change", applyRacialBonuses);
+  document.getElementById("levelSelect").addEventListener("change", () => displayRaceTraits());
+  
+  // Listener per generare il JSON finale
+  document.getElementById("generateJson").addEventListener("click", generateFinalJson);
+  
+  // Inizializza il sistema Point Buy
+  initializeValues();
+});

@@ -152,98 +152,111 @@
     </div>
     <!-- Step 3: Point Buy System -->
     <div id="step3" class="step">
-      <h2>Step 3: Point Buy System</h2>
-      <p style="text-align: center;">
-        <span style="font-weight: bold;">Punti Totali:</span> <span id="pointsRemaining">27</span>
-      </p>
-      <p style="text-align: center;">Assegna i tuoi punti alle caratteristiche.</p>
-      <!-- Esempio di tabella per il Point Buy -->
-      <div id="racialBonusSelection"></div>
-      <table>
+     <h2 style="text-align: center;">Sistema Point Buy</h2>
+<p style="text-align: center;"><span style="font-weight: bold;">Total Points Remaining:</span> <span id="pointsRemaining">27</span></p>
+<p style="text-align: center;">Assegna i tuoi punti tra i punteggi di caratteristica (FOR, DES, COS, INT, SAG, CAR). Hai 27 punti da spendere.</p>
+<div id="racialBonusSelection" style="display: none;">
+    <h3>Distribuzione Bonus Razza</h3>
+    <p>Distribuisci i tuoi 3 punti extra in una delle seguenti combinazioni:</p>
+    <ul>
+        <li>+2 a una caratteristica e +1 a un'altra</li>
+        <li>+1 a tre caratteristiche diverse</li>
+    </ul>
+
+    <label for="racialBonus1">Bonus 1:</label>
+    <select id="racialBonus1">
+        <option value="">Seleziona</option>
+        <option value="str">Forza</option>
+        <option value="dex">Destrezza</option>
+        <option value="con">Costituzione</option>
+        <option value="int">Intelligenza</option>
+        <option value="wis">Saggezza</option>
+        <option value="cha">Carisma</option>
+    </select>
+
+    <label for="racialBonus2">Bonus 2:</label>
+    <select id="racialBonus2">
+        <option value="">Seleziona</option>
+        <option value="str">Forza</option>
+        <option value="dex">Destrezza</option>
+        <option value="con">Costituzione</option>
+        <option value="int">Intelligenza</option>
+        <option value="wis">Saggezza</option>
+        <option value="cha">Carisma</option>
+    </select>
+
+    <label for="racialBonus3">Bonus 3:</label>
+    <select id="racialBonus3">
+        <option value="">Seleziona</option>
+        <option value="str">Forza</option>
+        <option value="dex">Destrezza</option>
+        <option value="con">Costituzione</option>
+        <option value="int">Intelligenza</option>
+        <option value="wis">Saggezza</option>
+        <option value="cha">Carisma</option>
+    </select>
+
+    <button onclick="applyRacialBonuses()">Applica Bonus Razza</button>
+</div>
+
+    <table>
         <tr>
-          <th>Caratteristica</th>
-          <th>Aggiungi/Sottrai</th>
-          <th>Punteggio Base</th>
-          <th>Bonus Razza</th>
-          <th>Talento BG</th>
-          <th>Punteggio Finale</th>
+            <th>Caratteristiche</th>
+            <th>Spendi i tuoi punti</th>
+            <th>Punteggi Iniziali</th>
+            <th>Punteggi di Razza</th>
+            <th>Talento di BG</th>
+            <th>Punteggi Finali</th>
         </tr>
-        <!-- Riga per FORZA -->
         <tr>
-          <td>FOR</td>
-          <td>
-            <button onclick="adjustPoints('str', 'add')">+</button>
-            <button onclick="adjustPoints('str', 'subtract')">-</button>
-          </td>
-          <td><span id="strPoints">8</span></td>
-          <td><span id="strRaceModifier">0</span></td>
-          <td><input type="number" id="strBackgroundTalent" value="0" min="0" max="1" onchange="updateFinalScores()"></td>
-          <td id="strFinalScore">8</td>
+            <td>FOR</td>
+            <td><button onclick="adjustPoints('str', 'add')">+</button><button onclick="adjustPoints('str', 'subtract')">-</button></td>
+            <td><span id="strPoints">8</span></td>
+            <td><span type="number" id="strRaceModifier" value="0" min="0" max="2" oninput="updateFinalScores()">0</span></td>
+            <td><input type="number" id="strBackgroundTalent" value="0" min="0" max="1" oninput="updateFinalScores()"></td>
+            <td id="strFinalScore">8</td>
         </tr>
-        <!-- Riga per DES -->
         <tr>
-          <td>DES</td>
-          <td>
-            <button onclick="adjustPoints('dex', 'add')">+</button>
-            <button onclick="adjustPoints('dex', 'subtract')">-</button>
-          </td>
-          <td><span id="dexPoints">8</span></td>
-          <td><span id="dexRaceModifier">0</span></td>
-          <td><input type="number" id="dexBackgroundTalent" value="0" min="0" max="1" onchange="updateFinalScores()"></td>
-          <td id="dexFinalScore">8</td>
+            <td>DES</td>
+            <td><button onclick="adjustPoints('dex', 'add')">+</button><button onclick="adjustPoints('dex', 'subtract')">-</button></td>
+            <td><span id="dexPoints">8</span></td>
+            <td><span type="number" id="dexRaceModifier" value="0" min="0" max="2" oninput="updateFinalScores()">0</span></td>
+            <td><input type="number" id="dexBackgroundTalent" value="0" min="0" max="1" oninput="updateFinalScores()"></td>
+            <td id="dexFinalScore">8</td>
         </tr>
-        <!-- Riga per COS -->
         <tr>
-          <td>COS</td>
-          <td>
-            <button onclick="adjustPoints('con', 'add')">+</button>
-            <button onclick="adjustPoints('con', 'subtract')">-</button>
-          </td>
-          <td><span id="conPoints">8</span></td>
-          <td><span id="conRaceModifier">0</span></td>
-          <td><input type="number" id="conBackgroundTalent" value="0" min="0" max="1" onchange="updateFinalScores()"></td>
-          <td id="conFinalScore">8</td>
+            <td>COS</td>
+            <td><button onclick="adjustPoints('con', 'add')">+</button><button onclick="adjustPoints('con', 'subtract')">-</button></td>
+            <td><span id="conPoints">8</span></td>
+            <td><span type="number" id="conRaceModifier" value="0" min="0" max="2" oninput="updateFinalScores()">0</span></td>
+            <td><input type="number" id="conBackgroundTalent" value="0" min="0" max="1" oninput="updateFinalScores()"></td>
+            <td id="conFinalScore">8</td>
         </tr>
-        <!-- Riga per INT -->
         <tr>
-          <td>INT</td>
-          <td>
-            <button onclick="adjustPoints('int', 'add')">+</button>
-            <button onclick="adjustPoints('int', 'subtract')">-</button>
-          </td>
-          <td><span id="intPoints">8</span></td>
-          <td><span id="intRaceModifier">0</span></td>
-          <td><input type="number" id="intBackgroundTalent" value="0" min="0" max="1" onchange="updateFinalScores()"></td>
-          <td id="intFinalScore">8</td>
+            <td>INT</td>
+            <td><button onclick="adjustPoints('int', 'add')">+</button><button onclick="adjustPoints('int', 'subtract')">-</button></td>
+            <td><span id="intPoints">8</span></td>
+            <td><span type="number" id="intRaceModifier" value="0" min="0" max="2" oninput="updateFinalScores()">0</span></td>
+            <td><input type="number" id="intBackgroundTalent" value="0" min="0" max="1" oninput="updateFinalScores()"></td>
+            <td id="intFinalScore">8</td>
         </tr>
-        <!-- Riga per SAG -->
         <tr>
-          <td>SAG</td>
-          <td>
-            <button onclick="adjustPoints('wis', 'add')">+</button>
-            <button onclick="adjustPoints('wis', 'subtract')">-</button>
-          </td>
-          <td><span id="wisPoints">8</span></td>
-          <td><span id="wisRaceModifier">0</span></td>
-          <td><input type="number" id="wisBackgroundTalent" value="0" min="0" max="1" onchange="updateFinalScores()"></td>
-          <td id="wisFinalScore">8</td>
+            <td>SAG</td>
+            <td><button onclick="adjustPoints('wis', 'add')">+</button><button onclick="adjustPoints('wis', 'subtract')">-</button></td>
+            <td><span id="wisPoints">8</span></td>
+            <td><span type="number" id="wisRaceModifier" value="0" min="0" max="2" oninput="updateFinalScores()">0</span></td>
+            <td><input type="number" id="wisBackgroundTalent" value="0" min="0" max="1" oninput="updateFinalScores()"></td>
+            <td id="wisFinalScore">8</td>
         </tr>
-        <!-- Riga per CAR -->
         <tr>
-          <td>CAR</td>
-          <td>
-            <button onclick="adjustPoints('cha', 'add')">+</button>
-            <button onclick="adjustPoints('cha', 'subtract')">-</button>
-          </td>
-          <td><span id="chaPoints">8</span></td>
-          <td><span id="chaRaceModifier">0</span></td>
-          <td><input type="number" id="chaBackgroundTalent" value="0" min="0" max="1" onchange="updateFinalScores()"></td>
-          <td id="chaFinalScore">8</td>
+            <td>CAR</td>
+            <td><button onclick="adjustPoints('cha', 'add')">+</button><button onclick="adjustPoints('cha', 'subtract')">-</button></td>
+            <td><span id="chaPoints">8</span></td>
+            <td><span type="number" id="chaRaceModifier" value="0" min="0" max="2" oninput="updateFinalScores()">0</span></td>
+            <td><input type="number" id="chaBackgroundTalent" value="0" min="0" max="1" oninput="updateFinalScores()"></td>
+            <td id="chaFinalScore">8</td>
         </tr>
-      </table>
-      <br>
-      <button id="generateJson" class="primary">Genera JSON</button>
-    </div>
+    </table>
     <!-- Step 4: Tratti Extra -->
     <div id="step4" class="step">
       <h2>Step 4: Selezione dei Tratti Extra</h2>

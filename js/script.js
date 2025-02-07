@@ -806,9 +806,9 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Imposta listener per il cambio di razza, bonus e livello
   document.getElementById("raceSelect").addEventListener("change", displayRaceTraits);
-  document.getElementById("racialBonus1").addEventListener("change", applyRacialBonuses);
-  document.getElementById("racialBonus2").addEventListener("change", applyRacialBonuses);
-  document.getElementById("racialBonus3").addEventListener("change", applyRacialBonuses);
+  //document.getElementById("racialBonus1").addEventListener("change", applyRacialBonuses);
+  //document.getElementById("racialBonus2").addEventListener("change", applyRacialBonuses);
+  //document.getElementById("racialBonus3").addEventListener("change", applyRacialBonuses);
   document.getElementById("levelSelect").addEventListener("change", () => displayRaceTraits());
   
   // Listener per generare il JSON finale
@@ -816,4 +816,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Inizializza il sistema Point Buy
   initializeValues();
+   // Espone globalmente alcune funzioni utili
+  window.displayRaceTraits = displayRaceTraits;
+  window.applyRacialBonuses = applyRacialBonuses;
 });

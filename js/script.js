@@ -510,8 +510,12 @@ function displayRaceTraits() {
   }
 
   if (!racePath) {
-    raceTraitsDiv.innerHTML = "<p>Seleziona una razza per vedere i tratti.</p>";
-    racialBonusDiv.style.display = "none";
+    if (raceTraitsDiv) {
+      raceTraitsDiv.innerHTML = "<p>Seleziona una razza per vedere i tratti.</p>";
+    }
+    if (racialBonusDiv) {
+      racialBonusDiv.style.display = "none";
+    }
     resetRacialBonuses();
     return;
   }

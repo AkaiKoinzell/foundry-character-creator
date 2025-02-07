@@ -155,7 +155,7 @@
      <h2 style="text-align: center;">Sistema Point Buy</h2>
 <p style="text-align: center;"><span style="font-weight: bold;">Total Points Remaining:</span> <span id="pointsRemaining">27</span></p>
 <p style="text-align: center;">Assegna i tuoi punti tra i punteggi di caratteristica (FOR, DES, COS, INT, SAG, CAR). Hai 27 punti da spendere.</p>
-<div id="racialBonusSelection" style="display: none;">
+<div id="racialBonusSelection" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
     <h3>Distribuzione Bonus Razza</h3>
     <p>Distribuisci i tuoi 3 punti extra in una delle seguenti combinazioni:</p>
     <ul>
@@ -205,7 +205,6 @@
             <th>Spendi i tuoi punti</th>
             <th>Punteggi Iniziali</th>
             <th>Punteggi di Razza</th>
-            <th>Talento di BG</th>
             <th>Punteggi Finali</th>
         </tr>
         <tr>
@@ -213,7 +212,6 @@
             <td><button onclick="adjustPoints('str', 'add')">+</button><button onclick="adjustPoints('str', 'subtract')">-</button></td>
             <td><span id="strPoints">8</span></td>
             <td><span type="number" id="strRaceModifier" value="0" min="0" max="2" oninput="updateFinalScores()">0</span></td>
-            <td><input type="number" id="strBackgroundTalent" value="0" min="0" max="1" oninput="updateFinalScores()"></td>
             <td id="strFinalScore">8</td>
         </tr>
         <tr>
@@ -221,7 +219,6 @@
             <td><button onclick="adjustPoints('dex', 'add')">+</button><button onclick="adjustPoints('dex', 'subtract')">-</button></td>
             <td><span id="dexPoints">8</span></td>
             <td><span type="number" id="dexRaceModifier" value="0" min="0" max="2" oninput="updateFinalScores()">0</span></td>
-            <td><input type="number" id="dexBackgroundTalent" value="0" min="0" max="1" oninput="updateFinalScores()"></td>
             <td id="dexFinalScore">8</td>
         </tr>
         <tr>
@@ -229,7 +226,6 @@
             <td><button onclick="adjustPoints('con', 'add')">+</button><button onclick="adjustPoints('con', 'subtract')">-</button></td>
             <td><span id="conPoints">8</span></td>
             <td><span type="number" id="conRaceModifier" value="0" min="0" max="2" oninput="updateFinalScores()">0</span></td>
-            <td><input type="number" id="conBackgroundTalent" value="0" min="0" max="1" oninput="updateFinalScores()"></td>
             <td id="conFinalScore">8</td>
         </tr>
         <tr>
@@ -237,7 +233,6 @@
             <td><button onclick="adjustPoints('int', 'add')">+</button><button onclick="adjustPoints('int', 'subtract')">-</button></td>
             <td><span id="intPoints">8</span></td>
             <td><span type="number" id="intRaceModifier" value="0" min="0" max="2" oninput="updateFinalScores()">0</span></td>
-            <td><input type="number" id="intBackgroundTalent" value="0" min="0" max="1" oninput="updateFinalScores()"></td>
             <td id="intFinalScore">8</td>
         </tr>
         <tr>
@@ -245,15 +240,13 @@
             <td><button onclick="adjustPoints('wis', 'add')">+</button><button onclick="adjustPoints('wis', 'subtract')">-</button></td>
             <td><span id="wisPoints">8</span></td>
             <td><span type="number" id="wisRaceModifier" value="0" min="0" max="2" oninput="updateFinalScores()">0</span></td>
-            <td><input type="number" id="wisBackgroundTalent" value="0" min="0" max="1" oninput="updateFinalScores()"></td>
-            <td id="wisFinalScore">8</td>
+             <td id="wisFinalScore">8</td>
         </tr>
         <tr>
             <td>CAR</td>
             <td><button onclick="adjustPoints('cha', 'add')">+</button><button onclick="adjustPoints('cha', 'subtract')">-</button></td>
             <td><span id="chaPoints">8</span></td>
             <td><span type="number" id="chaRaceModifier" value="0" min="0" max="2" oninput="updateFinalScores()">0</span></td>
-            <td><input type="number" id="chaBackgroundTalent" value="0" min="0" max="1" oninput="updateFinalScores()"></td>
             <td id="chaFinalScore">8</td>
         </tr>
     </table>

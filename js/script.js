@@ -1,5 +1,3 @@
-// script.js
-
 // ==================== MAPPING PER LE EXTRA VARIANT FEATURES ====================
 const variantExtraMapping = {
   "Drow Magic": {
@@ -130,11 +128,14 @@ function handleSpellcastingOptions(data, traitsHtml) {
             </p>`;
       }
     }
-    // Inserisce il markup nel container dedicato (ad es. nell'elemento con id "spellSelectionContainer")
-    document.getElementById("spellSelectionContainer").innerHTML = spellcastingHtml + abilityHtml;
+    // Inserisce il markup nel container "spellSelectionContainer"
+    const spellContainer = document.getElementById("spellSelectionContainer");
+    if (spellContainer) {
+      spellContainer.innerHTML = spellcastingHtml + abilityHtml;
+    }
     return traitsHtml;
   }
-  // Se la proprietà spellcasting non è presente o non è in modalità "filter", non modifica i traits
+  // Se non c'è spellcasting in modalità "filter", non modifica i traits
   return traitsHtml;
 }
 
@@ -232,7 +233,6 @@ function loadLanguages(callback) {
 }
 
 // ==================== CONVERSIONE DEI DATI DELLA RAZZA ====================
-
 function convertRaceData(rawData) {
   // Size
   let size = "Unknown";
@@ -498,8 +498,8 @@ function displayRaceTraits() {
   const racePath = document.getElementById("raceSelect").value;
   const raceTraitsDiv = document.getElementById("raceTraits");
   const racialBonusDiv = document.getElementById("racialBonusSelection");
-
-  // Pulisce i container extra (skills, tools, spellcasting, variant, lingue)
+  
+  // Pulisce i container extra (skills, tools, spellcasting, variant feature, lingue)
   document.getElementById("skillSelectionContainer").innerHTML = "";
   document.getElementById("toolSelectionContainer").innerHTML = "";
   document.getElementById("spellSelectionContainer").innerHTML = "";
@@ -508,25 +508,25 @@ function displayRaceTraits() {
   if (document.getElementById("languageSelection")) {
     document.getElementById("languageSelection").innerHTML = "";
   }
-
+  
   if (!racePath) {
     if (raceTraitsDiv) {
       raceTraitsDiv.innerHTML = "<p>Seleziona una razza per vedere i tratti.</p>";
     }
-    if (racialBonusDiv) {  // <-- Controllo aggiunto
+    if (racialBonusDiv) {
       racialBonusDiv.style.display = "none";
     }
     resetRacialBonuses();
     return;
   }
-
+  
   fetch(racePath)
     .then(response => response.json())
     .then(data => {
       console.log("📜 Dati razza caricati:", data);
       const raceData = convertRaceData(data);
       let traitsHtml = `<h3>Tratti di ${raceData.name}</h3>`;
-
+      
       // Velocità
       if (raceData.speed) {
         if (typeof raceData.speed === "object") {
@@ -541,12 +541,12 @@ function displayRaceTraits() {
       } else {
         traitsHtml += `<p><strong>Velocità:</strong> Non disponibile</p>`;
       }
-
+      
       // Visione
       if (raceData.senses && raceData.senses.darkvision) {
         traitsHtml += `<p><strong>Visione:</strong> ${raceData.senses.darkvision} ft</p>`;
       }
-
+      
       // Tratti
       if (raceData.traits && raceData.traits.length > 0) {
         traitsHtml += `<p><strong>Tratti:</strong></p><ul>`;
@@ -555,16 +555,16 @@ function displayRaceTraits() {
         });
         traitsHtml += `</ul>`;
       }
-
+      
       // Tabelle (rawEntries)
       const tablesHtml = renderTables(raceData.rawEntries);
       traitsHtml += tablesHtml;
-
+      
       // Spellcasting (se presente)
       if (raceData.spellcasting) {
         traitsHtml = handleSpellcastingOptions(raceData, traitsHtml);
       }
-
+      
       // Lingue
       let languageHtml = "";
       if (raceData.languages && Array.isArray(raceData.languages.fixed) && raceData.languages.fixed.length > 0) {
@@ -586,10 +586,14 @@ function displayRaceTraits() {
       } else if (document.getElementById("languageSelection")) {
         document.getElementById("languageSelection").innerHTML = languageHtml;
       }
-
-      raceTraitsDiv.innerHTML = traitsHtml;
-      racialBonusDiv.style.display = "block";
-
+      
+      if (raceTraitsDiv) {
+        raceTraitsDiv.innerHTML = traitsHtml;
+      }
+      if (racialBonusDiv) {
+        racialBonusDiv.style.display = "block";
+      }
+      
       // Gestione Skill Choices
       if (raceData.skill_choices) {
         handleSkillChoices(raceData);
@@ -598,7 +602,7 @@ function displayRaceTraits() {
       if (raceData.tool_choices) {
         handleToolChoices(raceData);
       }
-
+      
       resetRacialBonuses();
       // Salva globalmente i dati della razza per eventuali step successivi (es. Step 4)
       window.currentRaceData = raceData;
@@ -691,7 +695,6 @@ function generateFinalJson() {
   alert("JSON generato e scaricato!");
 }
 
-// Scarica il file JSON
 function downloadJsonFile(filename, jsonData) {
   const jsonBlob = new Blob([JSON.stringify(jsonData, null, 2)], { type: "application/json" });
   const a = document.createElement("a");
@@ -728,8 +731,8 @@ function updateFinalScores() {
   abilities.forEach(ability => {
     const basePoints = parseInt(document.getElementById(ability + "Points").textContent);
     const raceModifier = parseInt(document.getElementById(ability + "RaceModifier").textContent);
-    //const backgroundTalent = parseInt(document.getElementById(ability + "BackgroundTalent").value) || 0;
-    const finalScore = basePoints + raceModifier; //backgroundTalent;
+    // Background talent è stato rimosso dall'HTML, quindi non lo includiamo
+    const finalScore = basePoints + raceModifier;
     const finalScoreElement = document.getElementById(ability + "FinalScore");
     finalScoreElement.textContent = finalScore;
     finalScoreElement.style.color = finalScore > 18 ? "red" : "";
@@ -742,8 +745,7 @@ function initializeValues() {
   abilities.forEach(ability => {
     const raceModEl = document.getElementById(ability + "RaceModifier");
     if (raceModEl) raceModEl.textContent = "0";
-    //const backgroundTalentEl = document.getElementById(ability + "BackgroundTalent");
-    //if (backgroundTalentEl) backgroundTalentEl.value = "0";
+    // Background talent non è più usato
   });
   updateFinalScores();
 }
@@ -804,11 +806,12 @@ document.addEventListener("DOMContentLoaded", () => {
   loadDropdownData("data/races.json", "raceSelect", "races");
   loadDropdownData("data/classes.json", "classSelect", "classes");
   
-  // Imposta listener per il cambio di razza, bonus e livello
+  // Imposta listener per il cambio di razza e livello
   document.getElementById("raceSelect").addEventListener("change", displayRaceTraits);
-  //document.getElementById("racialBonus1").addEventListener("change", applyRacialBonuses);
-  //document.getElementById("racialBonus2").addEventListener("change", applyRacialBonuses);
-  //document.getElementById("racialBonus3").addEventListener("change", applyRacialBonuses);
+  // I listener per i dropdown dei bonus sono stati commentati qui per evitare che si applichino automaticamente
+  // document.getElementById("racialBonus1").addEventListener("change", applyRacialBonuses);
+  // document.getElementById("racialBonus2").addEventListener("change", applyRacialBonuses);
+  // document.getElementById("racialBonus3").addEventListener("change", applyRacialBonuses);
   document.getElementById("levelSelect").addEventListener("change", () => displayRaceTraits());
   
   // Listener per generare il JSON finale
@@ -816,7 +819,4 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Inizializza il sistema Point Buy
   initializeValues();
-   // Espone globalmente alcune funzioni utili
-  window.displayRaceTraits = displayRaceTraits;
-  window.applyRacialBonuses = applyRacialBonuses;
 });

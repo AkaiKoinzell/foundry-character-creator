@@ -729,7 +729,7 @@ function updateFinalScores() {
     const basePoints = parseInt(document.getElementById(ability + "Points").textContent);
     const raceModifier = parseInt(document.getElementById(ability + "RaceModifier").textContent);
     //const backgroundTalent = parseInt(document.getElementById(ability + "BackgroundTalent").value) || 0;
-    const finalScore = basePoints + raceModifier + backgroundTalent;
+    const finalScore = basePoints + raceModifier; //backgroundTalent;
     const finalScoreElement = document.getElementById(ability + "FinalScore");
     finalScoreElement.textContent = finalScore;
     finalScoreElement.style.color = finalScore > 18 ? "red" : "";
@@ -742,8 +742,8 @@ function initializeValues() {
   abilities.forEach(ability => {
     const raceModEl = document.getElementById(ability + "RaceModifier");
     if (raceModEl) raceModEl.textContent = "0";
-    const backgroundTalentEl = document.getElementById(ability + "BackgroundTalent");
-    if (backgroundTalentEl) backgroundTalentEl.value = "0";
+    //const backgroundTalentEl = document.getElementById(ability + "BackgroundTalent");
+    //if (backgroundTalentEl) backgroundTalentEl.value = "0";
   });
   updateFinalScores();
 }

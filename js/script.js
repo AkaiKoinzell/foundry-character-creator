@@ -728,7 +728,7 @@ function updateFinalScores() {
   abilities.forEach(ability => {
     const basePoints = parseInt(document.getElementById(ability + "Points").textContent);
     const raceModifier = parseInt(document.getElementById(ability + "RaceModifier").textContent);
-    const backgroundTalent = parseInt(document.getElementById(ability + "BackgroundTalent").value) || 0;
+    //const backgroundTalent = parseInt(document.getElementById(ability + "BackgroundTalent").value) || 0;
     const finalScore = basePoints + raceModifier + backgroundTalent;
     const finalScoreElement = document.getElementById(ability + "FinalScore");
     finalScoreElement.textContent = finalScore;

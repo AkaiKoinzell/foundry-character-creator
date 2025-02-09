@@ -127,7 +127,10 @@ function handleSpellcastingOptions(data, traitsHtml) {
   if (!data.spellcasting) return traitsHtml;
   let spellcastingHtml = "<h4>📖 Incantesimi</h4>";
 
+  console.log("🧙‍♂️ Analizzando spellcasting per la razza:", data);
+
   if (data.spellcasting.spell_choices) {
+    console.log("🛠 Opzioni di spellcasting trovate:", data.spellcasting.spell_choices);
     if (data.spellcasting.spell_choices.type === "fixed_list") {
       // Dropdown con incantesimi fissi
       let spellOptions = data.spellcasting.spell_choices.options
@@ -163,7 +166,11 @@ function handleSpellcastingOptions(data, traitsHtml) {
         const spellClass = classFilter.trim();
         const spellLevel = parseInt(levelFilter.trim());
 
+         console.log(`📥 Richiesta per incantesimi di livello ${spellLevel} della classe ${spellClass}`);
+        
         loadSpells(spellList => {
+          console.log("✅ Incantesimi ricevuti:", spellList);
+          
           let availableSpells = spellList
             .filter(spell => spell.level === spellLevel && spell.spell_list.includes(spellClass))
             .map(spell => `<option value="${spell.name}">${spell.name}</option>`)

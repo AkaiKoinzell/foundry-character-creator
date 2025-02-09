@@ -50,6 +50,7 @@ function updateVariantSkillOptions() {
 function handleVariantExtraSelections() {
   const variantElem = document.getElementById("variantFeatureChoice");
   const container = document.getElementById("variantExtraContainer");
+  if (!container) return; // Se il container non esiste, esci
   container.innerHTML = "";
   if (!variantElem || !variantElem.value) return;
   const selectedVariant = variantElem.value;
@@ -83,83 +84,93 @@ function handleVariantExtraSelections() {
         }
       });
     }
-    // Se il mapping è "none", non mostriamo nulla.
+    // Se il mapping è "none", non viene mostrato nulla.
   }
 }
 
-// ==================== FUNZIONI SPELLCASTING PER EXTRA (STEP 4) ====================
+// ==================== FUNZIONI SPELLCASTING ====================
 
-/* La funzione handleSpellcastingOptions è stata modificata per gestire tre casi:
-   1. Se la proprietà spellcasting è in modalità "filter", raggruppa gli incantesimi per livello e genera dropdown.
-   2. Se la proprietà spellcasting è in modalità "fixed_list", genera un dropdown con le opzioni.
-   3. Se esiste solo un incantesimo (fixed_spell), lo mostra come testo fisso.
-*/
-function handleSpellcastingOptions(data, containerId) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-  if (data.spellcasting) {
-    if (data.spellcasting.spell_choices && data.spellcasting.spell_choices.type === "filter" && Array.isArray(data.spellcasting.allSpells)) {
-      const levelSelect = document.getElementById("levelSelect");
-      const currentLevel = levelSelect ? parseInt(levelSelect.value) || 1 : 1;
-      const filteredSpells = data.spellcasting.allSpells.filter(spell => parseInt(spell.level) <= currentLevel);
-      const groupedSpells = {};
-      filteredSpells.forEach(spell => {
-        const lvl = parseInt(spell.level);
-        if (!groupedSpells[lvl]) groupedSpells[lvl] = [];
-        groupedSpells[lvl].push(spell);
-      });
-      const levels = Object.keys(groupedSpells).map(Number).sort((a, b) => a - b);
-      let html = "<h4>📖 Incantesimi</h4>";
-      levels.forEach(lvl => {
-        const spellsAtLvl = groupedSpells[lvl];
-        if (spellsAtLvl.length === 1) {
-          html += `<p>Incantesimo di livello ${lvl}: ${spellsAtLvl[0].name}</p>`;
-        } else if (spellsAtLvl.length > 1) {
-          const options = spellsAtLvl.map(spell => `<option value="${spell.name}">${spell.name} (lvl ${spell.level})</option>`).join("");
-          html += `<p>Incantesimo di livello ${lvl}: 
-                     <select id="spellSelection_level_${lvl}">
-                       <option value="">Seleziona...</option>
-                       ${options}
-                     </select>
-                   </p>`;
+function loadSpells(callback) {
+  fetch("data/spells.json")
+    .then(response => response.json())
+    .then(data => {
+      console.log("📖 Incantesimi caricati:", data);
+      callback(data);
+    })
+    .catch(error => console.error("❌ Errore nel caricamento degli incantesimi:", error));
+}
+
+/* La funzione handleSpellcastingOptions elabora la sezione Spellcasting.  
+   Gestisce i seguenti casi:
+   • Se il tipo è "fixed_list": crea un dropdown con le opzioni.
+   • Se il tipo è "class_list": filtra gli incantesimi in base alla classe e al livello.
+   • Se la proprietà level_up_spells è presente, li mostra in una lista.
+   Inoltre, aggiunge la scelta dell'abilità di lancio.
+   Questa funzione inietta il markup nel container con id "spellSelectionContainer". */
+function handleSpellcastingOptions(data, traitsHtml) {
+  if (!data.spellcasting) return traitsHtml;
+  let spellcastingHtml = "<h4>📖 Incantesimi</h4>";
+  
+  // Scelta di un incantesimo
+  if (data.spellcasting.spell_choices) {
+    if (data.spellcasting.spell_choices.type === "fixed_list") {
+      let spellOptions = data.spellcasting.spell_choices.options
+        .map(spell => `<option value="${spell}">${spell}</option>`)
+        .join("");
+      spellcastingHtml += `<p><strong>Scegli un incantesimo:</strong>
+                <select id="spellSelection">${spellOptions}</select>
+            </p>`;
+    } else if (data.spellcasting.spell_choices.type === "class_list") {
+      let className = data.spellcasting.spell_choices.class;
+      let spellLevel = data.spellcasting.spell_choices.level;
+      loadSpells(spellList => {
+        let availableSpells = spellList
+          .filter(spell => parseInt(spell.level) === spellLevel && spell.spell_list.includes(className))
+          .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
+          .join("");
+        const container = document.getElementById("spellSelectionContainer");
+        if (availableSpells.length > 0) {
+          container.innerHTML = `<p><strong>Scegli un incantesimo:</strong>
+                        <select id="spellSelection">${availableSpells}</select>
+                    </p>`;
+        } else {
+          container.innerHTML = `<p><strong>⚠️ Nessun incantesimo disponibile per questa classe a questo livello!</strong></p>`;
         }
       });
-      let abilityHtml = "";
-      if (data.spellcasting.ability_choices && Array.isArray(data.spellcasting.ability_choices)) {
-        if (data.spellcasting.ability_choices.length === 1) {
-          abilityHtml = `<p>Abilità di lancio: ${data.spellcasting.ability_choices[0]}</p>`;
-        } else if (data.spellcasting.ability_choices.length > 1) {
-          const abilityOptions = data.spellcasting.ability_choices.map(a => `<option value="${a}">${a}</option>`).join("");
-          abilityHtml = `<p>Abilità di lancio: 
-                          <select id="castingAbility">
-                            <option value="">Seleziona...</option>
-                            ${abilityOptions}
-                          </select>
-                        </p>`;
-        }
-      }
-      html += abilityHtml;
-      container.innerHTML = html;
-    } else if (data.spellcasting.spell_choices && data.spellcasting.spell_choices.type === "fixed_list") {
-      const options = data.spellcasting.spell_choices.options.map(spell => `<option value="${spell}">${spell}</option>`).join("");
-      const html = `<h4>📖 Incantesimi</h4>
-                    <p>Seleziona un incantesimo:</p>
-                    <select id="spellSelectionFixed">
-                      <option value="">Seleziona...</option>
-                      ${options}
-                    </select>`;
-      container.innerHTML = html;
-    } else if (data.spellcasting.fixed_spell) {
-      container.innerHTML = `<h4>📖 Incantesimi</h4><p>Incantesimo: ${data.spellcasting.fixed_spell}</p>`;
-    } else {
-      container.innerHTML = "";
     }
-  } else {
-    container.innerHTML = "";
   }
+  
+  // Scelta dell'abilità di lancio
+  if (data.spellcasting.ability_choices) {
+    let abilityOptions = data.spellcasting.ability_choices
+      .map(ability => `<option value="${ability}">${ability}</option>`)
+      .join("");
+    spellcastingHtml += `<p><strong>Abilità di lancio:</strong>
+            <select id="castingAbility">${abilityOptions}</select>
+        </p>`;
+  }
+  
+  // Incantesimi bonus per livello
+  if (data.spellcasting.level_up_spells) {
+    let characterLevel = parseInt(document.getElementById("levelSelect").value) || 1;
+    let availableSpells = data.spellcasting.level_up_spells
+      .filter(spell => characterLevel >= spell.level)
+      .map(spell => `<li><strong>${spell.spell_choices.join(", ")}</strong> (Usi: ${spell.uses}, Ricarica: ${spell.refresh})</li>`)
+      .join("");
+    if (availableSpells) {
+      spellcastingHtml += `<p><strong>Incantesimi Bonus:</strong></p><ul>${availableSpells}</ul>`;
+    }
+  }
+  
+  // Inietta il markup nel container "spellSelectionContainer"
+  const container = document.getElementById("spellSelectionContainer");
+  if (container) {
+    container.innerHTML = spellcastingHtml;
+  }
+  return traitsHtml;
 }
 
-// ==================== FUNZIONI PER EXTRA LINGUE, SKILLS E TOOLS (STEP 4) ====================
+// ==================== FUNZIONI PER EXTRA (LINGUE, SKILLS, TOOLS) ====================
 
 function handleExtraLanguages(data, containerId) {
   if (data.languages && data.languages.choice > 0) {
@@ -171,10 +182,12 @@ function handleExtraLanguages(data, containerId) {
                       <option value="">Seleziona...</option>
                       ${options}
                     </select>`;
-      document.getElementById(containerId).innerHTML = html;
+      const container = document.getElementById(containerId);
+      if (container) container.innerHTML = html;
     });
   } else {
-    document.getElementById(containerId).innerHTML = "";
+    const container = document.getElementById(containerId);
+    if (container) container.innerHTML = "";
   }
 }
 
@@ -188,9 +201,11 @@ function handleExtraSkills(data, containerId) {
       html += data.skill_choices.options.map(s => `<option value="${s}">${s}</option>`).join("");
       html += `</select>`;
     }
-    document.getElementById(containerId).innerHTML = html;
+    const container = document.getElementById(containerId);
+    if (container) container.innerHTML = html;
   } else {
-    document.getElementById(containerId).innerHTML = "";
+    const container = document.getElementById(containerId);
+    if (container) container.innerHTML = "";
   }
 }
 
@@ -204,9 +219,11 @@ function handleExtraTools(data, containerId) {
       html += data.tool_choices.options.map(t => `<option value="${t}">${t}</option>`).join("");
       html += `</select>`;
     }
-    document.getElementById(containerId).innerHTML = html;
+    const container = document.getElementById(containerId);
+    if (container) container.innerHTML = html;
   } else {
-    document.getElementById(containerId).innerHTML = "";
+    const container = document.getElementById(containerId);
+    if (container) container.innerHTML = "";
   }
 }
 
@@ -298,7 +315,6 @@ function loadLanguages(callback) {
 }
 
 // ==================== CONVERSIONE DEI DATI DELLA RAZZA ====================
-
 function convertRaceData(rawData) {
   // Size
   let size = "Unknown";
@@ -549,17 +565,14 @@ function renderTables(entries) {
 function displayRaceTraits() {
   const racePath = document.getElementById("raceSelect").value;
   const raceTraitsDiv = document.getElementById("raceTraits");
+  // Se l'elemento per i bonus razziali esiste (in Step 3) lo gestiamo; altrimenti lo ignoriamo
   const racialBonusDiv = document.getElementById("racialBonusSelection");
-  
-  // Pulisce i container extra
-  document.getElementById("skillSelectionContainer").innerHTML = "";
-  document.getElementById("toolSelectionContainer").innerHTML = "";
-  document.getElementById("spellSelectionContainer").innerHTML = "";
-  document.getElementById("variantFeatureSelectionContainer").innerHTML = "";
-  document.getElementById("variantExtraContainer").innerHTML = "";
-  if (document.getElementById("languageSelection")) {
-    document.getElementById("languageSelection").innerHTML = "";
-  }
+  // Pulizia dei container extra
+  const extraContainers = ["skillSelectionContainer", "toolSelectionContainer", "spellSelectionContainer", "variantFeatureSelectionContainer", "variantExtraContainer", "languageSelection"];
+  extraContainers.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = "";
+  });
   
   if (!racePath) {
     if (raceTraitsDiv) {
@@ -612,10 +625,9 @@ function displayRaceTraits() {
       const tablesHtml = renderTables(raceData.rawEntries);
       traitsHtml += tablesHtml;
       
-      // Spellcasting (se presente)
+      // Spellcasting (se presente) – inietta nel container "spellSelectionContainer"
       if (raceData.spellcasting) {
-        // Qui usiamo il nostro nuovo handleSpellcastingOptions che accetta il container dove iniettare il markup.
-        handleSpellcastingOptions(raceData, "spellSelectionContainer");
+        handleSpellcastingOptions(raceData, traitsHtml);
       }
       
       // Lingue
@@ -632,24 +644,28 @@ function displayRaceTraits() {
           let opts = availableLangs.map(lang => `<option value="${lang}">${lang}</option>`).join("");
           opts = `<option value="">Seleziona...</option>` + opts;
           const select = `<select id="extraLanguageSelect">${opts}</select>`;
-          if (document.getElementById("languageSelection")) {
-            document.getElementById("languageSelection").innerHTML = languageHtml + select;
+          const langContainer = document.getElementById("languageSelection");
+          if (langContainer) {
+            langContainer.innerHTML = languageHtml + select;
           }
         });
-      } else if (document.getElementById("languageSelection")) {
-        document.getElementById("languageSelection").innerHTML = languageHtml;
+      } else {
+        const langContainer = document.getElementById("languageSelection");
+        if (langContainer) {
+          langContainer.innerHTML = languageHtml;
+        }
       }
       
       if (raceTraitsDiv) {
         raceTraitsDiv.innerHTML = traitsHtml;
       }
       if (racialBonusDiv) {
+        // Assicurati che racialBonusSelection esista nel tuo HTML; altrimenti questo controllo non farà nulla.
         racialBonusDiv.style.display = "block";
       }
       
-      // Gestione Extra Skills
+      // Extra Skills e Tools
       handleExtraSkills(raceData, "skillSelectionContainer");
-      // Gestione Extra Tools
       handleExtraTools(raceData, "toolSelectionContainer");
       
       resetRacialBonuses();

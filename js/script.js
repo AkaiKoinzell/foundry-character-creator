@@ -176,44 +176,50 @@ function handleSpellcastingOptions(data, traitsHtml) {
 
 function handleAdditionalSpells(data) {
     if (!data.additionalSpells || data.additionalSpells.length === 0) return;
-
     console.log("🛠 Gestione specifica per additionalSpells (es. High Elf, Aarakocra)");
 
     let spellData = data.additionalSpells[0];
+
     if (spellData.known && spellData.known["1"] && spellData.known["1"]["_"]) {
         let spellChoice = spellData.known["1"]["_"].find(spell => spell.choose.includes("class="));
 
-        if (spellChoice) {
-            console.log("📥 Trovato filtro per Cantrip:", spellChoice.choose);
-
-            let [levelFilter, classFilter] = spellChoice.choose.split("|").map(f => f.split("=")[1]);
-            let spellClass = classFilter.trim();
-            let spellLevel = parseInt(levelFilter.trim());
-
-            console.log(`📥 Richiesta per incantesimi di livello ${spellLevel} della classe ${spellClass}`);
-
-            loadSpells(spellList => {
-                let availableSpells = spellList
-                    .filter(spell => spell.level === spellLevel && spell.spell_list.includes(spellClass))
-                    .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
-                    .join("");
-
-                const container = document.getElementById("spellSelectionContainer");
-                if (availableSpells.length > 0) {
-                    container.innerHTML += `
-                        <p><strong>Scegli un Cantrip da ${spellClass}:</strong></p>
-                        <select id="additionalSpellSelection">${availableSpells}</select>
-                    `;
-                    console.log("✅ Dropdown Cantrip generato correttamente.");
-                } else {
-                    container.innerHTML += `<p><strong>⚠️ Nessun Cantrip disponibile per questa classe!</strong></p>`;
-                }
-            });
-
+        if (!spellChoice) {
+            console.warn("⚠️ Nessun Cantrip trovato in additionalSpells.");
             return;
-        } else {
-            console.log("⚠️ Nessun Cantrip trovato in additionalSpells.");
         }
+
+        console.log("📥 Trovato filtro per Cantrip:", spellChoice.choose);
+
+        let [levelFilter, classFilter] = spellChoice.choose.split("|").map(f => f.split("=")[1]);
+        let spellClass = classFilter.trim();
+        let spellLevel = parseInt(levelFilter.trim());
+
+        console.log(`📥 Richiesta per incantesimi di livello ${spellLevel} della classe ${spellClass}`);
+
+        loadSpells(spellList => {
+            console.log("✅ Incantesimi ricevuti:", spellList);
+
+            let availableSpells = spellList
+                .filter(spell => spell.level === spellLevel && spell.spell_list.includes(spellClass))
+                .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
+                .join("");
+
+            const container = document.getElementById("spellSelectionContainer");
+            if (!container) {
+                console.error("❌ ERRORE: spellSelectionContainer non trovato nel DOM!");
+                return;
+            }
+
+            if (availableSpells.length > 0) {
+                container.innerHTML += `
+                    <p><strong>Scegli un Cantrip da ${spellClass}:</strong></p>
+                    <select id="additionalSpellSelection">${availableSpells}</select>
+                `;
+                console.log("✅ Dropdown Cantrip generato correttamente.");
+            } else {
+                container.innerHTML += `<p><strong>⚠️ Nessun Cantrip disponibile per questa classe!</strong></p>`;
+            }
+        });
     }
 }
 

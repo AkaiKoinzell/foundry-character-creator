@@ -23,10 +23,9 @@ const variantExtraMapping = {
 };
 
 // ==================== FUNZIONI PER LE VARIANT FEATURES ====================
-
 function updateVariantSkillOptions() {
   const allVariantSkillSelects = document.querySelectorAll(".variantSkillChoice");
-  if (allVariantSkillSelects.length === 0) return;
+  if (!allVariantSkillSelects.length) return;
   const selected = new Set();
   allVariantSkillSelects.forEach(select => {
     if (select.value) selected.add(select.value);
@@ -50,7 +49,7 @@ function updateVariantSkillOptions() {
 function handleVariantExtraSelections() {
   const variantElem = document.getElementById("variantFeatureChoice");
   const container = document.getElementById("variantExtraContainer");
-  if (!container) return; // Se il container non esiste, esci
+  if (!container) return;
   container.innerHTML = "";
   if (!variantElem || !variantElem.value) return;
   const selectedVariant = variantElem.value;
@@ -70,7 +69,7 @@ function handleVariantExtraSelections() {
     } else if (mapData.type === "spells") {
       loadSpells(spellList => {
         const filtered = filterSpells(spellList, mapData.filter);
-        if (filtered.length === 0) {
+        if (!filtered.length) {
           container.innerHTML = `<p>Nessun incantesimo trovato per il filtro: ${mapData.filter}</p>`;
         } else {
           let html = `<p><strong>Seleziona un incantesimo per ${selectedVariant}:</strong></p>`;
@@ -101,9 +100,10 @@ function loadSpells(callback) {
 }
 
 /* La funzione handleSpellcastingOptions elabora la sezione Spellcasting.
-   Se il tipo è "fixed_list", crea un dropdown.
-   Se il tipo è "class_list", filtra gli incantesimi in base alla classe e al livello.
-   Se il tipo è "filter" (caso più comune per High/Astral Elf), raggruppa per livello e aggiunge la scelta dell’abilità di lancio.
+   Supporta tre modalità:
+   - fixed_list: dropdown fisso;
+   - class_list: filtra gli incantesimi in base alla classe e al livello;
+   - filter: raggruppa per livello (caso tipico per High/Astral Elf) e aggiunge anche la scelta dell’abilità di lancio.
    Il markup viene iniettato nel container con id "spellSelectionContainer". */
 function handleSpellcastingOptions(data, traitsHtml) {
   if (!data.spellcasting) return traitsHtml;
@@ -111,6 +111,7 @@ function handleSpellcastingOptions(data, traitsHtml) {
   
   if (data.spellcasting.spell_choices) {
     if (data.spellcasting.spell_choices.type === "fixed_list") {
+      // Dropdown con incantesimi fissi
       let spellOptions = data.spellcasting.spell_choices.options
         .map(spell => `<option value="${spell}">${spell}</option>`)
         .join("");
@@ -127,7 +128,7 @@ function handleSpellcastingOptions(data, traitsHtml) {
           .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
           .join("");
         const container = document.getElementById("spellSelectionContainer");
-        if (availableSpells.length > 0) {
+        if (availableSpells.length) {
           container.innerHTML = `<p><strong>Scegli un incantesimo:</strong>
                         <select id="spellSelection">${availableSpells}</select>
                     </p>`;
@@ -135,6 +136,8 @@ function handleSpellcastingOptions(data, traitsHtml) {
           container.innerHTML = `<p><strong>⚠️ Nessun incantesimo disponibile per questa classe a questo livello!</strong></p>`;
         }
       });
+      // Termina qui, in quanto il dropdown verrà gestito in modo asincrono
+      return traitsHtml;
     } else if (data.spellcasting.spell_choices.type === "filter") {
       // Modalità "filter": raggruppa per livello
       const currentLevel = parseInt(document.getElementById("levelSelect").value) || 1;
@@ -162,8 +165,8 @@ function handleSpellcastingOptions(data, traitsHtml) {
     }
   }
   
-  // Scelta dell'abilità di lancio (indipendentemente dal tipo di spell_choices)
-  if (data.spellcasting.ability_choices && Array.isArray(data.spellcasting.ability_choices)) {
+  // Scelta dell'abilità di lancio: SEMPRE (se la proprietà esiste)
+  if (data.spellcasting.ability_choices && Array.isArray(data.spellcasting.ability_choices) && data.spellcasting.ability_choices.length > 0) {
     const abilityOptions = data.spellcasting.ability_choices
       .map(ability => `<option value="${ability}">${ability}</option>`)
       .join("");
@@ -172,7 +175,7 @@ function handleSpellcastingOptions(data, traitsHtml) {
         </p>`;
   }
   
-  // Incantesimi bonus per livello
+  // Incantesimi bonus per livello (se presenti)
   if (data.spellcasting.level_up_spells) {
     const characterLevel = parseInt(document.getElementById("levelSelect").value) || 1;
     const bonusSpells = data.spellcasting.level_up_spells
@@ -191,7 +194,7 @@ function handleSpellcastingOptions(data, traitsHtml) {
   return traitsHtml;
 }
 
-// ==================== FUNZIONI PER EXTRA (LINGUE, SKILLS, TOOLS) ====================
+// ==================== FUNZIONI PER EXTRA (LINGUE, SKILLS, TOOLS, ANCESTRY) ====================
 
 function handleExtraLanguages(data, containerId) {
   if (data.languages && data.languages.choice > 0) {
@@ -244,6 +247,28 @@ function handleExtraTools(data, containerId) {
     }
     const container = document.getElementById(containerId);
     if (container) container.innerHTML = html;
+  } else {
+    const container = document.getElementById(containerId);
+    if (container) container.innerHTML = "";
+  }
+}
+
+// Funzione per gestire eventuale extra "Ancestry" (spostata in Step 4)
+function handleExtraAncestry(data, containerId) {
+  if (data.variant_feature_choices && data.variant_feature_choices.length > 0) {
+    // Se tra le variant_feature_choices c'è almeno un'opzione che contiene "ancestry"
+    const ancestryOptions = data.variant_feature_choices.filter(opt => opt.name.toLowerCase().includes("ancestry"));
+    if (ancestryOptions.length > 0) {
+      let html = `<h4>Seleziona Ancestry</h4>
+                  <select id="ancestrySelection">
+                    <option value="">Seleziona...</option>`;
+      ancestryOptions.forEach(opt => {
+        html += `<option value="${opt.name}">${opt.name}</option>`;
+      });
+      html += `</select>`;
+      const container = document.getElementById(containerId);
+      if (container) container.innerHTML = html;
+    }
   } else {
     const container = document.getElementById(containerId);
     if (container) container.innerHTML = "";
@@ -338,7 +363,6 @@ function loadLanguages(callback) {
 }
 
 // ==================== CONVERSIONE DEI DATI DELLA RAZZA ====================
-
 function convertRaceData(rawData) {
   // Size
   let size = "Unknown";
@@ -424,7 +448,6 @@ function convertRaceData(rawData) {
   let spellcasting = {};
   if (rawData.additionalSpells && rawData.additionalSpells.length > 0) {
     rawData.additionalSpells.forEach(spellData => {
-      // Processa gli incantesimi innate
       if (spellData.innate) {
         Object.keys(spellData.innate).forEach(levelKey => {
           const level = parseInt(levelKey);
@@ -439,7 +462,6 @@ function convertRaceData(rawData) {
           }
         });
       }
-      // Processa gli incantesimi "known"
       if (spellData.known) {
         Object.keys(spellData.known).forEach(levelKey => {
           const level = parseInt(levelKey);
@@ -450,7 +472,6 @@ function convertRaceData(rawData) {
           }
         });
       }
-      // Processa la scelta dell'abilità di lancio
       if (spellData.ability) {
         if (typeof spellData.ability === "object" && spellData.ability.choose) {
           abilityChoices = spellData.ability.choose;
@@ -595,7 +616,7 @@ function displayRaceTraits() {
   const racialBonusDiv = document.getElementById("racialBonusSelection");
   
   // Pulisce i container extra
-  ["skillSelectionContainer", "toolSelectionContainer", "spellSelectionContainer", "variantFeatureSelectionContainer", "variantExtraContainer", "languageSelection"].forEach(id => {
+  ["skillSelectionContainer", "toolSelectionContainer", "spellSelectionContainer", "variantFeatureSelectionContainer", "variantExtraContainer", "languageSelection", "ancestrySelection"].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.innerHTML = "";
   });
@@ -651,7 +672,7 @@ function displayRaceTraits() {
       const tablesHtml = renderTables(raceData.rawEntries);
       traitsHtml += tablesHtml;
       
-      // Spellcasting (se presente) – inietta nel container "spellSelectionContainer"
+      // Spellcasting: gestisce l'intera sezione e inietta il markup nel container "spellSelectionContainer"
       if (raceData.spellcasting) {
         traitsHtml = handleSpellcastingOptions(raceData, traitsHtml);
       }
@@ -677,9 +698,7 @@ function displayRaceTraits() {
         });
       } else {
         const langContainer = document.getElementById("languageSelection");
-        if (langContainer) {
-          langContainer.innerHTML = languageHtml;
-        }
+        if (langContainer) langContainer.innerHTML = languageHtml;
       }
       
       if (raceTraitsDiv) {
@@ -692,6 +711,9 @@ function displayRaceTraits() {
       // Extra Skills e Tools
       handleExtraSkills(raceData, "skillSelectionContainer");
       handleExtraTools(raceData, "toolSelectionContainer");
+      
+      // Extra Ancestry (se presente nelle variant_feature_choices)
+      handleExtraAncestry(raceData, "ancestrySelection");
       
       resetRacialBonuses();
       // Salva globalmente i dati della razza per eventuali step successivi (es. Step 4)
@@ -797,7 +819,6 @@ function downloadJsonFile(filename, jsonData) {
 
 // ==================== POINT BUY SYSTEM ====================
 var totalPoints = 27;
-
 function adjustPoints(ability, action) {
   const pointsSpan = document.getElementById(ability + "Points");
   let points = parseInt(pointsSpan.textContent);

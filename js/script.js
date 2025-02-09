@@ -759,10 +759,7 @@ function displayRaceTraits() {
       traitsHtml += tablesHtml;
       
       // Gestione dello Spellcasting extra:
-      if (raceData.spellcasting) {
-        // In questo caso, usiamo la funzione handleAllSpellcasting per elaborare sia lo spellcasting standard che gli additional spells (per cantrip)
-        handleAllSpellcasting(raceData, "spellSelectionContainer");
-      }
+      traitsHtml = handleSpellcastingOptions(raceData, traitsHtml)
       
       // Lingue
       let languageHtml = "";

@@ -243,11 +243,11 @@ function handleAdditionalSpells(data, extraMode = false) {
 
 // Wrapper che richiama sia la gestione dello spellcasting standard che quella extra.
 function handleAllSpellcasting(data, traitsHtml) {
-  // Se esiste già la proprietà spellcasting (processata normalmente), la gestiamo;
-  // altrimenti, se esiste extraSpellcasting (caso High Elf) o additionalSpells, usiamo handleAdditionalSpells.
   if (data.spellcasting) {
+    // Se è presente il ramo spellcasting (caso standard), usalo
     handleSpellcastingOptions(data, "spellSelectionContainer");
-  } else {
+  } else if (data.extraSpellcasting) {
+    // Se non esiste spellcasting ma è presente extraSpellcasting (caso High Elf)
     handleAdditionalSpells(data, true);
   }
   return traitsHtml;

@@ -124,12 +124,13 @@ function loadSpells(callback) {
    - filter: raggruppa gli incantesimi per livello (caso tipico per High/Astral Elf) e include la scelta dell’abilità di lancio.
    Il markup viene iniettato nel container con id "spellSelectionContainer". */
 function handleSpellcastingOptions(data, traitsHtml) {
-  if (!data.spellcasting) return traitsHtml;
+  if (!data.spellcasting && !data.additionalSpells) return traitsHtml; // Modifica per considerare anche additionalSpells
   let spellcastingHtml = "<h4>📖 Incantesimi</h4>";
 
   console.log("🧙‍♂️ Analizzando spellcasting per la razza:", data);
 
-  if (data.spellcasting.spell_choices) {
+  // Se esiste spellcasting normale, gestiscilo
+  if (data.spellcasting && data.spellcasting.spell_choices) {
     console.log("🛠 Opzioni di spellcasting trovate:", data.spellcasting.spell_choices);
 
     if (data.spellcasting.spell_choices.type === "fixed_list") {
@@ -165,45 +166,13 @@ function handleSpellcastingOptions(data, traitsHtml) {
 
       return traitsHtml; 
     } 
-    
-    else if (data.spellcasting.spell_choices.type === "filter") {
-      console.log("🔍 Gestione filtro per spellcasting");
-
-      const spellFilter = data.spellcasting.spell_choices.options.find(opt => opt.includes("class="));
-      if (spellFilter) {
-        const [levelFilter, classFilter] = spellFilter.split("|").map(f => f.split("=")[1]);
-        const spellClass = classFilter.trim();
-        const spellLevel = parseInt(levelFilter.trim());
-
-        console.log(`📥 Richiesta per incantesimi di livello ${spellLevel} della classe ${spellClass}`);
-
-        loadSpells(spellList => {
-          let availableSpells = spellList
-            .filter(spell => spell.level === spellLevel && spell.spell_list.includes(spellClass))
-            .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
-            .join("");
-
-          const container = document.getElementById("spellSelectionContainer");
-          if (availableSpells.length > 0) {
-            container.innerHTML = `
-              <p><strong>Scegli un incantesimo di livello ${spellLevel} da ${spellClass}:</strong></p>
-              <select id="spellSelection">${availableSpells}</select>
-            `;
-          } else {
-            container.innerHTML = `<p><strong>⚠️ Nessun incantesimo disponibile per questa classe a questo livello!</strong></p>`;
-          }
-        });
-
-        return traitsHtml;
-      }
-    }
   }
 
-  // **🔧 Fix Specifico per l'High Elf**
+  // **🔧 Fix Specifico per l'High Elf e altre razze con scelte di Cantrip**
   if (data.additionalSpells && data.additionalSpells.length > 0) {
     console.log("🛠 Gestione specifica per incantesimi aggiuntivi");
 
-    let spellData = data.additionalSpells[0];
+    let spellData = data.additionalSpells[0]; // L'High Elf ha solo un'entrata qui
     if (spellData.known && spellData.known["1"] && spellData.known["1"]["_"]) {
       let spellChoice = spellData.known["1"]["_"].find(spell => spell.choose.includes("class="));
       

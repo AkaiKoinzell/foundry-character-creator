@@ -124,89 +124,45 @@ function loadSpells(callback) {
    - filter: raggruppa gli incantesimi per livello (caso tipico per High/Astral Elf) e include la scelta dell’abilità di lancio.
    Il markup viene iniettato nel container con id "spellSelectionContainer". */
 function handleSpellcastingOptions(data, traitsHtml) {
-  if (!data.spellcasting && !data.additionalSpells) return traitsHtml; // Modifica per considerare anche additionalSpells
-  let spellcastingHtml = "<h4>📖 Incantesimi</h4>";
+    if (!data.spellcasting) return traitsHtml;
 
-  console.log("🧙‍♂️ Analizzando spellcasting per la razza:", data);
+    let spellcastingHtml = "<h4>📖 Incantesimi</h4>";
 
-  // Se esiste spellcasting normale, gestiscilo
-  if (data.spellcasting && data.spellcasting.spell_choices) {
-    console.log("🛠 Opzioni di spellcasting trovate:", data.spellcasting.spell_choices);
+    console.log("🧙‍♂️ Analizzando spellcasting per la razza:", data);
 
-    if (data.spellcasting.spell_choices.type === "fixed_list") {
-      let spellOptions = data.spellcasting.spell_choices.options
-        .map(spell => `<option value="${spell}">${spell}</option>`)
-        .join("");
-      spellcastingHtml += `<p><strong>Scegli un incantesimo:</strong>
+    if (data.spellcasting.spell_choices) {
+        console.log("🛠 Opzioni di spellcasting trovate:", data.spellcasting.spell_choices);
+
+        if (data.spellcasting.spell_choices.type === "fixed_list") {
+            let spellOptions = data.spellcasting.spell_choices.options
+                .map(spell => `<option value="${spell}">${spell}</option>`)
+                .join("");
+            spellcastingHtml += `<p><strong>Scegli un incantesimo:</strong>
                 <select id="spellSelection">${spellOptions}</select>
             </p>`;
-    } 
-    
-    else if (data.spellcasting.spell_choices.type === "class_list") {
-      let className = data.spellcasting.spell_choices.class;
-      let spellLevel = data.spellcasting.spell_choices.level;
+        } else if (data.spellcasting.spell_choices.type === "class_list") {
+            let className = data.spellcasting.spell_choices.class;
+            let spellLevel = data.spellcasting.spell_choices.level;
 
-      console.log(`📥 Caricamento incantesimi per classe ${className}, livello ${spellLevel}`);
+            console.log(`📥 Caricamento incantesimi per classe ${className}, livello ${spellLevel}`);
 
-      loadSpells(spellList => {
-        let availableSpells = spellList
-          .filter(spell => spell.level === spellLevel && spell.spell_list.includes(className))
-          .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
-          .join("");
+            loadSpells(spellList => {
+                let availableSpells = spellList
+                    .filter(spell => spell.level === spellLevel && spell.spell_list.includes(className))
+                    .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
+                    .join("");
 
-        const container = document.getElementById("spellSelectionContainer");
-        if (availableSpells.length) {
-          container.innerHTML = `<p><strong>Scegli un incantesimo:</strong>
+                const container = document.getElementById("spellSelectionContainer");
+                if (availableSpells.length) {
+                    container.innerHTML = `<p><strong>Scegli un incantesimo:</strong>
                         <select id="spellSelection">${availableSpells}</select>
                     </p>`;
-        } else {
-          container.innerHTML = `<p><strong>⚠️ Nessun incantesimo disponibile per questa classe a questo livello!</strong></p>`;
-        }
-      });
+                } else {
+                    container.innerHTML = `<p><strong>⚠️ Nessun incantesimo disponibile per questa classe a questo livello!</strong></p>`;
+                }
+            });
 
-      return traitsHtml; 
-    } 
-  }
-
-  // **🔧 Fix per l'High Elf e altre razze che hanno Cantrip tra `additionalSpells`**
-    if (data.additionalSpells && data.additionalSpells.length > 0) {
-        console.log("🛠 Gestione specifica per incantesimi aggiuntivi (es. High Elf)");
-
-        let spellData = data.additionalSpells[0]; // L'High Elf ha solo un'entrata qui
-        if (spellData.known && spellData.known["1"] && spellData.known["1"]["_"]) {
-            let spellChoice = spellData.known["1"]["_"].find(spell => spell.choose.includes("class="));
-
-            if (spellChoice) {
-                console.log("📥 Trovato filtro per Cantrip:", spellChoice.choose);
-
-                let [levelFilter, classFilter] = spellChoice.choose.split("|").map(f => f.split("=")[1]);
-                let spellClass = classFilter.trim();
-                let spellLevel = parseInt(levelFilter.trim());
-
-                console.log(`📥 Richiesta per incantesimi di livello ${spellLevel} della classe ${spellClass}`);
-
-                loadSpells(spellList => {
-                    let availableSpells = spellList
-                        .filter(spell => spell.level === spellLevel && spell.spell_list.includes(spellClass))
-                        .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
-                        .join("");
-
-                    const container = document.getElementById("spellSelectionContainer");
-                    if (availableSpells.length > 0) {
-                        container.innerHTML = `
-                            <p><strong>Scegli un Cantrip da ${spellClass}:</strong></p>
-                            <select id="spellSelection">${availableSpells}</select>
-                        `;
-                        console.log("✅ Dropdown Cantrip generato correttamente.");
-                    } else {
-                        container.innerHTML = `<p><strong>⚠️ Nessun Cantrip disponibile per questa classe!</strong></p>`;
-                    }
-                });
-
-                return traitsHtml;
-            } else {
-                console.log("⚠️ Nessun Cantrip trovato in additionalSpells.");
-            }
+            return traitsHtml;
         }
     }
 
@@ -214,6 +170,57 @@ function handleSpellcastingOptions(data, traitsHtml) {
     if (container) {
         container.innerHTML = spellcastingHtml;
     }
+
+    return traitsHtml;
+}
+
+function handleAdditionalSpells(data) {
+    if (!data.additionalSpells || data.additionalSpells.length === 0) return;
+
+    console.log("🛠 Gestione specifica per additionalSpells (es. High Elf, Aarakocra)");
+
+    let spellData = data.additionalSpells[0];
+    if (spellData.known && spellData.known["1"] && spellData.known["1"]["_"]) {
+        let spellChoice = spellData.known["1"]["_"].find(spell => spell.choose.includes("class="));
+
+        if (spellChoice) {
+            console.log("📥 Trovato filtro per Cantrip:", spellChoice.choose);
+
+            let [levelFilter, classFilter] = spellChoice.choose.split("|").map(f => f.split("=")[1]);
+            let spellClass = classFilter.trim();
+            let spellLevel = parseInt(levelFilter.trim());
+
+            console.log(`📥 Richiesta per incantesimi di livello ${spellLevel} della classe ${spellClass}`);
+
+            loadSpells(spellList => {
+                let availableSpells = spellList
+                    .filter(spell => spell.level === spellLevel && spell.spell_list.includes(spellClass))
+                    .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
+                    .join("");
+
+                const container = document.getElementById("spellSelectionContainer");
+                if (availableSpells.length > 0) {
+                    container.innerHTML += `
+                        <p><strong>Scegli un Cantrip da ${spellClass}:</strong></p>
+                        <select id="additionalSpellSelection">${availableSpells}</select>
+                    `;
+                    console.log("✅ Dropdown Cantrip generato correttamente.");
+                } else {
+                    container.innerHTML += `<p><strong>⚠️ Nessun Cantrip disponibile per questa classe!</strong></p>`;
+                }
+            });
+
+            return;
+        } else {
+            console.log("⚠️ Nessun Cantrip trovato in additionalSpells.");
+        }
+    }
+}
+
+// **Funzione principale che chiama entrambe**
+function handleAllSpellcasting(data, traitsHtml) {
+    traitsHtml = handleSpellcastingOptions(data, traitsHtml);
+    handleAdditionalSpells(data);
     return traitsHtml;
 }
 

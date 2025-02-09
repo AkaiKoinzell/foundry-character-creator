@@ -115,19 +115,20 @@ function handleVariantFeatureChoices(data) {
  * - class_list: filtra per classe e livello.
  * - filter: raggruppa gli incantesimi per livello (caso tipico per High/Astral Elf).
  *
- * Il markup viene iniettato nel container specificato da containerId.
+ * Se i dati in spellcasting non sono presenti, si prova a costruirli da additionalSpells.
+ * Il markup viene iniettato nel container con l'id passato come parametro.
  *
  * @param {Object} data - I dati della razza (output di convertRaceData).
- * @param {string} containerId - L'id del container in cui iniettare il markup.
+ * @param {string} containerId - L'id del container in cui iniettare il markup degli incantesimi.
  */
 function handleSpellcastingOptions(data, containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
-  
+
   // Prova a recuperare direttamente i dati di spellcasting
   let spellData = data.spellcasting;
-  
-  // Fallback: se spellData non è presente, prova a costruirlo da additionalSpells
+
+  // Fallback: se spellData non è presente o incompleto, prova a costruirlo da additionalSpells
   if (!spellData || (!spellData.spell_choices && !spellData.fixed_spell)) {
     if (data.additionalSpells && data.additionalSpells.length > 0) {
       let spellsArray = [];
@@ -136,12 +137,14 @@ function handleSpellcastingOptions(data, containerId) {
         // Incantesimi innate
         if (spellGroup.innate) {
           Object.keys(spellGroup.innate).forEach(levelKey => {
-            const level = parseInt(levelKey);
+            // Per sicurezza: se il gruppo additionalSpells indica una scelta con "level=0", forziamo il livello a 0
+            let level = parseInt(levelKey);
             const spellList = (typeof spellGroup.innate[levelKey] === "object" &&
               spellGroup.innate[levelKey].daily &&
               spellGroup.innate[levelKey].daily["1"])
               ? spellGroup.innate[levelKey].daily["1"]
               : spellGroup.innate[levelKey];
+            // Se il gruppo additionalSpells contiene una proprietà "known" con filtro (non qui, ma nel ramo seguente) potremmo non modificare
             const spellName = extractSpellName(spellList);
             if (spellName) {
               spellsArray.push({ name: spellName, level: level, type: "innate" });
@@ -151,11 +154,16 @@ function handleSpellcastingOptions(data, containerId) {
         // Incantesimi "known"
         if (spellGroup.known) {
           Object.keys(spellGroup.known).forEach(levelKey => {
-            const level = parseInt(levelKey);
+            let level = parseInt(levelKey);
             const spellList = spellGroup.known[levelKey];
-            // Qui controlliamo se spellList contiene una proprietà "_" (caso High Elf)
             let spellName;
+            // Controlla se la struttura contiene "_" (caso High Elf)
             if (spellList && spellList["_"] && Array.isArray(spellList["_"])) {
+              // Se il primo elemento contiene una proprietà "choose" con "level=0", forza level a 0
+              let filterObj = spellList["_"][0];
+              if (filterObj && filterObj.choose && filterObj.choose.includes("level=0")) {
+                level = 0;
+              }
               spellName = extractSpellName(spellList["_"]);
             } else {
               spellName = extractSpellName(spellList);
@@ -203,17 +211,18 @@ function handleSpellcastingOptions(data, containerId) {
       }
     }
   }
-  
+
+  // Se ancora non abbiamo dati validi, logga e pulisci il container
   if (!spellData || (!spellData.spell_choices && !spellData.fixed_spell)) {
     console.log("⚠️ Nessun spellcasting trovato per questa razza.");
     container.innerHTML = "";
     return;
   }
-  
+
   let markup = "<h4>📖 Incantesimi</h4>";
-  
+
   if (spellData.fixed_spell) {
-    // Caso in cui esiste un incantesimo fisso
+    // Caso incantesimo fisso
     markup += `<p><strong>Incantesimo:</strong> ${spellData.fixed_spell}</p>`;
     if (spellData.ability_choices && Array.isArray(spellData.ability_choices)) {
       if (spellData.ability_choices.length > 1) {
@@ -264,9 +273,8 @@ function handleSpellcastingOptions(data, containerId) {
                 <select id="spellSelection"><option value="">Seleziona...</option>${options}</select>
               </p>`;
   }
-  
+
   container.innerHTML = markup;
-  return;
 }
 
 /**
@@ -277,7 +285,6 @@ function handleAdditionalSpells(data) {
   if (!data.additionalSpells || data.additionalSpells.length === 0) return;
   console.log("🛠 Gestione specifica per additionalSpells (es. High Elf, Aarakocra)");
   const spellData = data.additionalSpells[0];
-  // Controlla se esiste una sezione "known" al livello 1, considerando la struttura con "_" (High Elf)
   if (spellData.known && spellData.known["1"] && spellData.known["1"]["_"] && Array.isArray(spellData.known["1"]["_"])) {
     let spellChoice = spellData.known["1"]["_"].find(spell => spell.choose && spell.choose.includes("class="));
     if (!spellChoice) {
@@ -576,7 +583,7 @@ function convertRaceData(rawData) {
     rawData.additionalSpells.forEach(spellData => {
       if (spellData.innate) {
         Object.keys(spellData.innate).forEach(levelKey => {
-          const level = parseInt(levelKey);
+          let level = parseInt(levelKey);
           const spellList = (typeof spellData.innate[levelKey] === "object" &&
                               spellData.innate[levelKey].daily &&
                               spellData.innate[levelKey].daily["1"])
@@ -590,10 +597,15 @@ function convertRaceData(rawData) {
       }
       if (spellData.known) {
         Object.keys(spellData.known).forEach(levelKey => {
-          const level = parseInt(levelKey);
+          let level = parseInt(levelKey);
           const spellList = spellData.known[levelKey];
           let spellName;
           if (spellList && spellList["_"] && Array.isArray(spellList["_"])) {
+            // Se il primo elemento contiene una scelta e include "level=0", forziamo level a 0
+            let filterObj = spellList["_"][0];
+            if (filterObj && filterObj.choose && filterObj.choose.includes("level=0")) {
+              level = 0;
+            }
             spellName = extractSpellName(spellList["_"]);
           } else {
             spellName = extractSpellName(spellList);

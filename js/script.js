@@ -126,7 +126,7 @@ function loadSpells(callback) {
 function handleSpellcastingOptions(data, traitsHtml) {
   if (!data.spellcasting) return traitsHtml;
   let spellcastingHtml = "<h4>📖 Incantesimi</h4>";
-  
+
   if (data.spellcasting.spell_choices) {
     if (data.spellcasting.spell_choices.type === "fixed_list") {
       // Dropdown con incantesimi fissi
@@ -156,7 +156,33 @@ function handleSpellcastingOptions(data, traitsHtml) {
       });
       return traitsHtml; // uscita per il caso asincrono
     } else if (data.spellcasting.spell_choices.type === "filter") {
-      // Raggruppa gli incantesimi per livello
+      // **GESTIONE GENERALE PER QUALSIASI CLASSE DI INCANTESIMI**
+      const spellFilter = data.spellcasting.spell_choices.options.find(opt => opt.includes("class="));
+      if (spellFilter) {
+        const [levelFilter, classFilter] = spellFilter.split("|").map(f => f.split("=")[1]);
+        const spellClass = classFilter.trim();
+        const spellLevel = parseInt(levelFilter.trim());
+
+        loadSpells(spellList => {
+          let availableSpells = spellList
+            .filter(spell => spell.level === spellLevel && spell.spell_list.includes(spellClass))
+            .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
+            .join("");
+
+          const container = document.getElementById("spellSelectionContainer");
+          if (availableSpells.length > 0) {
+            container.innerHTML = `
+              <p><strong>Scegli un incantesimo di livello ${spellLevel} da ${spellClass}:</strong></p>
+              <select id="spellSelection">${availableSpells}</select>
+            `;
+          } else {
+            container.innerHTML = `<p><strong>⚠️ Nessun incantesimo disponibile per questa classe a questo livello!</strong></p>`;
+          }
+        });
+        return traitsHtml; // Uscita per evitare sovrascritture
+      }
+
+      // **Se non ci sono filtri per classe, gestiamo gli incantesimi normalmente**
       const currentLevel = parseInt(document.getElementById("levelSelect").value) || 1;
       const filteredSpells = data.spellcasting.allSpells.filter(spell => parseInt(spell.level) <= currentLevel);
       const groupedSpells = {};
@@ -181,13 +207,12 @@ function handleSpellcastingOptions(data, traitsHtml) {
       });
     }
   }
-  
+
   // Gestione della scelta dell'abilità di lancio:
   if (data.spellcasting.ability_choices) {
     let abilityHtml = "";
     if (Array.isArray(data.spellcasting.ability_choices)) {
       if (data.spellcasting.ability_choices.length === 1) {
-        // Se c'è solo un'opzione, la mostriamo come testo (senza dropdown)
         abilityHtml = `<p><strong>Abilità di lancio:</strong> ${data.spellcasting.ability_choices[0]}</p>`;
       } else if (data.spellcasting.ability_choices.length > 1) {
         const abilityOptions = data.spellcasting.ability_choices
@@ -202,13 +227,14 @@ function handleSpellcastingOptions(data, traitsHtml) {
     }
     spellcastingHtml += abilityHtml;
   }
-  
+
   const container = document.getElementById("spellSelectionContainer");
   if (container) {
     container.innerHTML = spellcastingHtml;
   }
   return traitsHtml;
 }
+
 
 // ==================== FUNZIONI PER EXTRA (LINGUE, SKILLS, TOOLS, ANCESTRY) ====================
 function handleExtraLanguages(data, containerId) {

@@ -23,7 +23,6 @@ const variantExtraMapping = {
 };
 
 // ==================== FUNZIONI PER LE VARIANT FEATURES ====================
-
 function updateVariantSkillOptions() {
   const allVariantSkillSelects = document.querySelectorAll(".variantSkillChoice");
   if (!allVariantSkillSelects.length) return;
@@ -84,12 +83,11 @@ function handleVariantExtraSelections() {
         }
       });
     }
-    // Se il mapping è "none" non viene mostrato nulla
+    // Se il mapping è "none", non viene mostrato nulla
   }
 }
 
 function handleVariantFeatureChoices(data) {
-  // Se il JSON della razza include variant_feature_choices, visualizza un dropdown per sceglierne uno.
   const container = document.getElementById("variantFeatureSelectionContainer");
   if (!data.variant_feature_choices || !container) {
     container.innerHTML = "";
@@ -101,7 +99,6 @@ function handleVariantFeatureChoices(data) {
   });
   html += `</select>`;
   container.innerHTML = html;
-  // Associa il listener per aggiornare gli extra variant quando si cambia la scelta
   const variantSelect = document.getElementById("variantFeatureChoice");
   if (variantSelect) {
     variantSelect.addEventListener("change", handleVariantExtraSelections);
@@ -123,7 +120,7 @@ function loadSpells(callback) {
 /* La funzione handleSpellcastingOptions elabora la sezione Spellcasting.
    Supporta tre modalità:
    - fixed_list: dropdown fisso;
-   - class_list: filtra gli incantesimi in base a classe e livello;
+   - class_list: filtra in base a classe e livello;
    - filter: raggruppa gli incantesimi per livello (caso tipico per High/Astral Elf) e include la scelta dell’abilità di lancio.
    Il markup viene iniettato nel container con id "spellSelectionContainer". */
 function handleSpellcastingOptions(data, traitsHtml) {
@@ -141,8 +138,8 @@ function handleSpellcastingOptions(data, traitsHtml) {
             </p>`;
     } else if (data.spellcasting.spell_choices.type === "class_list") {
       // Filtra in base a classe e livello
-      const className = data.spellcasting.spell_choices.class;
-      const spellLevel = data.spellcasting.spell_choices.level;
+      let className = data.spellcasting.spell_choices.class;
+      let spellLevel = data.spellcasting.spell_choices.level;
       loadSpells(spellList => {
         let availableSpells = spellList
           .filter(spell => parseInt(spell.level) === spellLevel && spell.spell_list.includes(className))
@@ -157,7 +154,7 @@ function handleSpellcastingOptions(data, traitsHtml) {
           container.innerHTML = `<p><strong>⚠️ Nessun incantesimo disponibile per questa classe a questo livello!</strong></p>`;
         }
       });
-      return traitsHtml; // Uscita per il caso asincrono
+      return traitsHtml; // uscita per il caso asincrono
     } else if (data.spellcasting.spell_choices.type === "filter") {
       // Raggruppa gli incantesimi per livello
       const currentLevel = parseInt(document.getElementById("levelSelect").value) || 1;
@@ -201,7 +198,6 @@ function handleSpellcastingOptions(data, traitsHtml) {
             </p>`;
       }
     } else {
-      // Se non è un array, la mostriamo come testo
       abilityHtml = `<p><strong>Abilità di lancio:</strong> ${data.spellcasting.ability_choices}</p>`;
     }
     spellcastingHtml += abilityHtml;
@@ -215,7 +211,6 @@ function handleSpellcastingOptions(data, traitsHtml) {
 }
 
 // ==================== FUNZIONI PER EXTRA (LINGUE, SKILLS, TOOLS, ANCESTRY) ====================
-
 function handleExtraLanguages(data, containerId) {
   if (data.languages && data.languages.choice > 0) {
     loadLanguages(langs => {
@@ -294,7 +289,6 @@ function handleExtraAncestry(data, containerId) {
 }
 
 // ==================== FUNZIONI COMMON (UTILITÀ) ====================
-
 function extractSpellName(data) {
   if (Array.isArray(data)) {
     if (typeof data[0] === "string") {
@@ -381,7 +375,6 @@ function loadLanguages(callback) {
 }
 
 // ==================== CONVERSIONE DEI DATI DELLA RAZZA ====================
-
 function convertRaceData(rawData) {
   // Size
   let size = "Unknown";
@@ -467,7 +460,6 @@ function convertRaceData(rawData) {
   let spellcasting = {};
   if (rawData.additionalSpells && rawData.additionalSpells.length > 0) {
     rawData.additionalSpells.forEach(spellData => {
-      // Processa gli incantesimi innate
       if (spellData.innate) {
         Object.keys(spellData.innate).forEach(levelKey => {
           const level = parseInt(levelKey);
@@ -482,7 +474,6 @@ function convertRaceData(rawData) {
           }
         });
       }
-      // Processa gli incantesimi "known"
       if (spellData.known) {
         Object.keys(spellData.known).forEach(levelKey => {
           const level = parseInt(levelKey);
@@ -493,7 +484,6 @@ function convertRaceData(rawData) {
           }
         });
       }
-      // Processa la scelta dell'abilità di lancio
       if (spellData.ability) {
         if (typeof spellData.ability === "object" && spellData.ability.choose) {
           abilityChoices = spellData.ability.choose;
@@ -658,6 +648,7 @@ function displayRaceTraits() {
     .then(response => response.json())
     .then(data => {
       console.log("📜 Dati razza caricati:", data);
+      raceTraitsDiv.innerHTML = "";
       const raceData = convertRaceData(data);
       let traitsHtml = `<h3>Tratti di ${raceData.name}</h3>`;
       
@@ -694,7 +685,7 @@ function displayRaceTraits() {
       const tablesHtml = renderTables(raceData.rawEntries);
       traitsHtml += tablesHtml;
       
-      // Spellcasting: gestisce l'intera sezione e inietta il markup nel container "spellSelectionContainer"
+      // Spellcasting: elabora e inietta il markup nel container "spellSelectionContainer"
       if (raceData.spellcasting) {
         traitsHtml = handleSpellcastingOptions(raceData, traitsHtml);
       }
@@ -734,14 +725,15 @@ function displayRaceTraits() {
       handleExtraSkills(raceData, "skillSelectionContainer");
       handleExtraTools(raceData, "toolSelectionContainer");
       
-      // Extra: Variant Feature Choices (per es. Skill Versatility, Cantrip, Ancestry)
+      // Extra: Variant Feature Choices
       handleVariantFeatureChoices(raceData);
       
       // Extra: Ancestry (se presente)
       handleExtraAncestry(raceData, "ancestrySelection");
       
       resetRacialBonuses();
-      // Salva globalmente i dati della razza per step successivi (es. Step 4)
+      
+      // Salva globalmente i dati della razza per eventuali step successivi (es. Step 4)
       window.currentRaceData = raceData;
     })
     .catch(error => handleError(`Errore caricando i tratti della razza: ${error}`));

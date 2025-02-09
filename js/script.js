@@ -133,7 +133,6 @@ function handleSpellcastingOptions(data, traitsHtml) {
     console.log("🛠 Opzioni di spellcasting trovate:", data.spellcasting.spell_choices);
 
     if (data.spellcasting.spell_choices.type === "fixed_list") {
-      // Dropdown con incantesimi fissi
       let spellOptions = data.spellcasting.spell_choices.options
         .map(spell => `<option value="${spell}">${spell}</option>`)
         .join("");
@@ -143,7 +142,6 @@ function handleSpellcastingOptions(data, traitsHtml) {
     } 
     
     else if (data.spellcasting.spell_choices.type === "class_list") {
-      // 🔹 Selezione basata su classe e livello
       let className = data.spellcasting.spell_choices.class;
       let spellLevel = data.spellcasting.spell_choices.level;
 
@@ -165,7 +163,7 @@ function handleSpellcastingOptions(data, traitsHtml) {
         }
       });
 
-      return traitsHtml; // uscita per il caso asincrono
+      return traitsHtml; 
     } 
     
     else if (data.spellcasting.spell_choices.type === "filter") {
@@ -196,29 +194,48 @@ function handleSpellcastingOptions(data, traitsHtml) {
           }
         });
 
-        return traitsHtml; // Uscita per evitare sovrascritture
+        return traitsHtml;
       }
     }
   }
 
-  // 🎯 **Gestione dell'abilità di lancio**
-  if (data.spellcasting.ability_choices) {
-    let abilityHtml = "";
-    if (Array.isArray(data.spellcasting.ability_choices)) {
-      if (data.spellcasting.ability_choices.length === 1) {
-        abilityHtml = `<p><strong>Abilità di lancio:</strong> ${data.spellcasting.ability_choices[0]}</p>`;
-      } else {
-        const abilityOptions = data.spellcasting.ability_choices
-          .map(ability => `<option value="${ability}">${ability}</option>`)
-          .join("");
-        abilityHtml = `<p><strong>Abilità di lancio:</strong>
-            <select id="castingAbility"><option value="">Seleziona...</option>${abilityOptions}</select>
-            </p>`;
+  // **🔧 Fix Specifico per l'High Elf**
+  if (data.additionalSpells && data.additionalSpells.length > 0) {
+    console.log("🛠 Gestione specifica per incantesimi aggiuntivi");
+
+    let spellData = data.additionalSpells[0];
+    if (spellData.known && spellData.known["1"] && spellData.known["1"]["_"]) {
+      let spellChoice = spellData.known["1"]["_"].find(spell => spell.choose.includes("class="));
+      
+      if (spellChoice) {
+        console.log("📥 Trovato filtro per incantesimi:", spellChoice.choose);
+        
+        let [levelFilter, classFilter] = spellChoice.choose.split("|").map(f => f.split("=")[1]);
+        let spellClass = classFilter.trim();
+        let spellLevel = parseInt(levelFilter.trim());
+
+        console.log(`📥 Richiesta per incantesimi di livello ${spellLevel} della classe ${spellClass}`);
+
+        loadSpells(spellList => {
+          let availableSpells = spellList
+            .filter(spell => spell.level === spellLevel && spell.spell_list.includes(spellClass))
+            .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
+            .join("");
+
+          const container = document.getElementById("spellSelectionContainer");
+          if (availableSpells.length > 0) {
+            container.innerHTML = `
+              <p><strong>Scegli un Cantrip da ${spellClass}:</strong></p>
+              <select id="spellSelection">${availableSpells}</select>
+            `;
+          } else {
+            container.innerHTML = `<p><strong>⚠️ Nessun incantesimo disponibile per questa classe a questo livello!</strong></p>`;
+          }
+        });
+
+        return traitsHtml;
       }
-    } else {
-      abilityHtml = `<p><strong>Abilità di lancio:</strong> ${data.spellcasting.ability_choices}</p>`;
     }
-    spellcastingHtml += abilityHtml;
   }
 
   const container = document.getElementById("spellSelectionContainer");
@@ -227,8 +244,6 @@ function handleSpellcastingOptions(data, traitsHtml) {
   }
   return traitsHtml;
 }
-
-
 
 // ==================== FUNZIONI PER EXTRA (LINGUE, SKILLS, TOOLS, ANCESTRY) ====================
 function handleExtraLanguages(data, containerId) {

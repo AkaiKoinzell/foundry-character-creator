@@ -131,6 +131,7 @@ function handleSpellcastingOptions(data, traitsHtml) {
 
   if (data.spellcasting.spell_choices) {
     console.log("🛠 Opzioni di spellcasting trovate:", data.spellcasting.spell_choices);
+    
     if (data.spellcasting.spell_choices.type === "fixed_list") {
       // Dropdown con incantesimi fissi
       let spellOptions = data.spellcasting.spell_choices.options
@@ -139,15 +140,23 @@ function handleSpellcastingOptions(data, traitsHtml) {
       spellcastingHtml += `<p><strong>Scegli un incantesimo:</strong>
                 <select id="spellSelection">${spellOptions}</select>
             </p>`;
-    } else if (data.spellcasting.spell_choices.type === "class_list") {
+    } 
+    
+    else if (data.spellcasting.spell_choices.type === "class_list") {
       // Filtra in base a classe e livello
       let className = data.spellcasting.spell_choices.class;
       let spellLevel = data.spellcasting.spell_choices.level;
+
+      console.log(`📥 Caricamento incantesimi per classe ${className}, livello ${spellLevel}`);
+
       loadSpells(spellList => {
+        console.log("✅ Incantesimi caricati:", spellList);
+
         let availableSpells = spellList
           .filter(spell => parseInt(spell.level) === spellLevel && spell.spell_list.includes(className))
           .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
           .join("");
+
         const container = document.getElementById("spellSelectionContainer");
         if (availableSpells.length) {
           container.innerHTML = `<p><strong>Scegli un incantesimo:</strong>
@@ -157,16 +166,21 @@ function handleSpellcastingOptions(data, traitsHtml) {
           container.innerHTML = `<p><strong>⚠️ Nessun incantesimo disponibile per questa classe a questo livello!</strong></p>`;
         }
       });
+
       return traitsHtml; // uscita per il caso asincrono
-    } else if (data.spellcasting.spell_choices.type === "filter") {
+    } 
+    
+    else if (data.spellcasting.spell_choices.type === "filter") {
       // **GESTIONE GENERALE PER QUALSIASI CLASSE DI INCANTESIMI**
+      console.log("🔍 Gestione filtro per spellcasting");
+      
       const spellFilter = data.spellcasting.spell_choices.options.find(opt => opt.includes("class="));
       if (spellFilter) {
         const [levelFilter, classFilter] = spellFilter.split("|").map(f => f.split("=")[1]);
         const spellClass = classFilter.trim();
         const spellLevel = parseInt(levelFilter.trim());
 
-         console.log(`📥 Richiesta per incantesimi di livello ${spellLevel} della classe ${spellClass}`);
+        console.log(`📥 Richiesta per incantesimi di livello ${spellLevel} della classe ${spellClass}`);
         
         loadSpells(spellList => {
           console.log("✅ Incantesimi ricevuti:", spellList);
@@ -186,36 +200,13 @@ function handleSpellcastingOptions(data, traitsHtml) {
             container.innerHTML = `<p><strong>⚠️ Nessun incantesimo disponibile per questa classe a questo livello!</strong></p>`;
           }
         });
+
         return traitsHtml; // Uscita per evitare sovrascritture
       }
-
-      // **Se non ci sono filtri per classe, gestiamo gli incantesimi normalmente**
-      const currentLevel = parseInt(document.getElementById("levelSelect").value) || 1;
-      const filteredSpells = data.spellcasting.allSpells.filter(spell => parseInt(spell.level) <= currentLevel);
-      const groupedSpells = {};
-      filteredSpells.forEach(spell => {
-        const lvl = parseInt(spell.level);
-        if (!groupedSpells[lvl]) groupedSpells[lvl] = [];
-        groupedSpells[lvl].push(spell);
-      });
-      const levels = Object.keys(groupedSpells).map(Number).sort((a, b) => a - b);
-      levels.forEach(lvl => {
-        const spellsAtLvl = groupedSpells[lvl];
-        if (spellsAtLvl.length === 1) {
-          spellcastingHtml += `<p><strong>Incantesimo di livello ${lvl}:</strong> ${spellsAtLvl[0].name}</p>`;
-        } else if (spellsAtLvl.length > 1) {
-          const options = spellsAtLvl
-            .map(spell => `<option value="${spell.name}">${spell.name} (lvl ${spell.level})</option>`)
-            .join("");
-          spellcastingHtml += `<p><strong>Incantesimo di livello ${lvl}:</strong>
-                    <select id="spellSelection_level_${lvl}"><option value="">Seleziona...</option>${options}</select>
-                    </p>`;
-        }
-      });
     }
   }
 
-  // Gestione della scelta dell'abilità di lancio:
+  // 🎯 **Gestione dell'abilità di lancio**
   if (data.spellcasting.ability_choices) {
     let abilityHtml = "";
     if (Array.isArray(data.spellcasting.ability_choices)) {
@@ -241,7 +232,6 @@ function handleSpellcastingOptions(data, traitsHtml) {
   }
   return traitsHtml;
 }
-
 
 // ==================== FUNZIONI PER EXTRA (LINGUE, SKILLS, TOOLS, ANCESTRY) ====================
 function handleExtraLanguages(data, containerId) {

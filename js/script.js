@@ -777,6 +777,16 @@ function displayRaceTraits() {
     .catch(error => handleError(`Errore caricando i tratti della razza: ${error}`));
 }
 
+// ==================== ✅ SELEZIONE DEFINITIVA DELLA RAZZA ====================
+document.getElementById("raceSelect").addEventListener("change", () => {
+  displayRaceTraits();
+  document.getElementById("confirmRaceSelection").style.display = "block";
+});
+
+document.getElementById("confirmRaceSelection").addEventListener("click", () => {
+  showStep("step3");
+});
+
 // ==================== UPDATE SUBCLASSES (STEP 5) ====================
 function updateSubclasses() {
   const classPath = document.getElementById("classSelect").value;
@@ -970,6 +980,31 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log("✅ Script.js caricato!");
   loadDropdownData("data/races.json", "raceSelect", "races");
   loadDropdownData("data/classes.json", "classSelect", "classes");
+
+  // ==================== 📜 NAVIGAZIONE TRA GLI STEP ====================
+
+function showStep(stepId) {
+  const steps = document.querySelectorAll(".step");
+  steps.forEach(step => {
+    if (step.id === stepId) {
+      step.classList.add("active");
+    } else {
+      step.classList.remove("active");
+    }
+  });
+}
+
+// Eventi per la navigazione tra gli step
+document.getElementById("btnStep1").addEventListener("click", () => showStep("step1"));
+document.getElementById("btnStep2").addEventListener("click", () => showStep("step2"));
+document.getElementById("btnStep3").addEventListener("click", () => showStep("step3"));
+document.getElementById("btnStep4").addEventListener("click", () => showStep("step4"));
+document.getElementById("btnStep5").addEventListener("click", () => showStep("step5"));
+document.getElementById("btnStep8").addEventListener("click", () => showStep("step8"));
+
+// Mostra lo step iniziale
+showStep("step1");
+
   
   document.getElementById("raceSelect").addEventListener("change", displayRaceTraits);
   document.getElementById("levelSelect").addEventListener("change", () => displayRaceTraits());

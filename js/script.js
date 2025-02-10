@@ -1,3 +1,420 @@
+// ==================== 📜 NAVIGAZIONE TRA GLI STEP ====================
+function showStep(stepId) {
+  const steps = document.querySelectorAll(".step");
+  steps.forEach(step => {
+    if (step.id === stepId) {
+      step.classList.add("active");
+    } else {
+      step.classList.remove("active");
+    }
+  });
+}
+
+// ==================== MAPPING PER LE EXTRA VARIANT FEATURES ====================
+const variantExtraMapping = {
+  "Drow Magic": {
+    type: "none" // Le spell fisse saranno gestite separatamente
+  },
+  "Skill Versatility": {
+    type: "skills",
+    count: 2,
+    options: [
+      "Acrobatics", "Animal Handling", "Arcana", "Athletics", "Deception", "History",
+      "Insight", "Intimidation", "Investigation", "Medicine", "Nature", "Perception",
+      "Performance", "Persuasion", "Religion", "Sleight of Hand", "Stealth", "Survival"
+    ]
+  },
+  "Swim": {
+    type: "none"
+  },
+  "Cantrip (Wizard)": {
+    type: "spells",
+    filter: "level=0|class=Wizard"
+  }
+  // Aggiungi altri mapping se necessario
+};
+
+// ==================== FUNZIONI PER LE VARIANT FEATURES ====================
+function updateVariantSkillOptions() {
+  const allVariantSkillSelects = document.querySelectorAll(".variantSkillChoice");
+  if (!allVariantSkillSelects.length) return;
+  const selected = new Set();
+  allVariantSkillSelects.forEach(select => {
+    if (select.value) selected.add(select.value);
+  });
+  allVariantSkillSelects.forEach(select => {
+    const current = select.value;
+    select.innerHTML = `<option value="">Seleziona...</option>`;
+    const options = JSON.parse(select.getAttribute("data-options"));
+    options.forEach(skill => {
+      if (!selected.has(skill) || skill === current) {
+        const option = document.createElement("option");
+        option.value = skill;
+        option.textContent = skill;
+        if (skill === current) option.selected = true;
+        select.appendChild(option);
+      }
+    });
+  });
+}
+
+function handleVariantExtraSelections() {
+  const variantElem = document.getElementById("variantFeatureChoice");
+  const container = document.getElementById("variantExtraContainer");
+  if (!container) return;
+  container.innerHTML = "";
+  if (!variantElem || !variantElem.value) return;
+  const selectedVariant = variantElem.value;
+  if (variantExtraMapping[selectedVariant]) {
+    const mapData = variantExtraMapping[selectedVariant];
+    if (mapData.type === "skills") {
+      let html = `<p><strong>Seleziona ${mapData.count} skill per ${selectedVariant}:</strong></p>`;
+      for (let i = 0; i < mapData.count; i++) {
+        html += `<select class="variantSkillChoice" data-category="${selectedVariant}" id="variantSkillChoice${i}" data-options='${JSON.stringify(mapData.options)}' onchange="updateVariantSkillOptions()">
+                    <option value="">Seleziona...</option>`;
+        mapData.options.forEach(s => {
+          html += `<option value="${s}">${s}</option>`;
+        });
+        html += `</select> `;
+      }
+      container.innerHTML = html;
+    } else if (mapData.type === "spells") {
+      loadSpells(spellList => {
+        const filtered = filterSpells(spellList, mapData.filter);
+        if (!filtered.length) {
+          container.innerHTML = `<p>Nessun incantesimo trovato per il filtro: ${mapData.filter}</p>`;
+        } else {
+          let html = `<p><strong>Seleziona un incantesimo per ${selectedVariant}:</strong></p>`;
+          html += `<select id="variantSpellChoice">
+                    <option value="">Seleziona...</option>`;
+          filtered.forEach(spell => {
+            html += `<option value="${spell.name}">${spell.name}</option>`;
+          });
+          html += `</select>`;
+          container.innerHTML = html;
+        }
+      });
+    }
+    // If type is "none", do nothing.
+  }
+}
+
+function handleVariantFeatureChoices(data) {
+  const container = document.getElementById("variantFeatureSelectionContainer");
+  if (!data.variant_feature_choices || !container) {
+    if (container) container.innerHTML = "";
+    return;
+  }
+  let html = `<p><strong>Scegli una Variant Feature:</strong></p><select id="variantFeatureChoice"><option value="">Seleziona...</option>`;
+  data.variant_feature_choices.forEach(opt => {
+    html += `<option value="${opt.name}">${opt.name}</option>`;
+  });
+  html += `</select>`;
+  container.innerHTML = html;
+  const variantSelect = document.getElementById("variantFeatureChoice");
+  if (variantSelect) {
+    variantSelect.addEventListener("change", handleVariantExtraSelections);
+  }
+}
+
+// ==================== FUNZIONI SPELLCASTING ====================
+function loadSpells(callback) {
+  fetch("data/spells.json")
+    .then(response => response.json())
+    .then(data => {
+      console.log("📖 Incantesimi caricati:", data);
+      callback(data);
+    })
+    .catch(error => console.error("❌ Errore nel caricamento degli incantesimi:", error));
+}
+
+/**
+ * Gestisce lo spellcasting standard.
+ * Supporta due modalità:
+ * - fixed_list: dropdown fisso.
+ * - filter: raggruppa gli incantesimi per livello e include il dropdown per la scelta dell’abilità di lancio.
+ * Il markup viene iniettato nel container con l'ID specificato.
+ */
+function handleSpellcastingOptions(data, containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return "";
+  
+  if (data.spellcasting && data.spellcasting.spell_choices) {
+    let markup = "<h4>📖 Incantesimi</h4>";
+    if (data.spellcasting.spell_choices.type === "fixed_list") {
+      const options = data.spellcasting.spell_choices.options
+        .map(spell => `<option value="${spell}">${spell}</option>`)
+        .join("");
+      markup += `<p><strong>Scegli un incantesimo:</strong>
+                  <select id="spellSelection"><option value="">Seleziona...</option>${options}</select>
+                </p>`;
+    } else if (data.spellcasting.spell_choices.type === "filter") {
+      const currentLevel = parseInt(document.getElementById("levelSelect").value) || 1;
+      const filteredSpells = data.spellcasting.allSpells.filter(spell => parseInt(spell.level) <= currentLevel);
+      const groupedSpells = {};
+      filteredSpells.forEach(spell => {
+        const lvl = parseInt(spell.level);
+        if (!groupedSpells[lvl]) groupedSpells[lvl] = [];
+        groupedSpells[lvl].push(spell);
+      });
+      const levels = Object.keys(groupedSpells).map(Number).sort((a, b) => a - b);
+      levels.forEach(lvl => {
+        const spellsAtLvl = groupedSpells[lvl];
+        if (spellsAtLvl.length === 1) {
+          markup += `<p><strong>Incantesimo di livello ${lvl}:</strong> ${spellsAtLvl[0].name}</p>`;
+        } else if (spellsAtLvl.length > 1) {
+          const opts = spellsAtLvl
+            .map(spell => `<option value="${spell.name}">${spell.name} (lvl ${spell.level})</option>`)
+            .join("");
+          markup += `<p><strong>Incantesimo di livello ${lvl}:</strong>
+                      <select id="spellSelection_level_${lvl}"><option value="">Seleziona...</option>${opts}</select>
+                      </p>`;
+        }
+      });
+      // Ability choices for spellcasting
+      if (data.spellcasting.ability_choices && Array.isArray(data.spellcasting.ability_choices)) {
+        if (data.spellcasting.ability_choices.length > 1) {
+          const abilityOptions = data.spellcasting.ability_choices
+            .map(a => `<option value="${a}">${a}</option>`)
+            .join("");
+          markup += `<p><strong>Abilità di lancio:</strong>
+                      <select id="castingAbility"><option value="">Seleziona...</option>${abilityOptions}</select>
+                      </p>`;
+        } else if (data.spellcasting.ability_choices.length === 1) {
+          markup += `<p><strong>Abilità di lancio:</strong> ${data.spellcasting.ability_choices[0]}</p>`;
+        }
+      }
+    }
+    container.innerHTML = markup;
+    return "";
+  }
+  return "";
+}
+
+/**
+ * Gestisce gli incantesimi extra per razze specifiche (es. High Elf, Aarakocra).
+ * Cerca all’interno di additionalSpells il filtro per i cantrip (in known["1"]["_"])
+ * e inietta un dropdown nel container "spellSelectionContainer" (aggiungendolo al markup già presente).
+ */
+function handleAdditionalSpells(data) {
+  if (!data.additionalSpells || data.additionalSpells.length === 0) return;
+  console.log("🛠 Gestione specifica per additionalSpells (es. High Elf)");
+  
+  let spellGroup = data.additionalSpells[0];
+  if (spellGroup.known && spellGroup.known["1"] && Array.isArray(spellGroup.known["1"]["_"])) {
+    let choiceObj = spellGroup.known["1"]["_"].find(item => item.choose && item.choose.includes("class="));
+    if (!choiceObj) {
+      console.warn("⚠️ Nessun filtro 'choose' trovato in additionalSpells.");
+      return;
+    }
+    console.log("📥 Trovato filtro per Cantrip:", choiceObj.choose);
+    let parts = choiceObj.choose.split("|").map(f => f.split("=")[1]);
+    let spellLevel = parseInt(parts[0].trim());
+    let spellClass = parts[1].trim();
+    console.log(`📥 Richiesta per incantesimi di livello ${spellLevel} della classe ${spellClass}`);
+  
+    loadSpells(spellList => {
+      let availableSpells = spellList
+        .filter(spell =>
+          parseInt(spell.level) === spellLevel &&
+          spell.spell_list &&
+          spell.spell_list.map(x => x.toLowerCase()).includes(spellClass.toLowerCase())
+        )
+        .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
+        .join("");
+      const container = document.getElementById("spellSelectionContainer");
+      if (!container) {
+        console.error("❌ ERRORE: spellSelectionContainer non trovato nel DOM!");
+        return;
+      }
+      if (availableSpells.length > 0) {
+        container.innerHTML += `
+          <p><strong>🔮 Scegli un Cantrip da ${spellClass}:</strong></p>
+          <select id="additionalSpellSelection"><option value="">Seleziona...</option>${availableSpells}</select>
+        `;
+        console.log("✅ Dropdown Cantrip generato correttamente.");
+      } else {
+        container.innerHTML += `<p><strong>⚠️ Nessun Cantrip disponibile per la classe ${spellClass}!</strong></p>`;
+      }
+    });
+  }
+}
+
+/**
+ * Wrapper che richiama sia la gestione dello spellcasting standard che quella extra.
+ */
+function handleAllSpellcasting(data, traitsHtml) {
+  if (data.spellcasting && data.spellcasting.spell_choices) {
+    handleSpellcastingOptions(data, "spellSelectionContainer");
+  }
+  if (data.additionalSpells && data.additionalSpells.length > 0) {
+    handleAdditionalSpells(data);
+  }
+  return traitsHtml;
+}
+
+// ==================== FUNZIONI PER EXTRA (LINGUE, SKILLS, TOOLS, ANCESTRY) ====================
+function handleExtraLanguages(data, containerId) {
+  if (data.languages && data.languages.choice > 0) {
+    loadLanguages(langs => {
+      const availableLangs = langs.filter(lang => !data.languages.fixed.includes(lang));
+      const options = availableLangs.map(lang => `<option value="${lang}">${lang}</option>`).join("");
+      const html = `<h4>Lingue Extra</h4>
+                    <select id="extraLanguageSelect" data-category="Languages">
+                      <option value="">Seleziona...</option>
+                      ${options}
+                    </select>`;
+      const container = document.getElementById(containerId);
+      if (container) container.innerHTML = html;
+    });
+  } else {
+    const container = document.getElementById(containerId);
+    if (container) container.innerHTML = "";
+  }
+}
+
+function handleExtraSkills(data, containerId) {
+  if (data.skill_choices) {
+    const skillOptions = JSON.stringify(data.skill_choices.options);
+    let html = `<h4>Skill Extra</h4>`;
+    for (let i = 0; i < data.skill_choices.number; i++) {
+      html += `<select class="skillChoice extra-selection" data-category="Skill Proficiency" id="skillChoice${i}" data-options='${skillOptions}' onchange="updateSkillOptions()">
+                  <option value="">Seleziona...</option>`;
+      html += data.skill_choices.options.map(s => `<option value="${s}">${s}</option>`).join("");
+      html += `</select><br>`;
+    }
+    const container = document.getElementById(containerId);
+    if (container) container.innerHTML = html;
+  } else {
+    const container = document.getElementById(containerId);
+    if (container) container.innerHTML = "";
+  }
+}
+
+function handleExtraTools(data, containerId) {
+  if (data.tool_choices) {
+    const toolOptions = JSON.stringify(data.tool_choices.options);
+    let html = `<h4>Tool Extra</h4>`;
+    for (let i = 0; i < data.tool_choices.number; i++) {
+      html += `<select class="toolChoice extra-selection" data-category="Tool Proficiency" id="toolChoice${i}" data-options='${toolOptions}'>
+                  <option value="">Seleziona...</option>`;
+      html += data.tool_choices.options.map(t => `<option value="${t}">${t}</option>`).join("");
+      html += `</select><br>`;
+    }
+    const container = document.getElementById(containerId);
+    if (container) container.innerHTML = html;
+  } else {
+    const container = document.getElementById(containerId);
+    if (container) container.innerHTML = "";
+  }
+}
+
+function handleExtraAncestry(data, containerId) {
+  if (data.variant_feature_choices && data.variant_feature_choices.length > 0) {
+    const ancestryOptions = data.variant_feature_choices.filter(opt => opt.name.toLowerCase().includes("ancestry"));
+    if (ancestryOptions.length > 0) {
+      let html = `<h4>Seleziona Ancestry</h4>
+                  <select id="ancestrySelection" data-category="Ancestry">
+                    <option value="">Seleziona...</option>`;
+      ancestryOptions.forEach(opt => {
+        html += `<option value="${opt.name}">${opt.name}</option>`;
+      });
+      html += `</select>`;
+      const container = document.getElementById(containerId);
+      if (container) container.innerHTML = html;
+    }
+  } else {
+    const container = document.getElementById(containerId);
+    if (container) container.innerHTML = "";
+  }
+}
+
+// ==================== FUNZIONI COMMON (UTILITÀ) ====================
+function extractSpellName(data) {
+  if (Array.isArray(data)) {
+    if (typeof data[0] === "string") {
+      return data[0].split("#")[0];
+    }
+  } else if (typeof data === "object") {
+    for (let key in data) {
+      const result = extractSpellName(data[key]);
+      if (result) return result;
+    }
+  }
+  return null;
+}
+
+function filterSpells(spells, filterString) {
+  const conditions = filterString.split("|");
+  return spells.filter(spell => {
+    let valid = true;
+    conditions.forEach(cond => {
+      const parts = cond.split("=");
+      if (parts.length === 2) {
+        const key = parts[0].trim().toLowerCase();
+        const value = parts[1].trim().toLowerCase();
+        if (key === "level") {
+          if (parseInt(spell.level) !== parseInt(value)) valid = false;
+        } else if (key === "class") {
+          if (!spell.spell_list || !spell.spell_list.map(x => x.toLowerCase()).includes(value)) valid = false;
+        }
+      }
+    });
+    return valid;
+  });
+}
+
+function handleError(message) {
+  console.error("❌ " + message);
+  alert("⚠️ " + message);
+}
+
+function loadDropdownData(jsonPath, selectId, key) {
+  fetch(jsonPath)
+    .then(response => response.json())
+    .then(data => {
+      console.log(`📜 Dati ricevuti da ${jsonPath}:`, data);
+      if (!data[key]) {
+        handleError(`Chiave ${key} non trovata in ${jsonPath}`);
+        return;
+      }
+      const options = Object.keys(data[key]).map(name => ({
+        name: name,
+        path: data[key][name]
+      }));
+      populateDropdown(selectId, options);
+    })
+    .catch(error => handleError(`Errore caricando ${jsonPath}: ${error}`));
+}
+
+function populateDropdown(selectId, options) {
+  const select = document.getElementById(selectId);
+  if (!select) {
+    handleError(`Elemento #${selectId} non trovato!`);
+    return;
+  }
+  select.innerHTML = `<option value="">Seleziona...</option>`;
+  options.forEach(option => {
+    const opt = document.createElement("option");
+    opt.value = option.path;
+    opt.textContent = option.name;
+    select.appendChild(opt);
+  });
+}
+
+function loadLanguages(callback) {
+  fetch("data/languages.json")
+    .then(response => response.json())
+    .then(data => {
+      if (data.languages) {
+        callback(data.languages);
+      } else {
+        handleError("Nessuna lingua trovata nel file JSON.");
+      }
+    })
+    .catch(error => handleError(`Errore caricando le lingue: ${error}`));
+}
+
 // ==================== CONVERSIONE DEI DATI DELLA RAZZA ====================
 function convertRaceData(rawData) {
   // Size
@@ -367,11 +784,10 @@ function displayRaceTraits() {
 }
 
 // ==================== POP-UP PER LE SCELTE EXTRA ====================
-
 // Global variables for extra selections
 let extraSelections = [];
 let currentSelectionIndex = 0;
-let selectedExtra = {}; // Global object to hold selections by category
+let selectedExtra = {}; // Object to hold selections per category
 
 /**
  * Updates the global selectedExtra object by iterating over all extra-selection dropdowns.
@@ -392,8 +808,8 @@ function updateExtraSelections() {
 
 /**
  * Displays the current extra selection in the popup.
- * Each extra-selection dropdown is given a data-category attribute to identify its category.
- * The "close" button is only shown on the last extra selection page.
+ * Each dropdown has a data-category attribute so selections are stored separately.
+ * The "Close" button is only shown on the final page.
  */
 function showExtraSelection() {
   const titleElem = document.getElementById("extraTraitTitle");
@@ -412,8 +828,7 @@ function showExtraSelection() {
 
   if (currentSelection.selection) {
     let dropdownHTML = "";
-    const numChoices = currentSelection.count || 1; // Default to 1 if not specified
-
+    const numChoices = currentSelection.count || 1;
     for (let i = 0; i < numChoices; i++) {
       dropdownHTML += `<select class="extra-selection" data-category="${currentSelection.name}">
                         <option value="">Seleziona...</option>`;
@@ -423,8 +838,7 @@ function showExtraSelection() {
       dropdownHTML += `</select><br>`;
     }
     selectionElem.innerHTML = dropdownHTML;
-
-    // Attach change event listeners to update selections immediately
+    // Attach change events to update selections immediately
     document.querySelectorAll(".extra-selection").forEach(select => {
       select.addEventListener("change", updateExtraSelections);
     });
@@ -434,7 +848,7 @@ function showExtraSelection() {
   document.getElementById("prevTrait").disabled = (currentSelectionIndex === 0);
   document.getElementById("nextTrait").disabled = (currentSelectionIndex === extraSelections.length - 1);
 
-  // Show the "close" button only on the final extra selection page
+  // Show the "Close" button only on the final extra-selection page
   const closeBtn = document.getElementById("closeModal");
   if (currentSelectionIndex === extraSelections.length - 1) {
     closeBtn.style.display = "block";
@@ -443,9 +857,7 @@ function showExtraSelection() {
   }
 }
 
-/**
- * Navigation buttons for the extra-selection popup.
- */
+// Navigation buttons for the extra-selection popup
 document.getElementById("prevTrait").addEventListener("click", () => {
   if (currentSelectionIndex > 0) {
     currentSelectionIndex--;
@@ -461,17 +873,17 @@ document.getElementById("nextTrait").addEventListener("click", () => {
 
 /**
  * Closes the extra-selection popup and saves the selections.
- * The selections are grouped by the data-category attribute.
+ * The selections (grouped by category) update corresponding UI elements.
  */
 document.getElementById("closeModal").addEventListener("click", () => {
-  // Hide the modal popup
+  // Hide the popup modal
   const modal = document.getElementById("raceExtrasModal");
   if (modal) {
     modal.style.display = "none";
   }
-  sessionStorage.removeItem("popupOpened"); // Remove flag
+  sessionStorage.removeItem("popupOpened");
 
-  // Update selections (in case some dropdowns were changed)
+  // Update selections from the popup dropdowns
   updateExtraSelections();
 
   console.log("📝 **Scelte salvate:**");
@@ -479,7 +891,7 @@ document.getElementById("closeModal").addEventListener("click", () => {
     console.log(`🔹 ${key}: ${selectedExtra[key].join(", ")}`);
   });
 
-  // Update corresponding UI elements based on the extra selections
+  // Update UI elements based on extra selections
   Object.keys(selectedExtra).forEach(category => {
     if (category === "Languages") {
       const langElem = document.getElementById("extraLanguageSelect");
@@ -496,7 +908,7 @@ document.getElementById("closeModal").addEventListener("click", () => {
     }
   });
 
-  // Re-show the extra traits container in the background
+  // Re-display the extra traits container in the background
   document.getElementById("raceExtraTraitsContainer").style.display = "block";
 });
 
@@ -684,7 +1096,6 @@ function resetRacialBonuses() {
 }
 
 // ==================== STUB FUNCTION: updateSkillOptions ====================
-// This function is referenced in the onchange for extra-selection dropdowns.
 function updateSkillOptions() {
   console.log("updateSkillOptions called.");
 }
@@ -697,10 +1108,17 @@ window.updateSubclasses = updateSubclasses;
 // ==================== INIZIALIZZAZIONE ====================
 document.addEventListener("DOMContentLoaded", () => {
   console.log("✅ Script.js caricato!");
+
   // Ensure the popup modal is hidden at startup.
   const modal = document.getElementById("raceExtrasModal");
   if (modal) {
     modal.style.display = "none";
+  }
+
+  // Check if the popup should not be reopened automatically
+  if (sessionStorage.getItem("popupOpened") === "true") {
+    console.log("🛑 Il pop-up non verrà riaperto automaticamente.");
+    sessionStorage.removeItem("popupOpened");
   }
 
   loadDropdownData("data/races.json", "raceSelect", "races");
@@ -726,7 +1144,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Hide the race traits container
     document.getElementById("raceTraits").style.display = "none";
 
-    // Prepare extra selections based on the current race data
+    // Prepare extra selections based on current race data
     const raceData = window.currentRaceData;
     let selections = [];
     if (raceData.languages && raceData.languages.choice > 0) {

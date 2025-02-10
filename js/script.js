@@ -807,8 +807,11 @@ function openRaceExtrasModal(selections) {
   // Nasconde i tratti extra nello sfondo mentre il pop-up è aperto
   document.getElementById("raceExtraTraitsContainer").style.display = "none";
 
-  // 🟢 Mostra il pop-up SOLO se ci sono selezioni disponibili
-  document.getElementById("raceExtrasModal").style.display = "flex";
+  // 🛑 Evita che il pop-up si apra automaticamente al refresh
+if (!sessionStorage.getItem("popupOpened")) {
+  document.getElementById("raceExtrasModal").style.display = "none";
+} else {
+  sessionStorage.removeItem("popupOpened");
 }
 
 // 🚀 Mostra la selezione attuale nel pop-up
@@ -892,24 +895,26 @@ document.getElementById("closeModal").addEventListener("click", () => {
   let selectedData = {};
 
   document.querySelectorAll(".extra-selection").forEach((select, index) => {
-    const selectionName = extraSelections[currentSelectionIndex].name; // Assicuriamoci che il nome sia corretto
-    
-    if (!selectedData[selectionName]) {
-      selectedData[selectionName] = [];
-    }
+  const selectionName = extraSelections[Math.floor(index / (extraSelections[0].count || 1))].name;
 
-    if (select.value && !selectedData[selectionName].includes(select.value)) {
-      selectedData[selectionName].push(select.value);
-    }
-  });
+  if (!selectedData[selectionName]) {
+    selectedData[selectionName] = [];
+  }
+
+  if (select.value && !selectedData[selectionName].includes(select.value)) {
+    selectedData[selectionName].push(select.value);
+  }
+});
 
   // Stampa le scelte fatte
   Object.keys(selectedData).forEach(key => {
     summary += `🔹 ${key}: ${selectedData[key].join(", ")}\n`;
   });
 
-  console.log(summary);
-  alert("✅ Scelte salvate! Controlla la console per i dettagli.");
+  console.log("📝 **Scelte salvate:**");
+Object.keys(selectedData).forEach(key => {
+  console.log(`🔹 ${key}: ${selectedData[key].join(", ")}`);
+});
 
   // **Memorizza i dati selezionati e li aggiorna nel JSON globale**
 Object.keys(selectedData).forEach(category => {
@@ -991,9 +996,8 @@ document.getElementById("confirmRaceSelection").addEventListener("click", () => 
         });
       }
 
-      // 🟢 Mostra il pop-up SOLO se ci sono selezioni disponibili
-      openRaceExtrasModal(selections);
-    });
+      sessionStorage.setItem("popupOpened", "true"); // 🟢 Indica che il pop-up è stato aperto
+openRaceExtrasModal(selections);
 
   // 🔴 Nasconde il bottone dopo averlo cliccato per evitare ri-click
   document.getElementById("confirmRaceSelection").style.display = "none";

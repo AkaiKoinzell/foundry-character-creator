@@ -1,33 +1,84 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const step8Container = document.getElementById("step8");
-  if (!step8Container) return;
+// rendering.js
+// ========================================================
+// MODULO: rendering.js
+// Questo modulo contiene le funzioni di rendering, in particolare
+// la funzione renderTables() che converte un array di "entries" in markup HTML.
+// Queste funzioni possono essere utilizzate per visualizzare tabelle
+// e strutture di dati simili in maniera standardizzata.
+// ========================================================
 
-  step8Container.innerHTML = `
-    <h2>Step 8: Riepilogo ed Esportazione</h2>
-    <div id="finalRecap"></div>
-    <button id="exportJson">Esporta JSON</button>
-    <!-- Puoi aggiungere qui anche il pulsante per esportare in PDF -->
-  `;
+console.log("✅ rendering.js loaded!");
 
-  document.getElementById("exportJson").addEventListener("click", () => {
-    // Raccogli tutti i dati necessari (questo è un esempio, adatta la logica alle tue variabili)
-    const character = {
-      name: document.getElementById("characterName") ? document.getElementById("characterName").value : "",
-      level: document.getElementById("levelSelect") ? document.getElementById("levelSelect").value : "",
-      // Aggiungi qui gli altri campi raccolti dagli step precedenti
-    };
-    downloadJsonFile(character.name.replace(/[^a-z0-9]/gi, '_').toLowerCase() + "_character.json", character);
-    document.getElementById("finalRecap").innerHTML = `<pre>${JSON.stringify(character, null, 2)}</pre>`;
+/**
+ * renderTables
+ * Genera il markup HTML per le tabelle contenute nell’array di entries.
+ *
+ * Questa funzione itera su ogni entry e, se all’interno di essa esistono
+ * sub-entry di tipo "table", genera il markup HTML per visualizzare la tabella.
+ *
+ * @param {Array} entries - Array di entry (es. raceData.rawEntries)
+ * @returns {string} Il markup HTML generato per le tabelle
+ */
+function renderTables(entries) {
+  let html = "";
+  if (!entries || !Array.isArray(entries)) return html;
+  
+  entries.forEach(entry => {
+    // Verifica se l'entry contiene un array di sub-entry
+    if (entry.entries && Array.isArray(entry.entries)) {
+      entry.entries.forEach(subEntry => {
+        // Se la sub-entry è un oggetto di tipo "table", genera il markup
+        if (typeof subEntry === "object" && subEntry.type === "table") {
+          html += `<div class="table-container" style="margin-top:1em; margin-bottom:1em;">`;
+          if (subEntry.caption) {
+            html += `<p><strong>${subEntry.caption}</strong></p>`;
+          }
+          html += `<table border="1" style="width:100%; border-collapse: collapse;">`;
+          
+          // Colonne (se presenti)
+          if (subEntry.colLabels && Array.isArray(subEntry.colLabels)) {
+            html += `<thead><tr>`;
+            subEntry.colLabels.forEach(label => {
+              html += `<th style="padding: 0.5em; text-align: center;">${label}</th>`;
+            });
+            html += `</tr></thead>`;
+          }
+          
+          // Righe della tabella
+          if (subEntry.rows && Array.isArray(subEntry.rows)) {
+            html += `<tbody>`;
+            subEntry.rows.forEach(row => {
+              html += `<tr>`;
+              row.forEach(cell => {
+                html += `<td style="padding: 0.5em; text-align: center;">${cell}</td>`;
+              });
+              html += `</tr>`;
+            });
+            html += `</tbody>`;
+          }
+          
+          html += `</table>`;
+          
+          // Se il nome dell'entry contiene "ancestry", aggiunge un dropdown per la selezione
+          if (entry.name && entry.name.toLowerCase().includes("ancestry")) {
+            let optsHtml = `<option value="">Seleziona...</option>`;
+            subEntry.rows.forEach(row => {
+              const optVal = JSON.stringify(row);
+              const optLabel = `${row[0]} (${row[1]})`;
+              optsHtml += `<option value='${optVal}'>${optLabel}</option>`;
+            });
+            html += `<p><strong>Seleziona Ancestry:</strong>
+                      <select id="ancestrySelect">${optsHtml}</select>
+                     </p>`;
+          }
+          html += `</div>`;
+        }
+      });
+    }
   });
-});
-
-// Funzione comune per scaricare il JSON
-function downloadJsonFile(filename, jsonData) {
-  const jsonBlob = new Blob([JSON.stringify(jsonData, null, 2)], { type: "application/json" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(jsonBlob);
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  
+  return html;
 }
+
+// Esponi globalmente la funzione per l'uso negli altri moduli
+window.renderTables = renderTables;

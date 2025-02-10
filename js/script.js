@@ -826,19 +826,26 @@ function showExtraSelection() {
   selectionElem.innerHTML = ""; // Pulisce il contenuto precedente
 
   if (currentSelection.selection) {
-    let dropdown = `<select>`;
-    dropdown += `<option value="">Seleziona...</option>`;
-    currentSelection.selection.forEach(option => {
-      dropdown += `<option value="${option}">${option}</option>`;
-    });
-    dropdown += `</select>`;
-    selectionElem.innerHTML = dropdown;
+    let dropdownHTML = "";
+    const numChoices = currentSelection.count || 1; // Se `count` non esiste, assume 1
+
+    for (let i = 0; i < numChoices; i++) {
+      dropdownHTML += `<select class="extra-selection">
+                        <option value="">Seleziona...</option>`;
+      currentSelection.selection.forEach(option => {
+        dropdownHTML += `<option value="${option}">${option}</option>`;
+      });
+      dropdownHTML += `</select><br>`;
+    }
+
+    selectionElem.innerHTML = dropdownHTML;
   }
 
   // 🔄 Abilita/Disabilita i pulsanti di navigazione
   document.getElementById("prevTrait").disabled = (currentSelectionIndex === 0);
   document.getElementById("nextTrait").disabled = (currentSelectionIndex === extraSelections.length - 1);
 }
+
 
 // 🚀 Pulsanti Avanti/Indietro
 document.getElementById("prevTrait").addEventListener("click", () => {
@@ -858,6 +865,15 @@ document.getElementById("nextTrait").addEventListener("click", () => {
 // 🚀 Chiude il pop-up e salva le scelte
 document.getElementById("closeModal").addEventListener("click", () => {
   document.getElementById("raceExtrasModal").style.display = "none";
+
+  let summary = "📝 **Scelte salvate:**\n";
+  
+  document.querySelectorAll(".extra-selection").forEach((select, index) => {
+    summary += `🔹 ${extraSelections[index].name}: ${select.value}\n`;
+  });
+
+  console.log(summary);
+  alert("✅ Scelte salvate! Controlla la console per i dettagli.");
 });
 
 // ==================== ✅ SELEZIONE DEFINITIVA DELLA RAZZA ====================
@@ -885,19 +901,24 @@ document.getElementById("confirmRaceSelection").addEventListener("click", () => 
       const raceData = convertRaceData(data);
       const selections = [];
 
+      // 🔴 AGGIUNGI QUESTA RIGA PER NASCONDERE I TRATTI DELLA RAZZA
+      document.getElementById("raceTraits").style.display = "none";
+
       if (raceData.languages && raceData.languages.choice > 0) {
         selections.push({
           name: "Languages",
           description: "Choose an additional language.",
-          selection: ["Elvish", "Dwarvish", "Halfling", "Orc", "Gnomish", "Draconic", "Celestial"]
+          selection: ["Elvish", "Dwarvish", "Halfling", "Orc", "Gnomish", "Draconic", "Celestial"],
+          count: raceData.languages.choice
         });
       }
 
       if (raceData.skill_choices) {
         selections.push({
           name: "Skill Proficiency",
-          description: "Choose one additional skill.",
-          selection: raceData.skill_choices.options
+          description: "Choose skill proficiencies.",
+          selection: raceData.skill_choices.options,
+          count: raceData.skill_choices.number
         });
       }
 
@@ -905,7 +926,8 @@ document.getElementById("confirmRaceSelection").addEventListener("click", () => 
         selections.push({
           name: "Tool Proficiency",
           description: "Choose a tool proficiency.",
-          selection: raceData.tool_choices.options
+          selection: raceData.tool_choices.options,
+          count: 1
         });
       }
 
@@ -913,7 +935,8 @@ document.getElementById("confirmRaceSelection").addEventListener("click", () => 
         selections.push({
           name: "Spellcasting",
           description: "Choose a cantrip.",
-          selection: ["Fire Bolt", "Mage Hand", "Prestidigitation", "Ray of Frost"]
+          selection: ["Fire Bolt", "Mage Hand", "Prestidigitation", "Ray of Frost"],
+          count: 1
         });
       }
 

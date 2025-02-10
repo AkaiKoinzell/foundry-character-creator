@@ -1,3 +1,7 @@
+// ===============================================
+// SCRIPT.JS - Gestione Character Creator
+// ===============================================
+
 // ==================== MAPPING PER LE EXTRA VARIANT FEATURES ====================
 const variantExtraMapping = {
   "Drow Magic": {
@@ -108,74 +112,96 @@ function handleVariantFeatureChoices(data) {
 // ==================== FUNZIONI SPELLCASTING ====================
 
 /**
- * Gestisce la visualizzazione della sezione "Spellcasting" standard.
+ * Gestisce lo spellcasting standard.
  * Se spell_choices è di tipo "fixed_list" o "filter", genera il markup corrispondente
- * e lo inietta nel container con id specificato.
+ * e lo inietta nel container con l'id specificato.
  *
  * @param {Object} data - I dati della razza (output di convertRaceData)
- * @param {string} containerId - L'ID del container dove iniettare il markup
+ * @param {string} containerId - L'ID del container dove iniettare il markup.
  */
 function handleSpellcastingOptions(data, containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
   
-  // Se esiste spellcasting standard, usalo
-  if (data.spellcasting && data.spellcasting.spell_choices) {
-    let markup = "<h4>📖 Incantesimi</h4>";
+  if (!data.spellcasting || !data.spellcasting.spell_choices) {
+    console.log("⚠️ Nessun spellcasting trovato per questa razza.");
+    return;
+  }
+  
+  console.log("🛠 Elaborazione spellcasting:", data.spellcasting);
+  let markup = "<h4>📖 Incantesimi</h4>";
+  
+  if (data.spellcasting.spell_choices.type === "fixed_list") {
+    const options = data.spellcasting.spell_choices.options
+      .map(spell => `<option value="${spell}">${spell}</option>`)
+      .join("");
+    markup += `<p><strong>Scegli un incantesimo:</strong>
+                <select id="spellSelection"><option value="">Seleziona...</option>${options}</select>
+              </p>`;
+  } else if (data.spellcasting.spell_choices.type === "class_list") {
+    const className = data.spellcasting.spell_choices.class;
+    const spellLevel = data.spellcasting.spell_choices.level;
     
-    if (data.spellcasting.spell_choices.type === "fixed_list") {
-      const options = data.spellcasting.spell_choices.options
-        .map(spell => `<option value="${spell}">${spell}</option>`)
+    console.log(`📥 Caricamento incantesimi per classe ${className}, livello ${spellLevel}`);
+    
+    loadSpells(spellList => {
+      const availableSpells = spellList
+        .filter(spell => spell.level === spellLevel && spell.spell_list.includes(className))
+        .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
         .join("");
-      markup += `<p><strong>Scegli un incantesimo:</strong>
-                  <select id="spellSelection"><option value="">Seleziona...</option>${options}</select>
-                </p>`;
-    } else if (data.spellcasting.spell_choices.type === "filter") {
-      const currentLevel = parseInt(document.getElementById("levelSelect").value) || 1;
-      const filteredSpells = data.spellcasting.allSpells.filter(spell => parseInt(spell.level) <= currentLevel);
-      const groupedSpells = {};
-      filteredSpells.forEach(spell => {
-        const lvl = parseInt(spell.level);
-        if (!groupedSpells[lvl]) groupedSpells[lvl] = [];
-        groupedSpells[lvl].push(spell);
-      });
-      const levels = Object.keys(groupedSpells).map(Number).sort((a, b) => a - b);
-      levels.forEach(lvl => {
-        const spellsAtLvl = groupedSpells[lvl];
-        if (spellsAtLvl.length === 1) {
-          markup += `<p><strong>Incantesimo di livello ${lvl}:</strong> ${spellsAtLvl[0].name}</p>`;
-        } else if (spellsAtLvl.length > 1) {
-          const opts = spellsAtLvl
-            .map(spell => `<option value="${spell.name}">${spell.name} (lvl ${spell.level})</option>`)
-            .join("");
-          markup += `<p><strong>Incantesimo di livello ${lvl}:</strong>
-                      <select id="spellSelection_level_${lvl}"><option value="">Seleziona...</option>${opts}</select>
-                    </p>`;
-        }
-      });
-      // Gestione dell'abilità di lancio
-      if (data.spellcasting.ability_choices && Array.isArray(data.spellcasting.ability_choices)) {
-        if (data.spellcasting.ability_choices.length === 1) {
-          markup += `<p><strong>Abilità di lancio:</strong> ${data.spellcasting.ability_choices[0]}</p>`;
-        } else if (data.spellcasting.ability_choices.length > 1) {
-          const abilityOptions = data.spellcasting.ability_choices
-            .map(a => `<option value="${a}">${a}</option>`)
-            .join("");
-          markup += `<p><strong>Abilità di lancio:</strong>
-                      <select id="castingAbility"><option value="">Seleziona...</option>${abilityOptions}</select>
-                      </p>`;
-        }
+      if (availableSpells.length > 0) {
+        container.innerHTML = `<p><strong>Scegli un incantesimo:</strong>
+                <select id="spellSelection"><option value="">Seleziona...</option>${availableSpells}</select>
+              </p>`;
+      } else {
+        container.innerHTML = `<p><strong>⚠️ Nessun incantesimo disponibile per questa classe!</strong></p>`;
+      }
+    });
+    return;
+  } else if (data.spellcasting.spell_choices.type === "filter") {
+    const currentLevel = parseInt(document.getElementById("levelSelect").value) || 1;
+    const filteredSpells = data.spellcasting.allSpells.filter(spell => parseInt(spell.level) <= currentLevel);
+    const groupedSpells = {};
+    filteredSpells.forEach(spell => {
+      const lvl = parseInt(spell.level);
+      if (!groupedSpells[lvl]) groupedSpells[lvl] = [];
+      groupedSpells[lvl].push(spell);
+    });
+    const levels = Object.keys(groupedSpells).map(Number).sort((a, b) => a - b);
+    levels.forEach(lvl => {
+      const spellsAtLvl = groupedSpells[lvl];
+      if (spellsAtLvl.length === 1) {
+        markup += `<p><strong>Incantesimo di livello ${lvl}:</strong> ${spellsAtLvl[0].name}</p>`;
+      } else if (spellsAtLvl.length > 1) {
+        const opts = spellsAtLvl
+          .map(spell => `<option value="${spell.name}">${spell.name} (lvl ${spell.level})</option>`)
+          .join("");
+        markup += `<p><strong>Incantesimo di livello ${lvl}:</strong>
+                    <select id="spellSelection_level_${lvl}"><option value="">Seleziona...</option>${opts}</select>
+                  </p>`;
+      }
+    });
+    if (data.spellcasting.ability_choices && Array.isArray(data.spellcasting.ability_choices)) {
+      if (data.spellcasting.ability_choices.length === 1) {
+        markup += `<p><strong>Abilità di lancio:</strong> ${data.spellcasting.ability_choices[0]}</p>`;
+      } else if (data.spellcasting.ability_choices.length > 1) {
+        const abilityOptions = data.spellcasting.ability_choices
+          .map(a => `<option value="${a}">${a}</option>`)
+          .join("");
+        markup += `<p><strong>Abilità di lancio:</strong>
+                    <select id="castingAbility"><option value="">Seleziona...</option>${abilityOptions}</select>
+                   </p>`;
       }
     }
-    container.innerHTML = markup;
   }
+  container.innerHTML = markup;
 }
 
 /**
- * Gestisce gli incantesimi extra (ad esempio, per High Elf o altre razze con cantrip scelti tramite additionalSpells).
- * In questo caso, esamina il primo elemento di additionalSpells e cerca in known["1"]
- * un oggetto che contenga una proprietà "choose" con il filtro (es. "level=0|class=Wizard").
- * Quindi genera un dropdown con i cantrip corrispondenti.
+ * Gestisce gli incantesimi extra per razze specifiche (es. High Elf, Aarakocra).
+ * In particolare, estrae il filtro dalla sezione known (contenente l'array "_" con la proprietà "choose")
+ * e usa questo filtro per caricare e filtrare gli incantesimi (es. cantrip dal wizard list).
+ * Il dropdown viene iniettato nel container "spellSelectionContainer" (aggiungendosi al markup già presente).
  */
 function handleAdditionalSpells(data) {
   if (!data.additionalSpells || data.additionalSpells.length === 0) return;
@@ -189,14 +215,12 @@ function handleAdditionalSpells(data) {
       return;
     }
     console.log("📥 Trovato filtro per Cantrip:", choiceObj.choose);
-    // Estrae il filtro: ad esempio "level=0|class=Wizard"
     let [levelFilter, classFilter] = choiceObj.choose.split("|").map(f => f.split("=")[1]);
     let spellLevel = parseInt(levelFilter.trim());
     let spellClass = classFilter.trim();
     console.log(`📥 Richiesta per incantesimi di livello ${spellLevel} della classe ${spellClass}`);
     
     loadSpells(spellList => {
-      // Confronto case-insensitive per la classe
       let availableSpells = spellList
         .filter(spell =>
           parseInt(spell.level) === spellLevel &&
@@ -213,7 +237,6 @@ function handleAdditionalSpells(data) {
       }
       
       if (availableSpells.length > 0) {
-        // Aggiunge il dropdown per il cantrip senza sovrascrivere eventuale spellcasting standard
         container.innerHTML += `
           <p><strong>Scegli un Cantrip da ${spellClass}:</strong></p>
           <select id="additionalSpellSelection"><option value="">Seleziona...</option>${availableSpells}</select>
@@ -227,20 +250,18 @@ function handleAdditionalSpells(data) {
 }
 
 /**
- * Wrapper che richiama sia handleSpellcastingOptions che handleAdditionalSpells.
+ * Wrapper che richiama sia la gestione dello spellcasting standard che quella extra.
  * In questo modo, se la razza dispone di spellcasting standard, viene gestita;
- * altrimenti, se sono presenti additionalSpells (ad es. per High Elf), viene usata quella.
+ * altrimenti, se sono presenti additionalSpells (es. per High Elf), viene usata quella.
  *
  * @param {Object} data - I dati della razza
- * @param {string} traitsHtml - Il markup già generato per i tratti della razza
+ * @param {string} traitsHtml - Il markup già generato per i tratti della razza (non modificato)
  * @returns {string} - Il markup dei tratti (eventualmente non modificato)
  */
 function handleAllSpellcasting(data, traitsHtml) {
-  // Proviamo prima con la spellcasting standard
   if (data.spellcasting && data.spellcasting.spell_choices) {
     handleSpellcastingOptions(data, "spellSelectionContainer");
   }
-  // Poi, se sono presenti additionalSpells, gestiamo anche il caso extra (es. High Elf)
   if (data.additionalSpells && data.additionalSpells.length > 0) {
     handleAdditionalSpells(data);
   }
@@ -489,8 +510,79 @@ function convertRaceData(rawData) {
       });
     }
   });
-  // Spellcasting – gestisce sia lo spellcasting standard che quello extra
-  traitsHtml = handleAllSpellcasting(raceData, traitsHtml);
+  // Spellcasting – elaborazione completa
+  let spellcasting = null;
+  let extraSpellcasting = null;
+  if (rawData.additionalSpells && rawData.additionalSpells.length > 0) {
+    // Se il primo gruppo di additionalSpells contiene in known la proprietà "_" (filtri), lo trattiamo come extra
+    let firstSpellGroup = rawData.additionalSpells[0];
+    if (firstSpellGroup.known && firstSpellGroup.known["1"] && firstSpellGroup.known["1"]["_"]) {
+      extraSpellcasting = rawData.additionalSpells;
+    } else {
+      let spellsArray = [];
+      let abilityChoices = [];
+      rawData.additionalSpells.forEach(spellData => {
+        if (spellData.innate) {
+          Object.keys(spellData.innate).forEach(levelKey => {
+            const level = parseInt(levelKey);
+            const spellList = (typeof spellData.innate[levelKey] === "object" &&
+              spellData.innate[levelKey].daily &&
+              spellData.innate[levelKey].daily["1"])
+              ? spellData.innate[levelKey].daily["1"]
+              : spellData.innate[levelKey];
+            const spellName = extractSpellName(spellList);
+            if (spellName) {
+              spellsArray.push({ name: spellName, level: level, type: "innate" });
+            }
+          });
+        }
+        if (spellData.known) {
+          Object.keys(spellData.known).forEach(levelKey => {
+            const level = parseInt(levelKey);
+            const spellList = spellData.known[levelKey];
+            const spellName = extractSpellName(spellList);
+            if (spellName) {
+              spellsArray.push({ name: spellName, level: level, type: "known" });
+            }
+          });
+        }
+        if (spellData.ability) {
+          if (typeof spellData.ability === "object" && spellData.ability.choose) {
+            abilityChoices = spellData.ability.choose;
+          } else if (typeof spellData.ability === "string") {
+            abilityChoices = [spellData.ability];
+          }
+        }
+      });
+      if (spellsArray.length > 0) {
+        const distinctLevels = new Set(spellsArray.map(s => s.level));
+        if (distinctLevels.size > 1) {
+          spellcasting = {
+            spell_choices: { type: "filter" },
+            allSpells: spellsArray,
+            ability_choices: abilityChoices,
+            uses: "1 per long rest"
+          };
+        } else {
+          if (spellsArray.length === 1) {
+            spellcasting = {
+              fixed_spell: spellsArray[0].name,
+              level_requirement: spellsArray[0].level,
+              uses: "1 per long rest",
+              ability_choices: abilityChoices
+            };
+          } else {
+            spellcasting = {
+              spell_choices: { type: "fixed_list", options: spellsArray.map(s => s.name) },
+              level_requirement: Math.min(...spellsArray.map(s => s.level)),
+              uses: "1 per long rest",
+              ability_choices: abilityChoices
+            };
+          }
+        }
+      }
+    }
+  }
   // Lingue
   let languages = { fixed: [], choice: 0, options: [] };
   if (rawData.languageProficiencies && rawData.languageProficiencies.length > 0) {
@@ -658,7 +750,6 @@ function displayRaceTraits() {
       traitsHtml += tablesHtml;
       
       // Spellcasting – gestisce sia lo spellcasting standard che quello extra
-      // Nota: handleAllSpellcasting inietta il markup nel container "spellSelectionContainer"
       handleAllSpellcasting(raceData, traitsHtml);
       
       // Lingue

@@ -1,17 +1,46 @@
-// ==================== COMMON FUNCTIONS (common.js) ====================
+// common.js
+// ========================================================
+// COMMON UTILITY FUNCTIONS
+// Questo file contiene le funzioni di utilità utilizzate in tutta l'applicazione,
+// come la gestione degli errori, il caricamento di file JSON, il popolamento dei dropdown,
+// e funzioni helper per la gestione degli incantesimi.
+// ========================================================
 
-// -------------------------
-// Caricamento dati e popolamento dropdown
-// -------------------------
+console.log("✅ common.js loaded!");
+
+// -----------------------------
+// Error Handling
+// -----------------------------
+
+/**
+ * Mostra un messaggio d'errore in console e tramite alert.
+ * @param {string} message - Il messaggio d'errore da mostrare.
+ */
+function handleError(message) {
+  console.error("❌ " + message);
+  alert("⚠️ " + message);
+}
+
+// -----------------------------
+// Data Loading and Dropdown Population
+// -----------------------------
+
+/**
+ * Carica un file JSON dal percorso specificato e popola un dropdown.
+ * @param {string} jsonPath - Il percorso del file JSON.
+ * @param {string} selectId - L'ID dell'elemento <select> da popolare.
+ * @param {string} key - La chiave nell'oggetto JSON che contiene i dati.
+ */
 function loadDropdownData(jsonPath, selectId, key) {
   fetch(jsonPath)
     .then(response => response.json())
     .then(data => {
       console.log(`📜 Dati ricevuti da ${jsonPath}:`, data);
       if (!data[key]) {
-        handleError(`Chiave ${key} non trovata in ${jsonPath}`);
+        handleError(`Chiave "${key}" non trovata in ${jsonPath}`);
         return;
       }
+      // Mappa le chiavi in un array di oggetti { name, path }
       const options = Object.keys(data[key]).map(name => ({
         name: name,
         path: data[key][name]
@@ -21,12 +50,18 @@ function loadDropdownData(jsonPath, selectId, key) {
     .catch(error => handleError(`Errore caricando ${jsonPath}: ${error}`));
 }
 
+/**
+ * Popola un elemento <select> con le opzioni fornite.
+ * @param {string} selectId - L'ID dell'elemento <select>.
+ * @param {Array} options - Un array di oggetti con le proprietà "name" e "path".
+ */
 function populateDropdown(selectId, options) {
   const select = document.getElementById(selectId);
   if (!select) {
-    handleError(`Elemento #${selectId} non trovato!`);
+    handleError(`Elemento con ID "${selectId}" non trovato!`);
     return;
   }
+  // Pulisce il contenuto del dropdown e aggiunge l'opzione di default
   select.innerHTML = `<option value="">Seleziona...</option>`;
   options.forEach(option => {
     const opt = document.createElement("option");
@@ -34,135 +69,19 @@ function populateDropdown(selectId, options) {
     opt.textContent = option.name;
     select.appendChild(opt);
   });
+  console.log(`✅ Dropdown "${selectId}" popolato con ${options.length} opzioni.`);
 }
 
-// -------------------------
-// Conversione dei dati della razza (raw JSON → formato standard)
-// -------------------------
-function convertRaceData(rawData) {
-  // Size
-  let size = "Unknown";
-  if (Array.isArray(rawData.size)) {
-    size = (rawData.size[0] === "M") ? "Medium" : (rawData.size[0] === "S") ? "Small" : rawData.size[0];
-  } else {
-    size = rawData.size || "Unknown";
-  }
-
-  // Speed
-  let speed = {};
-  if (rawData.speed) {
-    if (typeof rawData.speed === "object") {
-      for (let key in rawData.speed) {
-        speed[key] = (typeof rawData.speed[key] === "boolean")
-          ? (key === "fly" ? "equal to your walking speed" : "unknown")
-          : rawData.speed[key];
-      }
-    } else {
-      speed = rawData.speed;
-    }
-  }
-
-  // Senses
-  let senses = {};
-  if (rawData.senses && typeof rawData.senses === "object") {
-    senses = rawData.senses;
-  } else if (rawData.darkvision) {
-    senses.darkvision = rawData.darkvision;
-  }
-
-  // Ability Bonus (minimale gestione)
-  let ability_bonus = { options: [] };
-  if (rawData.ability && Array.isArray(rawData.ability)) {
-    rawData.ability.forEach(ability => {
-      if (ability.choose && ability.choose.weighted) {
-        const weights = ability.choose.weighted.weights;
-        if (weights.length === 2 && weights.includes(2)) {
-          ability_bonus.options.push({ type: "fixed", values: { any: 2, any_other: 1 } });
-        } else if (weights.length === 3) {
-          ability_bonus.options.push({ type: "three", values: { any: 1, any_other: 1, any_other_2: 1 } });
-        }
-      }
-    });
-  }
-
-  // Tratti
-  let traits = [];
-  const rawEntries = rawData.entries || [];
-  rawEntries.forEach(entry => {
-    if (entry.name && entry.entries) {
-      // Un semplice concatenamento dei testi delle entry
-      const description = Array.isArray(entry.entries) ? entry.entries.join(" ") : entry.entries;
-      traits.push({
-        name: entry.name,
-        description: description,
-        level_requirement: 1
-      });
-    }
-  });
-
-  // Lingue
-  let languages = { fixed: [], choice: 0, options: [] };
-  if (rawData.languageProficiencies && rawData.languageProficiencies.length > 0) {
-    const lp = rawData.languageProficiencies[0];
-    for (let lang in lp) {
-      if (lp[lang] === true) {
-        languages.fixed.push(lang.charAt(0).toUpperCase() + lang.slice(1));
-      } else if (typeof lp[lang] === "number") {
-        languages.choice = lp[lang];
-      }
-    }
-    if (languages.choice > 0 && languages.options.length === 0) {
-      languages.options.push("Any other language you and your DM agree is appropriate");
-    }
-  }
-
-  // Skill Choices
-  let skill_choices = null;
-  if (rawData.skillProficiencies && rawData.skillProficiencies.length > 0) {
-    const sp = rawData.skillProficiencies[0].choose;
-    if (sp && sp.from) {
-      const count = sp.count ? sp.count : 1;
-      skill_choices = { number: count, options: sp.from };
-    }
-  }
-
-  // Tool Choices
-  let tool_choices = null;
-  if (rawData.toolProficiencies && Array.isArray(rawData.toolProficiencies)) {
-    rawData.toolProficiencies.forEach(tp => {
-      if (tp.choose && tp.choose.from) {
-        tool_choices = { number: 1, options: tp.choose.from };
-      }
-    });
-  }
-
-  // Spellcasting (qui manteniamo la struttura originale, che potrà essere ulteriormente elaborata)
-  let spellcasting = rawData.additionalSpells || null;
-
-  return {
-    name: rawData.name,
-    source: rawData.source + (rawData.page ? `, page ${rawData.page}` : ""),
-    size: size,
-    speed: speed,
-    senses: senses,
-    ability_bonus: ability_bonus,
-    traits: traits,
-    rawEntries: rawEntries,
-    spellcasting: spellcasting,
-    languages: languages,
-    skill_choices: skill_choices,
-    tool_choices: tool_choices
-  };
-}
-
-// -------------------------
-// Funzione per caricare le lingue da un file JSON
-// -------------------------
+/**
+ * Carica le lingue dal file JSON e passa l'array di lingue alla funzione callback.
+ * @param {function} callback - La funzione callback che riceve l'array di lingue.
+ */
 function loadLanguages(callback) {
   fetch("data/languages.json")
     .then(response => response.json())
     .then(data => {
       if (data.languages) {
+        console.log("📜 Lingue caricate:", data.languages);
         callback(data.languages);
       } else {
         handleError("Nessuna lingua trovata nel file JSON.");
@@ -171,9 +90,17 @@ function loadLanguages(callback) {
     .catch(error => handleError(`Errore caricando le lingue: ${error}`));
 }
 
-// -------------------------
-// Helper per estrarre il nome di uno spell (ricorsivamente)
-// -------------------------
+// -----------------------------
+// Spell Utilities
+// -----------------------------
+
+/**
+ * Estrae ricorsivamente il nome di un incantesimo dai dati forniti.
+ * Assume che il nome dell'incantesimo sia una stringa e, se contiene il carattere "#",
+ * restituisce la parte precedente a "#".
+ * @param {any} data - I dati da cui estrarre il nome.
+ * @returns {string|null} - Il nome dell'incantesimo o null se non trovato.
+ */
 function extractSpellName(data) {
   if (Array.isArray(data)) {
     if (typeof data[0] === "string") {
@@ -182,15 +109,21 @@ function extractSpellName(data) {
   } else if (typeof data === "object") {
     for (let key in data) {
       const result = extractSpellName(data[key]);
-      if (result) return result;
+      if (result) {
+        return result;
+      }
     }
   }
   return null;
 }
 
-// -------------------------
-// Filtro incantesimi (es. "level=0|class=Wizard")
-// -------------------------
+/**
+ * Filtra un array di incantesimi in base a una stringa di condizioni.
+ * Il formato della stringa di filtro deve essere "chiave=valore|chiave=valore" (es. "level=0|class=Wizard").
+ * @param {Array} spells - L'array di incantesimi.
+ * @param {string} filterString - La stringa contenente le condizioni di filtro.
+ * @returns {Array} - L'array filtrato di incantesimi.
+ */
 function filterSpells(spells, filterString) {
   const conditions = filterString.split("|");
   return spells.filter(spell => {
@@ -201,9 +134,14 @@ function filterSpells(spells, filterString) {
         const key = parts[0].trim().toLowerCase();
         const value = parts[1].trim().toLowerCase();
         if (key === "level") {
-          if (parseInt(spell.level) !== parseInt(value)) valid = false;
+          if (parseInt(spell.level) !== parseInt(value)) {
+            valid = false;
+          }
         } else if (key === "class") {
-          if (!spell.spell_list.map(x => x.toLowerCase()).includes(value)) valid = false;
+          // Verifica che la proprietà spell_list esista e contenga il valore (case-insensitive)
+          if (!spell.spell_list || !spell.spell_list.map(x => x.toLowerCase()).includes(value)) {
+            valid = false;
+          }
         }
       }
     });
@@ -211,64 +149,12 @@ function filterSpells(spells, filterString) {
   });
 }
 
-// -------------------------
-// Funzione per mostrare un messaggio d'errore
-// -------------------------
-function handleError(message) {
-  console.error("❌ " + message);
-  alert("⚠️ " + message);
-}
-
-// -------------------------
-// Funzione per il rendering di tabelle (es. per alcune entry)
-// -------------------------
-function renderTables(entries) {
-  let html = "";
-  if (!entries || !Array.isArray(entries)) return html;
-  entries.forEach(entry => {
-    if (entry.entries && Array.isArray(entry.entries)) {
-      entry.entries.forEach(subEntry => {
-        if (typeof subEntry === "object" && subEntry.type === "table") {
-          html += `<div class="table-container" style="margin-top:1em; margin-bottom:1em;">`;
-          if (subEntry.caption) {
-            html += `<p><strong>${subEntry.caption}</strong></p>`;
-          }
-          html += `<table border="1" style="width:100%; border-collapse: collapse;">`;
-          if (subEntry.colLabels && Array.isArray(subEntry.colLabels)) {
-            html += `<thead><tr>`;
-            subEntry.colLabels.forEach(label => {
-              html += `<th style="padding: 0.5em; text-align: center;">${label}</th>`;
-            });
-            html += `</tr></thead>`;
-          }
-          if (subEntry.rows && Array.isArray(subEntry.rows)) {
-            html += `<tbody>`;
-            subEntry.rows.forEach(row => {
-              html += `<tr>`;
-              row.forEach(cell => {
-                html += `<td style="padding: 0.5em; text-align: center;">${cell}</td>`;
-              });
-              html += `</tr>`;
-            });
-            html += `</tbody>`;
-          }
-          html += `</table>`;
-          // Se l'entry riguarda "ancestry", aggiunge un dropdown
-          if (entry.name && entry.name.toLowerCase().includes("ancestry")) {
-            let optsHtml = `<option value="">Seleziona...</option>`;
-            subEntry.rows.forEach(row => {
-              const optVal = JSON.stringify(row);
-              const optLabel = `${row[0]} (${row[1]})`;
-              optsHtml += `<option value='${optVal}'>${optLabel}</option>`;
-            });
-            html += `<p><strong>Seleziona Ancestry:</strong>
-                      <select id="ancestrySelect">${optsHtml}</select>
-                     </p>`;
-          }
-          html += `</div>`;
-        }
-      });
-    }
-  });
-  return html;
-}
+// -----------------------------
+// Esposizione delle funzioni per l'uso globale
+// -----------------------------
+window.handleError = handleError;
+window.loadDropdownData = loadDropdownData;
+window.populateDropdown = populateDropdown;
+window.loadLanguages = loadLanguages;
+window.extractSpellName = extractSpellName;
+window.filterSpells = filterSpells;

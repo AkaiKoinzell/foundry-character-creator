@@ -804,14 +804,12 @@ function openRaceExtrasModal(selections) {
   currentSelectionIndex = 0;
   showExtraSelection();
 
-  // Nasconde i tratti extra nello sfondo mentre il pop-up è aperto
-  document.getElementById("raceExtraTraitsContainer").style.display = "none";
+  // 🔹 Segna che il pop-up è stato aperto solo dopo la selezione della razza
+  sessionStorage.setItem("popupOpened", "true");
 
-  // 🛑 Evita che il pop-up si apra automaticamente al refresh
-if (!sessionStorage.getItem("popupOpened")) {
-  document.getElementById("raceExtrasModal").style.display = "none";
-} else {
-  sessionStorage.removeItem("popupOpened");
+  // 🟢 Nasconde i tratti extra nello sfondo mentre il pop-up è aperto
+  document.getElementById("raceExtraTraitsContainer").style.display = "none";
+  document.getElementById("raceExtrasModal").style.display = "flex";
 }
 
 // 🚀 Mostra la selezione attuale nel pop-up
@@ -1194,7 +1192,11 @@ window.updateSubclasses = updateSubclasses;
 // Inizializza al caricamento della pagina
 document.addEventListener("DOMContentLoaded", () => {
   console.log("✅ Script.js caricato!");
+  // 🛑 Evita che il pop-up si apra automaticamente al refresh
+if (sessionStorage.getItem("popupOpened")) {
+  sessionStorage.removeItem("popupOpened"); // 🔄 Reset alla riga successiva per evitare riaperture automatiche
   document.getElementById("raceExtrasModal").style.display = "none";
+}
   loadDropdownData("data/races.json", "raceSelect", "races");
   loadDropdownData("data/classes.json", "classSelect", "classes");
 

@@ -795,9 +795,16 @@ let currentSelectionIndex = 0;
 
 // 🚀 Funzione per aprire il pop-up delle scelte extra
 function openRaceExtrasModal(selections) {
+  if (!selections || selections.length === 0) {
+    console.warn("⚠️ Nessuna selezione extra disponibile, il pop-up non verrà mostrato.");
+    return; // 🔴 NON aprire il pop-up se non ci sono scelte
+  }
+  
   extraSelections = selections;
   currentSelectionIndex = 0;
   showExtraSelection();
+  
+  // 🟢 Mostra il pop-up SOLO se ci sono scelte
   document.getElementById("raceExtrasModal").style.display = "flex";
 }
 
@@ -867,13 +874,17 @@ document.getElementById("raceSelect").addEventListener("change", () => {
 document.getElementById("confirmRaceSelection").addEventListener("click", () => {
   const selectedRace = document.getElementById("raceSelect").value;
   
+  if (!selectedRace) {
+    alert("⚠️ Seleziona una razza prima di procedere!");
+    return;
+  }
+
   fetch(selectedRace)
     .then(response => response.json())
     .then(data => {
       const raceData = convertRaceData(data);
       const selections = [];
 
-      // 🔄 Lingue Extra
       if (raceData.languages && raceData.languages.choice > 0) {
         selections.push({
           name: "Languages",
@@ -882,7 +893,6 @@ document.getElementById("confirmRaceSelection").addEventListener("click", () => 
         });
       }
 
-      // 🔄 Skill Proficiency
       if (raceData.skill_choices) {
         selections.push({
           name: "Skill Proficiency",
@@ -891,7 +901,6 @@ document.getElementById("confirmRaceSelection").addEventListener("click", () => 
         });
       }
 
-      // 🔄 Tool Proficiency
       if (raceData.tool_choices) {
         selections.push({
           name: "Tool Proficiency",
@@ -900,7 +909,6 @@ document.getElementById("confirmRaceSelection").addEventListener("click", () => 
         });
       }
 
-      // 🔄 Spellcasting
       if (raceData.spellcasting) {
         selections.push({
           name: "Spellcasting",
@@ -909,13 +917,11 @@ document.getElementById("confirmRaceSelection").addEventListener("click", () => 
         });
       }
 
-      // 🔄 Se ci sono selezioni extra, apriamo il pop-up
-      if (selections.length > 0) {
-        openRaceExtrasModal(selections);
-      }
+      // 🟢 Mostra il pop-up SOLO se ci sono selezioni disponibili
+      openRaceExtrasModal(selections);
     });
 
-  // 🔄 Nascondi il bottone e mostra il pop-up invece dello step successivo
+  // 🟢 Nasconde il bottone dopo averlo cliccato
   document.getElementById("confirmRaceSelection").style.display = "none";
 });
 

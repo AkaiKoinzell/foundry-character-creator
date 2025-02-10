@@ -200,7 +200,7 @@ function handleSpellcastingOptions(data, containerId) {
 function handleAdditionalSpells(data) {
   if (!data.additionalSpells || data.additionalSpells.length === 0) return;
   console.log("🛠 Gestione specifica per additionalSpells (es. High Elf)");
-  
+
   let spellGroup = data.additionalSpells[0];
   if (spellGroup.known && spellGroup.known["1"] && Array.isArray(spellGroup.known["1"]["_"])) {
     let choiceObj = spellGroup.known["1"]["_"].find(item => item.choose && item.choose.includes("class="));
@@ -208,12 +208,13 @@ function handleAdditionalSpells(data) {
       console.warn("⚠️ Nessun filtro 'choose' trovato in additionalSpells.");
       return;
     }
+
     console.log("📥 Trovato filtro per Cantrip:", choiceObj.choose);
     let parts = choiceObj.choose.split("|").map(f => f.split("=")[1]);
     let spellLevel = parseInt(parts[0].trim());
     let spellClass = parts[1].trim();
     console.log(`📥 Richiesta per incantesimi di livello ${spellLevel} della classe ${spellClass}`);
-    
+
     loadSpells(spellList => {
       let availableSpells = spellList
         .filter(spell =>
@@ -223,16 +224,16 @@ function handleAdditionalSpells(data) {
         )
         .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
         .join("");
-      
+
       const container = document.getElementById("spellSelectionContainer");
       if (!container) {
         console.error("❌ ERRORE: spellSelectionContainer non trovato nel DOM!");
         return;
       }
-      
+
       if (availableSpells.length > 0) {
         container.innerHTML += `
-          <p><strong>Scegli un Cantrip da ${spellClass}:</strong></p>
+          <p><strong>🔮 Scegli un Cantrip da ${spellClass}:</strong></p>
           <select id="additionalSpellSelection"><option value="">Seleziona...</option>${availableSpells}</select>
         `;
         console.log("✅ Dropdown Cantrip generato correttamente.");
@@ -792,7 +793,12 @@ function displayRaceTraits() {
 // ==================== ✅ SELEZIONE DEFINITIVA DELLA RAZZA ====================
 document.getElementById("raceSelect").addEventListener("change", () => {
   displayRaceTraits();
-  document.getElementById("confirmRaceSelection").style.display = "block";
+  const confirmBtn = document.getElementById("confirmRaceSelection");
+  if (document.getElementById("raceSelect").value) {
+    confirmBtn.style.display = "block";
+  } else {
+    confirmBtn.style.display = "none";
+  }
 });
 
 document.getElementById("confirmRaceSelection").addEventListener("click", () => {

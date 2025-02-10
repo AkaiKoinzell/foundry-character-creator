@@ -804,8 +804,10 @@ function openRaceExtrasModal(selections) {
   currentSelectionIndex = 0;
   showExtraSelection();
 
-  // 🔹 Segna che il pop-up è stato aperto solo dopo la selezione della razza
+  // 🔹 Segna che il pop-up è stato aperto SOLO se viene chiamato correttamente (es. dopo la selezione della razza)
+if (!sessionStorage.getItem("popupOpened")) {
   sessionStorage.setItem("popupOpened", "true");
+}
 
   // 🟢 Nasconde i tratti extra nello sfondo mentre il pop-up è aperto
   document.getElementById("raceExtraTraitsContainer").style.display = "none";
@@ -887,7 +889,9 @@ document.getElementById("nextTrait").addEventListener("click", () => {
 
 // 🚀 Chiude il pop-up e salva le scelte
 document.getElementById("closeModal").addEventListener("click", () => {
-  document.getElementById("raceExtrasModal").style.display = "none";
+document.getElementById("raceExtrasModal").style.display = "none";
+sessionStorage.removeItem("popupOpened"); // Rimuove il flag dopo che il pop-up è stato chiuso
+
 
   let summary = "📝 **Scelte salvate:**\n";
   let selectedData = {};
@@ -1192,10 +1196,11 @@ window.updateSubclasses = updateSubclasses;
 // Inizializza al caricamento della pagina
 document.addEventListener("DOMContentLoaded", () => {
   console.log("✅ Script.js caricato!");
-  // 🛑 Evita che il pop-up si apra automaticamente al refresh
-if (sessionStorage.getItem("popupOpened")) {
-  sessionStorage.removeItem("popupOpened"); // 🔄 Reset alla riga successiva per evitare riaperture automatiche
-  document.getElementById("raceExtrasModal").style.display = "none";
+ // 🛑 Impedisce che il pop-up si apra automaticamente al refresh della pagina
+document.getElementById("raceExtrasModal").style.display = "none";
+
+if (sessionStorage.getItem("popupOpened") === "true") {
+  sessionStorage.removeItem("popupOpened"); // Reset per evitare che si riapra di nuovo
 }
   loadDropdownData("data/races.json", "raceSelect", "races");
   loadDropdownData("data/classes.json", "classSelect", "classes");

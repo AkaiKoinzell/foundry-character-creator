@@ -796,7 +796,7 @@ document.getElementById("raceSelect").addEventListener("change", () => {
 });
 
 document.getElementById("confirmRaceSelection").addEventListener("click", () => {
-  showStep("step3");
+  document.getElementById("raceExtraTraitsContainer").style.display = "block"; // Mostra i tratti extra
 });
 
 // ==================== UPDATE SUBCLASSES (STEP 5) ====================

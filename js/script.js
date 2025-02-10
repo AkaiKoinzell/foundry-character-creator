@@ -797,14 +797,14 @@ let currentSelectionIndex = 0;
 function openRaceExtrasModal(selections) {
   if (!selections || selections.length === 0) {
     console.warn("⚠️ Nessuna selezione extra disponibile, il pop-up non verrà mostrato.");
-    return; // 🔴 NON aprire il pop-up se non ci sono scelte
+    return; // 🔴 Non aprire il pop-up se non ci sono scelte
   }
   
   extraSelections = selections;
   currentSelectionIndex = 0;
   showExtraSelection();
-  
-  // 🟢 Mostra il pop-up SOLO se ci sono scelte
+
+  // 🟢 Mostra il pop-up SOLO se ci sono selezioni disponibili
   document.getElementById("raceExtrasModal").style.display = "flex";
 }
 
@@ -873,7 +873,7 @@ document.getElementById("raceSelect").addEventListener("change", () => {
 
 document.getElementById("confirmRaceSelection").addEventListener("click", () => {
   const selectedRace = document.getElementById("raceSelect").value;
-  
+
   if (!selectedRace) {
     alert("⚠️ Seleziona una razza prima di procedere!");
     return;
@@ -921,15 +921,8 @@ document.getElementById("confirmRaceSelection").addEventListener("click", () => 
       openRaceExtrasModal(selections);
     });
 
-  // 🟢 Nasconde il bottone dopo averlo cliccato
-  document.getElementById("confirmRaceSelection").style.display = "none"; // 🔴 Nasconde il bottone all'inizio
-
-document.getElementById("raceSelect").addEventListener("change", () => {
-  if (document.getElementById("raceSelect").value) {
-    document.getElementById("confirmRaceSelection").style.display = "block"; // 🟢 Mostra il bottone
-  } else {
-    document.getElementById("confirmRaceSelection").style.display = "none"; // 🔴 Nasconde se non è selezionato nulla
-  }
+  // 🔴 Nasconde il bottone dopo averlo cliccato per evitare ri-click
+  document.getElementById("confirmRaceSelection").style.display = "none";
 });
 
 // ==================== UPDATE SUBCLASSES (STEP 5) ====================
@@ -1123,6 +1116,7 @@ window.updateSubclasses = updateSubclasses;
 // Inizializza al caricamento della pagina
 document.addEventListener("DOMContentLoaded", () => {
   console.log("✅ Script.js caricato!");
+  document.getElementById("raceExtrasModal").style.display = "none";
   loadDropdownData("data/races.json", "raceSelect", "races");
   loadDropdownData("data/classes.json", "classSelect", "classes");
 
@@ -1132,6 +1126,9 @@ document.getElementById("btnStep1").addEventListener("click", () => showStep("st
 document.getElementById("btnStep2").addEventListener("click", () => showStep("step2"));
 document.getElementById("confirmRaceSelection").addEventListener("click", () => {
   document.getElementById("raceExtraTraitsContainer").style.display = "block"; // Mostra i tratti extra nello stesso step
+});
+document.getElementById("closeModal").addEventListener("click", () => {
+document.getElementById("raceExtrasModal").style.display = "none";
 });
 document.getElementById("btnStep3").addEventListener("click", () => showStep("step3"));
 document.getElementById("btnStep4").addEventListener("click", () => showStep("step4"));

@@ -1,4 +1,4 @@
-// ==================== 📜 NAVIGAZIONE TRA GLI STEP ====================
+// ==================== 📜 NAVIGATION BETWEEN STEPS ====================
 function showStep(stepId) {
   const steps = document.querySelectorAll(".step");
   steps.forEach(step => {
@@ -10,10 +10,10 @@ function showStep(stepId) {
   });
 }
 
-// ==================== MAPPING PER LE EXTRA VARIANT FEATURES ====================
+// ==================== MAPPING FOR EXTRA VARIANT FEATURES ====================
 const variantExtraMapping = {
   "Drow Magic": {
-    type: "none" // Le spell fisse saranno gestite separatamente
+    type: "none" // Fixed spells will be handled separately
   },
   "Skill Versatility": {
     type: "skills",
@@ -31,10 +31,10 @@ const variantExtraMapping = {
     type: "spells",
     filter: "level=0|class=Wizard"
   }
-  // Aggiungi altri mapping se necessario
+  // Add other mappings as needed
 };
 
-// ==================== FUNZIONI PER LE VARIANT FEATURES ====================
+// ==================== VARIANT FEATURES FUNCTIONS ====================
 function updateVariantSkillOptions() {
   const allVariantSkillSelects = document.querySelectorAll(".variantSkillChoice");
   if (!allVariantSkillSelects.length) return;
@@ -70,7 +70,7 @@ function handleVariantExtraSelections() {
     if (mapData.type === "skills") {
       let html = `<p><strong>Seleziona ${mapData.count} skill per ${selectedVariant}:</strong></p>`;
       for (let i = 0; i < mapData.count; i++) {
-        html += `<select class="variantSkillChoice" data-category="${selectedVariant}" id="variantSkillChoice${i}" data-options='${JSON.stringify(mapData.options)}' onchange="updateVariantSkillOptions()">
+        html += `<select class="variantSkillChoice" id="variantSkillChoice${i}" data-options='${JSON.stringify(mapData.options)}' onchange="updateVariantSkillOptions()">
                     <option value="">Seleziona...</option>`;
         mapData.options.forEach(s => {
           html += `<option value="${s}">${s}</option>`;
@@ -95,7 +95,7 @@ function handleVariantExtraSelections() {
         }
       });
     }
-    // If type is "none", do nothing.
+    // If mapping type is "none", do nothing.
   }
 }
 
@@ -117,7 +117,8 @@ function handleVariantFeatureChoices(data) {
   }
 }
 
-// ==================== FUNZIONI SPELLCASTING ====================
+// ==================== SPELLCASTING FUNCTIONS ====================
+
 function loadSpells(callback) {
   fetch("data/spells.json")
     .then(response => response.json())
@@ -129,11 +130,11 @@ function loadSpells(callback) {
 }
 
 /**
- * Gestisce lo spellcasting standard.
- * Supporta due modalità:
- * - fixed_list: dropdown fisso.
- * - filter: raggruppa gli incantesimi per livello e include il dropdown per la scelta dell’abilità di lancio.
- * Il markup viene iniettato nel container con l'ID specificato.
+ * Handles standard spellcasting options.
+ * Supports:
+ * - fixed_list: a fixed dropdown list.
+ * - filter: groups spells by level and shows a dropdown for choosing the casting ability.
+ * The markup is injected into the container with the given ID.
  */
 function handleSpellcastingOptions(data, containerId) {
   const container = document.getElementById(containerId);
@@ -171,7 +172,7 @@ function handleSpellcastingOptions(data, containerId) {
                       </p>`;
         }
       });
-      // Ability choices for spellcasting
+      // Casting ability selection
       if (data.spellcasting.ability_choices && Array.isArray(data.spellcasting.ability_choices)) {
         if (data.spellcasting.ability_choices.length > 1) {
           const abilityOptions = data.spellcasting.ability_choices
@@ -192,14 +193,13 @@ function handleSpellcastingOptions(data, containerId) {
 }
 
 /**
- * Gestisce gli incantesimi extra per razze specifiche (es. High Elf, Aarakocra).
- * Cerca all’interno di additionalSpells il filtro per i cantrip (in known["1"]["_"])
- * e inietta un dropdown nel container "spellSelectionContainer" (aggiungendolo al markup già presente).
+ * Handles extra spellcasting for specific races (e.g. High Elf, Aarakocra).
+ * It looks inside additionalSpells (in known["1"]["_"]) for a filter (e.g. "level=0|class=Wizard")
+ * and appends a dropdown to the spellSelectionContainer.
  */
 function handleAdditionalSpells(data) {
   if (!data.additionalSpells || data.additionalSpells.length === 0) return;
   console.log("🛠 Gestione specifica per additionalSpells (es. High Elf)");
-  
   let spellGroup = data.additionalSpells[0];
   if (spellGroup.known && spellGroup.known["1"] && Array.isArray(spellGroup.known["1"]["_"])) {
     let choiceObj = spellGroup.known["1"]["_"].find(item => item.choose && item.choose.includes("class="));
@@ -212,7 +212,6 @@ function handleAdditionalSpells(data) {
     let spellLevel = parseInt(parts[0].trim());
     let spellClass = parts[1].trim();
     console.log(`📥 Richiesta per incantesimi di livello ${spellLevel} della classe ${spellClass}`);
-  
     loadSpells(spellList => {
       let availableSpells = spellList
         .filter(spell =>
@@ -241,7 +240,7 @@ function handleAdditionalSpells(data) {
 }
 
 /**
- * Wrapper che richiama sia la gestione dello spellcasting standard che quella extra.
+ * Wrapper that calls both the standard spellcasting and extra spellcasting functions.
  */
 function handleAllSpellcasting(data, traitsHtml) {
   if (data.spellcasting && data.spellcasting.spell_choices) {
@@ -253,83 +252,92 @@ function handleAllSpellcasting(data, traitsHtml) {
   return traitsHtml;
 }
 
-// ==================== FUNZIONI PER EXTRA (LINGUE, SKILLS, TOOLS, ANCESTRY) ====================
+// ==================== EXTRA OPTIONS FUNCTIONS (LANGUAGES, SKILLS, TOOLS, ANCESTRY) ====================
+function loadLanguages(callback) {
+  fetch("data/languages.json")
+    .then(response => response.json())
+    .then(data => {
+      if (data.languages) {
+        callback(data.languages);
+      } else {
+        handleError("Nessuna lingua trovata nel file JSON.");
+      }
+    })
+    .catch(error => handleError(`Errore caricando le lingue: ${error}`));
+}
+
 function handleExtraLanguages(data, containerId) {
+  const container = document.getElementById(containerId);
   if (data.languages && data.languages.choice > 0) {
     loadLanguages(langs => {
       const availableLangs = langs.filter(lang => !data.languages.fixed.includes(lang));
       const options = availableLangs.map(lang => `<option value="${lang}">${lang}</option>`).join("");
       const html = `<h4>Lingue Extra</h4>
-                    <select id="extraLanguageSelect" data-category="Languages">
+                    <select id="extraLanguageSelect">
                       <option value="">Seleziona...</option>
                       ${options}
                     </select>`;
-      const container = document.getElementById(containerId);
       if (container) container.innerHTML = html;
     });
-  } else {
-    const container = document.getElementById(containerId);
-    if (container) container.innerHTML = "";
+  } else if (container) {
+    container.innerHTML = "";
   }
 }
 
 function handleExtraSkills(data, containerId) {
+  const container = document.getElementById(containerId);
   if (data.skill_choices) {
     const skillOptions = JSON.stringify(data.skill_choices.options);
     let html = `<h4>Skill Extra</h4>`;
     for (let i = 0; i < data.skill_choices.number; i++) {
-      html += `<select class="skillChoice extra-selection" data-category="Skill Proficiency" id="skillChoice${i}" data-options='${skillOptions}' onchange="updateSkillOptions()">
+      html += `<select class="skillChoice" id="skillChoice${i}" data-options='${skillOptions}' onchange="updateSkillOptions()">
                   <option value="">Seleziona...</option>`;
       html += data.skill_choices.options.map(s => `<option value="${s}">${s}</option>`).join("");
-      html += `</select><br>`;
+      html += `</select>`;
     }
-    const container = document.getElementById(containerId);
     if (container) container.innerHTML = html;
-  } else {
-    const container = document.getElementById(containerId);
-    if (container) container.innerHTML = "";
+  } else if (container) {
+    container.innerHTML = "";
   }
 }
 
 function handleExtraTools(data, containerId) {
+  const container = document.getElementById(containerId);
   if (data.tool_choices) {
     const toolOptions = JSON.stringify(data.tool_choices.options);
     let html = `<h4>Tool Extra</h4>`;
     for (let i = 0; i < data.tool_choices.number; i++) {
-      html += `<select class="toolChoice extra-selection" data-category="Tool Proficiency" id="toolChoice${i}" data-options='${toolOptions}'>
+      html += `<select class="toolChoice" id="toolChoice${i}" data-options='${toolOptions}'>
                   <option value="">Seleziona...</option>`;
       html += data.tool_choices.options.map(t => `<option value="${t}">${t}</option>`).join("");
-      html += `</select><br>`;
+      html += `</select>`;
     }
-    const container = document.getElementById(containerId);
     if (container) container.innerHTML = html;
-  } else {
-    const container = document.getElementById(containerId);
-    if (container) container.innerHTML = "";
+  } else if (container) {
+    container.innerHTML = "";
   }
 }
 
 function handleExtraAncestry(data, containerId) {
+  const container = document.getElementById(containerId);
   if (data.variant_feature_choices && data.variant_feature_choices.length > 0) {
     const ancestryOptions = data.variant_feature_choices.filter(opt => opt.name.toLowerCase().includes("ancestry"));
     if (ancestryOptions.length > 0) {
       let html = `<h4>Seleziona Ancestry</h4>
-                  <select id="ancestrySelection" data-category="Ancestry">
+                  <select id="ancestrySelection">
                     <option value="">Seleziona...</option>`;
       ancestryOptions.forEach(opt => {
         html += `<option value="${opt.name}">${opt.name}</option>`;
       });
       html += `</select>`;
-      const container = document.getElementById(containerId);
       if (container) container.innerHTML = html;
     }
-  } else {
-    const container = document.getElementById(containerId);
-    if (container) container.innerHTML = "";
+  } else if (container) {
+    container.innerHTML = "";
   }
 }
 
-// ==================== FUNZIONI COMMON (UTILITÀ) ====================
+// ==================== COMMON UTILITY FUNCTIONS ====================
 function extractSpellName(data) {
   if (Array.isArray(data)) {
     if (typeof data[0] === "string") {
@@ -402,20 +410,7 @@ function populateDropdown(selectId, options) {
   });
 }
 
-function loadLanguages(callback) {
-  fetch("data/languages.json")
-    .then(response => response.json())
-    .then(data => {
-      if (data.languages) {
-        callback(data.languages);
-      } else {
-        handleError("Nessuna lingua trovata nel file JSON.");
-      }
-    })
-    .catch(error => handleError(`Errore caricando le lingue: ${error}`));
-}
-
-// ==================== CONVERSIONE DEI DATI DELLA RAZZA ====================
+// ==================== RACE DATA CONVERSION FUNCTION ====================
 function convertRaceData(rawData) {
   // Size
   let size = "Unknown";
@@ -458,7 +453,7 @@ function convertRaceData(rawData) {
       }
     });
   }
-  // Variant Feature e Tratti
+  // Variant Features and Traits
   let variant_feature_choices = null;
   let traits = [];
   const rawEntries = rawData.entries || [];
@@ -495,7 +490,7 @@ function convertRaceData(rawData) {
       });
     }
   });
-  // Spellcasting – elaborazione completa
+  // Spellcasting – complete processing
   let spellcasting = null;
   let extraSpellcasting = null;
   if (rawData.additionalSpells && rawData.additionalSpells.length > 0) {
@@ -567,7 +562,7 @@ function convertRaceData(rawData) {
       }
     }
   }
-  // Lingue
+  // Languages
   let languages = { fixed: [], choice: 0, options: [] };
   if (rawData.languageProficiencies && rawData.languageProficiencies.length > 0) {
     const lp = rawData.languageProficiencies[0];
@@ -618,7 +613,7 @@ function convertRaceData(rawData) {
   };
 }
 
-// ==================== RENDERING DI TABELLE ====================
+// ==================== RENDERING TABLES ====================
 function renderTables(entries) {
   let html = "";
   if (!entries || !Array.isArray(entries)) return html;
@@ -669,7 +664,7 @@ function renderTables(entries) {
   return html;
 }
 
-// ==================== DISPLAY DEI TRATTI DELLA RAZZA ====================
+// ==================== DISPLAY RACE TRAITS ====================
 function displayRaceTraits() {
   const racePath = document.getElementById("raceSelect").value;
   const raceTraitsDiv = document.getElementById("raceTraits");
@@ -700,7 +695,7 @@ function displayRaceTraits() {
       const raceData = convertRaceData(data);
       let traitsHtml = `<h3>Tratti di ${raceData.name}</h3>`;
       
-      // Velocità
+      // Speed
       if (raceData.speed) {
         if (typeof raceData.speed === "object") {
           const speedDetails = [];
@@ -715,12 +710,12 @@ function displayRaceTraits() {
         traitsHtml += `<p><strong>Velocità:</strong> Non disponibile</p>`;
       }
       
-      // Visione
+      // Senses
       if (raceData.senses && raceData.senses.darkvision) {
         traitsHtml += `<p><strong>Visione:</strong> ${raceData.senses.darkvision} ft</p>`;
       }
       
-      // Tratti
+      // Traits
       if (raceData.traits && raceData.traits.length > 0) {
         traitsHtml += `<p><strong>Tratti:</strong></p><ul>`;
         raceData.traits.forEach(trait => {
@@ -729,14 +724,14 @@ function displayRaceTraits() {
         traitsHtml += `</ul>`;
       }
       
-      // Tabelle (rawEntries)
+      // Tables (rawEntries)
       const tablesHtml = renderTables(raceData.rawEntries);
       traitsHtml += tablesHtml;
       
-      // Spellcasting – handle standard and additional spells
+      // Spellcasting – handle both standard and additional spells
       handleAllSpellcasting(raceData, traitsHtml);
       
-      // Lingue
+      // Languages
       let languageHtml = "";
       if (raceData.languages && Array.isArray(raceData.languages.fixed) && raceData.languages.fixed.length > 0) {
         languageHtml = `<p><strong>Lingue Concesse:</strong> ${raceData.languages.fixed.join(", ")}</p>`;
@@ -749,7 +744,7 @@ function displayRaceTraits() {
           const availableLangs = langs.filter(lang => !raceData.languages.fixed.includes(lang));
           let opts = availableLangs.map(lang => `<option value="${lang}">${lang}</option>`).join("");
           opts = `<option value="">Seleziona...</option>` + opts;
-          const select = `<select id="extraLanguageSelect" data-category="Languages">${opts}</select>`;
+          const select = `<select id="extraLanguageSelect">${opts}</select>`;
           const langContainer = document.getElementById("languageSelection");
           if (langContainer) {
             langContainer.innerHTML = languageHtml + select;
@@ -767,11 +762,9 @@ function displayRaceTraits() {
         racialBonusDiv.style.display = "block";
       }
       
-      // Extra: Skill and Tool choices
+      // Extra: Skill and Tool choices, Variant Features, and Ancestry
       handleExtraSkills(raceData, "skillSelectionContainer");
       handleExtraTools(raceData, "toolSelectionContainer");
-      
-      // Extra: Variant Feature Choices and Ancestry
       handleVariantFeatureChoices(raceData);
       handleExtraAncestry(raceData, "ancestrySelection");
       
@@ -783,15 +776,12 @@ function displayRaceTraits() {
     .catch(error => handleError(`Errore caricando i tratti della razza: ${error}`));
 }
 
-// ==================== POP-UP PER LE SCELTE EXTRA ====================
+// ==================== POP-UP FOR EXTRA SELECTIONS ====================
 // Global variables for extra selections
 let extraSelections = [];
 let currentSelectionIndex = 0;
-let selectedExtra = {}; // Object to hold selections per category
+let selectedExtra = {}; // Object to store selections per category
 
-/**
- * Updates the global selectedExtra object by iterating over all extra-selection dropdowns.
- */
 function updateExtraSelections() {
   selectedExtra = {};
   document.querySelectorAll(".extra-selection").forEach(select => {
@@ -806,11 +796,6 @@ function updateExtraSelections() {
   console.log("Updated extra selections:", selectedExtra);
 }
 
-/**
- * Displays the current extra selection in the popup.
- * Each dropdown has a data-category attribute so selections are stored separately.
- * The "Close" button is only shown on the final page.
- */
 function showExtraSelection() {
   const titleElem = document.getElementById("extraTraitTitle");
   const descElem = document.getElementById("extraTraitDescription");
@@ -838,7 +823,6 @@ function showExtraSelection() {
       dropdownHTML += `</select><br>`;
     }
     selectionElem.innerHTML = dropdownHTML;
-    // Attach change events to update selections immediately
     document.querySelectorAll(".extra-selection").forEach(select => {
       select.addEventListener("change", updateExtraSelections);
     });
@@ -848,69 +832,36 @@ function showExtraSelection() {
   document.getElementById("prevTrait").disabled = (currentSelectionIndex === 0);
   document.getElementById("nextTrait").disabled = (currentSelectionIndex === extraSelections.length - 1);
 
-  // Show the "Close" button only on the final extra-selection page
+  // Show the Close button only on the final extra-selection page
   const closeBtn = document.getElementById("closeModal");
-  if (currentSelectionIndex === extraSelections.length - 1) {
-    closeBtn.style.display = "block";
-  } else {
-    closeBtn.style.display = "none";
-  }
+  closeBtn.style.display = (currentSelectionIndex === extraSelections.length - 1) ? "block" : "none";
 }
 
-// Navigation buttons for the extra-selection popup
-document.getElementById("prevTrait").addEventListener("click", () => {
-  if (currentSelectionIndex > 0) {
-    currentSelectionIndex--;
-    showExtraSelection();
+function openRaceExtrasModal(selections) {
+  if (!selections || selections.length === 0) {
+    console.warn("⚠️ Nessuna selezione extra disponibile, il pop-up non verrà mostrato.");
+    return;
   }
-});
-document.getElementById("nextTrait").addEventListener("click", () => {
-  if (currentSelectionIndex < extraSelections.length - 1) {
-    currentSelectionIndex++;
-    showExtraSelection();
-  }
-});
+  extraSelections = selections;
+  currentSelectionIndex = 0;
+  showExtraSelection();
 
-/**
- * Closes the extra-selection popup and saves the selections.
- * The selections (grouped by category) update corresponding UI elements.
- */
-document.getElementById("closeModal").addEventListener("click", () => {
-  // Hide the popup modal
+  // Mark the popup as opened in sessionStorage
+  if (!sessionStorage.getItem("popupOpened")) {
+    sessionStorage.setItem("popupOpened", "true");
+  }
+
+  // Hide the background extra traits and show the modal
+  const traitsContainer = document.getElementById("raceExtraTraitsContainer");
   const modal = document.getElementById("raceExtrasModal");
-  if (modal) {
-    modal.style.display = "none";
-  }
-  sessionStorage.removeItem("popupOpened");
+  if (traitsContainer) traitsContainer.style.display = "none";
+  if (modal) modal.style.display = "flex";
+}
 
-  // Update selections from the popup dropdowns
-  updateExtraSelections();
-
-  console.log("📝 **Scelte salvate:**");
-  Object.keys(selectedExtra).forEach(key => {
-    console.log(`🔹 ${key}: ${selectedExtra[key].join(", ")}`);
-  });
-
-  // Update UI elements based on extra selections
-  Object.keys(selectedExtra).forEach(category => {
-    if (category === "Languages") {
-      const langElem = document.getElementById("extraLanguageSelect");
-      if (langElem) langElem.value = selectedExtra[category].join(", ");
-    } else if (category === "Skill Proficiency") {
-      const skillContainer = document.getElementById("skillSelectionContainer");
-      if (skillContainer) skillContainer.innerHTML = selectedExtra[category].join(", ");
-    } else if (category === "Tool Proficiency") {
-      const toolContainer = document.getElementById("toolSelectionContainer");
-      if (toolContainer) toolContainer.innerHTML = selectedExtra[category].join(", ");
-    } else if (category === "Spellcasting") {
-      const spellContainer = document.getElementById("spellSelectionContainer");
-      if (spellContainer) spellContainer.innerHTML = selectedExtra[category].join(", ");
-    }
-  });
-
-  // Re-display the extra traits container in the background
-  document.getElementById("raceExtraTraitsContainer").style.display = "block";
-});
+// Expose popup functions globally so they can be called from HTML event attributes
+window.openRaceExtrasModal = openRaceExtrasModal;
+window.showExtraSelection = showExtraSelection;
+window.updateExtraSelections = updateExtraSelections;
 
 // ==================== UPDATE SUBCLASSES (STEP 5) ====================
 function updateSubclasses() {
@@ -936,7 +887,7 @@ function updateSubclasses() {
     .catch(error => handleError(`Errore caricando le sottoclasse: ${error}`));
 }
 
-// ==================== GENERAZIONE DEL JSON FINALE (STEP 8) ====================
+// ==================== GENERATE FINAL JSON (STEP 8) ====================
 function generateFinalJson() {
   let chromaticAncestry = null;
   const ancestrySelect = document.getElementById("ancestrySelect");
@@ -1095,27 +1046,20 @@ function resetRacialBonuses() {
   updateFinalScores();
 }
 
-// ==================== STUB FUNCTION: updateSkillOptions ====================
-function updateSkillOptions() {
-  console.log("updateSkillOptions called.");
-}
-
-// ==================== ESPOSTE GLOBALMENTE PER I LISTENER ====================
+// ==================== GLOBAL EVENT LISTENERS ====================
 window.displayRaceTraits = displayRaceTraits;
 window.applyRacialBonuses = applyRacialBonuses;
 window.updateSubclasses = updateSubclasses;
 
-// ==================== INIZIALIZZAZIONE ====================
 document.addEventListener("DOMContentLoaded", () => {
   console.log("✅ Script.js caricato!");
-
-  // Ensure the popup modal is hidden at startup.
+  // Ensure the race extras modal is hidden at startup.
   const modal = document.getElementById("raceExtrasModal");
   if (modal) {
     modal.style.display = "none";
   }
 
-  // Check if the popup should not be reopened automatically
+  // If the popup was opened in a previous session, remove the flag so it doesn’t reopen automatically.
   if (sessionStorage.getItem("popupOpened") === "true") {
     console.log("🛑 Il pop-up non verrà riaperto automaticamente.");
     sessionStorage.removeItem("popupOpened");
@@ -1132,58 +1076,12 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnStep5").addEventListener("click", () => showStep("step5"));
   document.getElementById("btnStep8").addEventListener("click", () => showStep("step8"));
 
-  // Show initial step
+  // Show the initial step
   showStep("step1");
 
   document.getElementById("raceSelect").addEventListener("change", displayRaceTraits);
   document.getElementById("levelSelect").addEventListener("change", () => displayRaceTraits());
   document.getElementById("generateJson").addEventListener("click", generateFinalJson);
-
-  // When the "Seleziona Razza" button is clicked:
-  document.getElementById("confirmRaceSelection").addEventListener("click", () => {
-    // Hide the race traits container
-    document.getElementById("raceTraits").style.display = "none";
-
-    // Prepare extra selections based on current race data
-    const raceData = window.currentRaceData;
-    let selections = [];
-    if (raceData.languages && raceData.languages.choice > 0) {
-      selections.push({
-        name: "Languages",
-        description: "Choose an additional language.",
-        selection: ["Elvish", "Dwarvish", "Halfling", "Orc", "Gnomish", "Draconic", "Celestial"],
-        count: raceData.languages.choice
-      });
-    }
-    if (raceData.skill_choices) {
-      selections.push({
-        name: "Skill Proficiency",
-        description: "Choose skill proficiencies.",
-        selection: raceData.skill_choices.options,
-        count: raceData.skill_choices.number
-      });
-    }
-    if (raceData.tool_choices) {
-      selections.push({
-        name: "Tool Proficiency",
-        description: "Choose a tool proficiency.",
-        selection: raceData.tool_choices.options,
-        count: 1
-      });
-    }
-    if (raceData.spellcasting) {
-      selections.push({
-        name: "Spellcasting",
-        description: "Choose a cantrip.",
-        selection: ["Fire Bolt", "Mage Hand", "Prestidigitation", "Ray of Frost"],
-        count: 1
-      });
-    }
-    sessionStorage.setItem("popupOpened", "true");
-    openRaceExtrasModal(selections);
-    // Hide the confirm button to prevent re-clicking
-    document.getElementById("confirmRaceSelection").style.display = "none";
-  });
 
   initializeValues();
 });

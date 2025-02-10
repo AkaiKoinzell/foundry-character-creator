@@ -1,16 +1,121 @@
 {
-      "name": "Centaur",
-      "size": "Medium",
-      "speed": 40,
-      "creature_type": "Fey",
-      "traits": [
-        { "name": "Charge", "description": "If you move at least 30 feet straight toward a target and then hit it with a melee weapon attack on the same turn, you can immediately follow that attack with a bonus action, making one attack against the target with your hooves." },
-        { "name": "Equine Build", "description": "You count as one size larger when determining your carrying capacity and the weight you can push or drag. Climbing that requires hands and feet costs 4 extra feet of movement." },
-        { "name": "Hooves", "description": "You have hooves that you can use to make unarmed strikes. When you hit with them, the strike deals 1d6 + your Strength modifier bludgeoning damage." },
-        { "name": "Natural Affinity", "description": "You have proficiency in one of the following skills of your choice: Animal Handling, Medicine, Nature, or Survival." }
-      ],
-      "languages": {
-        "fixed": ["Common"],
-        "choice": 1
-      }
-    }
+	"name": "Centaur",
+	"source": "MPMM",
+	"page": 9,
+	"lineage": "VRGR",
+	"creatureTypes": [
+		"fey"
+	],
+	"size": [
+		"M"
+	],
+	"speed": 40,
+	"traitTags": [
+		"Natural Weapon",
+		"Powerful Build"
+	],
+	"skillProficiencies": [
+		{
+			"choose": {
+				"from": [
+					"animal handling",
+					"medicine",
+					"nature",
+					"survival"
+				]
+			}
+		}
+	],
+	"entries": [
+		{
+			"type": "entries",
+			"name": "Creature Type",
+			"entries": [
+				"You are a Fey."
+			]
+		},
+		{
+			"type": "entries",
+			"name": "Charge",
+			"entries": [
+				"If you move at least 30 feet straight toward a target and then hit it with a melee weapon attack on the same turn, you can immediately follow that attack with a bonus action, making one attack against the target with your hooves."
+			]
+		},
+		{
+			"type": "entries",
+			"name": "Equine Build",
+			"entries": [
+				"You count as one size larger when determining your carrying capacity and the weight you can push or drag.",
+				"In addition, any climb that requires hands and feet is especially difficult for you because of your equine legs. When you make such a climb, each foot of movement costs you 4 extra feet instead of the normal 1 extra foot."
+			]
+		},
+		{
+			"type": "entries",
+			"name": "Hooves",
+			"entries": [
+				"You have hooves that you can use to make unarmed strikes. When you hit with them, the strike deals {@damage 1d6} + your Strength modifier bludgeoning damage, instead of the bludgeoning damage normal for an unarmed strike."
+			]
+		},
+		{
+			"type": "entries",
+			"name": "Natural Affinity",
+			"entries": [
+				"Your fey connection to nature gives you an intuitive connection to the natural world and the animals within it. You therefore have proficiency in one of the following skills of your choice: {@skill Animal Handling}, {@skill Medicine}, {@skill Nature}, or {@skill Survival}."
+			]
+		},
+		{
+			"type": "entries",
+			"name": "Languages",
+			"entries": [
+				"You can speak, read, and write Common and one other language that you and your DM agree is appropriate for your character."
+			]
+		}
+	],
+	"hasFluff": true,
+	"hasFluffImages": true,
+	"ability": [
+		{
+			"choose": {
+				"weighted": {
+					"from": [
+						"str",
+						"dex",
+						"con",
+						"int",
+						"wis",
+						"cha"
+					],
+					"weights": [
+						2,
+						1
+					]
+				}
+			}
+		},
+		{
+			"choose": {
+				"weighted": {
+					"from": [
+						"str",
+						"dex",
+						"con",
+						"int",
+						"wis",
+						"cha"
+					],
+					"weights": [
+						1,
+						1,
+						1
+					]
+				}
+			}
+		}
+	],
+	"languageProficiencies": [
+		{
+			"common": true,
+			"anyStandard": 1
+		}
+	]
+}

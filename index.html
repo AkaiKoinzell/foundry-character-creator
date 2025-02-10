@@ -1,42 +1,130 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creazione Personaggio per il server di Tales from Ivory</title>
-    <script defer src="js/script.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-        th, td {
-            border: 1px solid #dddddd;
-            text-align: left;
-            padding: 8px;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        #pointsRemaining {
-            font-size: 20px;
-            font-weight: bold;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Character Creator - Foundry</title>
+  <!-- Includi il file script.js unificato -->
+  <script src="js/script.js" defer></script>
+  <style>
+    /* Stili per un look moderno e una buona UX */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      margin: 20px;
+      color: #333;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    nav {
+      background-color: #333;
+      color: #fff;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    nav button {
+      background-color: #555;
+      border: none;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    nav button:hover {
+      background-color: #777;
+    }
+    .step {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      display: none;
+    }
+    .step.active {
+      display: block;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input, select {
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      width: 100%;
+      max-width: 400px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    button.primary {
+      background-color: #28a745;
+      border: none;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button.primary:hover {
+      background-color: #218838;
+    }
+    /* Layout per il bonus razziale in linea */
+    #bonusRow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    /* Contenitori per le sezioni extra */
+    #spellSelectionContainer, #languageSelection, #skillSelectionContainer, #toolSelectionContainer, #variantFeatureSelectionContainer, #variantExtraContainer {
+      margin-top: 15px;
+    }
+  </style>
 </head>
 <body onload="initializeValues()">
-    <h1>Creazione Personaggio</h1>
-
-    <label for="characterName">Nome del Personaggio:</label>
-    <input type="text" id="characterName" placeholder="Inserisci il nome del tuo personaggio">
-    <br><br>
-
-    <label for="levelSelect">Livello del Personaggio:</label>
-    <select id="levelSelect">
+  <header>
+    <h1>Character Creator - Foundry</h1>
+  </header>
+  <!-- Navigazione a step -->
+  <nav>
+    <button id="btnStep1">Step 1: Nome & Livello</button>
+    <button id="btnStep2">Step 2: Razza</button>
+    <button id="btnStep3">Step 3: Point Buy</button>
+    <button id="btnStep4">Step 4: Tratti Extra</button>
+    <button id="btnStep5">Step 5: Classe</button>
+    <button id="btnStep8">Step 8: Recap & Esportazione</button>
+  </nav>
+  <!-- Container degli step -->
+  <div id="stepContainer">
+    <!-- Step 1: Nome & Livello -->
+    <div id="step1" class="step active">
+      <h2>Step 1: Nome & Livello</h2>
+      <label for="characterName">Nome del Personaggio:</label>
+      <input type="text" id="characterName" placeholder="Inserisci il nome del tuo personaggio">
+      <br><br>
+      <label for="levelSelect">Livello del Personaggio:</label>
+      <select id="levelSelect">
+        <!-- Opzioni da 1 a 20 -->
         <option value="1">1</option>
         <option value="2">2</option>
         <option value="3">3</option>
@@ -57,140 +145,189 @@
         <option value="18">18</option>
         <option value="19">19</option>
         <option value="20">20</option>
-    </select>
-    <br><br>
-
-    <label for="raceSelect">Razza:</label>
-    <select id="raceSelect">
+      </select>
+    </div>
+    <!-- Step 2: Razza -->
+    <div id="step2" class="step">
+      <h2>Step 2: Scelta della Razza</h2>
+      <label for="raceSelect">Razza:</label>
+      <select id="raceSelect">
         <option value="">Seleziona una razza</option>
-    </select>
+      </select>
+      <br><br>
+      <div id="raceTraits"></div>
+    </div>
+    <!-- Step 3: Point Buy System -->
+    <div id="step3" class="step">
+      <h2>Step 3: Sistema Point Buy</h2>
+      <p style="text-align: center;"><strong>Total Points Remaining:</strong> <span id="pointsRemaining">27</span></p>
+      <p style="text-align: center;">Assegna i tuoi punti tra i punteggi di caratteristica (FOR, DES, COS, INT, SAG, CAR).</p>
+      <div id="racialBonusSelection">
+        <h3>Distribuzione Bonus Razza</h3>
+        <p>Distribuisci i tuoi 3 punti extra in una delle seguenti combinazioni:</p>
+        <ul>
+          <li>+2 a una caratteristica e +1 a un'altra</li>
+          <li>+1 a tre caratteristiche diverse</li>
+        </ul>
+        <div id="bonusRow">
+          <label for="racialBonus1">Bonus 1:</label>
+          <select id="racialBonus1">
+            <option value="">Seleziona</option>
+            <option value="str">Forza</option>
+            <option value="dex">Destrezza</option>
+            <option value="con">Costituzione</option>
+            <option value="int">Intelligenza</option>
+            <option value="wis">Saggezza</option>
+            <option value="cha">Carisma</option>
+          </select>
+          <label for="racialBonus2">Bonus 2:</label>
+          <select id="racialBonus2">
+            <option value="">Seleziona</option>
+            <option value="str">Forza</option>
+            <option value="dex">Destrezza</option>
+            <option value="con">Costituzione</option>
+            <option value="int">Intelligenza</option>
+            <option value="wis">Saggezza</option>
+            <option value="cha">Carisma</option>
+          </select>
+          <label for="racialBonus3">Bonus 3:</label>
+          <select id="racialBonus3">
+            <option value="">Seleziona</option>
+            <option value="str">Forza</option>
+            <option value="dex">Destrezza</option>
+            <option value="con">Costituzione</option>
+            <option value="int">Intelligenza</option>
+            <option value="wis">Saggezza</option>
+            <option value="cha">Carisma</option>
+          </select>
+          <button onclick="applyRacialBonuses()">Applica Bonus Razza</button>
+        </div>
+      </div>
+      <table>
+        <tr>
+          <th>Caratteristiche</th>
+          <th>Spendi i tuoi punti</th>
+          <th>Punteggi Iniziali</th>
+          <th>Punteggi di Razza</th>
+          <th>Punteggi Finali</th>
+        </tr>
+        <tr>
+          <td>FOR</td>
+          <td>
+            <button onclick="adjustPoints('str', 'add')">+</button>
+            <button onclick="adjustPoints('str', 'subtract')">-</button>
+          </td>
+          <td><span id="strPoints">8</span></td>
+          <td><span id="strRaceModifier">0</span></td>
+          <td id="strFinalScore">8</td>
+        </tr>
+        <tr>
+          <td>DES</td>
+          <td>
+            <button onclick="adjustPoints('dex', 'add')">+</button>
+            <button onclick="adjustPoints('dex', 'subtract')">-</button>
+          </td>
+          <td><span id="dexPoints">8</span></td>
+          <td><span id="dexRaceModifier">0</span></td>
+          <td id="dexFinalScore">8</td>
+        </tr>
+        <tr>
+          <td>COS</td>
+          <td>
+            <button onclick="adjustPoints('con', 'add')">+</button>
+            <button onclick="adjustPoints('con', 'subtract')">-</button>
+          </td>
+          <td><span id="conPoints">8</span></td>
+          <td><span id="conRaceModifier">0</span></td>
+          <td id="conFinalScore">8</td>
+        </tr>
+        <tr>
+          <td>INT</td>
+          <td>
+            <button onclick="adjustPoints('int', 'add')">+</button>
+            <button onclick="adjustPoints('int', 'subtract')">-</button>
+          </td>
+          <td><span id="intPoints">8</span></td>
+          <td><span id="intRaceModifier">0</span></td>
+          <td id="intFinalScore">8</td>
+        </tr>
+        <tr>
+          <td>SAG</td>
+          <td>
+            <button onclick="adjustPoints('wis', 'add')">+</button>
+            <button onclick="adjustPoints('wis', 'subtract')">-</button>
+          </td>
+          <td><span id="wisPoints">8</span></td>
+          <td><span id="wisRaceModifier">0</span></td>
+          <td id="wisFinalScore">8</td>
+        </tr>
+        <tr>
+          <td>CAR</td>
+          <td>
+            <button onclick="adjustPoints('cha', 'add')">+</button>
+            <button onclick="adjustPoints('cha', 'subtract')">-</button>
+          </td>
+          <td><span id="chaPoints">8</span></td>
+          <td><span id="chaRaceModifier">0</span></td>
+          <td id="chaFinalScore">8</td>
+        </tr>
+      </table>
+    </div>
+    <!-- Step 4: Tratti Extra -->
+    <div id="step4" class="step">
+      <h2>Step 4: Selezione dei Tratti Extra</h2>
+      <!-- Qui verranno visualizzate le sezioni extra -->
+      <div id="variantFeatureSelectionContainer"></div>
+      <div id="variantExtraContainer"></div>
+      <div id="ancestrySelection"></div> 
+      <div id="spellSelectionContainer"></div>
+      <div id="languageSelection"></div>
+      <div id="skillSelectionContainer"></div>
+      <div id="toolSelectionContainer"></div>
 
-    <!-- Contenitore per mostrare i tratti della razza -->
-    <div id="raceTraits"></div>
-    <div id="skillSelectionContainer"></div>
-    <div id="spellSelectionContainer"></div>
-    <div id="languageSelection"></div>
-    <br><br>
-
-    <label for="classSelect">Classe:</label>
-    <select id="classSelect">
+    </div>
+    <!-- Step 5: Classe e Sottoclasse -->
+    <div id="step5" class="step">
+      <h2>Step 5: Scelta della Classe e Sottoclasse</h2>
+      <label for="classSelect">Classe:</label>
+      <select id="classSelect">
         <option value="">Seleziona una classe</option>
-    </select>
-
-    <label for="subclassSelect">Sottoclasse:</label>
-    <select id="subclassSelect" style="display: none;">
+      </select>
+      <br><br>
+      <label for="subclassSelect">Sottoclasse:</label>
+      <select id="subclassSelect" style="display: none;">
         <option value="">Seleziona una sottoclasse</option>
-    </select>
-    <br><br>
-
-  <h2 style="text-align: center;">Sistema Point Buy</h2>
-<p style="text-align: center;"><span style="font-weight: bold;">Total Points Remaining:</span> <span id="pointsRemaining">27</span></p>
-<p style="text-align: center;">Assegna i tuoi punti tra i punteggi di caratteristica (FOR, DES, COS, INT, SAG, CAR). Hai 27 punti da spendere.</p>
-<div id="racialBonusSelection" style="display: none;">
-    <h3>Distribuzione Bonus Razza</h3>
-    <p>Distribuisci i tuoi 3 punti extra in una delle seguenti combinazioni:</p>
-    <ul>
-        <li>+2 a una caratteristica e +1 a un'altra</li>
-        <li>+1 a tre caratteristiche diverse</li>
-    </ul>
-
-    <label for="racialBonus1">Bonus 1:</label>
-    <select id="racialBonus1">
-        <option value="">Seleziona</option>
-        <option value="str">Forza</option>
-        <option value="dex">Destrezza</option>
-        <option value="con">Costituzione</option>
-        <option value="int">Intelligenza</option>
-        <option value="wis">Saggezza</option>
-        <option value="cha">Carisma</option>
-    </select>
-
-    <label for="racialBonus2">Bonus 2:</label>
-    <select id="racialBonus2">
-        <option value="">Seleziona</option>
-        <option value="str">Forza</option>
-        <option value="dex">Destrezza</option>
-        <option value="con">Costituzione</option>
-        <option value="int">Intelligenza</option>
-        <option value="wis">Saggezza</option>
-        <option value="cha">Carisma</option>
-    </select>
-
-    <label for="racialBonus3">Bonus 3:</label>
-    <select id="racialBonus3">
-        <option value="">Seleziona</option>
-        <option value="str">Forza</option>
-        <option value="dex">Destrezza</option>
-        <option value="con">Costituzione</option>
-        <option value="int">Intelligenza</option>
-        <option value="wis">Saggezza</option>
-        <option value="cha">Carisma</option>
-    </select>
-
-    <button onclick="applyRacialBonuses()">Applica Bonus Razza</button>
-</div>
-
-    <table>
-        <tr>
-            <th>Caratteristiche</th>
-            <th>Spendi i tuoi punti</th>
-            <th>Punteggi Iniziali</th>
-            <th>Punteggi di Razza</th>
-            <th>Talento di BG</th>
-            <th>Punteggi Finali</th>
-        </tr>
-        <tr>
-            <td>FOR</td>
-            <td><button onclick="adjustPoints('str', 'add')">+</button><button onclick="adjustPoints('str', 'subtract')">-</button></td>
-            <td><span id="strPoints">8</span></td>
-            <td><span type="number" id="strRaceModifier" value="0" min="0" max="2" oninput="updateFinalScores()">0</span></td>
-            <td><input type="number" id="strBackgroundTalent" value="0" min="0" max="1" oninput="updateFinalScores()"></td>
-            <td id="strFinalScore">8</td>
-        </tr>
-        <tr>
-            <td>DES</td>
-            <td><button onclick="adjustPoints('dex', 'add')">+</button><button onclick="adjustPoints('dex', 'subtract')">-</button></td>
-            <td><span id="dexPoints">8</span></td>
-            <td><span type="number" id="dexRaceModifier" value="0" min="0" max="2" oninput="updateFinalScores()">0</span></td>
-            <td><input type="number" id="dexBackgroundTalent" value="0" min="0" max="1" oninput="updateFinalScores()"></td>
-            <td id="dexFinalScore">8</td>
-        </tr>
-        <tr>
-            <td>COS</td>
-            <td><button onclick="adjustPoints('con', 'add')">+</button><button onclick="adjustPoints('con', 'subtract')">-</button></td>
-            <td><span id="conPoints">8</span></td>
-            <td><span type="number" id="conRaceModifier" value="0" min="0" max="2" oninput="updateFinalScores()">0</span></td>
-            <td><input type="number" id="conBackgroundTalent" value="0" min="0" max="1" oninput="updateFinalScores()"></td>
-            <td id="conFinalScore">8</td>
-        </tr>
-        <tr>
-            <td>INT</td>
-            <td><button onclick="adjustPoints('int', 'add')">+</button><button onclick="adjustPoints('int', 'subtract')">-</button></td>
-            <td><span id="intPoints">8</span></td>
-            <td><span type="number" id="intRaceModifier" value="0" min="0" max="2" oninput="updateFinalScores()">0</span></td>
-            <td><input type="number" id="intBackgroundTalent" value="0" min="0" max="1" oninput="updateFinalScores()"></td>
-            <td id="intFinalScore">8</td>
-        </tr>
-        <tr>
-            <td>SAG</td>
-            <td><button onclick="adjustPoints('wis', 'add')">+</button><button onclick="adjustPoints('wis', 'subtract')">-</button></td>
-            <td><span id="wisPoints">8</span></td>
-            <td><span type="number" id="wisRaceModifier" value="0" min="0" max="2" oninput="updateFinalScores()">0</span></td>
-            <td><input type="number" id="wisBackgroundTalent" value="0" min="0" max="1" oninput="updateFinalScores()"></td>
-            <td id="wisFinalScore">8</td>
-        </tr>
-        <tr>
-            <td>CAR</td>
-            <td><button onclick="adjustPoints('cha', 'add')">+</button><button onclick="adjustPoints('cha', 'subtract')">-</button></td>
-            <td><span id="chaPoints">8</span></td>
-            <td><span type="number" id="chaRaceModifier" value="0" min="0" max="2" oninput="updateFinalScores()">0</span></td>
-            <td><input type="number" id="chaBackgroundTalent" value="0" min="0" max="1" oninput="updateFinalScores()"></td>
-            <td id="chaFinalScore">8</td>
-        </tr>
-    </table>
-
-    <br><br>
-    <button id="generateJson">Genera JSON</button>
-    <br><br>
+      </select>
+    </div>
+    <!-- Step 8: Recap & Esportazione -->
+    <div id="step8" class="step">
+      <h2>Step 8: Recap & Esportazione</h2>
+      <div id="finalRecap"></div>
+      <button id="generateJson" class="primary">Genera JSON</button>
+    </div>
+  </div>
+  <!-- Script per la navigazione fra gli step -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const steps = document.querySelectorAll(".step");
+      function showStep(stepId) {
+        steps.forEach(step => {
+          if (step.id === stepId) {
+            step.classList.add("active");
+          } else {
+            step.classList.remove("active");
+          }
+        });
+      }
+      document.getElementById("btnStep1").addEventListener("click", () => showStep("step1"));
+      document.getElementById("btnStep2").addEventListener("click", () => showStep("step2"));
+      document.getElementById("btnStep3").addEventListener("click", () => showStep("step3"));
+      document.getElementById("btnStep4").addEventListener("click", () => showStep("step4"));
+      document.getElementById("btnStep5").addEventListener("click", () => showStep("step5"));
+      document.getElementById("btnStep8").addEventListener("click", () => showStep("step8"));
+      // Inizialmente mostra lo step 1
+      showStep("step1");
+    });
+  </script>
 </body>
 </html>

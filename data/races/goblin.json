@@ -1,7 +1,7 @@
 {
-	"name": "Bugbear",
+	"name": "Goblin",
 	"source": "MPMM",
-	"page": 8,
+	"page": 20,
 	"lineage": "VRGR",
 	"creatureTypes": [
 		"humanoid"
@@ -10,18 +10,10 @@
 		"goblinoid"
 	],
 	"size": [
-		"M"
+		"S"
 	],
 	"speed": 30,
 	"darkvision": 60,
-	"traitTags": [
-		"Powerful Build"
-	],
-	"skillProficiencies": [
-		{
-			"stealth": true
-		}
-	],
 	"entries": [
 		{
 			"type": "entries",
@@ -34,7 +26,7 @@
 			"type": "entries",
 			"name": "Darkvision",
 			"entries": [
-				"You can see in dim light within 60 feet of you as if it were bright light and in darkness as if it were dim light. You discern colors in that darkness only as shades of gray."
+				"You can see in dim light within 60 feet of you as if it were bright light and in darkness as if it were in dim light. You discern colors in that darkness only as shades of gray."
 			]
 		},
 		{
@@ -46,30 +38,17 @@
 		},
 		{
 			"type": "entries",
-			"name": "Long-Limbed",
+			"name": "Fury of the Small",
 			"entries": [
-				"When you make a melee attack on your turn, your reach for it is 5 feet greater than normal."
+				"When you damage a creature with an attack or a spell and the creature's size is larger than yours, you can cause the attack or spell to deal extra damage to the creature. The extra damage equals your proficiency bonus.",
+				"You can use this trait a number of times equal to your proficiency bonus, regaining all expended uses when you finish a long rest, and you can use it no more than once per turn."
 			]
 		},
 		{
 			"type": "entries",
-			"name": "Powerful Build",
+			"name": "Nimble Escape",
 			"entries": [
-				"You count as one size larger when determining your carrying capacity and the weight you can push, drag, or lift."
-			]
-		},
-		{
-			"type": "entries",
-			"name": "Sneaky",
-			"entries": [
-				"You are proficient in the {@skill Stealth} skill. In addition, without squeezing, you can move through and stop in a space large enough for a Small creature."
-			]
-		},
-		{
-			"type": "entries",
-			"name": "Surprise Attack",
-			"entries": [
-				"If you hit a creature with an attack roll, the creature takes an extra {@damage 2d6} damage if it hasn't taken a turn yet in the current combat."
+				"You can take the {@action Disengage} or {@action Hide} action as a bonus action on each of your turns."
 			]
 		},
 		{

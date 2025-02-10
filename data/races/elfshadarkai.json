@@ -1,24 +1,120 @@
 {
-    "name": "Shadar-kai",
-    "source": "MToF",
-    "ability_scores": {
-        "fixed": { "dex": 2, "con": 1 }
-    },
-    "creature_type": "Humanoid",
-    "size": "Medium",
-    "speed": 30,
-    "senses": { "darkvision": 60 },
-    "traits": [
-        {
-            "name": "Necrotic Resistance",
-            "description": "You have resistance to necrotic damage."
-        },
-        {
-            "name": "Blessing of the Raven Queen",
-            "description": "As a bonus action, you can magically teleport up to 30 feet to an unoccupied space you can see. Once you use this trait, you can't do so again until you finish a long rest. Starting at 3rd level, you also gain resistance to all damage when you teleport using this trait. The resistance lasts until the start of your next turn."
-        }
-    ],
-    "languages": {
-        "fixed": ["Common", "Elvish"]
-    }
+	"name": "Elf (Shadar-kai)",
+	"source": "MTF",
+	"page": 62,
+	"size": [
+		"M"
+	],
+	"speed": 30,
+	"ability": [
+		{
+			"dex": 2,
+			"con": 1
+		}
+	],
+	"age": {
+		"mature": 100,
+		"max": 750
+	},
+	"darkvision": 60,
+	"traitTags": [
+		"Improved Resting"
+	],
+	"skillProficiencies": [
+		{
+			"perception": true
+		}
+	],
+	"languageProficiencies": [
+		{
+			"common": true,
+			"elvish": true
+		}
+	],
+	"soundClip": {
+		"type": "internal",
+		"path": "races/elf.mp3"
+	},
+	"entries": [
+		{
+			"name": "Age",
+			"type": "entries",
+			"entries": [
+				"Although elves reach physical maturity at about the same age as humans, the elven understanding of adulthood goes beyond physical growth to encompass worldly experience. An elf typically claims adulthood and an adult name around the age of 100 and can live to be 750 years old."
+			]
+		},
+		{
+			"type": "entries",
+			"name": "Size",
+			"entries": [
+				"Elves range from under 5 to over 6 feet tall and have slender builds. Your size is Medium."
+			]
+		},
+		{
+			"name": "Darkvision",
+			"entries": [
+				"Accustomed to twilit forests and the night sky, you have superior vision in dark and dim conditions. You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light. You can't discern color in darkness, only shades of gray."
+			],
+			"type": "entries"
+		},
+		{
+			"name": "Keen Senses",
+			"entries": [
+				"You have proficiency in the {@skill Perception} skill."
+			],
+			"type": "entries"
+		},
+		{
+			"name": "Fey Ancestry",
+			"entries": [
+				"You have advantage on saving throws against being {@condition charmed}, and magic can't put you to sleep."
+			],
+			"type": "entries"
+		},
+		{
+			"name": "Trance",
+			"entries": [
+				"Elves don't need to sleep. Instead, they meditate deeply, remaining semiconscious, for 4 hours a day. (The Common word for such meditation is \"trance.\") While meditating, you can dream after a fashion; such dreams are actually mental exercises that have become reflexive through years of practice. After resting in this way, you gain the same benefit that a human does from 8 hours of sleep.",
+				"{@note If you meditate during a long rest, you finish the rest after only 4 hours. You otherwise obey all the rules for a long rest; only the duration is changed.}"
+			],
+			"type": "entries"
+		},
+		{
+			"name": "Languages",
+			"entries": [
+				"You can speak, read, and write Common and Elvish. Elvish is fluid, with subtle intonations and intricate grammar. Elven literature is rich and varied, and their songs and poems are famous among other races. Many bards learn their language so they can add Elvish ballads to their repertoires."
+			],
+			"type": "entries"
+		},
+		{
+			"type": "entries",
+			"name": "Necrotic Resistance",
+			"entries": [
+				"You have resistance to necrotic damage."
+			]
+		},
+		{
+			"name": "Blessing of the Raven Queen",
+			"entries": [
+				"As a bonus action, you can magically teleport up to 30 feet to an unoccupied space you can see. Once you use this trait, you can't do so again until you finish a long rest.",
+				"Starting at 3rd level, you also gain resistance to all damage when you teleport using this trait. The resistance lasts until the start of your next turn. During that time, you appear ghostly and translucent."
+			],
+			"type": "entries"
+		}
+	],
+	"raceName": "Elf",
+	"raceSource": "PHB",
+	"reprintedAs": [
+		"Shadar-Kai|MPMM"
+	],
+	"heightAndWeight": {
+		"baseHeight": 56,
+		"heightMod": "2d8",
+		"baseWeight": 90,
+		"weightMod": "1d4"
+	},
+	"resist": [
+		"necrotic"
+	],
+	"hasFluff": true
 }

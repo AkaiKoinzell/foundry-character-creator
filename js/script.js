@@ -789,39 +789,39 @@ function displayRaceTraits() {
     })
     .catch(error => handleError(`Errore caricando i tratti della razza: ${error}`));
 }
-// 📜 Variabili globali per navigare tra i tratti extra
-let extraTraits = [];
-let currentTraitIndex = 0;
+// 📜 Variabili globali per la gestione delle scelte extra
+let extraSelections = [];
+let currentSelectionIndex = 0;
 
-// 🚀 Funzione per aprire il pop-up dei tratti extra
-function openRaceExtrasModal(traits) {
-  extraTraits = traits;
-  currentTraitIndex = 0;
-  showExtraTrait();
+// 🚀 Funzione per aprire il pop-up delle scelte extra
+function openRaceExtrasModal(selections) {
+  extraSelections = selections;
+  currentSelectionIndex = 0;
+  showExtraSelection();
   document.getElementById("raceExtrasModal").style.display = "flex";
 }
 
-// 🚀 Mostra il tratto attuale nel pop-up
-function showExtraTrait() {
+// 🚀 Mostra la selezione attuale nel pop-up
+function showExtraSelection() {
   const titleElem = document.getElementById("extraTraitTitle");
   const descElem = document.getElementById("extraTraitDescription");
   const selectionElem = document.getElementById("extraTraitSelection");
 
-  if (!extraTraits || extraTraits.length === 0) {
-    console.error("❌ Nessun tratto extra trovato.");
+  if (!extraSelections || extraSelections.length === 0) {
+    console.error("❌ Nessuna scelta extra trovata.");
     return;
   }
 
-  const currentTrait = extraTraits[currentTraitIndex];
+  const currentSelection = extraSelections[currentSelectionIndex];
 
-  titleElem.innerText = currentTrait.name;
-  descElem.innerText = currentTrait.description;
+  titleElem.innerText = currentSelection.name;
+  descElem.innerText = currentSelection.description;
   selectionElem.innerHTML = ""; // Pulisce il contenuto precedente
 
-  if (currentTrait.selection) {
+  if (currentSelection.selection) {
     let dropdown = `<select>`;
     dropdown += `<option value="">Seleziona...</option>`;
-    currentTrait.selection.forEach(option => {
+    currentSelection.selection.forEach(option => {
       dropdown += `<option value="${option}">${option}</option>`;
     });
     dropdown += `</select>`;
@@ -829,22 +829,22 @@ function showExtraTrait() {
   }
 
   // 🔄 Abilita/Disabilita i pulsanti di navigazione
-  document.getElementById("prevTrait").disabled = (currentTraitIndex === 0);
-  document.getElementById("nextTrait").disabled = (currentTraitIndex === extraTraits.length - 1);
+  document.getElementById("prevTrait").disabled = (currentSelectionIndex === 0);
+  document.getElementById("nextTrait").disabled = (currentSelectionIndex === extraSelections.length - 1);
 }
 
 // 🚀 Pulsanti Avanti/Indietro
 document.getElementById("prevTrait").addEventListener("click", () => {
-  if (currentTraitIndex > 0) {
-    currentTraitIndex--;
-    showExtraTrait();
+  if (currentSelectionIndex > 0) {
+    currentSelectionIndex--;
+    showExtraSelection();
   }
 });
 
 document.getElementById("nextTrait").addEventListener("click", () => {
-  if (currentTraitIndex < extraTraits.length - 1) {
-    currentTraitIndex++;
-    showExtraTrait();
+  if (currentSelectionIndex < extraSelections.length - 1) {
+    currentSelectionIndex++;
+    showExtraSelection();
   }
 });
 
@@ -852,6 +852,7 @@ document.getElementById("nextTrait").addEventListener("click", () => {
 document.getElementById("closeModal").addEventListener("click", () => {
   document.getElementById("raceExtrasModal").style.display = "none";
 });
+
 // ==================== ✅ SELEZIONE DEFINITIVA DELLA RAZZA ====================
 document.getElementById("raceSelect").addEventListener("change", () => {
   displayRaceTraits();
@@ -864,44 +865,57 @@ document.getElementById("raceSelect").addEventListener("change", () => {
 });
 
 document.getElementById("confirmRaceSelection").addEventListener("click", () => {
-  // 🔄 Recupera i tratti extra della razza selezionata
   const selectedRace = document.getElementById("raceSelect").value;
+  
   fetch(selectedRace)
     .then(response => response.json())
     .then(data => {
       const raceData = convertRaceData(data);
-      const extraSelections = [];
+      const selections = [];
 
-      // 🔄 Controlliamo quali tratti richiedono una scelta
+      // 🔄 Lingue Extra
       if (raceData.languages && raceData.languages.choice > 0) {
-        extraSelections.push({
+        selections.push({
           name: "Languages",
-          description: "You can speak, read, and write Common and one other language of your choice.",
+          description: "Choose an additional language.",
           selection: ["Elvish", "Dwarvish", "Halfling", "Orc", "Gnomish", "Draconic", "Celestial"]
         });
       }
+
+      // 🔄 Skill Proficiency
       if (raceData.skill_choices) {
-        extraSelections.push({
+        selections.push({
           name: "Skill Proficiency",
-          description: "Choose one additional skill proficiency.",
+          description: "Choose one additional skill.",
           selection: raceData.skill_choices.options
         });
       }
-      if (raceData.variant_feature_choices) {
-        extraSelections.push({
-          name: "Variant Features",
-          description: "Choose one of the following variant features.",
-          selection: raceData.variant_feature_choices.map(feature => feature.name)
+
+      // 🔄 Tool Proficiency
+      if (raceData.tool_choices) {
+        selections.push({
+          name: "Tool Proficiency",
+          description: "Choose a tool proficiency.",
+          selection: raceData.tool_choices.options
         });
       }
 
-      // 🔄 Se ci sono scelte extra, apriamo il pop-up
-      if (extraSelections.length > 0) {
-        openRaceExtrasModal(extraSelections);
+      // 🔄 Spellcasting
+      if (raceData.spellcasting) {
+        selections.push({
+          name: "Spellcasting",
+          description: "Choose a cantrip.",
+          selection: ["Fire Bolt", "Mage Hand", "Prestidigitation", "Ray of Frost"]
+        });
+      }
+
+      // 🔄 Se ci sono selezioni extra, apriamo il pop-up
+      if (selections.length > 0) {
+        openRaceExtrasModal(selections);
       }
     });
 
-  // 🔄 Nascondiamo il bottone e mostriamo il pop-up invece dello step successivo
+  // 🔄 Nascondi il bottone e mostra il pop-up invece dello step successivo
   document.getElementById("confirmRaceSelection").style.display = "none";
 });
 

@@ -922,7 +922,14 @@ document.getElementById("confirmRaceSelection").addEventListener("click", () => 
     });
 
   // 🟢 Nasconde il bottone dopo averlo cliccato
-  document.getElementById("confirmRaceSelection").style.display = "none";
+  document.getElementById("confirmRaceSelection").style.display = "none"; // 🔴 Nasconde il bottone all'inizio
+
+document.getElementById("raceSelect").addEventListener("change", () => {
+  if (document.getElementById("raceSelect").value) {
+    document.getElementById("confirmRaceSelection").style.display = "block"; // 🟢 Mostra il bottone
+  } else {
+    document.getElementById("confirmRaceSelection").style.display = "none"; // 🔴 Nasconde se non è selezionato nulla
+  }
 });
 
 // ==================== UPDATE SUBCLASSES (STEP 5) ====================

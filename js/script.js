@@ -789,7 +789,69 @@ function displayRaceTraits() {
     })
     .catch(error => handleError(`Errore caricando i tratti della razza: ${error}`));
 }
+// 📜 Variabili globali per navigare tra i tratti extra
+let extraTraits = [];
+let currentTraitIndex = 0;
 
+// 🚀 Funzione per aprire il pop-up dei tratti extra
+function openRaceExtrasModal(traits) {
+  extraTraits = traits;
+  currentTraitIndex = 0;
+  showExtraTrait();
+  document.getElementById("raceExtrasModal").style.display = "flex";
+}
+
+// 🚀 Mostra il tratto attuale nel pop-up
+function showExtraTrait() {
+  const titleElem = document.getElementById("extraTraitTitle");
+  const descElem = document.getElementById("extraTraitDescription");
+  const selectionElem = document.getElementById("extraTraitSelection");
+
+  if (!extraTraits || extraTraits.length === 0) {
+    console.error("❌ Nessun tratto extra trovato.");
+    return;
+  }
+
+  const currentTrait = extraTraits[currentTraitIndex];
+
+  titleElem.innerText = currentTrait.name;
+  descElem.innerText = currentTrait.description;
+  selectionElem.innerHTML = ""; // Pulisce il contenuto precedente
+
+  if (currentTrait.selection) {
+    let dropdown = `<select>`;
+    dropdown += `<option value="">Seleziona...</option>`;
+    currentTrait.selection.forEach(option => {
+      dropdown += `<option value="${option}">${option}</option>`;
+    });
+    dropdown += `</select>`;
+    selectionElem.innerHTML = dropdown;
+  }
+
+  // 🔄 Abilita/Disabilita i pulsanti di navigazione
+  document.getElementById("prevTrait").disabled = (currentTraitIndex === 0);
+  document.getElementById("nextTrait").disabled = (currentTraitIndex === extraTraits.length - 1);
+}
+
+// 🚀 Pulsanti Avanti/Indietro
+document.getElementById("prevTrait").addEventListener("click", () => {
+  if (currentTraitIndex > 0) {
+    currentTraitIndex--;
+    showExtraTrait();
+  }
+});
+
+document.getElementById("nextTrait").addEventListener("click", () => {
+  if (currentTraitIndex < extraTraits.length - 1) {
+    currentTraitIndex++;
+    showExtraTrait();
+  }
+});
+
+// 🚀 Chiude il pop-up e salva le scelte
+document.getElementById("closeModal").addEventListener("click", () => {
+  document.getElementById("raceExtrasModal").style.display = "none";
+});
 // ==================== ✅ SELEZIONE DEFINITIVA DELLA RAZZA ====================
 document.getElementById("raceSelect").addEventListener("change", () => {
   displayRaceTraits();
@@ -802,7 +864,45 @@ document.getElementById("raceSelect").addEventListener("change", () => {
 });
 
 document.getElementById("confirmRaceSelection").addEventListener("click", () => {
-  document.getElementById("raceExtraTraitsContainer").style.display = "block"; // Mostra i tratti extra
+  // 🔄 Recupera i tratti extra della razza selezionata
+  const selectedRace = document.getElementById("raceSelect").value;
+  fetch(selectedRace)
+    .then(response => response.json())
+    .then(data => {
+      const raceData = convertRaceData(data);
+      const extraSelections = [];
+
+      // 🔄 Controlliamo quali tratti richiedono una scelta
+      if (raceData.languages && raceData.languages.choice > 0) {
+        extraSelections.push({
+          name: "Languages",
+          description: "You can speak, read, and write Common and one other language of your choice.",
+          selection: ["Elvish", "Dwarvish", "Halfling", "Orc", "Gnomish", "Draconic", "Celestial"]
+        });
+      }
+      if (raceData.skill_choices) {
+        extraSelections.push({
+          name: "Skill Proficiency",
+          description: "Choose one additional skill proficiency.",
+          selection: raceData.skill_choices.options
+        });
+      }
+      if (raceData.variant_feature_choices) {
+        extraSelections.push({
+          name: "Variant Features",
+          description: "Choose one of the following variant features.",
+          selection: raceData.variant_feature_choices.map(feature => feature.name)
+        });
+      }
+
+      // 🔄 Se ci sono scelte extra, apriamo il pop-up
+      if (extraSelections.length > 0) {
+        openRaceExtrasModal(extraSelections);
+      }
+    });
+
+  // 🔄 Nascondiamo il bottone e mostriamo il pop-up invece dello step successivo
+  document.getElementById("confirmRaceSelection").style.display = "none";
 });
 
 // ==================== UPDATE SUBCLASSES (STEP 5) ====================

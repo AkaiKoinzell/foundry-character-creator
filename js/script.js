@@ -1,8 +1,8 @@
 // ===============================================
-// SCRIPT.JS - Gestione Character Creator
+// SCRIPT.JS - Character Creator (integrato)
 // ===============================================
 
-// ==================== MAPPING PER LE EXTRA VARIANT FEATURES ====================
+/* ==================== MAPPING PER LE EXTRA VARIANT FEATURES ==================== */
 const variantExtraMapping = {
   "Drow Magic": {
     type: "none" // Le spell fisse saranno gestite separatamente
@@ -26,7 +26,7 @@ const variantExtraMapping = {
   // Aggiungi altri mapping se necessario
 };
 
-// ==================== FUNZIONI PER LE VARIANT FEATURES ====================
+/* ==================== FUNZIONI PER LE VARIANT FEATURES ==================== */
 function updateVariantSkillOptions() {
   const allVariantSkillSelects = document.querySelectorAll(".variantSkillChoice");
   if (!allVariantSkillSelects.length) return;
@@ -109,15 +109,19 @@ function handleVariantFeatureChoices(data) {
   }
 }
 
-// ==================== FUNZIONI SPELLCASTING ====================
+/* ==================== FUNZIONI SPELLCASTING ==================== */
 
 /**
  * Gestisce lo spellcasting standard.
- * Se spell_choices è di tipo "fixed_list" o "filter", genera il markup corrispondente
- * e lo inietta nel container con l'id specificato.
+ * Supporta le modalità:
+ * - fixed_list: dropdown fisso.
+ * - class_list: filtra per classe e livello.
+ * - filter: raggruppa per livello (tipico per High/Astral Elf).
  *
- * @param {Object} data - I dati della razza (output di convertRaceData)
- * @param {string} containerId - L'ID del container dove iniettare il markup.
+ * Il markup viene iniettato nel container con l'ID specificato.
+ *
+ * @param {Object} data - I dati della razza (output di convertRaceData).
+ * @param {string} containerId - L'ID del container in cui iniettare il markup.
  */
 function handleSpellcastingOptions(data, containerId) {
   const container = document.getElementById(containerId);
@@ -143,10 +147,9 @@ function handleSpellcastingOptions(data, containerId) {
     const spellLevel = data.spellcasting.spell_choices.level;
     
     console.log(`📥 Caricamento incantesimi per classe ${className}, livello ${spellLevel}`);
-    
     loadSpells(spellList => {
       const availableSpells = spellList
-        .filter(spell => spell.level === spellLevel && spell.spell_list.includes(className))
+        .filter(spell => parseInt(spell.level) === spellLevel && spell.spell_list && spell.spell_list.includes(className))
         .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
         .join("");
       if (availableSpells.length > 0) {
@@ -199,15 +202,14 @@ function handleSpellcastingOptions(data, containerId) {
 
 /**
  * Gestisce gli incantesimi extra per razze specifiche (es. High Elf, Aarakocra).
- * In particolare, estrae il filtro dalla sezione known (contenente l'array "_" con la proprietà "choose")
- * e usa questo filtro per caricare e filtrare gli incantesimi (es. cantrip dal wizard list).
- * Il dropdown viene iniettato nel container "spellSelectionContainer" (aggiungendosi al markup già presente).
+ * Cerca nella sezione "known" (al livello 1) un oggetto contenente la proprietà "choose"
+ * con il filtro (ad esempio, "level=0|class=Wizard") e genera il dropdown per il cantrip.
  */
 function handleAdditionalSpells(data) {
   if (!data.additionalSpells || data.additionalSpells.length === 0) return;
   console.log("🛠 Gestione specifica per additionalSpells (es. High Elf)");
   
-  let spellGroup = data.additionalSpells[0];
+  const spellGroup = data.additionalSpells[0];
   if (spellGroup.known && spellGroup.known["1"] && Array.isArray(spellGroup.known["1"]["_"])) {
     let choiceObj = spellGroup.known["1"]["_"].find(item => item.choose && item.choose.includes("class="));
     if (!choiceObj) {
@@ -252,11 +254,11 @@ function handleAdditionalSpells(data) {
 /**
  * Wrapper che richiama sia la gestione dello spellcasting standard che quella extra.
  * In questo modo, se la razza dispone di spellcasting standard, viene gestita;
- * altrimenti, se sono presenti additionalSpells (es. per High Elf), viene usata quella.
+ * altrimenti, se sono presenti additionalSpells (ad es. per High Elf), viene usata quella.
  *
- * @param {Object} data - I dati della razza
- * @param {string} traitsHtml - Il markup già generato per i tratti della razza (non modificato)
- * @returns {string} - Il markup dei tratti (eventualmente non modificato)
+ * @param {Object} data - I dati della razza.
+ * @param {string} traitsHtml - Il markup già generato per i tratti (non modificato).
+ * @returns {string} - Il markup dei tratti (non modificato).
  */
 function handleAllSpellcasting(data, traitsHtml) {
   if (data.spellcasting && data.spellcasting.spell_choices) {
@@ -268,7 +270,7 @@ function handleAllSpellcasting(data, traitsHtml) {
   return traitsHtml;
 }
 
-// ==================== FUNZIONI PER EXTRA (LINGUE, SKILLS, TOOLS, ANCESTRY) ====================
+/* ==================== FUNZIONI PER EXTRA (LINGUE, SKILLS, TOOLS, ANCESTRY) ==================== */
 function handleExtraLanguages(data, containerId) {
   if (data.languages && data.languages.choice > 0) {
     loadLanguages(langs => {
@@ -344,7 +346,7 @@ function handleExtraAncestry(data, containerId) {
   }
 }
 
-// ==================== FUNZIONI COMMON (UTILITÀ) ====================
+/* ==================== FUNZIONI COMMON (UTILITÀ) ==================== */
 function extractSpellName(data) {
   if (Array.isArray(data)) {
     if (typeof data[0] === "string") {
@@ -430,7 +432,7 @@ function loadLanguages(callback) {
     .catch(error => handleError(`Errore caricando le lingue: ${error}`));
 }
 
-// ==================== CONVERSIONE DEI DATI DELLA RAZZA ====================
+/* ==================== CONVERSIONE DEI DATI DELLA RAZZA ==================== */
 function convertRaceData(rawData) {
   // Size
   let size = "Unknown";
@@ -514,7 +516,7 @@ function convertRaceData(rawData) {
   let spellcasting = null;
   let extraSpellcasting = null;
   if (rawData.additionalSpells && rawData.additionalSpells.length > 0) {
-    // Se il primo gruppo di additionalSpells contiene in known la proprietà "_" (filtri), lo trattiamo come extra
+    // Se il primo gruppo di additionalSpells contiene la proprietà "_" (filtri), lo trattiamo come extra
     let firstSpellGroup = rawData.additionalSpells[0];
     if (firstSpellGroup.known && firstSpellGroup.known["1"] && firstSpellGroup.known["1"]["_"]) {
       extraSpellcasting = rawData.additionalSpells;
@@ -634,7 +636,7 @@ function convertRaceData(rawData) {
   };
 }
 
-// ==================== RENDERING DI TABELLE ====================
+/* ==================== RENDERING DI TABELLE ==================== */
 function renderTables(entries) {
   let html = "";
   if (!entries || !Array.isArray(entries)) return html;
@@ -685,7 +687,7 @@ function renderTables(entries) {
   return html;
 }
 
-// ==================== DISPLAY DEI TRATTI DELLA RAZZA ====================
+/* ==================== DISPLAY DEI TRATTI DELLA RAZZA ==================== */
 function displayRaceTraits() {
   const racePath = document.getElementById("raceSelect").value;
   const raceTraitsDiv = document.getElementById("raceTraits");
@@ -801,7 +803,7 @@ function displayRaceTraits() {
     .catch(error => handleError(`Errore caricando i tratti della razza: ${error}`));
 }
 
-// ==================== UPDATE SUBCLASSES (STEP 5) ====================
+/* ==================== UPDATE SUBCLASSES (STEP 5) ==================== */
 function updateSubclasses() {
   const classPath = document.getElementById("classSelect").value;
   const subclassSelect = document.getElementById("subclassSelect");
@@ -825,7 +827,7 @@ function updateSubclasses() {
     .catch(error => handleError(`Errore caricando le sottoclasse: ${error}`));
 }
 
-// ==================== GENERAZIONE DEL JSON FINALE (STEP 8) ====================
+/* ==================== GENERAZIONE DEL JSON FINALE (STEP 8) ==================== */
 function generateFinalJson() {
   let chromaticAncestry = null;
   const ancestrySelect = document.getElementById("ancestrySelect");
@@ -896,7 +898,7 @@ function downloadJsonFile(filename, jsonData) {
   document.body.removeChild(a);
 }
 
-// ==================== POINT BUY SYSTEM ====================
+/* ==================== POINT BUY SYSTEM ==================== */
 var totalPoints = 27;
 
 function adjustPoints(ability, action) {
@@ -984,12 +986,12 @@ function resetRacialBonuses() {
   updateFinalScores();
 }
 
-// ==================== ESPOSTE GLOBALMENTE PER I LISTENER ====================
+/* ==================== ESPOSTE GLOBALMENTE PER I LISTENER ==================== */
 window.displayRaceTraits = displayRaceTraits;
 window.applyRacialBonuses = applyRacialBonuses;
 window.updateSubclasses = updateSubclasses;
 
-// Inizializza al caricamento della pagina
+/* ==================== INIZIALIZZAZIONE AL CARICAMENTO ==================== */
 document.addEventListener("DOMContentLoaded", () => {
   console.log("✅ Script.js caricato!");
   loadDropdownData("data/races.json", "raceSelect", "races");

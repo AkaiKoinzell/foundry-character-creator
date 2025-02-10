@@ -998,8 +998,7 @@ document.addEventListener("DOMContentLoaded", () => {
 document.getElementById("btnStep1").addEventListener("click", () => showStep("step1"));
 document.getElementById("btnStep2").addEventListener("click", () => showStep("step2"));
 document.getElementById("confirmRaceSelection").addEventListener("click", () => {
-  showStep("step3"); // Passa allo step 3 (Point Buy)
-  document.getElementById("step4").style.display = "block"; // Mostra i tratti extra
+  document.getElementById("raceExtraTraitsContainer").style.display = "block"; // Mostra i tratti extra nello stesso step
 });
 document.getElementById("btnStep3").addEventListener("click", () => showStep("step3"));
 document.getElementById("btnStep4").addEventListener("click", () => showStep("step4"));

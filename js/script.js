@@ -1196,37 +1196,36 @@ window.updateSubclasses = updateSubclasses;
 // Inizializza al caricamento della pagina
 document.addEventListener("DOMContentLoaded", () => {
   console.log("✅ Script.js caricato!");
- // 🛑 Impedisce che il pop-up si apra automaticamente al refresh della pagina
-document.getElementById("raceExtrasModal").style.display = "none";
+  document.getElementById("raceExtrasModal").style.display = "none";
 
+// Controlla se il pop-up deve essere aperto solo dopo la selezione di una razza
 if (sessionStorage.getItem("popupOpened") === "true") {
-  sessionStorage.removeItem("popupOpened"); // Reset per evitare che si riapra di nuovo
+  console.log("🛑 Il pop-up non verrà riaperto automaticamente.");
+  sessionStorage.removeItem("popupOpened"); 
 }
   loadDropdownData("data/races.json", "raceSelect", "races");
   loadDropdownData("data/classes.json", "classSelect", "classes");
 
+  // Eventi per la navigazione tra gli step
+  document.getElementById("btnStep1").addEventListener("click", () => showStep("step1"));
+  document.getElementById("btnStep2").addEventListener("click", () => showStep("step2"));
+  document.getElementById("confirmRaceSelection").addEventListener("click", () => {
+    document.getElementById("raceExtraTraitsContainer").style.display = "block";
+  });
+  document.getElementById("closeModal").addEventListener("click", () => {
+    document.getElementById("raceExtrasModal").style.display = "none";
+  });
+  document.getElementById("btnStep3").addEventListener("click", () => showStep("step3"));
+  document.getElementById("btnStep4").addEventListener("click", () => showStep("step4"));
+  document.getElementById("btnStep5").addEventListener("click", () => showStep("step5"));
+  document.getElementById("btnStep8").addEventListener("click", () => showStep("step8"));
 
-// Eventi per la navigazione tra gli step
-document.getElementById("btnStep1").addEventListener("click", () => showStep("step1"));
-document.getElementById("btnStep2").addEventListener("click", () => showStep("step2"));
-document.getElementById("confirmRaceSelection").addEventListener("click", () => {
-  document.getElementById("raceExtraTraitsContainer").style.display = "block"; // Mostra i tratti extra nello stesso step
-});
-document.getElementById("closeModal").addEventListener("click", () => {
-document.getElementById("raceExtrasModal").style.display = "none";
-});
-document.getElementById("btnStep3").addEventListener("click", () => showStep("step3"));
-document.getElementById("btnStep4").addEventListener("click", () => showStep("step4"));
-document.getElementById("btnStep5").addEventListener("click", () => showStep("step5"));
-document.getElementById("btnStep8").addEventListener("click", () => showStep("step8"));
+  // Mostra lo step iniziale
+  showStep("step1");
 
-// Mostra lo step iniziale
-showStep("step1");
-
-  
   document.getElementById("raceSelect").addEventListener("change", displayRaceTraits);
   document.getElementById("levelSelect").addEventListener("change", () => displayRaceTraits());
   document.getElementById("generateJson").addEventListener("click", generateFinalJson);
-  
+
   initializeValues();
 });

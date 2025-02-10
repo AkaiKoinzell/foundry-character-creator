@@ -797,12 +797,15 @@ let currentSelectionIndex = 0;
 function openRaceExtrasModal(selections) {
   if (!selections || selections.length === 0) {
     console.warn("⚠️ Nessuna selezione extra disponibile, il pop-up non verrà mostrato.");
-    return; // 🔴 Non aprire il pop-up se non ci sono scelte
+    return;
   }
-  
+
   extraSelections = selections;
   currentSelectionIndex = 0;
   showExtraSelection();
+
+  // Nasconde i tratti extra nello sfondo mentre il pop-up è aperto
+  document.getElementById("raceExtraTraitsContainer").style.display = "none";
 
   // 🟢 Mostra il pop-up SOLO se ci sono selezioni disponibili
   document.getElementById("raceExtrasModal").style.display = "flex";
@@ -886,13 +889,47 @@ document.getElementById("closeModal").addEventListener("click", () => {
   document.getElementById("raceExtrasModal").style.display = "none";
 
   let summary = "📝 **Scelte salvate:**\n";
-  
+  let selectedData = {};
+
   document.querySelectorAll(".extra-selection").forEach((select, index) => {
-    summary += `🔹 ${extraSelections[index].name}: ${select.value}\n`;
+    const selectionName = extraSelections[Math.floor(index / (extraSelections[0].count || 1))].name;
+    
+    if (!selectedData[selectionName]) {
+      selectedData[selectionName] = [];
+    }
+
+    if (select.value) {
+      selectedData[selectionName].push(select.value);
+    }
+  });
+
+  // Stampa le scelte fatte
+  Object.keys(selectedData).forEach(key => {
+    summary += `🔹 ${key}: ${selectedData[key].join(", ")}\n`;
   });
 
   console.log(summary);
   alert("✅ Scelte salvate! Controlla la console per i dettagli.");
+
+  // **Memorizza i dati nel JSON globale**
+  if (selectedData["Languages"]) {
+    document.getElementById("extraLanguageSelect").value = selectedData["Languages"].join(", ");
+  }
+
+  if (selectedData["Skill Proficiency"]) {
+    document.getElementById("skillSelectionContainer").innerHTML = selectedData["Skill Proficiency"].join(", ");
+  }
+
+  if (selectedData["Tool Proficiency"]) {
+    document.getElementById("toolSelectionContainer").innerHTML = selectedData["Tool Proficiency"].join(", ");
+  }
+
+  if (selectedData["Spellcasting"]) {
+    document.getElementById("spellSelectionContainer").innerHTML = selectedData["Spellcasting"].join(", ");
+  }
+
+  // **Riattiva la visualizzazione dei tratti extra dopo la chiusura del pop-up**
+  document.getElementById("raceExtraTraitsContainer").style.display = "block";
 });
 
 // ==================== ✅ SELEZIONE DEFINITIVA DELLA RAZZA ====================

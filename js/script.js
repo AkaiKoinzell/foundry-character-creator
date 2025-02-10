@@ -1,3 +1,15 @@
+// ==================== 📜 NAVIGAZIONE TRA GLI STEP ====================
+
+function showStep(stepId) {
+  const steps = document.querySelectorAll(".step");
+  steps.forEach(step => {
+    if (step.id === stepId) {
+      step.classList.add("active");
+    } else {
+      step.classList.remove("active");
+    }
+  });
+}
 // ==================== MAPPING PER LE EXTRA VARIANT FEATURES ====================
 const variantExtraMapping = {
   "Drow Magic": {
@@ -981,22 +993,14 @@ document.addEventListener("DOMContentLoaded", () => {
   loadDropdownData("data/races.json", "raceSelect", "races");
   loadDropdownData("data/classes.json", "classSelect", "classes");
 
-  // ==================== 📜 NAVIGAZIONE TRA GLI STEP ====================
-
-function showStep(stepId) {
-  const steps = document.querySelectorAll(".step");
-  steps.forEach(step => {
-    if (step.id === stepId) {
-      step.classList.add("active");
-    } else {
-      step.classList.remove("active");
-    }
-  });
-}
 
 // Eventi per la navigazione tra gli step
 document.getElementById("btnStep1").addEventListener("click", () => showStep("step1"));
 document.getElementById("btnStep2").addEventListener("click", () => showStep("step2"));
+document.getElementById("confirmRaceSelection").addEventListener("click", () => {
+  showStep("step3"); // Passa allo step 3 (Point Buy)
+  document.getElementById("step4").style.display = "block"; // Mostra i tratti extra
+});
 document.getElementById("btnStep3").addEventListener("click", () => showStep("step3"));
 document.getElementById("btnStep4").addEventListener("click", () => showStep("step4"));
 document.getElementById("btnStep5").addEventListener("click", () => showStep("step5"));

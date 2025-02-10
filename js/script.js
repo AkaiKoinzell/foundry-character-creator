@@ -892,13 +892,13 @@ document.getElementById("closeModal").addEventListener("click", () => {
   let selectedData = {};
 
   document.querySelectorAll(".extra-selection").forEach((select, index) => {
-    const selectionName = extraSelections[Math.floor(index / (extraSelections[0].count || 1))].name;
+    const selectionName = extraSelections[currentSelectionIndex].name; // Assicuriamoci che il nome sia corretto
     
     if (!selectedData[selectionName]) {
       selectedData[selectionName] = [];
     }
 
-    if (select.value) {
+    if (select.value && !selectedData[selectionName].includes(select.value)) {
       selectedData[selectionName].push(select.value);
     }
   });
@@ -911,26 +911,21 @@ document.getElementById("closeModal").addEventListener("click", () => {
   console.log(summary);
   alert("✅ Scelte salvate! Controlla la console per i dettagli.");
 
-  // **Memorizza i dati nel JSON globale**
-  if (selectedData["Languages"]) {
-    document.getElementById("extraLanguageSelect").value = selectedData["Languages"].join(", ");
-  }
-
-  if (selectedData["Skill Proficiency"]) {
-    document.getElementById("skillSelectionContainer").innerHTML = selectedData["Skill Proficiency"].join(", ");
-  }
-
-  if (selectedData["Tool Proficiency"]) {
-    document.getElementById("toolSelectionContainer").innerHTML = selectedData["Tool Proficiency"].join(", ");
-  }
-
-  if (selectedData["Spellcasting"]) {
-    document.getElementById("spellSelectionContainer").innerHTML = selectedData["Spellcasting"].join(", ");
-  }
-
-  // **Riattiva la visualizzazione dei tratti extra dopo la chiusura del pop-up**
-  document.getElementById("raceExtraTraitsContainer").style.display = "block";
+  // **Memorizza i dati selezionati e li aggiorna nel JSON globale**
+Object.keys(selectedData).forEach(category => {
+    if (category === "Languages") {
+        document.getElementById("extraLanguageSelect").value = selectedData[category].join(", ");
+    } else if (category === "Skill Proficiency") {
+        document.getElementById("skillSelectionContainer").innerHTML = selectedData[category].join(", ");
+    } else if (category === "Tool Proficiency") {
+        document.getElementById("toolSelectionContainer").innerHTML = selectedData[category].join(", ");
+    } else if (category === "Spellcasting") {
+        document.getElementById("spellSelectionContainer").innerHTML = selectedData[category].join(", ");
+    }
 });
+
+// **Riattiva la visualizzazione dei tratti extra dopo la chiusura del pop-up**
+document.getElementById("raceExtraTraitsContainer").style.display = "block";
 
 // ==================== ✅ SELEZIONE DEFINITIVA DELLA RAZZA ====================
 document.getElementById("raceSelect").addEventListener("change", () => {

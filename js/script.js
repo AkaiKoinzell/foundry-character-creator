@@ -70,7 +70,8 @@ function handleVariantExtraSelections() {
     if (mapData.type === "skills") {
       let html = `<p><strong>Seleziona ${mapData.count} skill per ${selectedVariant}:</strong></p>`;
       for (let i = 0; i < mapData.count; i++) {
-        html += `<select class="variantSkillChoice" id="variantSkillChoice${i}" data-options='${JSON.stringify(mapData.options)}' onchange="updateVariantSkillOptions()">
+        // Set a data-category attribute so we know which extra this select belongs to
+        html += `<select class="variantSkillChoice" data-category="${selectedVariant}" id="variantSkillChoice${i}" data-options='${JSON.stringify(mapData.options)}' onchange="updateVariantSkillOptions()">
                     <option value="">Seleziona...</option>`;
         mapData.options.forEach(s => {
           html += `<option value="${s}">${s}</option>`;
@@ -95,7 +96,7 @@ function handleVariantExtraSelections() {
         }
       });
     }
-    // Se il mapping è "none", non viene mostrato nulla
+    // If type is "none", do nothing
   }
 }
 
@@ -199,7 +200,7 @@ function handleSpellcastingOptions(data, containerId) {
 function handleAdditionalSpells(data) {
   if (!data.additionalSpells || data.additionalSpells.length === 0) return;
   console.log("🛠 Gestione specifica per additionalSpells (es. High Elf)");
-
+  
   let spellGroup = data.additionalSpells[0];
   if (spellGroup.known && spellGroup.known["1"] && Array.isArray(spellGroup.known["1"]["_"])) {
     let choiceObj = spellGroup.known["1"]["_"].find(item => item.choose && item.choose.includes("class="));
@@ -212,7 +213,7 @@ function handleAdditionalSpells(data) {
     let spellLevel = parseInt(parts[0].trim());
     let spellClass = parts[1].trim();
     console.log(`📥 Richiesta per incantesimi di livello ${spellLevel} della classe ${spellClass}`);
-
+  
     loadSpells(spellList => {
       let availableSpells = spellList
         .filter(spell =>
@@ -278,7 +279,7 @@ function handleExtraSkills(data, containerId) {
     const skillOptions = JSON.stringify(data.skill_choices.options);
     let html = `<h4>Skill Extra</h4>`;
     for (let i = 0; i < data.skill_choices.number; i++) {
-      html += `<select class="skillChoice" id="skillChoice${i}" data-options='${skillOptions}' onchange="updateSkillOptions()">
+      html += `<select class="skillChoice" data-category="Skill Proficiency" id="skillChoice${i}" data-options='${skillOptions}' onchange="updateSkillOptions()">
                   <option value="">Seleziona...</option>`;
       html += data.skill_choices.options.map(s => `<option value="${s}">${s}</option>`).join("");
       html += `</select>`;
@@ -296,7 +297,7 @@ function handleExtraTools(data, containerId) {
     const toolOptions = JSON.stringify(data.tool_choices.options);
     let html = `<h4>Tool Extra</h4>`;
     for (let i = 0; i < data.tool_choices.number; i++) {
-      html += `<select class="toolChoice" id="toolChoice${i}" data-options='${toolOptions}'>
+      html += `<select class="toolChoice" data-category="Tool Proficiency" id="toolChoice${i}" data-options='${toolOptions}'>
                   <option value="">Seleziona...</option>`;
       html += data.tool_choices.options.map(t => `<option value="${t}">${t}</option>`).join("");
       html += `</select>`;
@@ -676,7 +677,7 @@ function displayRaceTraits() {
   const raceTraitsDiv = document.getElementById("raceTraits");
   const racialBonusDiv = document.getElementById("racialBonusSelection");
   
-  // Pulisce i container extra
+  // Clear extra containers
   ["skillSelectionContainer", "toolSelectionContainer", "spellSelectionContainer", "variantFeatureSelectionContainer", "variantExtraContainer", "languageSelection", "ancestrySelection"].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.innerHTML = "";
@@ -734,7 +735,7 @@ function displayRaceTraits() {
       const tablesHtml = renderTables(raceData.rawEntries);
       traitsHtml += tablesHtml;
       
-      // Spellcasting – gestisce sia lo spellcasting standard che quello extra
+      // Spellcasting – handle standard and additional spells
       handleAllSpellcasting(raceData, traitsHtml);
       
       // Lingue
@@ -768,19 +769,17 @@ function displayRaceTraits() {
         racialBonusDiv.style.display = "block";
       }
       
-      // Extra: Skill e Tool choices
+      // Extra: Skill and Tool choices
       handleExtraSkills(raceData, "skillSelectionContainer");
       handleExtraTools(raceData, "toolSelectionContainer");
       
-      // Extra: Variant Feature Choices
+      // Extra: Variant Feature Choices and Ancestry
       handleVariantFeatureChoices(raceData);
-      
-      // Extra: Ancestry (se presente)
       handleExtraAncestry(raceData, "ancestrySelection");
       
       resetRacialBonuses();
       
-      // Salva globalmente i dati della razza per eventuali step successivi (es. Step 4)
+      // Save the current race data for later steps
       window.currentRaceData = raceData;
     })
     .catch(error => handleError(`Errore caricando i tratti della razza: ${error}`));
@@ -794,7 +793,8 @@ let currentSelectionIndex = 0;
 
 /**
  * Opens the extra choices popup.
- * This popup is shown only when explicitly triggered (e.g. when clicking the "Seleziona Razza" button).
+ * The popup is triggered (e.g. after clicking the "Seleziona Razza" button)
+ * and displays one extra selection at a time.
  */
 function openRaceExtrasModal(selections) {
   if (!selections || selections.length === 0) {
@@ -807,12 +807,17 @@ function openRaceExtrasModal(selections) {
 
   // Hide the extra traits container in the background while the popup is open
   document.getElementById("raceExtraTraitsContainer").style.display = "none";
-  // Show the modal container (make sure an element with id "raceExtrasModal" exists in your HTML)
-  document.getElementById("raceExtrasModal").style.display = "flex";
+  // Show the modal container (ensure your HTML contains an element with id "raceExtrasModal")
+  const modal = document.getElementById("raceExtrasModal");
+  if (modal) {
+    modal.style.display = "flex";
+  }
 }
 
 /**
- * Displays the current selection in the popup.
+ * Displays the current extra selection in the popup.
+ * Each extra-selection dropdown now gets a data-category attribute to identify its category.
+ * Also, the "close" button is only shown when the user is on the last extra selection.
  */
 function showExtraSelection() {
   const titleElem = document.getElementById("extraTraitTitle");
@@ -831,30 +836,33 @@ function showExtraSelection() {
 
   if (currentSelection.selection) {
     let dropdownHTML = "";
-    const numChoices = currentSelection.count || 1; // Default to 1 if not specified
-    let selectedValues = []; // To track current selections
+    const numChoices = currentSelection.count || 1; // Default to 1 if count not specified
 
+    // For each extra selection, include a data-category attribute
     for (let i = 0; i < numChoices; i++) {
-      dropdownHTML += `<select class="extra-selection" data-index="${i}">
+      dropdownHTML += `<select class="extra-selection" data-category="${currentSelection.name}">
                         <option value="">Seleziona...</option>`;
       currentSelection.selection.forEach(option => {
-        // Initially, no option is selected
         dropdownHTML += `<option value="${option}">${option}</option>`;
       });
       dropdownHTML += `</select><br>`;
     }
     selectionElem.innerHTML = dropdownHTML;
 
-    // Add event listeners to update selections
+    // Add event listeners to update selections without mixing categories.
     document.querySelectorAll(".extra-selection").forEach(select => {
       select.addEventListener("change", () => {
-        selectedValues = Array.from(document.querySelectorAll(".extra-selection")).map(sel => sel.value);
-        document.querySelectorAll(".extra-selection").forEach((sel, idx) => {
-          const selected = sel.value;
+        // For each select, update its options so that already chosen options for the same category are disabled.
+        const category = select.getAttribute("data-category");
+        const selectsInCategory = document.querySelectorAll(`.extra-selection[data-category="${category}"]`);
+        const selectedValues = Array.from(selectsInCategory).map(sel => sel.value);
+        selectsInCategory.forEach(sel => {
+          const currentVal = sel.value;
           sel.innerHTML = `<option value="">Seleziona...</option>`;
           currentSelection.selection.forEach(option => {
-            if (!selectedValues.includes(option) || option === selected) {
-              sel.innerHTML += `<option value="${option}" ${option === selected ? "selected" : ""}>${option}</option>`;
+            // Only add the option if it is not already selected in another dropdown of the same category, or if it is the current value.
+            if (!selectedValues.includes(option) || option === currentVal) {
+              sel.innerHTML += `<option value="${option}" ${option === currentVal ? "selected" : ""}>${option}</option>`;
             }
           });
         });
@@ -865,6 +873,14 @@ function showExtraSelection() {
   // Enable/Disable navigation buttons
   document.getElementById("prevTrait").disabled = (currentSelectionIndex === 0);
   document.getElementById("nextTrait").disabled = (currentSelectionIndex === extraSelections.length - 1);
+  
+  // Only show the "close" button if this is the last extra selection page
+  const closeBtn = document.getElementById("closeModal");
+  if (currentSelectionIndex === extraSelections.length - 1) {
+    closeBtn.style.display = "block";
+  } else {
+    closeBtn.style.display = "none";
+  }
 }
 
 // Navigation buttons for the popup
@@ -881,43 +897,51 @@ document.getElementById("nextTrait").addEventListener("click", () => {
   }
 });
 
-// Closes the popup and saves selections
+// Closes the popup and saves selections.
+// Now, the selections are grouped by the data-category attribute to avoid overwriting.
 document.getElementById("closeModal").addEventListener("click", () => {
-  document.getElementById("raceExtrasModal").style.display = "none";
+  // Hide the modal popup
+  const modal = document.getElementById("raceExtrasModal");
+  if (modal) {
+    modal.style.display = "none";
+  }
+  sessionStorage.removeItem("popupOpened"); // Remove flag
   
-  // Save selections
   let selectedData = {};
-
-  document.querySelectorAll(".extra-selection").forEach((select, index) => {
-    const selectionName = extraSelections[Math.floor(index / (extraSelections[0].count || 1))].name;
-    if (!selectedData[selectionName]) {
-      selectedData[selectionName] = [];
+  
+  document.querySelectorAll(".extra-selection").forEach(select => {
+    const category = select.getAttribute("data-category");
+    if (!selectedData[category]) {
+      selectedData[category] = [];
     }
-    if (select.value && !selectedData[selectionName].includes(select.value)) {
-      selectedData[selectionName].push(select.value);
+    if (select.value && !selectedData[category].includes(select.value)) {
+      selectedData[category].push(select.value);
     }
   });
-
-  // Log saved selections
+  
   console.log("📝 **Scelte salvate:**");
   Object.keys(selectedData).forEach(key => {
     console.log(`🔹 ${key}: ${selectedData[key].join(", ")}`);
   });
-
-  // Update global JSON fields based on selections
+  
+  // Update the UI fields for each category based on selections.
   Object.keys(selectedData).forEach(category => {
     if (category === "Languages") {
-      document.getElementById("extraLanguageSelect").value = selectedData[category].join(", ");
+      const langElem = document.getElementById("extraLanguageSelect");
+      if (langElem) langElem.value = selectedData[category].join(", ");
     } else if (category === "Skill Proficiency") {
-      document.getElementById("skillSelectionContainer").innerHTML = selectedData[category].join(", ");
+      const skillContainer = document.getElementById("skillSelectionContainer");
+      if (skillContainer) skillContainer.innerHTML = selectedData[category].join(", ");
     } else if (category === "Tool Proficiency") {
-      document.getElementById("toolSelectionContainer").innerHTML = selectedData[category].join(", ");
+      const toolContainer = document.getElementById("toolSelectionContainer");
+      if (toolContainer) toolContainer.innerHTML = selectedData[category].join(", ");
     } else if (category === "Spellcasting") {
-      document.getElementById("spellSelectionContainer").innerHTML = selectedData[category].join(", ");
+      const spellContainer = document.getElementById("spellSelectionContainer");
+      if (spellContainer) spellContainer.innerHTML = selectedData[category].join(", ");
     }
   });
-
-  // Re-show the extra traits container in the background
+  
+  // Re-show the extra traits container (if needed)
   document.getElementById("raceExtraTraitsContainer").style.display = "block";
 });
 
@@ -1106,9 +1130,8 @@ function resetRacialBonuses() {
 
 // ==================== STUB FUNCTION: updateSkillOptions ====================
 // This function is referenced in the onchange for extra-selection dropdowns.
-// For now, we define it as an empty function. You can expand its logic as needed.
+// For now, we define it as a stub. Expand as needed.
 function updateSkillOptions() {
-  // TODO: Add logic to update skill options if necessary.
   console.log("updateSkillOptions called.");
 }
 
@@ -1120,10 +1143,7 @@ window.updateSubclasses = updateSubclasses;
 // ==================== INIZIALIZZAZIONE ====================
 document.addEventListener("DOMContentLoaded", () => {
   console.log("✅ Script.js caricato!");
-
   // Ensure the popup modal is hidden at startup.
-  // IMPORTANT: Make sure your HTML includes an element with id "raceExtrasModal"
-  // (e.g. a <div id="raceExtrasModal" style="display:none;">...</div>)
   const modal = document.getElementById("raceExtrasModal");
   if (modal) {
     modal.style.display = "none";
@@ -1140,17 +1160,16 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnStep5").addEventListener("click", () => showStep("step5"));
   document.getElementById("btnStep8").addEventListener("click", () => showStep("step8"));
 
-  // Show the initial step
+  // Show initial step
   showStep("step1");
 
-  // Event listeners for race selection and level change
   document.getElementById("raceSelect").addEventListener("change", displayRaceTraits);
   document.getElementById("levelSelect").addEventListener("change", () => displayRaceTraits());
   document.getElementById("generateJson").addEventListener("click", generateFinalJson);
 
-  // When the "Seleziona Razza" button is clicked, show the extra traits popup.
+  // When the "Seleziona Razza" button is clicked, hide the race traits and open the extra selections popup.
   document.getElementById("confirmRaceSelection").addEventListener("click", () => {
-    // Hide the race traits in the background
+    // Hide the race traits container in the background
     document.getElementById("raceTraits").style.display = "none";
 
     // Prepare extra selections based on current race data
@@ -1188,12 +1207,12 @@ document.addEventListener("DOMContentLoaded", () => {
         count: 1
       });
     }
+    // Mark that the popup was opened (if needed)
+    sessionStorage.setItem("popupOpened", "true");
     openRaceExtrasModal(selections);
-
     // Hide the confirm button to prevent re-clicking
     document.getElementById("confirmRaceSelection").style.display = "none";
   });
 
-  // Initialize values
   initializeValues();
 });

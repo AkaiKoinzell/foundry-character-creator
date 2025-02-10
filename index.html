@@ -171,6 +171,63 @@
       <div id="toolSelectionContainer"></div>
     </div>
   </div>
+    <!-- 📜 MODALE PER LA SCELTA DEI TRATTI EXTRA -->
+<div id="raceExtrasModal" class="modal">
+  <div class="modal-content">
+    <h2 id="extraTraitTitle"></h2>
+    <p id="extraTraitDescription"></p>
+    <div id="extraTraitSelection"></div>
+    <div class="modal-buttons">
+      <button id="prevTrait" disabled>⬅️ Indietro</button>
+      <button id="nextTrait">Avanti ➡️</button>
+    </div>
+    <button id="closeModal">✅ Conferma e Chiudi</button>
+  </div>
+</div>
+
+<style>
+  /* Stile per il pop-up */
+  .modal {
+    display: none; /* Inizialmente nascosto */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal-content {
+    background: white;
+    padding: 20px;
+    width: 50%;
+    text-align: center;
+    border-radius: 10px;
+  }
+
+  .modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  #closeModal {
+    margin-top: 20px;
+    background: #28a745;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+  }
+
+  #closeModal:hover {
+    background: #218838;
+  }
+</style>
     <!-- Step 3: Point Buy System -->
     <div id="step3" class="step">
       <h2>Step 3: Sistema Point Buy</h2>

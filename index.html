@@ -148,16 +148,29 @@
       </select>
     </div>
     <!-- Step 2: Razza -->
-    <div id="step2" class="step">
-      <h2>Step 2: Scelta della Razza</h2>
-      <label for="raceSelect">Razza:</label>
-      <select id="raceSelect">
-        <option value="">Seleziona una razza</option>
-      </select>
-      <br><br>
-      <div id="raceTraits"></div>
-      <button id="confirmRaceSelection" class="primary" style="display:none;">Seleziona Razza</button>
+  <div id="step2" class="step">
+    <h2>Step 2: Scelta della Razza</h2>
+    <label for="raceSelect">Razza:</label>
+    <select id="raceSelect">
+      <option value="">Seleziona una razza</option>
+    </select>
+    <br><br>
+    <div id="raceTraits"></div>
+    
+    <button id="confirmRaceSelection" class="primary">Seleziona Razza</button>
+  
+    <!-- Contenitore dei tratti extra, inizialmente nascosto -->
+    <div id="raceExtraTraitsContainer" style="display: none;">
+      <h3>Tratti Extra</h3>
+      <div id="variantFeatureSelectionContainer"></div>
+      <div id="variantExtraContainer"></div>
+      <div id="ancestrySelection"></div> 
+      <div id="spellSelectionContainer"></div>
+      <div id="languageSelection"></div>
+      <div id="skillSelectionContainer"></div>
+      <div id="toolSelectionContainer"></div>
     </div>
+  </div>
     <!-- Step 3: Point Buy System -->
     <div id="step3" class="step">
       <h2>Step 3: Sistema Point Buy</h2>
@@ -276,20 +289,7 @@
     </div>
     <!-- Step 4: Tratti Extra -->
     <div id="step4" class="step">
-      <h2>Step 4: Selezione dei Tratti Extra</h2>
-      <!-- Qui verranno visualizzate le sezioni extra -->
-      <div id="variantFeatureSelectionContainer"></div>
-      <div id="variantExtraContainer"></div>
-      <div id="ancestrySelection"></div> 
-      <div id="spellSelectionContainer"></div>
-      <div id="languageSelection"></div>
-      <div id="skillSelectionContainer"></div>
-      <div id="toolSelectionContainer"></div>
-
-    </div>
-    <!-- Step 5: Classe e Sottoclasse -->
-    <div id="step5" class="step">
-      <h2>Step 5: Scelta della Classe e Sottoclasse</h2>
+      <h2>Step 4: Scelta della Classe e Sottoclasse</h2>
       <label for="classSelect">Classe:</label>
       <select id="classSelect">
         <option value="">Seleziona una classe</option>

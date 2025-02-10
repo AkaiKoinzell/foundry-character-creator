@@ -829,23 +829,42 @@ function showExtraSelection() {
     let dropdownHTML = "";
     const numChoices = currentSelection.count || 1; // Se `count` non esiste, assume 1
 
+    let selectedValues = []; // Array per memorizzare le selezioni fatte
+
     for (let i = 0; i < numChoices; i++) {
-      dropdownHTML += `<select class="extra-selection">
+      dropdownHTML += `<select class="extra-selection" data-index="${i}">
                         <option value="">Seleziona...</option>`;
       currentSelection.selection.forEach(option => {
-        dropdownHTML += `<option value="${option}">${option}</option>`;
+        if (!selectedValues.includes(option)) {
+          dropdownHTML += `<option value="${option}">${option}</option>`;
+        }
       });
       dropdownHTML += `</select><br>`;
     }
 
     selectionElem.innerHTML = dropdownHTML;
+
+    // Aggiunge un event listener per tracciare le selezioni e aggiornare i dropdown
+    document.querySelectorAll(".extra-selection").forEach(select => {
+      select.addEventListener("change", () => {
+        selectedValues = Array.from(document.querySelectorAll(".extra-selection")).map(sel => sel.value);
+        document.querySelectorAll(".extra-selection").forEach((sel, idx) => {
+          const selected = sel.value;
+          sel.innerHTML = `<option value="">Seleziona...</option>`;
+          currentSelection.selection.forEach(option => {
+            if (!selectedValues.includes(option) || option === selected) {
+              sel.innerHTML += `<option value="${option}" ${option === selected ? "selected" : ""}>${option}</option>`;
+            }
+          });
+        });
+      });
+    });
   }
 
   // 🔄 Abilita/Disabilita i pulsanti di navigazione
   document.getElementById("prevTrait").disabled = (currentSelectionIndex === 0);
   document.getElementById("nextTrait").disabled = (currentSelectionIndex === extraSelections.length - 1);
 }
-
 
 // 🚀 Pulsanti Avanti/Indietro
 document.getElementById("prevTrait").addEventListener("click", () => {

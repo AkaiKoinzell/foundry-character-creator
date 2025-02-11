@@ -1247,6 +1247,6 @@ document.getElementById("confirmRaceSelection").addEventListener("click", () => 
       sessionStorage.setItem("popupOpened", "true");
       openRaceExtrasModal(selections);
       document.getElementById("confirmRaceSelection").style.display = "none";
-      });
+      };
   initializeValues();
 });

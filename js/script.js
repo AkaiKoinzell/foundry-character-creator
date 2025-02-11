@@ -384,6 +384,7 @@ function convertRaceData(rawData) {
   } else {
     size = rawData.size || "Unknown";
   }
+
   // Speed
   let speed = {};
   if (rawData.speed) {
@@ -397,6 +398,7 @@ function convertRaceData(rawData) {
       speed = rawData.speed;
     }
   }
+
   // Senses
   let senses = {};
   if (rawData.senses && typeof rawData.senses === "object") {
@@ -404,6 +406,7 @@ function convertRaceData(rawData) {
   } else if (rawData.darkvision) {
     senses.darkvision = rawData.darkvision;
   }
+
   // Ability Bonus
   let ability_bonus = { options: [] };
   if (rawData.ability && Array.isArray(rawData.ability)) {
@@ -418,6 +421,7 @@ function convertRaceData(rawData) {
       }
     });
   }
+
   // Variant Feature and Traits
   let variant_feature_choices = null;
   let traits = [];
@@ -455,6 +459,7 @@ function convertRaceData(rawData) {
       });
     }
   });
+
   // Spellcasting – complete processing
   let spellcasting = null;
 
@@ -495,11 +500,8 @@ function convertRaceData(rawData) {
     spellcasting.ability_choices = abilityChoices;
   }
 
-  return {
-    name: rawData.name,
-    spellcasting: spellcasting
-  };
-}
+  // 🔹 Qui c'era un `return` che spezzava il codice! Rimosso e spostato in fondo.
+
   // Languages
   let languages = { fixed: [], choice: 0, options: [] };
   if (rawData.languageProficiencies && rawData.languageProficiencies.length > 0) {
@@ -515,6 +517,7 @@ function convertRaceData(rawData) {
       languages.options.push("Any other language you and your DM agree is appropriate");
     }
   }
+
   // Skill Choices
   let skill_choices = null;
   if (rawData.skillProficiencies && rawData.skillProficiencies.length > 0) {
@@ -524,6 +527,7 @@ function convertRaceData(rawData) {
       skill_choices = { number: count, options: sp.from };
     }
   }
+
   // Tool Choices
   let tool_choices = null;
   if (rawData.toolProficiencies && Array.isArray(rawData.toolProficiencies)) {
@@ -533,6 +537,8 @@ function convertRaceData(rawData) {
       }
     });
   }
+
+  // ✅ Ritorno finale corretto
   return {
     name: rawData.name,
     source: rawData.source + (rawData.page ? `, page ${rawData.page}` : ""),
@@ -543,7 +549,6 @@ function convertRaceData(rawData) {
     traits: traits,
     rawEntries: rawEntries,
     spellcasting: spellcasting,
-    extraSpellcasting: extraSpellcasting,
     languages: languages,
     skill_choices: skill_choices,
     tool_choices: tool_choices,

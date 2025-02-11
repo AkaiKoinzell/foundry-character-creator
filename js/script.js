@@ -257,6 +257,8 @@ for (let i = 0; i < data.skill_choices.number; i++) {
 
 const container = document.getElementById(containerId);
 if (container) container.appendChild(skillContainer);
+  }
+}
 
 function handleExtraTools(data, containerId) {
   if (data.tool_choices) {

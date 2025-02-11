@@ -714,13 +714,15 @@ function openRaceExtrasModal(selections) {
 
 function updateExtraSelectionsView() {
   console.log("🔄 Aggiornamento visualizzazione delle scelte extra...");
-
+  
   function updateContainer(id, title, dataKey) {
     const container = document.getElementById(id);
-    if (selectedData[dataKey] && container) {
-      container.innerHTML = `<p><strong>${title}:</strong> ${selectedData[dataKey].join(", ")}</p>`;
-    } else if (container) {
-      container.innerHTML = `<p><strong>${title}:</strong> Nessuna selezione.</p>`;
+    if (container) {
+      if (selectedData[dataKey] && selectedData[dataKey].length > 0) {
+        container.innerHTML = `<p><strong>${title}:</strong> ${selectedData[dataKey].join(", ")}</p>`;
+      } else {
+        container.innerHTML = `<p><strong>${title}:</strong> Nessuna selezione.</p>`;
+      }
     }
   }
 
@@ -730,6 +732,9 @@ function updateExtraSelectionsView() {
   updateContainer("spellSelectionContainer", "Spellcasting", "Spellcasting");
 
   console.log("✅ Extra selections aggiornate:", selectedData);
+
+  // 🔥 Forza il rendering per assicurarsi che le modifiche siano visibili
+  document.getElementById("raceExtraTraitsContainer").style.display = "block";
 }
 
 /**
@@ -789,6 +794,9 @@ function showExtraSelection() {
         });
     
         console.log(`📝 Salvato: ${category} -> ${selectedData[category]}`);
+
+        // Forziamo l'aggiornamento UI in tempo reale
+        updateExtraSelectionsView();
       });
     });
   }
@@ -830,7 +838,7 @@ document.getElementById("nextTrait").addEventListener("click", () => {
   // Gather selections from each dropdown, grouped by data-category.
 document.getElementById("closeModal").addEventListener("click", () => {
   console.log("🔄 Chiusura pop-up e aggiornamento UI...");
-  
+
   document.getElementById("raceExtrasModal").style.display = "none";
   sessionStorage.removeItem("popupOpened");
 
@@ -839,14 +847,11 @@ document.getElementById("closeModal").addEventListener("click", () => {
   // 🔄 Mostra di nuovo lo step 2
   showStep("step2");
 
-  // 🛠 Forziamo un aggiornamento del DOM
+  // 🛠 Forziamo un aggiornamento della UI dopo un piccolo ritardo
   setTimeout(() => {
     displayRaceTraits(); // Ricarica i tratti della razza
     updateExtraSelectionsView(); // Mostra le selezioni extra
-
-    // 🔥 FORZIAMO IL RENDER AGGIORNANDO MANUALMENTE IL CONTENUTO
-    document.getElementById("raceTraits").style.display = "block";
-  }, 200);
+  }, 300); // Ritardo per permettere il re-rendering del DOM
 });
 
   // Aggiorna l'interfaccia con le scelte fatte

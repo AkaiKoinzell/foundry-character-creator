@@ -1,4 +1,3 @@
-// ==================== 📜 NAVIGAZIONE TRA GLI STEP ====================
 function showStep(stepId) {
   const steps = document.querySelectorAll(".step");
   steps.forEach(step => {
@@ -180,17 +179,22 @@ function handleSpellcasting(data, containerId) {
       }
     }
 
+    // 📌 Caso 3: Scelta dell'abilità di lancio (Aarakocra, Genasi)
     if (data.spellcasting.ability_choices && Array.isArray(data.spellcasting.ability_choices)) {
-      const abilityOptions = data.spellcasting.ability_choices
-        .map(a => `<option value="${a}">${a}</option>`).join("");
-
-      container.innerHTML += `
-        <p><strong>🧠 Seleziona l'abilità di lancio:</strong></p>
-        <select id="castingAbility">
-          <option value="">Seleziona...</option>${abilityOptions}
-        </select>`;
+      if (data.spellcasting.ability_choices.length > 1) {  // 🔹 Mostra solo se ci sono più opzioni
+        const abilityOptions = data.spellcasting.ability_choices
+          .map(a => `<option value="${a}">${a}</option>`)
+          .join("");
+    
+        container.innerHTML += `
+          <p><strong>🧠 Seleziona l'abilità di lancio:</strong></p>
+          <select id="castingAbility">
+            <option value="">Seleziona...</option>${abilityOptions}
+          </select>`;
+      } else {
+        console.log(`🧙‍♂️ ${data.name} usa automaticamente ${data.spellcasting.ability_choices[0]} come abilità di lancio.`);
+      }
     }
-  }
 }
 
 
@@ -466,7 +470,7 @@ function convertRaceData(rawData) {
   if (rawData.additionalSpells && rawData.additionalSpells.length > 0) {
     let spellsArray = [];
     let abilityChoices = [];
-
+  
     rawData.additionalSpells.forEach(spellData => {
       if (spellData.known) {
         Object.keys(spellData.known).forEach(levelKey => {
@@ -475,33 +479,30 @@ function convertRaceData(rawData) {
               if (typeof spell === "string") {
                 spellsArray.push({ name: spell, level: parseInt(levelKey) });
               } else if (spell.choose) {
-                spellcasting = {
-                  spell_choices: { type: "filter", filter: spell.choose }
-                };
+                spellcasting = spellcasting || {};  // 🔹 Assicura che spellcasting sia inizializzato
+                spellcasting.spell_choices = { type: "filter", filter: spell.choose };
               }
             });
           }
         });
       }
-
+  
       if (spellData.ability) {
         abilityChoices = Array.isArray(spellData.ability) ? spellData.ability : [spellData.ability];
       }
     });
-
+  
     if (spellsArray.length > 0) {
-      spellcasting = spellcasting || {};
+      spellcasting = spellcasting || {};  // 🔹 Assicura che spellcasting esista prima di assegnare proprietà
       spellcasting.spell_choices = {
         type: "fixed_list",
         options: spellsArray.map(s => s.name)
       };
     }
-
+  
+    spellcasting = spellcasting || {};  // 🔹 Evita errori null su spellcasting
     spellcasting.ability_choices = abilityChoices;
   }
-
-  // 🔹 Qui c'era un `return` che spezzava il codice! Rimosso e spostato in fondo.
-
   // Languages
   let languages = { fixed: [], choice: 0, options: [] };
   if (rawData.languageProficiencies && rawData.languageProficiencies.length > 0) {

@@ -1186,6 +1186,50 @@ document.getElementById("confirmRaceSelection").addEventListener("click", () => 
         });
       }
 
+      // ✅ **Aggiungere Spellcasting alle scelte nel Pop-up**
+      if (raceData.spellcasting) {
+        if (raceData.spellcasting.ability_choices && raceData.spellcasting.ability_choices.length > 0) {
+          selections.push({
+            name: "Spellcasting Ability",
+            description: "Choose a spellcasting ability.",
+            selection: raceData.spellcasting.ability_choices,
+            count: 1
+          });
+        }
+
+        if (raceData.spellcasting.spell_choices) {
+          if (raceData.spellcasting.spell_choices.type === "fixed_list") {
+            selections.push({
+              name: "Spellcasting",
+              description: "Choose a spell.",
+              selection: raceData.spellcasting.spell_choices.options,
+              count: 1
+            });
+          } else if (raceData.spellcasting.spell_choices.type === "filter") {
+            const spellLevel = 0;
+            const spellClass = raceData.spellcasting.spell_choices.filter.split("|")[1].split("=")[1];
+
+            loadSpells(spellList => {
+              const filteredSpells = spellList
+                .filter(spell => parseInt(spell.level) === spellLevel && spell.spell_list.includes(spellClass))
+                .map(spell => spell.name);
+
+              if (filteredSpells.length > 0) {
+                selections.push({
+                  name: "Spellcasting",
+                  description: `Choose a cantrip from ${spellClass}.`,
+                  selection: filteredSpells,
+                  count: 1
+                });
+              }
+              sessionStorage.setItem("popupOpened", "true");
+              openRaceExtrasModal(selections);
+            });
+            return;  // **Importante: fermiamo l'esecuzione finché gli incantesimi non sono caricati!**
+          }
+        }
+      }
+
       sessionStorage.setItem("popupOpened", "true");
       openRaceExtrasModal(selections);
       document.getElementById("confirmRaceSelection").style.display = "none";

@@ -139,16 +139,18 @@ function handleSpellcasting(data, containerId) {
   // 🔹 1. Controlliamo se la razza ha spellcasting
   if (data.spellcasting) {
     console.log(`🧙‍♂️ Gestione spellcasting per ${data.name}`);
-    
+
     // 📌 Caso 1: Spellcasting fisso (Drow Magic, Tiefling)
     if (data.spellcasting.fixed_spell) {
       container.innerHTML += `<p><strong>✨ Incantesimo assegnato:</strong> ${data.spellcasting.fixed_spell}</p>`;
     }
 
-    // 📌 Caso 2: Spellcasting con scelta (High Elf, Variant Humans)
+    // 📌 Caso 2: Spellcasting con scelta di incantesimi (High Elf, Variant Humans)
     if (data.spellcasting.spell_choices) {
       if (data.spellcasting.spell_choices.type === "fixed_list") {
-        const options = data.spellcasting.spell_choices.options.map(spell => `<option value="${spell}">${spell}</option>`).join("");
+        const options = data.spellcasting.spell_choices.options
+          .map(spell => `<option value="${spell}">${spell}</option>`).join("");
+
         container.innerHTML += `
           <p><strong>🔮 Scegli un incantesimo:</strong></p>
           <select id="spellSelection">
@@ -177,8 +179,11 @@ function handleSpellcasting(data, containerId) {
     }
 
     // 📌 Caso 3: Scelta dell'abilità di lancio (Aarakocra, Genasi)
-    if (data.spellcasting.ability_choices) {
-      const abilityOptions = data.spellcasting.ability_choices.map(a => `<option value="${a}">${a}</option>`).join("");
+    if (data.spellcasting.ability_choices && Array.isArray(data.spellcasting.ability_choices)) {
+      const abilityOptions = data.spellcasting.ability_choices
+        .map(a => `<option value="${a}">${a}</option>`)
+        .join("");
+
       container.innerHTML += `
         <p><strong>🧠 Seleziona l'abilità di lancio:</strong></p>
         <select id="castingAbility">

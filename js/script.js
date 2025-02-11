@@ -794,7 +794,6 @@ function showExtraSelection() {
   } else {
     closeBtn.style.display = "none";
   }
-}
 
 // Navigation buttons for the popup
 document.getElementById("prevTrait").addEventListener("click", () => {

@@ -876,7 +876,6 @@ document.getElementById("closeModal").addEventListener("click", () => {
   }
 
 });
-});
 
 document.getElementById("raceSelect").addEventListener("change", () => {
   console.log("🔄 Razza cambiata, reset delle selezioni extra...");

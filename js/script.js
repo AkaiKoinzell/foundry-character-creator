@@ -480,48 +480,54 @@ function convertRaceData(rawData) {
   });
 
   // Spellcasting – complete processing
-  // Spellcasting – complete processing
-let spellcasting = null;
-
-if (rawData.additionalSpells && rawData.additionalSpells.length > 0) {
-    let spellsArray = [];
-    let abilityChoices = [];
-
-    rawData.additionalSpells.forEach(spellData => {
-        if (spellData.known) {
-            Object.keys(spellData.known).forEach(levelKey => {
-                if (spellData.known[levelKey]._ && Array.isArray(spellData.known[levelKey]._)) {
-                    spellData.known[levelKey]._.forEach(spell => {
-                        if (typeof spell === "string") {
-                            spellsArray.push({ name: spell, level: parseInt(levelKey) });
-                        } else if (spell.choose) {
-                            spellcasting = spellcasting || {};  // 🔹 Assicura che spellcasting sia inizializzato
-                            spellcasting.spell_choices = { type: "filter", filter: spell.choose };
-                        }
-                    });
-                }
-            });
-        }
-
-        // 📌 FIX: Recupera l'abilità di lancio dal campo `ability`
-        if (spellData.ability) {
-            if (typeof spellData.ability === "string") { 
-                abilityChoices.push(spellData.ability.toUpperCase()); 
-            }
-        }
-    });
-
-    if (spellsArray.length > 0) {
-        spellcasting = spellcasting || {};  // 🔹 Assicura che spellcasting esista prima di assegnare proprietà
-        spellcasting.spell_choices = {
-            type: "fixed_list",
-            options: spellsArray.map(s => s.name)
-        };
-    }
-
-    spellcasting = spellcasting || {};  // 🔹 Evita errori null su spellcasting
-    spellcasting.ability_choices = abilityChoices;
-}
+  let spellcasting = null;
+  
+  if (rawData.additionalSpells && rawData.additionalSpells.length > 0) {
+      let spellsArray = [];
+      let abilityChoices = [];
+  
+      rawData.additionalSpells.forEach(spellData => {
+          if (spellData.known) {
+              Object.keys(spellData.known).forEach(levelKey => {
+                  if (spellData.known[levelKey]._ && Array.isArray(spellData.known[levelKey]._)) {
+                      spellData.known[levelKey]._.forEach(spell => {
+                          if (typeof spell === "string") {
+                              spellsArray.push({ name: spell, level: parseInt(levelKey) });
+                          } else if (spell.choose) {
+                              spellcasting = spellcasting || {};  
+                              spellcasting.spell_choices = { type: "filter", filter: spell.choose };
+                          }
+                      });
+                  }
+              });
+          }
+  
+          // 📌 FIX: Assicura che l'Alto Elfo non abbia un dropdown per l'abilità di lancio
+          if (spellData.ability) {
+              if (typeof spellData.ability === "string") { 
+                  abilityChoices.push(spellData.ability.toUpperCase()); 
+              }
+          }
+      });
+  
+      if (spellsArray.length > 0) {
+          spellcasting = spellcasting || {};  
+          spellcasting.spell_choices = {
+              type: "fixed_list",
+              options: spellsArray.map(s => s.name)
+          };
+      }
+  
+      spellcasting = spellcasting || {};  
+  
+      // 🔹 FIX: Se l'Alto Elfo ha solo INT come abilità di lancio, non deve avere un dropdown
+      if (abilityChoices.length === 1 && abilityChoices[0] === "INT" && rawData.name.toLowerCase().includes("elf (high)")) {
+          console.log(`🧠 ${rawData.name} ha solo INT come abilità di lancio. Nessun dropdown.`);
+          spellcasting.ability_choices = [];
+      } else {
+          spellcasting.ability_choices = abilityChoices;
+      }
+  }
   // Languages
   let languages = { fixed: [], choice: 0, options: [] };
   if (rawData.languageProficiencies && rawData.languageProficiencies.length > 0) {

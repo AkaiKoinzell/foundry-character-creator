@@ -181,25 +181,25 @@ function handleSpellcasting(data, containerId) {
 
     // 📌 Caso 3: Scelta dell'abilità di lancio (Aarakocra, Genasi)
     if (data.spellcasting.ability_choices && Array.isArray(data.spellcasting.ability_choices)) {
-          // 🔹 Se l'abilità di lancio è una sola ed è fissa, non mostriamo il dropdown
-          if (data.spellcasting.ability_choices.length === 1) {
-              console.log(`🧙‍♂️ ${data.name} usa sempre ${data.spellcasting.ability_choices[0]} come abilità di lancio.`);
-          } 
-          // 🔹 Se ci sono più scelte (es. Genasi), mostriamo il dropdown
-          else if (data.spellcasting.ability_choices.length > 1) {
-              const abilityOptions = data.spellcasting.ability_choices
-                  .map(a => `<option value="${a}">${a}</option>`)
-                  .join("");
-      
-              container.innerHTML += `
-                  <p><strong>🧠 Seleziona l'abilità di lancio:</strong></p>
-                  <select id="castingAbility">
-                      <option value="">Seleziona...</option>${abilityOptions}
-                  </select>`;
-          }
-      }
+        // 🔹 Se c'è solo una scelta e il valore è fisso (come per l'Alto Elfo), non mostriamo il dropdown
+        if (data.spellcasting.ability_choices.length === 1 && typeof data.spellcasting.ability_choices[0] === "string") {
+            console.log(`🧙‍♂️ ${data.name} usa automaticamente ${data.spellcasting.ability_choices[0]} come abilità di lancio. Nessun dropdown necessario.`);
+        } 
+        // 🔹 Se ci sono più scelte (es. Genasi), mostriamo il dropdown
+        else if (data.spellcasting.ability_choices.length > 1) {
+            const abilityOptions = data.spellcasting.ability_choices
+                .map(a => `<option value="${a}">${a}</option>`)
+                .join("");
+    
+            container.innerHTML += `
+                <p><strong>🧠 Seleziona l'abilità di lancio:</strong></p>
+                <select id="castingAbility">
+                    <option value="">Seleziona...</option>${abilityOptions}
+                </select>`;
+        }
     }
   }
+}
 
 // ==================== EXTRAS: LANGUAGES, SKILLS, TOOLS, ANCESTRY ====================
 function loadLanguages(callback) {

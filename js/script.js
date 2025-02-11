@@ -188,6 +188,9 @@ function handleSpellcasting(data, containerId) {
         if (data.spellcasting.ability_choices && Array.isArray(data.spellcasting.ability_choices)) {
             console.log(`🧙‍♂️ Verifica dell'abilità di lancio per ${data.name}:`, data.spellcasting.ability_choices);
 
+            // ✅ Debug: Stampa le abilità di lancio
+            console.log(`🔍 Controllo spellcasting per ${data.name}:`, data.spellcasting.ability_choices);
+
             // **Caso A: L'Alto Elfo ha solo "Intelligence" e NON deve mostrare il dropdown**
             if (data.name.toLowerCase().includes("elf (high)") && 
                 data.spellcasting.ability_choices.length === 1 && 
@@ -877,6 +880,7 @@ function displayRaceTraits() {
     .then(response => response.json())
     .then(data => {
       console.log("📜 Dati razza caricati:", data);
+      console.log("🔍 JSON completo della razza selezionata:", data);
       if (raceTraitsDiv) raceTraitsDiv.innerHTML = "";
       const raceData = convertRaceData(data);
       let traitsHtml = `<h3>Tratti di ${raceData.name}</h3>`;

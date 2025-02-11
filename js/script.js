@@ -739,16 +739,19 @@ function showExtraSelection() {
     const numChoices = currentSelection.count || 1;
 
     if (!selectedData[currentSelection.name]) {
-      selectedData[currentSelection.name] = []; // Assicuriamoci che esista
+      selectedData[currentSelection.name] = [];
     }
 
     for (let i = 0; i < numChoices; i++) {
       dropdownHTML += `<select class="extra-selection" data-category="${currentSelection.name}" data-index="${i}">
                           <option value="">Seleziona...</option>`;
+
+      // Filtra le opzioni già selezionate
       currentSelection.selection.forEach(option => {
-        const isSelected = selectedData[currentSelection.name].includes(option);
-        dropdownHTML += `<option value="${option}" ${isSelected ? "selected" : ""}>${option}</option>`;
+        const alreadySelected = selectedData[currentSelection.name].includes(option);
+        dropdownHTML += `<option value="${option}" ${alreadySelected ? "disabled" : ""}>${option}</option>`;
       });
+
       dropdownHTML += `</select><br>`;
     }
 
@@ -765,6 +768,9 @@ function showExtraSelection() {
         });
 
         selectedData[category] = newSelections;
+
+        // Riaggiorna le selezioni per disabilitare le opzioni già scelte
+        showExtraSelection();
       });
     });
   }
@@ -773,19 +779,22 @@ function showExtraSelection() {
   document.getElementById("nextTrait").disabled = (currentSelectionIndex === extraSelections.length - 1);
 }
 
+
   // Enable/disable navigation buttons and manage the Close button visibility.
   const prevBtn = document.getElementById("prevTrait");
   const nextBtn = document.getElementById("nextTrait");
+  // Mostra il pulsante "Chiudi" solo dopo l'ultimo step e se tutte le selezioni sono fatte
   const closeBtn = document.getElementById("closeModal");
-  if (prevBtn) prevBtn.disabled = (currentSelectionIndex === 0);
-  if (nextBtn) nextBtn.disabled = (currentSelectionIndex === extraSelections.length - 1);
-  if (closeBtn) {
-    if (currentSelectionIndex === extraSelections.length - 1) {
-      closeBtn.style.display = "inline-block";
-    } else {
-      closeBtn.style.display = "none";
-    }
+  const allChoicesFilled = extraSelections.every(sel => 
+    selectedData[sel.name] && selectedData[sel.name].length === sel.count
+  );
+
+  if (currentSelectionIndex === extraSelections.length - 1 && allChoicesFilled) {
+    closeBtn.style.display = "inline-block";
+  } else {
+    closeBtn.style.display = "none";
   }
+}
 
 // Navigation buttons for the popup
 document.getElementById("prevTrait").addEventListener("click", () => {

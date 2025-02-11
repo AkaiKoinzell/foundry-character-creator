@@ -708,6 +708,32 @@ function openRaceExtrasModal(selections) {
   if (extraContainer) extraContainer.style.display = "none";
   if (modal) modal.style.display = "flex";
 
+
+function updateExtraSelectionsView() {
+  console.log("🔄 Aggiornamento visualizzazione delle scelte extra...");
+
+  const languageContainer = document.getElementById("languageSelection");
+  const skillContainer = document.getElementById("skillSelectionContainer");
+  const toolContainer = document.getElementById("toolSelectionContainer");
+  const spellContainer = document.getElementById("spellSelectionContainer");
+
+  if (selectedData["Languages"] && languageContainer) {
+    languageContainer.innerHTML = `<p><strong>Lingue Extra:</strong> ${selectedData["Languages"].join(", ")}</p>`;
+  }
+
+  if (selectedData["Skill Proficiency"] && skillContainer) {
+    skillContainer.innerHTML = `<p><strong>Skill Proficiency:</strong> ${selectedData["Skill Proficiency"].join(", ")}</p>`;
+  }
+
+  if (selectedData["Tool Proficiency"] && toolContainer) {
+    toolContainer.innerHTML = `<p><strong>Tool Proficiency:</strong> ${selectedData["Tool Proficiency"].join(", ")}</p>`;
+  }
+
+  if (selectedData["Spellcasting"] && spellContainer) {
+    spellContainer.innerHTML = `<p><strong>Spellcasting:</strong> ${selectedData["Spellcasting"].join(", ")}</p>`;
+  }
+}
+
 /**
  * Displays the current extra selection in the popup.
  * Each dropdown gets a data-category attribute set to the current selection's name.
@@ -836,12 +862,27 @@ document.getElementById("closeModal").addEventListener("click", () => {
   // 🔄 Mostra di nuovo lo step 2 e aggiorna i tratti di razza
   showStep("step2");
   displayRaceTraits();
+
+  // Aggiorna l'interfaccia con le scelte fatte, in modalità View-Only
+  updateExtraSelectionsView();
 });
   // da cancellare a fine codice 
   // Show the extra traits container after closing the popup.
   const extraContainer = document.getElementById("raceExtraTraitsContainer");
   if (extraContainer) extraContainer.style.display = "block";
 });
+
+document.getElementById("raceSelect").addEventListener("change", () => {
+  console.log("🔄 Razza cambiata, reset delle selezioni extra...");
+  selectedData = {}; // Reset delle selezioni extra
+  document.getElementById("languageSelection").innerHTML = "";
+  document.getElementById("skillSelectionContainer").innerHTML = "";
+  document.getElementById("toolSelectionContainer").innerHTML = "";
+  document.getElementById("spellSelectionContainer").innerHTML = "";
+
+  displayRaceTraits(); // Ricarica i tratti della nuova razza
+});
+
 
 // ==================== DISPLAY DEI TRATTI DELLA RAZZA ====================
 function displayRaceTraits() {

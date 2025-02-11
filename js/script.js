@@ -1205,15 +1205,12 @@ document.getElementById("confirmRaceSelection").addEventListener("click", () => 
               selection: raceData.spellcasting.spell_choices.options,
               count: 1
             });
-          } else if (raceData.spellcasting.spell_choices.type === "filter") {
-            const spellLevel = 0;
-            const spellClass = raceData.spellcasting.spell_choices.filter.split("|")[1].split("=")[1];
-
+          } else if (raceData.spellcasting.spell_choices.type === "filter" && spellClass) {
             loadSpells(spellList => {
               const filteredSpells = spellList
-                .filter(spell => parseInt(spell.level) === spellLevel && spell.spell_list.includes(spellClass))
+                .filter(spell => parseInt(spell.level) === parseInt(spellLevel) && spell.spell_list.includes(spellClass))
                 .map(spell => spell.name);
-
+        
               if (filteredSpells.length > 0) {
                 selections.push({
                   name: "Spellcasting",
@@ -1222,14 +1219,13 @@ document.getElementById("confirmRaceSelection").addEventListener("click", () => 
                   count: 1
                 });
               }
+        
               sessionStorage.setItem("popupOpened", "true");
               openRaceExtrasModal(selections);
             });
             return;  // **Importante: fermiamo l'esecuzione finché gli incantesimi non sono caricati!**
           }
-        }
       }
-
       sessionStorage.setItem("popupOpened", "true");
       openRaceExtrasModal(selections);
       document.getElementById("confirmRaceSelection").style.display = "none";

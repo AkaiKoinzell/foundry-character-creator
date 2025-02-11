@@ -181,23 +181,23 @@ function handleSpellcasting(data, containerId) {
 
     // 📌 Caso 3: Scelta dell'abilità di lancio (Aarakocra, Genasi)
     if (data.spellcasting.ability_choices && Array.isArray(data.spellcasting.ability_choices)) {
-      if (data.spellcasting.ability_choices.length > 1) {  // 🔹 Mostra solo se ci sono più opzioni
-        const abilityOptions = data.spellcasting.ability_choices
-          .map(a => `<option value="${a}">${a}</option>`)
-          .join("");
-    
-        container.innerHTML += `
-          <p><strong>🧠 Seleziona l'abilità di lancio:</strong></p>
-          <select id="castingAbility">
-            <option value="">Seleziona...</option>${abilityOptions}
-          </select>`;
-      } else {
-        console.log(`🧙‍♂️ ${data.name} usa automaticamente ${data.spellcasting.ability_choices[0]} come abilità di lancio.`);
+        if (data.spellcasting.ability_choices.length === 1) {
+          console.log(`🧙‍♂️ ${data.name} usa automaticamente ${data.spellcasting.ability_choices[0]} come abilità di lancio.`);
+          // 🔹 Non mostra la selezione, perché ce n'è solo una
+        } else {
+          const abilityOptions = data.spellcasting.ability_choices
+            .map(a => `<option value="${a}">${a}</option>`)
+            .join("");
+      
+          container.innerHTML += `
+            <p><strong>🧠 Seleziona l'abilità di lancio:</strong></p>
+            <select id="castingAbility">
+              <option value="">Seleziona...</option>${abilityOptions}
+            </select>`;
+        }
       }
     }
   }
-}
-
 
 // ==================== EXTRAS: LANGUAGES, SKILLS, TOOLS, ANCESTRY ====================
 function loadLanguages(callback) {
@@ -489,7 +489,13 @@ function convertRaceData(rawData) {
       }
   
       if (spellData.ability) {
-        abilityChoices = Array.isArray(spellData.ability) ? spellData.ability : [spellData.ability];
+        if (Array.isArray(spellData.ability)) {
+          abilityChoices = spellData.ability;
+        } else if (typeof spellData.ability === "object" && spellData.ability.choose) {
+          abilityChoices = spellData.ability.choose; // 🔹 Prende direttamente le scelte disponibili
+        } else {
+          abilityChoices = [spellData.ability]; // 🔹 Se è una stringa, la mette in un array
+        }
       }
     });
   

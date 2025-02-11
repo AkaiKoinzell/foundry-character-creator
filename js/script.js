@@ -1230,7 +1230,5 @@ document.getElementById("confirmRaceSelection").addEventListener("click", () => 
       openRaceExtrasModal(selections);
       document.getElementById("confirmRaceSelection").style.display = "none";
     });
-});
-  
   initializeValues();
 });

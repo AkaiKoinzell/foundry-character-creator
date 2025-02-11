@@ -38,21 +38,19 @@ const variantExtraMapping = {
 function updateVariantSkillOptions() {
   const allVariantSkillSelects = document.querySelectorAll(".variantSkillChoice");
   if (!allVariantSkillSelects.length) return;
-  const selected = new Set();
-  allVariantSkillSelects.forEach(select => {
-    if (select.value) selected.add(select.value);
-  });
+
+  const selected = new Set([...allVariantSkillSelects].map(select => select.value).filter(Boolean));
+
   allVariantSkillSelects.forEach(select => {
     const current = select.value;
     select.innerHTML = `<option value="">Seleziona...</option>`;
-    const options = JSON.parse(select.getAttribute("data-options"));
-    options.forEach(skill => {
-      if (!selected.has(skill) || skill === current) {
-        const option = document.createElement("option");
-        option.value = skill;
-        option.textContent = skill;
-        if (skill === current) option.selected = true;
+    JSON.parse(select.getAttribute("data-options")).forEach(skill => {
+      const option = document.createElement("option");
+      option.value = skill;
+      option.textContent = skill;
+      if (skill === current || !selected.has(skill)) {
         select.appendChild(option);
+        if (skill === current) option.selected = true;
       }
     });
   });
@@ -61,41 +59,38 @@ function updateVariantSkillOptions() {
 function handleVariantExtraSelections() {
   const variantElem = document.getElementById("variantFeatureChoice");
   const container = document.getElementById("variantExtraContainer");
-  if (!container) return;
-  container.innerHTML = "";
-  if (!variantElem || !variantElem.value) return;
+  if (!container || !variantElem || !variantElem.value) return;
+  
   const selectedVariant = variantElem.value;
-  if (variantExtraMapping[selectedVariant]) {
-    const mapData = variantExtraMapping[selectedVariant];
-    if (mapData.type === "skills") {
-      let html = `<p><strong>Seleziona ${mapData.count} skill per ${selectedVariant}:</strong></p>`;
-      for (let i = 0; i < mapData.count; i++) {
-        html += `<select class="variantSkillChoice" id="variantSkillChoice${i}" data-options='${JSON.stringify(mapData.options)}' onchange="updateVariantSkillOptions()">
-                    <option value="">Seleziona...</option>`;
-        mapData.options.forEach(s => {
-          html += `<option value="${s}">${s}</option>`;
-        });
-        html += `</select> `;
-      }
-      container.innerHTML = html;
-    } else if (mapData.type === "spells") {
+  const mapData = variantExtraMapping[selectedVariant];
+
+  container.innerHTML = ""; // Pulisce il contenuto precedente
+
+  if (!mapData) return;
+
+  switch (mapData.type) {
+    case "skills":
+      container.innerHTML = `<p><strong>Seleziona ${mapData.count} skill per ${selectedVariant}:</strong></p>` +
+        Array(mapData.count).fill(0).map((_, i) => 
+          `<select class="variantSkillChoice" id="variantSkillChoice${i}" data-options='${JSON.stringify(mapData.options)}' onchange="updateVariantSkillOptions()">
+            <option value="">Seleziona...</option>
+            ${mapData.options.map(s => `<option value="${s}">${s}</option>`).join("")}
+          </select>`
+        ).join(" ");
+      break;
+
+    case "spells":
       loadSpells(spellList => {
         const filtered = filterSpells(spellList, mapData.filter);
-        if (!filtered.length) {
-          container.innerHTML = `<p>Nessun incantesimo trovato per il filtro: ${mapData.filter}</p>`;
-        } else {
-          let html = `<p><strong>Seleziona un incantesimo per ${selectedVariant}:</strong></p>`;
-          html += `<select id="variantSpellChoice">
-                    <option value="">Seleziona...</option>`;
-          filtered.forEach(spell => {
-            html += `<option value="${spell.name}">${spell.name}</option>`;
-          });
-          html += `</select>`;
-          container.innerHTML = html;
-        }
+        container.innerHTML = filtered.length
+          ? `<p><strong>Seleziona un incantesimo per ${selectedVariant}:</strong></p>
+              <select id="variantSpellChoice">
+                <option value="">Seleziona...</option>
+                ${filtered.map(spell => `<option value="${spell.name}">${spell.name}</option>`).join("")}
+              </select>`
+          : `<p>Nessun incantesimo trovato per il filtro: ${mapData.filter}</p>`;
       });
-    }
-    // If mapping type is "none", do nothing.
+      break;
   }
 }
 
@@ -723,10 +718,7 @@ function showExtraSelection() {
   const descElem = document.getElementById("extraTraitDescription");
   const selectionElem = document.getElementById("extraTraitSelection");
 
-  if (!extraSelections || extraSelections.length === 0) {
-    console.error("❌ Nessuna scelta extra trovata.");
-    return;
-  }
+  if (!extraSelections || extraSelections.length === 0) return;
 
   const currentSelection = extraSelections[currentSelectionIndex];
 
@@ -735,23 +727,16 @@ function showExtraSelection() {
   selectionElem.innerHTML = ""; // Pulisce il contenuto precedente
 
   if (currentSelection.selection) {
+    const selectedValues = new Set(selectedData[currentSelection.name] || []);
     let dropdownHTML = "";
-    const numChoices = currentSelection.count || 1;
 
-    if (!selectedData[currentSelection.name]) {
-      selectedData[currentSelection.name] = [];
-    }
-
-    for (let i = 0; i < numChoices; i++) {
+    for (let i = 0; i < currentSelection.count; i++) {
       dropdownHTML += `<select class="extra-selection" data-category="${currentSelection.name}" data-index="${i}">
                           <option value="">Seleziona...</option>`;
-
-      // Filtra le opzioni già selezionate
       currentSelection.selection.forEach(option => {
-        const alreadySelected = selectedData[currentSelection.name].includes(option);
-        dropdownHTML += `<option value="${option}" ${alreadySelected ? "disabled" : ""}>${option}</option>`;
+        const disabled = selectedValues.has(option) && !selectedData[currentSelection.name]?.includes(option);
+        dropdownHTML += `<option value="${option}" ${disabled ? "disabled" : ""}>${option}</option>`;
       });
-
       dropdownHTML += `</select><br>`;
     }
 
@@ -759,26 +744,18 @@ function showExtraSelection() {
 
     document.querySelectorAll(".extra-selection").forEach(select => {
       select.addEventListener("change", () => {
-        const category = select.getAttribute("data-category");
-        const allDropdowns = document.querySelectorAll(`.extra-selection[data-category="${category}"]`);
-
-        let newSelections = [];
-        allDropdowns.forEach(sel => {
-          if (sel.value) newSelections.push(sel.value);
-        });
-
-        selectedData[category] = newSelections;
-
-        // Riaggiorna le selezioni per disabilitare le opzioni già scelte
-        showExtraSelection();
+        selectedData[currentSelection.name] = [...document.querySelectorAll(`.extra-selection[data-category="${currentSelection.name}"]`)]
+          .map(sel => sel.value)
+          .filter(v => v);
+        showExtraSelection(); // Ricarica per disabilitare le opzioni già scelte
       });
     });
   }
 
   document.getElementById("prevTrait").disabled = (currentSelectionIndex === 0);
   document.getElementById("nextTrait").disabled = (currentSelectionIndex === extraSelections.length - 1);
+  document.getElementById("closeModal").style.display = (currentSelectionIndex === extraSelections.length - 1) ? "inline-block" : "none";
 }
-
 
   // Enable/disable navigation buttons and manage the Close button visibility.
   const prevBtn = document.getElementById("prevTrait");
@@ -1076,12 +1053,11 @@ function adjustPoints(ability, action) {
 }
 
 function updateFinalScores() {
-  const abilities = ["str", "dex", "con", "int", "wis", "cha"];
-  abilities.forEach(ability => {
-    const basePoints = parseInt(document.getElementById(ability + "Points").textContent);
-    const raceModifier = parseInt(document.getElementById(ability + "RaceModifier").textContent);
-    const finalScore = basePoints + raceModifier;
-    const finalScoreElement = document.getElementById(ability + "FinalScore");
+  ["str", "dex", "con", "int", "wis", "cha"].forEach(ability => {
+    const base = parseInt(document.getElementById(`${ability}Points`).textContent);
+    const raceMod = parseInt(document.getElementById(`${ability}RaceModifier`).textContent);
+    const finalScore = base + raceMod;
+    const finalScoreElement = document.getElementById(`${ability}FinalScore`);
     finalScoreElement.textContent = finalScore;
     finalScoreElement.style.color = finalScore > 18 ? "red" : "";
   });

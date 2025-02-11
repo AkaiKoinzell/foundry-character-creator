@@ -826,20 +826,23 @@ document.getElementById("nextTrait").addEventListener("click", () => {
 });
   // Gather selections from each dropdown, grouped by data-category.
 document.getElementById("closeModal").addEventListener("click", () => {
+  console.log("🔄 Chiusura pop-up e aggiornamento UI...");
+  
   document.getElementById("raceExtrasModal").style.display = "none";
   sessionStorage.removeItem("popupOpened");
 
-  console.log("📝 **Scelte salvate:**");
-  Object.keys(selectedData).forEach(key => {
-    console.log(`🔹 ${key}: ${selectedData[key].join(", ")}`);
-  // Aggiorna i tratti della razza e mostra lo step corretto
+  // Log delle selezioni fatte nel pop-up
+  console.log("📝 **Selezioni salvate:**", selectedData);
+
+  // 🔄 Mostra di nuovo lo step 2
   showStep("step2");
-  // Forza l'aggiornamento dei tratti di razza con una leggera attesa per evitare problemi di rendering
+
+  // 🛠 Ritardiamo leggermente l’aggiornamento per assicurarci che tutto venga ricaricato
   setTimeout(() => {
-    displayRaceTraits();
-    updateExtraSelectionsView();
-  }, 100);
-  });
+    displayRaceTraits(); // Ricarica i tratti della razza
+    updateExtraSelectionsView(); // Mostra le selezioni extra
+  }, 200);
+});
 
   // Aggiorna l'interfaccia con le scelte fatte
   if (selectedData["Languages"]) {
@@ -960,7 +963,11 @@ function displayRaceTraits() {
       }
 
       if (raceTraitsDiv) {
-        raceTraitsDiv.innerHTML = traitsHtml;
+  raceTraitsDiv.innerHTML = traitsHtml;
+  console.log("✅ Tratti della razza aggiornati con successo!");
+} else {
+  console.error("❌ ERRORE: Il div dei tratti della razza non è stato trovato!");
+}
       }
       if (racialBonusDiv) {
         racialBonusDiv.style.display = "block";

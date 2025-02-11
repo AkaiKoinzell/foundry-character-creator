@@ -732,6 +732,17 @@ function updateExtraSelectionsView() {
   if (selectedData["Spellcasting"] && spellContainer) {
     spellContainer.innerHTML = `<p><strong>Spellcasting:</strong> ${selectedData["Spellcasting"].join(", ")}</p>`;
   }
+  function updateContainer(id, title, dataKey) {
+    const container = document.getElementById(id);
+    if (selectedData[dataKey] && container) {
+      container.innerHTML = `<p><strong>${title}:</strong> ${selectedData[dataKey].join(", ")}</p>`;
+    }
+  }
+
+  updateContainer("languageSelection", "Lingue Extra", "Languages");
+  updateContainer("skillSelectionContainer", "Skill Proficiency", "Skill Proficiency");
+  updateContainer("toolSelectionContainer", "Tool Proficiency", "Tool Proficiency");
+  updateContainer("spellSelectionContainer", "Spellcasting", "Spellcasting");
 }
 
 /**
@@ -898,13 +909,9 @@ function displayRaceTraits() {
       if (el) el.innerHTML = "";
     });
 
-  if (!racePath) {
-    if (raceTraitsDiv) {
-      raceTraitsDiv.innerHTML = "<p>Seleziona una razza per vedere i tratti.</p>";
-    }
-    if (racialBonusDiv) {
-      racialBonusDiv.style.display = "none";
-    }
+   if (!racePath) {
+    raceTraitsDiv.innerHTML = "<p>Seleziona una razza per vedere i tratti.</p>";
+    racialBonusDiv.style.display = "none";
     resetRacialBonuses();
     return;
   }
@@ -990,8 +997,14 @@ function displayRaceTraits() {
       handleVariantFeatureChoices(raceData);
       handleExtraAncestry(raceData, "ancestrySelection");
 
+      // Selezioni extra già fatte nel pop-up (modalità view-only)
+      updateExtraSelectionsView();
+
       resetRacialBonuses();
       window.currentRaceData = raceData;
+      // Inserisci il contenuto nella pagina
+      raceTraitsDiv.innerHTML = traitsHtml;
+      racialBonusDiv.style.display = "block";
     })
     .catch(error => handleError(`Errore caricando i tratti della razza: ${error}`));
 }

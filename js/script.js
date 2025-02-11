@@ -717,6 +717,13 @@ function updateExtraSelectionsView() {
   const toolContainer = document.getElementById("toolSelectionContainer");
   const spellContainer = document.getElementById("spellSelectionContainer");
 
+    function updateContainer(id, title, dataKey) {
+    const container = document.getElementById(id);
+    if (selectedData[dataKey] && container) {
+      container.innerHTML = `<p><strong>${title}:</strong> ${selectedData[dataKey].join(", ")}</p>`;
+    }
+  }
+
   if (selectedData["Languages"] && languageContainer) {
     languageContainer.innerHTML = `<p><strong>Lingue Extra:</strong> ${selectedData["Languages"].join(", ")}</p>`;
   }
@@ -840,12 +847,6 @@ document.getElementById("nextTrait").addEventListener("click", () => {
     showExtraSelection();
   }
 });
-
-document.getElementById("closeModal").addEventListener("click", () => {
-  const modal = document.getElementById("raceExtrasModal");
-  if (modal) modal.style.display = "none";
-  sessionStorage.removeItem("popupOpened");
-
   // Gather selections from each dropdown, grouped by data-category.
 document.getElementById("closeModal").addEventListener("click", () => {
   document.getElementById("raceExtrasModal").style.display = "none";
@@ -854,6 +855,10 @@ document.getElementById("closeModal").addEventListener("click", () => {
   console.log("📝 **Scelte salvate:**");
   Object.keys(selectedData).forEach(key => {
     console.log(`🔹 ${key}: ${selectedData[key].join(", ")}`);
+  // Aggiorna i tratti della razza e mostra lo step corretto
+  showStep("step2");
+  displayRaceTraits();
+  updateExtraSelectionsView();
   });
 
   // Aggiorna l'interfaccia con le scelte fatte
@@ -870,17 +875,7 @@ document.getElementById("closeModal").addEventListener("click", () => {
     document.getElementById("spellSelectionContainer").innerHTML = `<p><strong>Spellcasting:</strong> ${selectedData["Spellcasting"].join(", ")}</p>`;
   }
 
-  // 🔄 Mostra di nuovo lo step 2 e aggiorna i tratti di razza
-  showStep("step2");
-  displayRaceTraits();
-
-  // Aggiorna l'interfaccia con le scelte fatte, in modalità View-Only
-  updateExtraSelectionsView();
 });
-  // da cancellare a fine codice 
-  // Show the extra traits container after closing the popup.
-  const extraContainer = document.getElementById("raceExtraTraitsContainer");
-  if (extraContainer) extraContainer.style.display = "block";
 });
 
 document.getElementById("raceSelect").addEventListener("change", () => {
@@ -892,6 +887,7 @@ document.getElementById("raceSelect").addEventListener("change", () => {
   document.getElementById("spellSelectionContainer").innerHTML = "";
 
   displayRaceTraits(); // Ricarica i tratti della nuova razza
+  document.getElementById("confirmRaceSelection").style.display = "inline-block";
 });
 
 

@@ -1252,5 +1252,5 @@ document.getElementById("confirmRaceSelection").addEventListener("click", () => 
 
     });
   initializeValues();
-});
+  },
 });

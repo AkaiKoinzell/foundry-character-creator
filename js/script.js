@@ -130,78 +130,86 @@ function loadSpells(callback) {
  * Injects the markup into the container with the given ID.
  */
 function handleSpellcasting(data, containerId) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
+    const container = document.getElementById(containerId);
+    if (!container) return;
 
-  container.innerHTML = ""; // Pulisce il contenuto precedente
+    container.innerHTML = ""; // Pulisce il contenuto precedente
 
-  if (data.spellcasting) {
-    console.log(`🧙‍♂️ Gestione spellcasting per ${data.name}`);
+    if (data.spellcasting) {
+        console.log(`🧙‍♂️ Gestione spellcasting per ${data.name}`);
 
-    if (data.spellcasting.fixed_spell) {
-      container.innerHTML += `<p><strong>✨ Incantesimo assegnato:</strong> ${data.spellcasting.fixed_spell}</p>`;
-    }
+        // ✅ Caso 1: Incantesimi fissi (come "Drow Magic")
+        if (data.spellcasting.fixed_spell) {
+            container.innerHTML += `<p><strong>✨ Incantesimo assegnato:</strong> ${data.spellcasting.fixed_spell}</p>`;
+        }
 
-    if (data.spellcasting.spell_choices) {
-      if (data.spellcasting.spell_choices.type === "fixed_list") {
-        const options = data.spellcasting.spell_choices.options
-          .map(spell => `<option value="${spell}">${spell}</option>`).join("");
+        // ✅ Caso 2: Scelta di incantesimi
+        if (data.spellcasting.spell_choices) {
+            if (data.spellcasting.spell_choices.type === "fixed_list") {
+                const options = data.spellcasting.spell_choices.options
+                    .map(spell => `<option value="${spell}">${spell}</option>`)
+                    .join("");
 
-        container.innerHTML += `
-          <p><strong>🔮 Scegli un incantesimo:</strong></p>
-          <select id="spellSelection">
-            <option value="">Seleziona...</option>${options}
-          </select>`;
-      } else if (data.spellcasting.spell_choices.type === "filter" && data.spellcasting.spell_choices.filter) {
-        const filterParts = data.spellcasting.spell_choices.filter.split("|");
-        const spellLevel = filterParts.find(part => part.startsWith("level="))?.split("=")[1];
-        const spellClass = filterParts.find(part => part.startsWith("class="))?.split("=")[1];
+                container.innerHTML += `
+                    <p><strong>🔮 Scegli un incantesimo:</strong></p>
+                    <select id="spellSelection">
+                        <option value="">Seleziona...</option>${options}
+                    </select>`;
+            } 
+            else if (data.spellcasting.spell_choices.type === "filter") {
+                const filterParts = data.spellcasting.spell_choices.filter.split("|");
+                const spellLevel = filterParts.find(part => part.startsWith("level="))?.split("=")[1];
+                const spellClass = filterParts.find(part => part.startsWith("class="))?.split("=")[1];
 
-        if (spellLevel && spellClass) {
-          loadSpells(spellList => {
-            const filteredSpells = spellList
-              .filter(spell => parseInt(spell.level) === parseInt(spellLevel) && spell.spell_list.includes(spellClass))
-              .map(spell => `<option value="${spell.name}">${spell.name}</option>`).join("");
+                if (spellLevel && spellClass) {
+                    loadSpells(spellList => {
+                        const filteredSpells = spellList
+                            .filter(spell => parseInt(spell.level) === parseInt(spellLevel) && spell.spell_list.includes(spellClass))
+                            .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
+                            .join("");
 
-            if (filteredSpells) {
-              container.innerHTML += `
-                <p><strong>🔮 Scegli un Cantrip da ${spellClass}:</strong></p>
-                <select id="spellSelection">
-                  <option value="">Seleziona...</option>${filteredSpells}
-                </select>`;
-            } else {
-              container.innerHTML += `<p><strong>⚠️ Nessun Cantrip disponibile per ${spellClass}.</strong></p>`;
+                        if (filteredSpells) {
+                            container.innerHTML += `
+                                <p><strong>🔮 Scegli un Cantrip da ${spellClass}:</strong></p>
+                                <select id="spellSelection">
+                                    <option value="">Seleziona...</option>${filteredSpells}
+                                </select>`;
+                        } else {
+                            container.innerHTML += `<p><strong>⚠️ Nessun Cantrip disponibile per ${spellClass}.</strong></p>`;
+                        }
+                    });
+                } else {
+                    container.innerHTML += `<p><strong>⚠️ Errore: Il filtro incantesimi non è valido per questa razza.</strong></p>`;
+                }
             }
-          });
-        } else {
-          container.innerHTML += `<p><strong>⚠️ Errore: Il filtro incantesimi non è valido per questa razza.</strong></p>`;
         }
-      }
-    }
 
-    // 📌 Caso 3: Scelta dell'abilità di lancio (Aarakocra, Genasi)
+        // ✅ Caso 3: Scelta dell'abilità di lancio
         if (data.spellcasting.ability_choices && Array.isArray(data.spellcasting.ability_choices)) {
-        // Controlla se c'è un campo "choose" nel JSON (ovvero se è opzionale)
-        const hasChoice = data.spellcasting.ability_choices.some(a => typeof a === "object" && "choose" in a);
-    
-        if (!hasChoice && data.spellcasting.ability_choices.length === 1) {
-            const fixedAbility = data.spellcasting.ability_choices[0];
-            console.log(`🧙‍♂️ ${data.name} usa automaticamente ${fixedAbility} come abilità di lancio.`);
-        } 
-        else if (hasChoice) {
-            const abilityOptions = data.spellcasting.ability_choices
-                .map(a => typeof a === "object" ? a.choose : a) // Se esiste `choose`, prendiamo solo il valore
-                .map(a => `<option value="${a}">${a}</option>`)
-                .join("");
-    
-            container.innerHTML += `
-                <p><strong>🧠 Seleziona l'abilità di lancio:</strong></p>
-                <select id="castingAbility">
-                    <option value="">Seleziona...</option>${abilityOptions}
-                </select>`;
+            // 🛠 Controlliamo se c'è una scelta opzionale o un valore fisso
+            const hasChoice = data.spellcasting.ability_choices.some(a => typeof a === "object" && "choose" in a);
+            
+            if (!hasChoice && data.spellcasting.ability_choices.length === 1) {
+                const fixedAbility = data.spellcasting.ability_choices[0];
+                console.log(`🧙‍♂️ ${data.name} usa automaticamente ${fixedAbility} come abilità di lancio.`);
+                return; // 🔥 Se è un valore fisso, NON mostriamo il dropdown
+            }
+
+            // Se esiste una scelta effettiva, mostriamo il dropdown
+            if (hasChoice) {
+                const abilityOptions = data.spellcasting.ability_choices
+                    .map(a => typeof a === "object" ? a.choose : a)
+                    .map(a => `<option value="${a}">${a}</option>`)
+                    .join("");
+
+                container.innerHTML += `
+                    <p><strong>🧠 Seleziona l'abilità di lancio:</strong></p>
+                    <select id="castingAbility">
+                        <option value="">Seleziona...</option>${abilityOptions}
+                    </select>`;
+            }
         }
     }
-  }
 }
 
 // ==================== EXTRAS: LANGUAGES, SKILLS, TOOLS, ANCESTRY ====================

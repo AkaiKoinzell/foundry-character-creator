@@ -138,7 +138,7 @@ function handleSpellcasting(data, containerId) {
     if (data.spellcasting) {
         console.log(`🔍 JSON Spellcasting per ${data.name}:`, data.spellcasting);
 
-        // ✅ Caso 1: Incantesimi fissi (come "Drow Magic")
+        // ✅ Caso 1: Incantesimi fissi (es. Drow Magic)
         if (data.spellcasting.fixed_spell) {
             container.innerHTML += `<p><strong>✨ Incantesimo assegnato:</strong> ${data.spellcasting.fixed_spell}</p>`;
         }
@@ -188,16 +188,19 @@ function handleSpellcasting(data, containerId) {
         if (data.spellcasting.ability_choices && Array.isArray(data.spellcasting.ability_choices)) {
             console.log(`🧙‍♂️ Verifica dell'abilità di lancio per ${data.name}:`, data.spellcasting.ability_choices);
 
-            // **Caso A: L'Alto Elfo ha solo "Intelligence" come opzione fissa**
-            if (data.name.includes("Elf (High)") && data.spellcasting.ability_choices.length === 1 && data.spellcasting.ability_choices[0] === "Intelligence") {
+            // **Caso A: L'Alto Elfo ha solo "Intelligence" e NON deve mostrare il dropdown**
+            if (data.name.toLowerCase().includes("elf (high)") && 
+                data.spellcasting.ability_choices.length === 1 && 
+                typeof data.spellcasting.ability_choices[0] === "string" &&
+                data.spellcasting.ability_choices[0].toLowerCase() === "intelligence") {
+                
                 console.log(`🧠 ${data.name} usa sempre Intelligence come abilità di lancio. Nessun dropdown mostrato.`);
-                return;
+                return; // 🔥 Esce dalla funzione per non mostrare il dropdown
             }
 
-            // **Caso B: Altre razze con scelta dell'abilità di lancio**
-            if (data.spellcasting.ability_choices.length > 1 || (data.spellcasting.ability_choices.length === 1 && typeof data.spellcasting.ability_choices[0] !== "string")) {
+            // **Caso B: Razze con più opzioni di abilità di lancio (Genasi, Aarakocra, ecc.)**
+            if (data.spellcasting.ability_choices.length > 1) {
                 const abilityOptions = data.spellcasting.ability_choices
-                    .map(a => typeof a === "object" ? a.choose : a)
                     .map(a => `<option value="${a}">${a}</option>`)
                     .join("");
 
@@ -210,6 +213,7 @@ function handleSpellcasting(data, containerId) {
         }
     }
 }
+
 
 // ==================== EXTRAS: LANGUAGES, SKILLS, TOOLS, ANCESTRY ====================
 function loadLanguages(callback) {

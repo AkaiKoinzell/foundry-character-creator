@@ -743,11 +743,16 @@ function showExtraSelection() {
     selectionElem.innerHTML = dropdownHTML;
 
     document.querySelectorAll(".extra-selection").forEach(select => {
-      select.addEventListener("change", () => {
-        selectedData[currentSelection.name] = [...document.querySelectorAll(`.extra-selection[data-category="${currentSelection.name}"]`)]
-          .map(sel => sel.value)
-          .filter(v => v);
-        showExtraSelection(); // Ricarica per disabilitare le opzioni già scelte
+      select.addEventListener("change", (event) => {
+        const category = event.target.getAttribute("data-category");
+        const index = event.target.getAttribute("data-index");
+    
+        if (!selectedData[category]) {
+          selectedData[category] = [];
+        }
+        
+        selectedData[category][index] = event.target.value; // Imposta il valore selezionato
+        console.log(`📝 Salvato: ${category} -> ${selectedData[category]}`);
       });
     });
   }

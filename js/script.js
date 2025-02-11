@@ -195,6 +195,7 @@ function handleSpellcasting(data, containerId) {
         console.log(`🧙‍♂️ ${data.name} usa automaticamente ${data.spellcasting.ability_choices[0]} come abilità di lancio.`);
       }
     }
+  }
 }
 
 

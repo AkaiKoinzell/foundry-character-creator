@@ -858,8 +858,6 @@ document.getElementById("closeModal").addEventListener("click", () => {
     document.getElementById("spellSelectionContainer").innerHTML = `<p><strong>Spellcasting:</strong> ${selectedData["Spellcasting"].join(", ")}</p>`;
   }
 
-});
-
 document.getElementById("raceSelect").addEventListener("change", () => {
   console.log("🔄 Razza cambiata, reset delle selezioni extra...");
   selectedData = {}; // Reset delle selezioni extra

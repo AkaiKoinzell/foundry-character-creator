@@ -193,19 +193,40 @@ function handleSpellcastingOptions(data, containerId) {
  */
 function handleAdditionalSpells(data) {
   if (!data.additionalSpells || data.additionalSpells.length === 0) return;
-  console.log("🛠 Gestione specifica per additionalSpells (es. High Elf)");
+  console.log("🛠 Gestione specifica per additionalSpells (es. High Elf, Aarakocra)");
+
   let spellGroup = data.additionalSpells[0];
-  if (spellGroup.known && spellGroup.known["1"] && Array.isArray(spellGroup.known["1"]["_"])) {
+
+  // 🔎 Verifichiamo se la razza deve scegliere un Cantrip o solo l'abilità di lancio
+  let hasCantripSelection = spellGroup.known && spellGroup.known["1"] && Array.isArray(spellGroup.known["1"]["_"]);
+  let hasCastingAbilitySelection = spellGroup.ability && Array.isArray(spellGroup.ability);
+
+  // 🔥 Se la razza deve solo scegliere un'abilità di casting, mostriamo solo quella
+  if (hasCastingAbilitySelection && !hasCantripSelection) {
+    console.log("🎯 Questa razza seleziona SOLO l'abilità di lancio, non un Cantrip.");
+    let abilityOptions = spellGroup.ability.map(a => `<option value="${a}">${a}</option>`).join("");
+    document.getElementById("spellSelectionContainer").innerHTML = `
+      <p><strong>🧠 Seleziona l'abilità di lancio:</strong></p>
+      <select id="castingAbility"><option value="">Seleziona...</option>${abilityOptions}</select>
+    `;
+    return;
+  }
+
+  // 🧙‍♂️ Se la razza può scegliere un Cantrip, procediamo con il filtro
+  if (hasCantripSelection) {
     let choiceObj = spellGroup.known["1"]["_"].find(item => item.choose && item.choose.includes("class="));
     if (!choiceObj) {
       console.warn("⚠️ Nessun filtro 'choose' trovato in additionalSpells.");
       return;
     }
+
     console.log("📥 Trovato filtro per Cantrip:", choiceObj.choose);
     let parts = choiceObj.choose.split("|").map(f => f.split("=")[1]);
     let spellLevel = parseInt(parts[0].trim());
     let spellClass = parts[1].trim();
+
     console.log(`📥 Richiesta per incantesimi di livello ${spellLevel} della classe ${spellClass}`);
+
     loadSpells(spellList => {
       let availableSpells = spellList
         .filter(spell =>
@@ -215,11 +236,13 @@ function handleAdditionalSpells(data) {
         )
         .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
         .join("");
+
       const container = document.getElementById("spellSelectionContainer");
       if (!container) {
         console.error("❌ ERRORE: spellSelectionContainer non trovato nel DOM!");
         return;
       }
+
       if (availableSpells.length > 0) {
         container.innerHTML += `
           <p><strong>🔮 Scegli un Cantrip da ${spellClass}:</strong></p>
@@ -235,14 +258,17 @@ function handleAdditionalSpells(data) {
 
 /**
  * Wrapper that calls both standard and extra spellcasting handlers.
- */
-function handleAllSpellcasting(data, traitsHtml) {
+ */function handleAllSpellcasting(data, traitsHtml) {
   if (data.spellcasting && data.spellcasting.spell_choices) {
     handleSpellcastingOptions(data, "spellSelectionContainer");
   }
+
+  // 🔥 Assicuriamoci che handleAdditionalSpells venga chiamato solo se necessario
   if (data.additionalSpells && data.additionalSpells.length > 0) {
+    console.log("🎯 Gestione spellcasting aggiuntivo per questa razza.");
     handleAdditionalSpells(data);
   }
+
   return traitsHtml;
 }
 
@@ -612,6 +638,9 @@ function convertRaceData(rawData) {
     tool_choices: tool_choices,
     variant_feature_choices: variant_feature_choices
   };
+  console.log(`📊 Controllo spellcasting per ${rawData.name}`);
+  console.log(`✅ additionalSpells:`, rawData.additionalSpells);
+  console.log(`✅ ability_choices:`, rawData.spellcasting ? rawData.spellcasting.ability_choices : "Nessuna");
 }
 
 // ==================== RENDERING DI TABELLE ====================

@@ -181,11 +181,10 @@ function handleSpellcasting(data, containerId) {
 
     // 📌 Caso 3: Scelta dell'abilità di lancio (Aarakocra, Genasi)
     if (data.spellcasting.ability_choices && Array.isArray(data.spellcasting.ability_choices)) {
-        // 🔹 Se c'è solo una scelta e il valore è fisso (come per l'Alto Elfo), non mostriamo il dropdown
-        if (data.spellcasting.ability_choices.length === 1 && typeof data.spellcasting.ability_choices[0] === "string") {
-            console.log(`🧙‍♂️ ${data.name} usa automaticamente ${data.spellcasting.ability_choices[0]} come abilità di lancio. Nessun dropdown necessario.`);
+        if (data.spellcasting.ability_choices.length === 1) {
+            const fixedAbility = data.spellcasting.ability_choices[0];
+            console.log(`🧙‍♂️ ${data.name} usa automaticamente ${fixedAbility} come abilità di lancio.`);
         } 
-        // 🔹 Se ci sono più scelte (es. Genasi), mostriamo il dropdown
         else if (data.spellcasting.ability_choices.length > 1) {
             const abilityOptions = data.spellcasting.ability_choices
                 .map(a => `<option value="${a}">${a}</option>`)
@@ -491,13 +490,13 @@ function convertRaceData(rawData) {
       }
   
       if (spellData.ability) {
-        if (Array.isArray(spellData.ability)) {
-          abilityChoices = spellData.ability;
-        } else if (typeof spellData.ability === "object" && spellData.ability.choose) {
-          abilityChoices = spellData.ability.choose; // 🔹 Prende direttamente le scelte disponibili
-        } else {
-          abilityChoices = [spellData.ability]; // 🔹 Se è una stringa, la mette in un array
-        }
+          if (Array.isArray(spellData.ability)) {
+              abilityChoices = spellData.ability;
+          } else if (typeof spellData.ability === "object" && spellData.ability.choose) {
+              abilityChoices = spellData.ability.choose; 
+          } else if (typeof spellData.ability === "string") { 
+              abilityChoices = [spellData.ability]; 
+          }
       }
     });
   

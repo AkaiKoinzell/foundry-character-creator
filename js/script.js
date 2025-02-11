@@ -229,20 +229,34 @@ function handleExtraLanguages(data, containerId) {
 function handleExtraSkills(data, containerId) {
   if (data.skill_choices) {
     const skillOptions = JSON.stringify(data.skill_choices.options);
-    let html = `<h4>Skill Extra</h4>`;
-    for (let i = 0; i < data.skill_choices.number; i++) {
-      html += `<select class="skillChoice" id="skillChoice${i}" data-options='${skillOptions}' onchange="updateSkillOptions()">
-                  <option value="">Seleziona...</option>`;
-      html += data.skill_choices.options.map(s => `<option value="${s}">${s}</option>`).join("");
-      html += `</select>`;
-    }
-    const container = document.getElementById(containerId);
-    if (container) container.innerHTML = html;
-  } else {
-    const container = document.getElementById(containerId);
-    if (container) container.innerHTML = "";
-  }
+    const skillContainer = document.createElement("div");
+const title = document.createElement("h4");
+title.textContent = "Skill Extra";
+skillContainer.appendChild(title);
+
+for (let i = 0; i < data.skill_choices.number; i++) {
+  const select = document.createElement("select");
+  select.classList.add("skillChoice");
+  select.id = `skillChoice${i}`;
+  select.dataset.options = JSON.stringify(data.skill_choices.options);
+  
+  const defaultOption = document.createElement("option");
+  defaultOption.value = "";
+  defaultOption.textContent = "Seleziona...";
+  select.appendChild(defaultOption);
+  
+  data.skill_choices.options.forEach(skill => {
+    const option = document.createElement("option");
+    option.value = skill;
+    option.textContent = skill;
+    select.appendChild(option);
+  });
+
+  skillContainer.appendChild(select);
 }
+
+const container = document.getElementById(containerId);
+if (container) container.appendChild(skillContainer);
 
 function handleExtraTools(data, containerId) {
   if (data.tool_choices) {
@@ -1130,7 +1144,6 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("🛑 Il pop-up non verrà riaperto automaticamente.");
     sessionStorage.removeItem("popupOpened");
   }
-
   loadDropdownData("data/races.json", "raceSelect", "races");
   loadDropdownData("data/classes.json", "classSelect", "classes");
 
@@ -1205,30 +1218,34 @@ document.getElementById("confirmRaceSelection").addEventListener("click", () => 
               selection: raceData.spellcasting.spell_choices.options,
               count: 1
             });
-          } else if (raceData.spellcasting.spell_choices.type === "filter" && spellClass) {
-            loadSpells(spellList => {
-              const filteredSpells = spellList
-                .filter(spell => parseInt(spell.level) === parseInt(spellLevel) && spell.spell_list.includes(spellClass))
-                .map(spell => spell.name);
-        
-              if (filteredSpells.length > 0) {
-                selections.push({
-                  name: "Spellcasting",
-                  description: `Choose a cantrip from ${spellClass}.`,
-                  selection: filteredSpells,
-                  count: 1
-                });
+          } else if (raceData.spellcasting.spell_choices.type === "filter") {
+                const spellLevel = 0; // Normalmente i Cantrip
+                const spellClassParts = raceData.spellcasting.spell_choices.filter.split("|");
+                const spellClass = spellClassParts.length > 1 ? spellClassParts[1].split("=")[1] : null;
+              
+                if (spellClass) {
+                  loadSpells(spellList => {
+                    const filteredSpells = spellList
+                      .filter(spell => parseInt(spell.level) === spellLevel && spell.spell_list.includes(spellClass))
+                      .map(spell => spell.name);
+                    
+                    if (filteredSpells.length > 0) {
+                      selections.push({
+                        name: "Spellcasting",
+                        description: `Choose a cantrip from ${spellClass}.`,
+                        selection: filteredSpells,
+                        count: 1
+                      });
+                    }
+              
+                    sessionStorage.setItem("popupOpened", "true");
+                    openRaceExtrasModal(selections);
+                  });
               }
-        
-              sessionStorage.setItem("popupOpened", "true");
-              openRaceExtrasModal(selections);
-            });
-            return;  // **Importante: fermiamo l'esecuzione finché gli incantesimi non sono caricati!**
-          }
       }
       sessionStorage.setItem("popupOpened", "true");
       openRaceExtrasModal(selections);
       document.getElementById("confirmRaceSelection").style.display = "none";
-    });
+      });
   initializeValues();
 });

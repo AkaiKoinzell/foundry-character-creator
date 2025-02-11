@@ -195,12 +195,13 @@ function handleSpellcasting(data, containerId) {
                 data.spellcasting.ability_choices[0].toLowerCase() === "intelligence") {
                 
                 console.log(`🧠 ${data.name} usa sempre Intelligence come abilità di lancio. Nessun dropdown mostrato.`);
-                return; // 🔥 Esce dalla funzione per non mostrare il dropdown
+                return;
             }
 
-            // **Caso B: Razze con più opzioni di abilità di lancio (Genasi, Aarakocra, ecc.)**
-            if (data.spellcasting.ability_choices.length > 1) {
-                const abilityOptions = data.spellcasting.ability_choices
+            // **Caso B: Razze con più opzioni di abilità di lancio**
+            const availableChoices = data.spellcasting.ability_choices.filter(a => typeof a === "string");
+            if (availableChoices.length > 1) {
+                const abilityOptions = availableChoices
                     .map(a => `<option value="${a}">${a}</option>`)
                     .join("");
 
@@ -213,6 +214,7 @@ function handleSpellcasting(data, containerId) {
         }
     }
 }
+
 // ==================== EXTRAS: LANGUAGES, SKILLS, TOOLS, ANCESTRY ====================
 function loadLanguages(callback) {
   fetch("data/languages.json")

@@ -130,146 +130,62 @@ function loadSpells(callback) {
  * - filter: groups spells by level and includes a dropdown for the casting ability.
  * Injects the markup into the container with the given ID.
  */
-function handleSpellcastingOptions(data, containerId) {
+function handleSpellcasting(data, containerId) {
   const container = document.getElementById(containerId);
-  if (!container) return "";
+  if (!container) return;
   
-  if (data.spellcasting && data.spellcasting.spell_choices) {
-    let markup = "<h4>📖 Incantesimi</h4>";
-    if (data.spellcasting.spell_choices.type === "fixed_list") {
-      const options = data.spellcasting.spell_choices.options
-        .map(spell => `<option value="${spell}">${spell}</option>`)
-        .join("");
-      markup += `<p><strong>Scegli un incantesimo:</strong>
-                  <select id="spellSelection"><option value="">Seleziona...</option>${options}</select>
-                </p>`;
-    } else if (data.spellcasting.spell_choices.type === "filter") {
-      const currentLevel = parseInt(document.getElementById("levelSelect").value) || 1;
-      const filteredSpells = data.spellcasting.allSpells.filter(spell => parseInt(spell.level) <= currentLevel);
-      const groupedSpells = {};
-      filteredSpells.forEach(spell => {
-        const lvl = parseInt(spell.level);
-        if (!groupedSpells[lvl]) groupedSpells[lvl] = [];
-        groupedSpells[lvl].push(spell);
-      });
-      const levels = Object.keys(groupedSpells).map(Number).sort((a, b) => a - b);
-      levels.forEach(lvl => {
-        const spellsAtLvl = groupedSpells[lvl];
-        if (spellsAtLvl.length === 1) {
-          markup += `<p><strong>Incantesimo di livello ${lvl}:</strong> ${spellsAtLvl[0].name}</p>`;
-        } else if (spellsAtLvl.length > 1) {
-          const opts = spellsAtLvl
-            .map(spell => `<option value="${spell.name}">${spell.name} (lvl ${spell.level})</option>`)
-            .join("");
-          markup += `<p><strong>Incantesimo di livello ${lvl}:</strong>
-                      <select id="spellSelection_level_${lvl}"><option value="">Seleziona...</option>${opts}</select>
-                      </p>`;
-        }
-      });
-      // Casting ability selection.
-      if (data.spellcasting.ability_choices && Array.isArray(data.spellcasting.ability_choices)) {
-        if (data.spellcasting.ability_choices.length > 1) {
-          const abilityOptions = data.spellcasting.ability_choices
-            .map(a => `<option value="${a}">${a}</option>`)
-            .join("");
-          markup += `<p><strong>Abilità di lancio:</strong>
-                      <select id="castingAbility"><option value="">Seleziona...</option>${abilityOptions}</select>
-                      </p>`;
-        } else if (data.spellcasting.ability_choices.length === 1) {
-          markup += `<p><strong>Abilità di lancio:</strong> ${data.spellcasting.ability_choices[0]}</p>`;
-        }
-      }
-    }
-    container.innerHTML = markup;
-    return "";
-  }
-  return "";
-}
-
-/**
- * Handles extra spellcasting options (e.g. for High Elf, Aarakocra).
- * Looks for the filter in additionalSpells (in known["1"]["_"]) and injects a dropdown
- * into the container "spellSelectionContainer" (appending to any existing content).
- */
-function handleAdditionalSpells(data) {
-  if (!data.additionalSpells || data.additionalSpells.length === 0) return;
-  console.log("🛠 Gestione specifica per additionalSpells (es. High Elf, Aarakocra)");
-
-  let spellGroup = data.additionalSpells[0];
-
-  // 🔎 Verifichiamo se la razza deve scegliere un Cantrip o solo l'abilità di lancio
-  let hasCantripSelection = spellGroup.known && spellGroup.known["1"] && Array.isArray(spellGroup.known["1"]["_"]);
-  let hasCastingAbilitySelection = spellGroup.ability && Array.isArray(spellGroup.ability);
-
-  // 🔥 Se la razza deve solo scegliere un'abilità di casting, mostriamo solo quella
-  if (hasCastingAbilitySelection && !hasCantripSelection) {
-    console.log("🎯 Questa razza seleziona SOLO l'abilità di lancio, non un Cantrip.");
-    let abilityOptions = spellGroup.ability.map(a => `<option value="${a}">${a}</option>`).join("");
-    document.getElementById("spellSelectionContainer").innerHTML = `
-      <p><strong>🧠 Seleziona l'abilità di lancio:</strong></p>
-      <select id="castingAbility"><option value="">Seleziona...</option>${abilityOptions}</select>
-    `;
-    return;
-  }
-
-  // 🧙‍♂️ Se la razza può scegliere un Cantrip, procediamo con il filtro
-  if (hasCantripSelection) {
-    let choiceObj = spellGroup.known["1"]["_"].find(item => item.choose && item.choose.includes("class="));
-    if (!choiceObj) {
-      console.warn("⚠️ Nessun filtro 'choose' trovato in additionalSpells.");
-      return;
+  container.innerHTML = ""; // Pulisce il contenuto precedente
+  
+  // 🔹 1. Controlliamo se la razza ha spellcasting
+  if (data.spellcasting) {
+    console.log(`🧙‍♂️ Gestione spellcasting per ${data.name}`);
+    
+    // 📌 Caso 1: Spellcasting fisso (Drow Magic, Tiefling)
+    if (data.spellcasting.fixed_spell) {
+      container.innerHTML += `<p><strong>✨ Incantesimo assegnato:</strong> ${data.spellcasting.fixed_spell}</p>`;
     }
 
-    console.log("📥 Trovato filtro per Cantrip:", choiceObj.choose);
-    let parts = choiceObj.choose.split("|").map(f => f.split("=")[1]);
-    let spellLevel = parseInt(parts[0].trim());
-    let spellClass = parts[1].trim();
-
-    console.log(`📥 Richiesta per incantesimi di livello ${spellLevel} della classe ${spellClass}`);
-
-    loadSpells(spellList => {
-      let availableSpells = spellList
-        .filter(spell =>
-          parseInt(spell.level) === spellLevel &&
-          spell.spell_list &&
-          spell.spell_list.map(x => x.toLowerCase()).includes(spellClass.toLowerCase())
-        )
-        .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
-        .join("");
-
-      const container = document.getElementById("spellSelectionContainer");
-      if (!container) {
-        console.error("❌ ERRORE: spellSelectionContainer non trovato nel DOM!");
-        return;
-      }
-
-      if (availableSpells.length > 0) {
+    // 📌 Caso 2: Spellcasting con scelta (High Elf, Variant Humans)
+    if (data.spellcasting.spell_choices) {
+      if (data.spellcasting.spell_choices.type === "fixed_list") {
+        const options = data.spellcasting.spell_choices.options.map(spell => `<option value="${spell}">${spell}</option>`).join("");
         container.innerHTML += `
-          <p><strong>🔮 Scegli un Cantrip da ${spellClass}:</strong></p>
-          <select id="additionalSpellSelection"><option value="">Seleziona...</option>${availableSpells}</select>
-        `;
-        console.log("✅ Dropdown Cantrip generato correttamente.");
-      } else {
-        container.innerHTML += `<p><strong>⚠️ Nessun Cantrip disponibile per la classe ${spellClass}!</strong></p>`;
+          <p><strong>🔮 Scegli un incantesimo:</strong></p>
+          <select id="spellSelection">
+            <option value="">Seleziona...</option>${options}
+          </select>`;
+      } else if (data.spellcasting.spell_choices.type === "filter") {
+        const spellLevel = 0; // Normalmente i Cantrip
+        const spellClass = data.spellcasting.spell_choices.filter.split("|")[1].split("=")[1]; // Es: Wizard
+
+        loadSpells(spellList => {
+          const filteredSpells = spellList
+            .filter(spell => parseInt(spell.level) === spellLevel && spell.spell_list.includes(spellClass))
+            .map(spell => `<option value="${spell.name}">${spell.name}</option>`).join("");
+
+          if (filteredSpells) {
+            container.innerHTML += `
+              <p><strong>🔮 Scegli un Cantrip da ${spellClass}:</strong></p>
+              <select id="spellSelection">
+                <option value="">Seleziona...</option>${filteredSpells}
+              </select>`;
+          } else {
+            container.innerHTML += `<p><strong>⚠️ Nessun Cantrip disponibile per ${spellClass}.</strong></p>`;
+          }
+        });
       }
-    });
-  }
-}
+    }
 
-/**
- * Wrapper that calls both standard and extra spellcasting handlers.
- */function handleAllSpellcasting(data, traitsHtml) {
-  if (data.spellcasting && data.spellcasting.spell_choices) {
-    handleSpellcastingOptions(data, "spellSelectionContainer");
+    // 📌 Caso 3: Scelta dell'abilità di lancio (Aarakocra, Genasi)
+    if (data.spellcasting.ability_choices) {
+      const abilityOptions = data.spellcasting.ability_choices.map(a => `<option value="${a}">${a}</option>`).join("");
+      container.innerHTML += `
+        <p><strong>🧠 Seleziona l'abilità di lancio:</strong></p>
+        <select id="castingAbility">
+          <option value="">Seleziona...</option>${abilityOptions}
+        </select>`;
+    }
   }
-
-  // 🔥 Assicuriamoci che handleAdditionalSpells venga chiamato solo se necessario
-  if (data.additionalSpells && data.additionalSpells.length > 0) {
-    console.log("🎯 Gestione spellcasting aggiuntivo per questa razza.");
-    handleAdditionalSpells(data);
-  }
-
-  return traitsHtml;
 }
 
 // ==================== EXTRAS: LANGUAGES, SKILLS, TOOLS, ANCESTRY ====================
@@ -976,7 +892,7 @@ function displayRaceTraits() {
       traitsHtml += tablesHtml;
 
       // Spellcasting – handle both standard and extra.
-      handleAllSpellcasting(raceData, traitsHtml);
+      handleSpellcasting(raceData, traitsHtml);
 
       // Languages (display fixed languages; extra languages are chosen in the popup)
       let languageHtml = "";
@@ -1227,56 +1143,49 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("generateJson").addEventListener("click", generateFinalJson);
 
   // When "Seleziona Razza" is clicked, fetch race data, hide race traits, and open the extra popup.
-  document.getElementById("confirmRaceSelection").addEventListener("click", () => {
-    const selectedRace = document.getElementById("raceSelect").value;
-    if (!selectedRace) {
-      alert("⚠️ Seleziona una razza prima di procedere!");
-      return;
-    }
-    fetch(selectedRace)
-      .then(response => response.json())
-      .then(data => {
-        const raceData = convertRaceData(data);
-        const selections = [];
-        document.getElementById("raceTraits").style.display = "none";
+document.getElementById("confirmRaceSelection").addEventListener("click", () => {
+  const selectedRace = document.getElementById("raceSelect").value;
+  if (!selectedRace) {
+    alert("⚠️ Seleziona una razza prima di procedere!");
+    return;
+  }
+  fetch(selectedRace)
+    .then(response => response.json())
+    .then(data => {
+      const raceData = convertRaceData(data);
+      const selections = [];
+      document.getElementById("raceTraits").style.display = "none";
 
-        if (raceData.languages && raceData.languages.choice > 0) {
-          selections.push({
-            name: "Languages",
-            description: "Choose an additional language.",
-            selection: ["Elvish", "Dwarvish", "Halfling", "Orc", "Gnomish", "Draconic", "Celestial"],
-            count: raceData.languages.choice
-          });
-        }
-        if (raceData.skill_choices) {
-          selections.push({
-            name: "Skill Proficiency",
-            description: "Choose skill proficiencies.",
-            selection: raceData.skill_choices.options,
-            count: raceData.skill_choices.number
-          });
-        }
-        if (raceData.tool_choices) {
-          selections.push({
-            name: "Tool Proficiency",
-            description: "Choose a tool proficiency.",
-            selection: raceData.tool_choices.options,
-            count: 1
-          });
-        }
-        if (raceData.spellcasting) {
-          selections.push({
-            name: "Spellcasting",
-            description: "Choose a cantrip.",
-            selection: ["Fire Bolt", "Mage Hand", "Prestidigitation", "Ray of Frost"],
-            count: 1
-          });
-        }
-        sessionStorage.setItem("popupOpened", "true");
-        openRaceExtrasModal(selections);
-        document.getElementById("confirmRaceSelection").style.display = "none";
-      });
-  });
+      if (raceData.languages && raceData.languages.choice > 0) {
+        selections.push({
+          name: "Languages",
+          description: "Choose an additional language.",
+          selection: ["Elvish", "Dwarvish", "Halfling", "Orc", "Gnomish", "Draconic", "Celestial"],
+          count: raceData.languages.choice
+        });
+      }
+      if (raceData.skill_choices) {
+        selections.push({
+          name: "Skill Proficiency",
+          description: "Choose skill proficiencies.",
+          selection: raceData.skill_choices.options,
+          count: raceData.skill_choices.number
+        });
+      }
+      if (raceData.tool_choices) {
+        selections.push({
+          name: "Tool Proficiency",
+          description: "Choose a tool proficiency.",
+          selection: raceData.tool_choices.options,
+          count: 1
+        });
+      }
 
+      sessionStorage.setItem("popupOpened", "true");
+      openRaceExtrasModal(selections);
+      document.getElementById("confirmRaceSelection").style.display = "none";
+    });
+});
+  
   initializeValues();
 });

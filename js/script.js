@@ -750,8 +750,20 @@ function showExtraSelection() {
         if (!selectedData[category]) {
           selectedData[category] = [];
         }
-        
-        selectedData[category][index] = event.target.value; // Imposta il valore selezionato
+    
+        selectedData[category][index] = event.target.value;
+    
+        // Aggiorna il dropdown successivo per rimuovere opzioni già scelte
+        document.querySelectorAll(`.extra-selection[data-category="${category}"]`).forEach(sel => {
+          const currentVal = sel.value;
+          sel.innerHTML = `<option value="">Seleziona...</option>`;
+          extraSelections.find(s => s.name === category).selection.forEach(option => {
+            if (!selectedData[category].includes(option) || option === currentVal) {
+              sel.innerHTML += `<option value="${option}" ${option === currentVal ? "selected" : ""}>${option}</option>`;
+            }
+          });
+        });
+    
         console.log(`📝 Salvato: ${category} -> ${selectedData[category]}`);
       });
     });
@@ -807,7 +819,7 @@ document.getElementById("closeModal").addEventListener("click", () => {
     console.log(`🔹 ${key}: ${selectedData[key].join(", ")}`);
   });
 
-  // Aggiorna le sezioni dell'interfaccia con le scelte fatte
+  // Aggiorna l'interfaccia con le scelte fatte
   if (selectedData["Languages"]) {
     document.getElementById("languageSelection").innerHTML = `<p><strong>Lingue Extra:</strong> ${selectedData["Languages"].join(", ")}</p>`;
   }
@@ -821,7 +833,9 @@ document.getElementById("closeModal").addEventListener("click", () => {
     document.getElementById("spellSelectionContainer").innerHTML = `<p><strong>Spellcasting:</strong> ${selectedData["Spellcasting"].join(", ")}</p>`;
   }
 
-  document.getElementById("raceExtraTraitsContainer").style.display = "block";
+  // 🔄 Mostra di nuovo lo step 2 e aggiorna i tratti di razza
+  showStep("step2");
+  displayRaceTraits();
 });
   // da cancellare a fine codice 
   // Show the extra traits container after closing the popup.

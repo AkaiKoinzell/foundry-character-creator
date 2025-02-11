@@ -390,7 +390,10 @@ function loadDropdownData(jsonPath, selectId, key) {
       }));
       populateDropdown(selectId, options);
     })
-    .catch(error => handleError(`Errore caricando ${jsonPath}: ${error}`));
+    .catch(error => {
+      console.error(`❌ Errore caricando ${jsonPath}:`, error);
+      alert(`⚠️ Errore di connessione nel caricamento di ${jsonPath}. Riprova!`);
+    });
 }
 
 function populateDropdown(selectId, options) {
@@ -831,16 +834,18 @@ document.getElementById("closeModal").addEventListener("click", () => {
   document.getElementById("raceExtrasModal").style.display = "none";
   sessionStorage.removeItem("popupOpened");
 
-  // Log delle selezioni fatte nel pop-up
   console.log("📝 **Selezioni salvate:**", selectedData);
 
   // 🔄 Mostra di nuovo lo step 2
   showStep("step2");
 
-  // 🛠 Ritardiamo leggermente l’aggiornamento per assicurarci che tutto venga ricaricato
+  // 🛠 Forziamo un aggiornamento del DOM
   setTimeout(() => {
     displayRaceTraits(); // Ricarica i tratti della razza
     updateExtraSelectionsView(); // Mostra le selezioni extra
+
+    // 🔥 FORZIAMO IL RENDER AGGIORNANDO MANUALMENTE IL CONTENUTO
+    document.getElementById("raceTraits").style.display = "block";
   }, 200);
 });
 
@@ -873,6 +878,7 @@ document.getElementById("raceSelect").addEventListener("change", () => {
 
 // ==================== DISPLAY DEI TRATTI DELLA RAZZA ====================
 function displayRaceTraits() {
+  console.log("🛠 Esecuzione displayRaceTraits()...");
   const racePath = document.getElementById("raceSelect").value;
   const raceTraitsDiv = document.getElementById("raceTraits");
   const racialBonusDiv = document.getElementById("racialBonusSelection");
@@ -886,12 +892,14 @@ function displayRaceTraits() {
     });
 
    if (!racePath) {
+    console.warn("⚠️ displayRaceTraits(): Nessuna razza selezionata.");
     raceTraitsDiv.innerHTML = "<p>Seleziona una razza per vedere i tratti.</p>";
     racialBonusDiv.style.display = "none";
     resetRacialBonuses();
     return;
   }
 
+  console.log(`📜 Caricamento tratti per ${racePath}...`);
   fetch(racePath)
     .then(response => response.json())
     .then(data => {
@@ -946,11 +954,11 @@ function displayRaceTraits() {
 
       if (raceTraitsDiv) {
         raceTraitsDiv.innerHTML = traitsHtml;
+        raceTraitsDiv.style.display = "block";  // 🔥 FORZA IL RENDERING
         console.log("✅ Tratti della razza aggiornati con successo!");
       } else {
         console.error("❌ ERRORE: Il div dei tratti della razza non è stato trovato!");
       }
-
       // Extras: Skills, Tools, Variant Features, Ancestry.
       handleExtraSkills(raceData, "skillSelectionContainer");
       handleExtraTools(raceData, "toolSelectionContainer");

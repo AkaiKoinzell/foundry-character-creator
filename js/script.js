@@ -670,6 +670,7 @@ function renderTables(entries) {
 // ==================== POPUP FOR EXTRA SELECTIONS ====================
 
 // Global variables for the extra selections popup
+let selectedData = {}; // Inizializza l'oggetto per memorizzare le scelte fatte nel pop-up
 let extraSelections = [];
 let currentSelectionIndex = 0;
 
@@ -689,6 +690,23 @@ function openRaceExtrasModal(selections) {
   if (!sessionStorage.getItem("popupOpened")) {
     sessionStorage.setItem("popupOpened", "true");
   }
+
+  // Inizializza le categorie in selectedData se non esistono già
+  selections.forEach(selection => {
+    if (!selectedData[selection.name]) {
+      selectedData[selection.name] = [];
+    }
+  });
+
+  extraSelections = selections;
+  currentSelectionIndex = 0;
+  showExtraSelection();
+
+  sessionStorage.setItem("popupOpened", "true");
+
+  document.getElementById("raceExtraTraitsContainer").style.display = "none";
+  document.getElementById("raceExtrasModal").style.display = "flex";
+}
 
   const extraContainer = document.getElementById("raceExtraTraitsContainer");
   const modal = document.getElementById("raceExtrasModal");
@@ -721,11 +739,15 @@ function showExtraSelection() {
     let dropdownHTML = "";
     const numChoices = currentSelection.count || 1;
 
+    if (!selectedData[currentSelection.name]) {
+      selectedData[currentSelection.name] = []; // Assicuriamoci che esista
+    }
+
     for (let i = 0; i < numChoices; i++) {
       dropdownHTML += `<select class="extra-selection" data-category="${currentSelection.name}" data-index="${i}">
                           <option value="">Seleziona...</option>`;
       currentSelection.selection.forEach(option => {
-        const isSelected = selectedData[currentSelection.name] && selectedData[currentSelection.name].includes(option);
+        const isSelected = selectedData[currentSelection.name].includes(option);
         dropdownHTML += `<option value="${option}" ${isSelected ? "selected" : ""}>${option}</option>`;
       });
       dropdownHTML += `</select><br>`;
@@ -733,7 +755,6 @@ function showExtraSelection() {
 
     selectionElem.innerHTML = dropdownHTML;
 
-    // Event listener per aggiornare `selectedData` mentre l'utente seleziona le opzioni
     document.querySelectorAll(".extra-selection").forEach(select => {
       select.addEventListener("change", () => {
         const category = select.getAttribute("data-category");
@@ -744,12 +765,11 @@ function showExtraSelection() {
           if (sel.value) newSelections.push(sel.value);
         });
 
-        selectedData[category] = newSelections; // Mantiene le scelte fatte
+        selectedData[category] = newSelections;
       });
     });
   }
 
-  // Abilita/Disabilita i pulsanti di navigazione
   document.getElementById("prevTrait").disabled = (currentSelectionIndex === 0);
   document.getElementById("nextTrait").disabled = (currentSelectionIndex === extraSelections.length - 1);
 }

@@ -485,50 +485,48 @@ function convertRaceData(rawData) {
   });
 
   // Spellcasting – complete processing
-  let spellcasting = null;
+  // Spellcasting – complete processing
+let spellcasting = null;
 
-  if (rawData.additionalSpells && rawData.additionalSpells.length > 0) {
+if (rawData.additionalSpells && rawData.additionalSpells.length > 0) {
     let spellsArray = [];
     let abilityChoices = [];
-  
+
     rawData.additionalSpells.forEach(spellData => {
-      if (spellData.known) {
-        Object.keys(spellData.known).forEach(levelKey => {
-          if (spellData.known[levelKey]._ && Array.isArray(spellData.known[levelKey]._)) {
-            spellData.known[levelKey]._.forEach(spell => {
-              if (typeof spell === "string") {
-                spellsArray.push({ name: spell, level: parseInt(levelKey) });
-              } else if (spell.choose) {
-                spellcasting = spellcasting || {};  // 🔹 Assicura che spellcasting sia inizializzato
-                spellcasting.spell_choices = { type: "filter", filter: spell.choose };
-              }
+        if (spellData.known) {
+            Object.keys(spellData.known).forEach(levelKey => {
+                if (spellData.known[levelKey]._ && Array.isArray(spellData.known[levelKey]._)) {
+                    spellData.known[levelKey]._.forEach(spell => {
+                        if (typeof spell === "string") {
+                            spellsArray.push({ name: spell, level: parseInt(levelKey) });
+                        } else if (spell.choose) {
+                            spellcasting = spellcasting || {};  // 🔹 Assicura che spellcasting sia inizializzato
+                            spellcasting.spell_choices = { type: "filter", filter: spell.choose };
+                        }
+                    });
+                }
             });
-          }
-        });
-      }
-  
-      if (spellData.ability) {
-          if (Array.isArray(spellData.ability)) {
-              abilityChoices = spellData.ability;
-          } else if (typeof spellData.ability === "object" && spellData.ability.choose) {
-              abilityChoices = spellData.ability.choose; 
-          } else if (typeof spellData.ability === "string") { 
-              abilityChoices = [spellData.ability]; 
-          }
-      }
+        }
+
+        // 📌 FIX: Recupera l'abilità di lancio dal campo `ability`
+        if (spellData.ability) {
+            if (typeof spellData.ability === "string") { 
+                abilityChoices.push(spellData.ability.toUpperCase()); 
+            }
+        }
     });
-  
+
     if (spellsArray.length > 0) {
-      spellcasting = spellcasting || {};  // 🔹 Assicura che spellcasting esista prima di assegnare proprietà
-      spellcasting.spell_choices = {
-        type: "fixed_list",
-        options: spellsArray.map(s => s.name)
-      };
+        spellcasting = spellcasting || {};  // 🔹 Assicura che spellcasting esista prima di assegnare proprietà
+        spellcasting.spell_choices = {
+            type: "fixed_list",
+            options: spellsArray.map(s => s.name)
+        };
     }
-  
+
     spellcasting = spellcasting || {};  // 🔹 Evita errori null su spellcasting
     spellcasting.ability_choices = abilityChoices;
-  }
+}
   // Languages
   let languages = { fixed: [], choice: 0, options: [] };
   if (rawData.languageProficiencies && rawData.languageProficiencies.length > 0) {

@@ -1219,34 +1219,36 @@ document.getElementById("confirmRaceSelection").addEventListener("click", () => 
               count: 1
             });
           } else if (raceData.spellcasting.spell_choices.type === "filter") {
-                const spellLevel = 0; // Normalmente i Cantrip
-                const spellClassParts = raceData.spellcasting.spell_choices.filter.split("|");
-                const spellClass = spellClassParts.length > 1 ? spellClassParts[1].split("=")[1] : null;
-              
-                if (spellClass) {
-                  loadSpells(spellList => {
-                    const filteredSpells = spellList
-                      .filter(spell => parseInt(spell.level) === spellLevel && spell.spell_list.includes(spellClass))
-                      .map(spell => spell.name);
-                    
-                    if (filteredSpells.length > 0) {
-                      selections.push({
-                        name: "Spellcasting",
-                        description: `Choose a cantrip from ${spellClass}.`,
-                        selection: filteredSpells,
-                        count: 1
-                      });
-                    }
-              
-                    sessionStorage.setItem("popupOpened", "true");
-                    openRaceExtrasModal(selections);
+            const spellLevel = 0; // Normalmente i Cantrip
+            const spellClassParts = raceData.spellcasting.spell_choices.filter.split("|");
+            const spellClass = spellClassParts.length > 1 ? spellClassParts[1].split("=")[1] : null;
+          
+            if (spellClass) {
+              loadSpells(spellList => {
+                const filteredSpells = spellList
+                  .filter(spell => parseInt(spell.level) === spellLevel && spell.spell_list.includes(spellClass))
+                  .map(spell => spell.name);
+                
+                if (filteredSpells.length > 0) {
+                  selections.push({
+                    name: "Spellcasting",
+                    description: `Choose a cantrip from ${spellClass}.`,
+                    selection: filteredSpells,
+                    count: 1
                   });
-              }
-            }
-      }
+                }
+
+                sessionStorage.setItem("popupOpened", "true");
+                openRaceExtrasModal(selections);
+              });
+            } 
+          } 
+        } 
+      } 
+
       sessionStorage.setItem("popupOpened", "true");
       openRaceExtrasModal(selections);
       document.getElementById("confirmRaceSelection").style.display = "none";
-      };
+    }) 
   initializeValues();
 });

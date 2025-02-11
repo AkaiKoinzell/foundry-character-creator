@@ -943,32 +943,12 @@ function displayRaceTraits() {
       } else {
         languageHtml = `<p><strong>Lingue Concesse:</strong> Nessuna</p>`;
       }
-      if (raceData.languages.choice > 0) {
-        languageHtml += `<p>Scegli ${raceData.languages.choice} lingua/e extra:</p>`;
-        loadLanguages(langs => {
-          const availableLangs = langs.filter(lang => !raceData.languages.fixed.includes(lang));
-          let opts = availableLangs.map(lang => `<option value="${lang}">${lang}</option>`).join("");
-          opts = `<option value="">Seleziona...</option>` + opts;
-          const select = `<select id="extraLanguageSelect">${opts}</select>`;
-          const langContainer = document.getElementById("languageSelection");
-          if (langContainer) {
-            langContainer.innerHTML = languageHtml + select;
-          }
-        });
-      } else {
-        const langContainer = document.getElementById("languageSelection");
-        if (langContainer) langContainer.innerHTML = languageHtml;
-      }
 
       if (raceTraitsDiv) {
-  raceTraitsDiv.innerHTML = traitsHtml;
-  console.log("✅ Tratti della razza aggiornati con successo!");
-} else {
-  console.error("❌ ERRORE: Il div dei tratti della razza non è stato trovato!");
-}
-      }
-      if (racialBonusDiv) {
-        racialBonusDiv.style.display = "block";
+        raceTraitsDiv.innerHTML = traitsHtml;
+        console.log("✅ Tratti della razza aggiornati con successo!");
+      } else {
+        console.error("❌ ERRORE: Il div dei tratti della razza non è stato trovato!");
       }
 
       // Extras: Skills, Tools, Variant Features, Ancestry.
@@ -982,14 +962,6 @@ function displayRaceTraits() {
 
       resetRacialBonuses();
       window.currentRaceData = raceData;
-      // Inserisci il contenuto nella pagina
-      if (raceTraitsDiv) {
-        raceTraitsDiv.innerHTML = traitsHtml;
-        console.log("✅ Tratti della razza aggiornati!");
-      } else {
-        console.error("❌ ERRORE: Il div dei tratti della razza non è stato trovato!");
-      }
-      racialBonusDiv.style.display = "block";
     })
     .catch(error => handleError(`Errore caricando i tratti della razza: ${error}`));
 }

@@ -1,4 +1,4 @@
-// ==================== NAVIGATION BETWEEN STEPS ====================
+// ==================== 📜 NAVIGAZIONE TRA GLI STEP ====================
 function showStep(stepId) {
   const steps = document.querySelectorAll(".step");
   steps.forEach(step => {
@@ -10,10 +10,10 @@ function showStep(stepId) {
   });
 }
 
-// ==================== VARIANT FEATURES MAPPING ====================
+// ==================== MAPPING PER LE EXTRA VARIANT FEATURES ====================
 const variantExtraMapping = {
   "Drow Magic": {
-    type: "none" // Fixed spells will be handled separately.
+    type: "none" // Le spell fisse saranno gestite separatamente
   },
   "Skill Versatility": {
     type: "skills",
@@ -31,10 +31,10 @@ const variantExtraMapping = {
     type: "spells",
     filter: "level=0|class=Wizard"
   }
-  // Add other mappings as needed.
+  // Aggiungi altri mapping se necessario
 };
 
-// ==================== VARIANT FEATURES FUNCTIONS ====================
+// ==================== FUNZIONI PER LE VARIANT FEATURES ====================
 function updateVariantSkillOptions() {
   const allVariantSkillSelects = document.querySelectorAll(".variantSkillChoice");
   if (!allVariantSkillSelects.length) return;
@@ -130,9 +130,10 @@ function loadSpells(callback) {
 
 /**
  * Handles standard spellcasting options.
- * If type is "fixed_list", shows a simple dropdown.
- * If type is "filter", groups spells by level and shows a dropdown for ability selection.
- * The markup is injected into the container with the given ID.
+ * Supports:
+ * - fixed_list: a fixed dropdown.
+ * - filter: groups spells by level and includes a dropdown for selecting the casting ability.
+ * Injects the markup into the container with the given ID.
  */
 function handleSpellcastingOptions(data, containerId) {
   const container = document.getElementById(containerId);
@@ -170,7 +171,7 @@ function handleSpellcastingOptions(data, containerId) {
                       </p>`;
         }
       });
-      // Ability selection for spellcasting
+      // Ability selection for spellcasting.
       if (data.spellcasting.ability_choices && Array.isArray(data.spellcasting.ability_choices)) {
         if (data.spellcasting.ability_choices.length > 1) {
           const abilityOptions = data.spellcasting.ability_choices
@@ -191,7 +192,7 @@ function handleSpellcastingOptions(data, containerId) {
 }
 
 /**
- * Handles extra spellcasting options (for races such as High Elf or Aarakocra).
+ * Handles extra spellcasting options (e.g. for High Elf or Aarakocra).
  * Looks for a filter in additionalSpells (in known["1"]["_"]) and injects a dropdown.
  */
 function handleAdditionalSpells(data) {
@@ -237,7 +238,7 @@ function handleAdditionalSpells(data) {
 }
 
 /**
- * Wrapper that calls both standard spellcasting and extra spellcasting handlers.
+ * Wrapper that calls both the standard and extra spellcasting handlers.
  */
 function handleAllSpellcasting(data, traitsHtml) {
   if (data.spellcasting && data.spellcasting.spell_choices) {
@@ -495,7 +496,6 @@ function convertRaceData(rawData) {
   let spellcasting = null;
   let extraSpellcasting = null;
   if (rawData.additionalSpells && rawData.additionalSpells.length > 0) {
-    // If the first additionalSpells group contains a "_" property in known["1"], treat it as extraSpellcasting.
     let firstSpellGroup = rawData.additionalSpells[0];
     if (firstSpellGroup.known && firstSpellGroup.known["1"] && firstSpellGroup.known["1"]["_"]) {
       extraSpellcasting = rawData.additionalSpells;
@@ -615,7 +615,7 @@ function convertRaceData(rawData) {
   };
 }
 
-// ==================== RENDERING TABLES ====================
+// ==================== RENDERING DI TABELLE ====================
 function renderTables(entries) {
   let html = "";
   if (!entries || !Array.isArray(entries)) return html;
@@ -681,7 +681,7 @@ function openRaceExtrasModal(selections) {
   currentSelectionIndex = 0;
   showExtraSelection();
 
-  // Mark popup as opened (if not already)
+  // Mark that the popup has been opened (if not already)
   if (!sessionStorage.getItem("popupOpened")) {
     sessionStorage.setItem("popupOpened", "true");
   }
@@ -723,6 +723,7 @@ function showExtraSelection() {
         dropdownHTML += `</select><br>`;
       }
       selectionElem.innerHTML = dropdownHTML;
+
       // Add event listener to update selections on change
       document.querySelectorAll(".extra-selection").forEach(select => {
         select.addEventListener("change", () => {
@@ -741,11 +742,20 @@ function showExtraSelection() {
     }
   }
 
-  // Enable/disable navigation buttons
+  // Enable/disable navigation buttons and manage Close button visibility.
   const prevBtn = document.getElementById("prevTrait");
   const nextBtn = document.getElementById("nextTrait");
+  const closeBtn = document.getElementById("closeModal");
   if (prevBtn) prevBtn.disabled = (currentSelectionIndex === 0);
   if (nextBtn) nextBtn.disabled = (currentSelectionIndex === extraSelections.length - 1);
+  // Show the "Close" button only on the last selection.
+  if (closeBtn) {
+    if (currentSelectionIndex === extraSelections.length - 1) {
+      closeBtn.style.display = "inline-block";
+    } else {
+      closeBtn.style.display = "none";
+    }
+  }
 }
 
 document.getElementById("prevTrait").addEventListener("click", () => {
@@ -784,7 +794,7 @@ document.getElementById("closeModal").addEventListener("click", () => {
     console.log(`🔹 ${key}: ${selectedData[key].join(", ")}`);
   });
 
-  // Update appropriate UI containers with the saved selections.
+  // Update the corresponding UI containers with the saved selections.
   Object.keys(selectedData).forEach(category => {
     if (category === "Languages") {
       const langElem = document.getElementById("extraLanguageSelect");
@@ -806,13 +816,13 @@ document.getElementById("closeModal").addEventListener("click", () => {
   if (extraContainer) extraContainer.style.display = "block";
 });
 
-// ==================== DISPLAY RACE TRAITS ====================
+// ==================== DISPLAY DEI TRATTI DELLA RAZZA ====================
 function displayRaceTraits() {
   const racePath = document.getElementById("raceSelect").value;
   const raceTraitsDiv = document.getElementById("raceTraits");
   const racialBonusDiv = document.getElementById("racialBonusSelection");
 
-  // Clear extra containers
+  // Clear extra containers.
   ["skillSelectionContainer", "toolSelectionContainer", "spellSelectionContainer",
    "variantFeatureSelectionContainer", "variantExtraContainer", "languageSelection", "ancestrySelection"]
     .forEach(id => {
@@ -906,12 +916,12 @@ function displayRaceTraits() {
         racialBonusDiv.style.display = "block";
       }
 
-      // Extras: Skills and Tools
+      // Extras: Skills and Tools.
       handleExtraSkills(raceData, "skillSelectionContainer");
       handleExtraTools(raceData, "toolSelectionContainer");
-      // Variant Features
+      // Variant Features.
       handleVariantFeatureChoices(raceData);
-      // Ancestry
+      // Ancestry.
       handleExtraAncestry(raceData, "ancestrySelection");
 
       resetRacialBonuses();
@@ -944,7 +954,7 @@ function updateSubclasses() {
     .catch(error => handleError(`Errore caricando le sottoclasse: ${error}`));
 }
 
-// ==================== GENERATE FINAL JSON (STEP 8) ====================
+// ==================== GENERAZIONE DEL JSON FINALE (STEP 8) ====================
 function generateFinalJson() {
   let chromaticAncestry = null;
   const ancestrySelect = document.getElementById("ancestrySelect");
@@ -1103,7 +1113,7 @@ function resetRacialBonuses() {
   updateFinalScores();
 }
 
-// ==================== STUB FOR updateSkillOptions (if not defined) ====================
+// ==================== STUB FOR updateSkillOptions ====================
 function updateSkillOptions() {
   console.log("updateSkillOptions called.");
 }
@@ -1115,12 +1125,11 @@ window.updateSubclasses = updateSubclasses;
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("✅ Script.js caricato!");
-
   // Hide the popup modal at startup.
   const modal = document.getElementById("raceExtrasModal");
   if (modal) modal.style.display = "none";
 
-  // Prevent auto reopening of popup.
+  // Prevent auto-reopening of the popup.
   if (sessionStorage.getItem("popupOpened") === "true") {
     console.log("🛑 Il pop-up non verrà riaperto automaticamente.");
     sessionStorage.removeItem("popupOpened");
@@ -1144,7 +1153,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("levelSelect").addEventListener("change", () => displayRaceTraits());
   document.getElementById("generateJson").addEventListener("click", generateFinalJson);
 
-  // When the confirm race button is clicked, hide race traits and open the popup.
+  // When "Seleziona Razza" is clicked, fetch race data, hide the race traits, and open the popup.
   document.getElementById("confirmRaceSelection").addEventListener("click", () => {
     const selectedRace = document.getElementById("raceSelect").value;
     if (!selectedRace) {
@@ -1193,7 +1202,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         sessionStorage.setItem("popupOpened", "true");
         openRaceExtrasModal(selections);
-        // Hide the confirm button to avoid re-click.
+        // Hide the confirm button to prevent re-click.
         document.getElementById("confirmRaceSelection").style.display = "none";
       });
   });

@@ -213,8 +213,6 @@ function handleSpellcasting(data, containerId) {
         }
     }
 }
-
-
 // ==================== EXTRAS: LANGUAGES, SKILLS, TOOLS, ANCESTRY ====================
 function loadLanguages(callback) {
   fetch("data/languages.json")

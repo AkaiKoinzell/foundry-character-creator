@@ -186,35 +186,30 @@ function handleSpellcasting(data, containerId) {
 
         // ✅ Caso 3: **Scelta dell'abilità di lancio**
         if (data.spellcasting.ability_choices && Array.isArray(data.spellcasting.ability_choices)) {
-            console.log(`🧙‍♂️ Verifica dell'abilità di lancio per ${data.name}:`, data.spellcasting.ability_choices);
-
-            // ✅ Debug: Stampa le abilità di lancio
-            console.log(`🔍 Controllo spellcasting per ${data.name}:`, data.spellcasting.ability_choices);
-
-            // **Caso A: L'Alto Elfo ha solo "Intelligence" e NON deve mostrare il dropdown**
-            if (data.name.toLowerCase().includes("elf (high)") && 
-                data.spellcasting.ability_choices.length === 1 && 
-                typeof data.spellcasting.ability_choices[0] === "string" &&
-                data.spellcasting.ability_choices[0].toLowerCase() === "intelligence") {
-                
-                console.log(`🧠 ${data.name} usa sempre Intelligence come abilità di lancio. Nessun dropdown mostrato.`);
-                return;
-            }
-
-            // **Caso B: Razze con più opzioni di abilità di lancio**
-            const availableChoices = data.spellcasting.ability_choices.filter(a => typeof a === "string");
-            if (availableChoices.length > 1) {
-                const abilityOptions = availableChoices
-                    .map(a => `<option value="${a}">${a}</option>`)
-                    .join("");
-
-                container.innerHTML += `
-                    <p><strong>🧠 Seleziona l'abilità di lancio:</strong></p>
-                    <select id="castingAbility">
-                        <option value="">Seleziona...</option>${abilityOptions}
-                    </select>`;
-            }
-        }
+          console.log(`🧙‍♂️ Verifica dell'abilità di lancio per ${data.name}:`, data.spellcasting.ability_choices);
+      
+          // 🔹 Se l'Alto Elfo ha solo una scelta (INT), saltiamo la creazione del dropdown
+          if (data.name.toLowerCase().includes("elf (high)") && 
+              data.spellcasting.ability_choices.length === 1 && 
+              typeof data.spellcasting.ability_choices[0] === "string") {
+              
+              console.log(`🧠 ${data.name} usa sempre ${data.spellcasting.ability_choices[0]} come abilità di lancio. Nessun dropdown mostrato.`);
+              return;
+          }
+      
+          // 🔹 Se ci sono più opzioni, mostra il dropdown
+          if (data.spellcasting.ability_choices.length > 1) {
+              const abilityOptions = data.spellcasting.ability_choices
+                  .map(a => `<option value="${a.toUpperCase()}">${a.toUpperCase()}</option>`)
+                  .join("");
+      
+              container.innerHTML += `
+                  <p><strong>🧠 Seleziona l'abilità di lancio:</strong></p>
+                  <select id="castingAbility">
+                      <option value="">Seleziona...</option>${abilityOptions}
+                  </select>`;
+          }
+      }
     }
 }
 

@@ -712,37 +712,12 @@ function openRaceExtrasModal(selections) {
 function updateExtraSelectionsView() {
   console.log("🔄 Aggiornamento visualizzazione delle scelte extra...");
 
-  const languageContainer = document.getElementById("languageSelection");
-  const skillContainer = document.getElementById("skillSelectionContainer");
-  const toolContainer = document.getElementById("toolSelectionContainer");
-  const spellContainer = document.getElementById("spellSelectionContainer");
-
-    function updateContainer(id, title, dataKey) {
-    const container = document.getElementById(id);
-    if (selectedData[dataKey] && container) {
-      container.innerHTML = `<p><strong>${title}:</strong> ${selectedData[dataKey].join(", ")}</p>`;
-    }
-  }
-
-  if (selectedData["Languages"] && languageContainer) {
-    languageContainer.innerHTML = `<p><strong>Lingue Extra:</strong> ${selectedData["Languages"].join(", ")}</p>`;
-  }
-
-  if (selectedData["Skill Proficiency"] && skillContainer) {
-    skillContainer.innerHTML = `<p><strong>Skill Proficiency:</strong> ${selectedData["Skill Proficiency"].join(", ")}</p>`;
-  }
-
-  if (selectedData["Tool Proficiency"] && toolContainer) {
-    toolContainer.innerHTML = `<p><strong>Tool Proficiency:</strong> ${selectedData["Tool Proficiency"].join(", ")}</p>`;
-  }
-
-  if (selectedData["Spellcasting"] && spellContainer) {
-    spellContainer.innerHTML = `<p><strong>Spellcasting:</strong> ${selectedData["Spellcasting"].join(", ")}</p>`;
-  }
   function updateContainer(id, title, dataKey) {
     const container = document.getElementById(id);
     if (selectedData[dataKey] && container) {
       container.innerHTML = `<p><strong>${title}:</strong> ${selectedData[dataKey].join(", ")}</p>`;
+    } else if (container) {
+      container.innerHTML = `<p><strong>${title}:</strong> Nessuna selezione.</p>`;
     }
   }
 
@@ -750,6 +725,8 @@ function updateExtraSelectionsView() {
   updateContainer("skillSelectionContainer", "Skill Proficiency", "Skill Proficiency");
   updateContainer("toolSelectionContainer", "Tool Proficiency", "Tool Proficiency");
   updateContainer("spellSelectionContainer", "Spellcasting", "Spellcasting");
+
+  console.log("✅ Extra selections aggiornate:", selectedData);
 }
 
 /**
@@ -857,8 +834,11 @@ document.getElementById("closeModal").addEventListener("click", () => {
     console.log(`🔹 ${key}: ${selectedData[key].join(", ")}`);
   // Aggiorna i tratti della razza e mostra lo step corretto
   showStep("step2");
-  displayRaceTraits();
-  updateExtraSelectionsView();
+  // Forza l'aggiornamento dei tratti di razza con una leggera attesa per evitare problemi di rendering
+  setTimeout(() => {
+    displayRaceTraits();
+    updateExtraSelectionsView();
+  }, 100);
   });
 
   // Aggiorna l'interfaccia con le scelte fatte
@@ -998,7 +978,12 @@ function displayRaceTraits() {
       resetRacialBonuses();
       window.currentRaceData = raceData;
       // Inserisci il contenuto nella pagina
-      raceTraitsDiv.innerHTML = traitsHtml;
+      if (raceTraitsDiv) {
+        raceTraitsDiv.innerHTML = traitsHtml;
+        console.log("✅ Tratti della razza aggiornati!");
+      } else {
+        console.error("❌ ERRORE: Il div dei tratti della razza non è stato trovato!");
+      }
       racialBonusDiv.style.display = "block";
     })
     .catch(error => handleError(`Errore caricando i tratti della razza: ${error}`));

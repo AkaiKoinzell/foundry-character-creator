@@ -712,41 +712,47 @@ function showExtraSelection() {
   }
 
   const currentSelection = extraSelections[currentSelectionIndex];
-  if (titleElem) titleElem.innerText = currentSelection.name;
-  if (descElem) descElem.innerText = currentSelection.description;
-  if (selectionElem) {
-    selectionElem.innerHTML = ""; // Clear previous content
-    if (currentSelection.selection) {
-      let dropdownHTML = "";
-      const numChoices = currentSelection.count || 1;
-      for (let i = 0; i < numChoices; i++) {
-        dropdownHTML += `<select class="extra-selection" data-category="${currentSelection.name}" data-index="${i}">
+
+  titleElem.innerText = currentSelection.name;
+  descElem.innerText = currentSelection.description;
+  selectionElem.innerHTML = ""; // Pulisce il contenuto precedente
+
+  if (currentSelection.selection) {
+    let dropdownHTML = "";
+    const numChoices = currentSelection.count || 1;
+
+    for (let i = 0; i < numChoices; i++) {
+      dropdownHTML += `<select class="extra-selection" data-category="${currentSelection.name}" data-index="${i}">
                           <option value="">Seleziona...</option>`;
-        currentSelection.selection.forEach(option => {
-          dropdownHTML += `<option value="${option}">${option}</option>`;
-        });
-        dropdownHTML += `</select><br>`;
-      }
-      selectionElem.innerHTML = dropdownHTML;
-      // Add event listeners to update dropdowns for the same category.
-      document.querySelectorAll(".extra-selection").forEach(select => {
-        select.addEventListener("change", () => {
-          const category = select.getAttribute("data-category");
-          const allDropdowns = document.querySelectorAll(`.extra-selection[data-category="${category}"]`);
-          let selectedValues = Array.from(allDropdowns).map(sel => sel.value);
-          allDropdowns.forEach(sel => {
-            const currentVal = sel.value;
-            sel.innerHTML = `<option value="">Seleziona...</option>`;
-            currentSelection.selection.forEach(option => {
-              if (!selectedValues.includes(option) || option === currentVal) {
-                sel.innerHTML += `<option value="${option}" ${option === currentVal ? "selected" : ""}>${option}</option>`;
-              }
-            });
-          });
-        });
+      currentSelection.selection.forEach(option => {
+        const isSelected = selectedData[currentSelection.name] && selectedData[currentSelection.name].includes(option);
+        dropdownHTML += `<option value="${option}" ${isSelected ? "selected" : ""}>${option}</option>`;
       });
+      dropdownHTML += `</select><br>`;
     }
+
+    selectionElem.innerHTML = dropdownHTML;
+
+    // Event listener per aggiornare `selectedData` mentre l'utente seleziona le opzioni
+    document.querySelectorAll(".extra-selection").forEach(select => {
+      select.addEventListener("change", () => {
+        const category = select.getAttribute("data-category");
+        const allDropdowns = document.querySelectorAll(`.extra-selection[data-category="${category}"]`);
+
+        let newSelections = [];
+        allDropdowns.forEach(sel => {
+          if (sel.value) newSelections.push(sel.value);
+        });
+
+        selectedData[category] = newSelections; // Mantiene le scelte fatte
+      });
+    });
   }
+
+  // Abilita/Disabilita i pulsanti di navigazione
+  document.getElementById("prevTrait").disabled = (currentSelectionIndex === 0);
+  document.getElementById("nextTrait").disabled = (currentSelectionIndex === extraSelections.length - 1);
+}
 
   // Enable/disable navigation buttons and manage the Close button visibility.
   const prevBtn = document.getElementById("prevTrait");
@@ -784,48 +790,32 @@ document.getElementById("closeModal").addEventListener("click", () => {
   sessionStorage.removeItem("popupOpened");
 
   // Gather selections from each dropdown, grouped by data-category.
-  let selectedData = {};
-  document.querySelectorAll(".extra-selection").forEach(select => {
-    const category = select.getAttribute("data-category");
-    if (!selectedData[category]) {
-      selectedData[category] = [];
-    }
-    if (select.value && !selectedData[category].includes(select.value)) {
-      selectedData[category].push(select.value);
-    }
-  });
+document.getElementById("closeModal").addEventListener("click", () => {
+  document.getElementById("raceExtrasModal").style.display = "none";
+  sessionStorage.removeItem("popupOpened");
 
   console.log("📝 **Scelte salvate:**");
   Object.keys(selectedData).forEach(key => {
     console.log(`🔹 ${key}: ${selectedData[key].join(", ")}`);
   });
 
-  // Update corresponding UI containers in the extra traits section.
+  // Aggiorna le sezioni dell'interfaccia con le scelte fatte
   if (selectedData["Languages"]) {
-    const langContainer = document.getElementById("languageSelection");
-    if (langContainer) {
-      langContainer.innerHTML = `<p><strong>Lingue Extra:</strong> ${selectedData["Languages"].join(", ")}</p>`;
-    }
+    document.getElementById("languageSelection").innerHTML = `<p><strong>Lingue Extra:</strong> ${selectedData["Languages"].join(", ")}</p>`;
   }
   if (selectedData["Skill Proficiency"]) {
-    const skillContainer = document.getElementById("skillSelectionContainer");
-    if (skillContainer) {
-      skillContainer.innerHTML = `<p><strong>Skill Proficiency:</strong> ${selectedData["Skill Proficiency"].join(", ")}</p>`;
-    }
+    document.getElementById("skillSelectionContainer").innerHTML = `<p><strong>Skill Proficiency:</strong> ${selectedData["Skill Proficiency"].join(", ")}</p>`;
   }
   if (selectedData["Tool Proficiency"]) {
-    const toolContainer = document.getElementById("toolSelectionContainer");
-    if (toolContainer) {
-      toolContainer.innerHTML = `<p><strong>Tool Proficiency:</strong> ${selectedData["Tool Proficiency"].join(", ")}</p>`;
-    }
+    document.getElementById("toolSelectionContainer").innerHTML = `<p><strong>Tool Proficiency:</strong> ${selectedData["Tool Proficiency"].join(", ")}</p>`;
   }
   if (selectedData["Spellcasting"]) {
-    const spellContainer = document.getElementById("spellSelectionContainer");
-    if (spellContainer) {
-      spellContainer.innerHTML = `<p><strong>Spellcasting:</strong> ${selectedData["Spellcasting"].join(", ")}</p>`;
-    }
+    document.getElementById("spellSelectionContainer").innerHTML = `<p><strong>Spellcasting:</strong> ${selectedData["Spellcasting"].join(", ")}</p>`;
   }
 
+  document.getElementById("raceExtraTraitsContainer").style.display = "block";
+});
+  // da cancellare a fine codice 
   // Show the extra traits container after closing the popup.
   const extraContainer = document.getElementById("raceExtraTraitsContainer");
   if (extraContainer) extraContainer.style.display = "block";

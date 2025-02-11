@@ -712,7 +712,6 @@ function openRaceExtrasModal(selections) {
   const modal = document.getElementById("raceExtrasModal");
   if (extraContainer) extraContainer.style.display = "none";
   if (modal) modal.style.display = "flex";
-}
 
 /**
  * Displays the current extra selection in the popup.

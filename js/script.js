@@ -180,13 +180,17 @@ function handleSpellcasting(data, containerId) {
     }
 
     // 📌 Caso 3: Scelta dell'abilità di lancio (Aarakocra, Genasi)
-    if (data.spellcasting.ability_choices && Array.isArray(data.spellcasting.ability_choices)) {
-        if (data.spellcasting.ability_choices.length === 1) {
+        if (data.spellcasting.ability_choices && Array.isArray(data.spellcasting.ability_choices)) {
+        // Controlla se c'è un campo "choose" nel JSON (ovvero se è opzionale)
+        const hasChoice = data.spellcasting.ability_choices.some(a => typeof a === "object" && "choose" in a);
+    
+        if (!hasChoice && data.spellcasting.ability_choices.length === 1) {
             const fixedAbility = data.spellcasting.ability_choices[0];
             console.log(`🧙‍♂️ ${data.name} usa automaticamente ${fixedAbility} come abilità di lancio.`);
         } 
-        else if (data.spellcasting.ability_choices.length > 1) {
+        else if (hasChoice) {
             const abilityOptions = data.spellcasting.ability_choices
+                .map(a => typeof a === "object" ? a.choose : a) // Se esiste `choose`, prendiamo solo il valore
                 .map(a => `<option value="${a}">${a}</option>`)
                 .join("");
     

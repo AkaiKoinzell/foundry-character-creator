@@ -117,7 +117,7 @@ function handleVariantFeatureChoices(data) {
   }
 }
 
-// ==================== SPELLCASTING FUNCTIONS ====================
+// ==================== FUNZIONI SPELLCASTING ====================
 function loadSpells(callback) {
   fetch("data/spells.json")
     .then(response => response.json())
@@ -171,7 +171,7 @@ function handleSpellcastingOptions(data, containerId) {
                       </p>`;
         }
       });
-      // Ability selection for spellcasting.
+      // Casting ability selection.
       if (data.spellcasting.ability_choices && Array.isArray(data.spellcasting.ability_choices)) {
         if (data.spellcasting.ability_choices.length > 1) {
           const abilityOptions = data.spellcasting.ability_choices
@@ -271,7 +271,7 @@ function handleExtraLanguages(data, containerId) {
       const availableLangs = langs.filter(lang => !data.languages.fixed.includes(lang));
       const options = availableLangs.map(lang => `<option value="${lang}">${lang}</option>`).join("");
       const html = `<h4>Lingue Extra</h4>
-                    <select id="extraLanguageSelect">
+                    <select id="extraLanguageDropdown">
                       <option value="">Seleziona...</option>
                       ${options}
                     </select>`;
@@ -698,7 +698,7 @@ function openRaceExtrasModal(selections) {
 
 /**
  * Displays the current extra selection in the popup.
- * Each dropdown is given a data-category attribute equal to the current selection's name.
+ * Each dropdown gets a data-category attribute set to the current selection's name.
  * The "Close" button is shown only when on the last extra selection.
  */
 function showExtraSelection() {
@@ -719,7 +719,6 @@ function showExtraSelection() {
     if (currentSelection.selection) {
       let dropdownHTML = "";
       const numChoices = currentSelection.count || 1;
-      // For each required selection, create a dropdown with data-category set to the current selection's name.
       for (let i = 0; i < numChoices; i++) {
         dropdownHTML += `<select class="extra-selection" data-category="${currentSelection.name}" data-index="${i}">
                           <option value="">Seleziona...</option>`;
@@ -729,7 +728,7 @@ function showExtraSelection() {
         dropdownHTML += `</select><br>`;
       }
       selectionElem.innerHTML = dropdownHTML;
-      // Add event listeners to update selections
+      // Add event listeners to update dropdowns for the same category.
       document.querySelectorAll(".extra-selection").forEach(select => {
         select.addEventListener("change", () => {
           const category = select.getAttribute("data-category");
@@ -749,7 +748,7 @@ function showExtraSelection() {
     }
   }
 
-  // Enable/disable navigation buttons and manage Close button visibility.
+  // Enable/disable navigation buttons and manage the Close button visibility.
   const prevBtn = document.getElementById("prevTrait");
   const nextBtn = document.getElementById("nextTrait");
   const closeBtn = document.getElementById("closeModal");
@@ -784,7 +783,7 @@ document.getElementById("closeModal").addEventListener("click", () => {
   if (modal) modal.style.display = "none";
   sessionStorage.removeItem("popupOpened");
 
-  // Gather selections from each dropdown based on their data-category.
+  // Gather selections from each dropdown, grouped by data-category.
   let selectedData = {};
   document.querySelectorAll(".extra-selection").forEach(select => {
     const category = select.getAttribute("data-category");
@@ -801,22 +800,31 @@ document.getElementById("closeModal").addEventListener("click", () => {
     console.log(`🔹 ${key}: ${selectedData[key].join(", ")}`);
   });
 
-  // Update the corresponding UI containers with the saved selections.
-  Object.keys(selectedData).forEach(category => {
-    if (category === "Languages") {
-      const langElem = document.getElementById("extraLanguageSelect");
-      if (langElem) langElem.value = selectedData[category].join(", ");
-    } else if (category === "Skill Proficiency") {
-      const skillContainer = document.getElementById("skillSelectionContainer");
-      if (skillContainer) skillContainer.innerHTML = selectedData[category].join(", ");
-    } else if (category === "Tool Proficiency") {
-      const toolContainer = document.getElementById("toolSelectionContainer");
-      if (toolContainer) toolContainer.innerHTML = selectedData[category].join(", ");
-    } else if (category === "Spellcasting") {
-      const spellContainer = document.getElementById("spellSelectionContainer");
-      if (spellContainer) spellContainer.innerHTML = selectedData[category].join(", ");
+  // Update corresponding UI containers in the extra traits section.
+  if (selectedData["Languages"]) {
+    const langContainer = document.getElementById("languageSelection");
+    if (langContainer) {
+      langContainer.innerHTML = `<p><strong>Lingue Extra:</strong> ${selectedData["Languages"].join(", ")}</p>`;
     }
-  });
+  }
+  if (selectedData["Skill Proficiency"]) {
+    const skillContainer = document.getElementById("skillSelectionContainer");
+    if (skillContainer) {
+      skillContainer.innerHTML = `<p><strong>Skill Proficiency:</strong> ${selectedData["Skill Proficiency"].join(", ")}</p>`;
+    }
+  }
+  if (selectedData["Tool Proficiency"]) {
+    const toolContainer = document.getElementById("toolSelectionContainer");
+    if (toolContainer) {
+      toolContainer.innerHTML = `<p><strong>Tool Proficiency:</strong> ${selectedData["Tool Proficiency"].join(", ")}</p>`;
+    }
+  }
+  if (selectedData["Spellcasting"]) {
+    const spellContainer = document.getElementById("spellSelectionContainer");
+    if (spellContainer) {
+      spellContainer.innerHTML = `<p><strong>Spellcasting:</strong> ${selectedData["Spellcasting"].join(", ")}</p>`;
+    }
+  }
 
   // Show the extra traits container after closing the popup.
   const extraContainer = document.getElementById("raceExtraTraitsContainer");
@@ -892,7 +900,7 @@ function displayRaceTraits() {
       // Spellcasting – handle both standard and extra.
       handleAllSpellcasting(raceData, traitsHtml);
 
-      // Languages
+      // Languages (display fixed languages; extra languages are chosen in the popup)
       let languageHtml = "";
       if (raceData.languages && Array.isArray(raceData.languages.fixed) && raceData.languages.fixed.length > 0) {
         languageHtml = `<p><strong>Lingue Concesse:</strong> ${raceData.languages.fixed.join(", ")}</p>`;
@@ -1006,7 +1014,7 @@ function generateFinalJson() {
       charisma: document.getElementById("chaRaceModifier").textContent
     },
     languages: {
-      selected: document.getElementById("extraLanguageSelect") ? document.getElementById("extraLanguageSelect").value : []
+      selected: document.getElementById("languageSelection").innerText.replace("Lingue Extra:","").trim() || ""
     },
     chromatic_ancestry: chromaticAncestry,
     tool_proficiency: toolProficiency,
@@ -1130,11 +1138,9 @@ window.updateSubclasses = updateSubclasses;
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("✅ Script.js caricato!");
-  // Hide the popup modal at startup.
   const modal = document.getElementById("raceExtrasModal");
   if (modal) modal.style.display = "none";
 
-  // Prevent auto-reopening of the popup.
   if (sessionStorage.getItem("popupOpened") === "true") {
     console.log("🛑 Il pop-up non verrà riaperto automaticamente.");
     sessionStorage.removeItem("popupOpened");
@@ -1143,7 +1149,6 @@ document.addEventListener("DOMContentLoaded", () => {
   loadDropdownData("data/races.json", "raceSelect", "races");
   loadDropdownData("data/classes.json", "classSelect", "classes");
 
-  // Navigation events for steps.
   document.getElementById("btnStep1").addEventListener("click", () => showStep("step1"));
   document.getElementById("btnStep2").addEventListener("click", () => showStep("step2"));
   document.getElementById("btnStep3").addEventListener("click", () => showStep("step3"));
@@ -1151,14 +1156,13 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnStep5").addEventListener("click", () => showStep("step5"));
   document.getElementById("btnStep8").addEventListener("click", () => showStep("step8"));
 
-  // Initially show step 1.
   showStep("step1");
 
   document.getElementById("raceSelect").addEventListener("change", displayRaceTraits);
   document.getElementById("levelSelect").addEventListener("change", () => displayRaceTraits());
   document.getElementById("generateJson").addEventListener("click", generateFinalJson);
 
-  // When "Seleziona Razza" is clicked, fetch race data, hide the race traits, and open the popup.
+  // When "Seleziona Razza" is clicked, fetch race data, hide race traits, and open the extra popup.
   document.getElementById("confirmRaceSelection").addEventListener("click", () => {
     const selectedRace = document.getElementById("raceSelect").value;
     if (!selectedRace) {
@@ -1170,8 +1174,6 @@ document.addEventListener("DOMContentLoaded", () => {
       .then(data => {
         const raceData = convertRaceData(data);
         const selections = [];
-
-        // Hide the race traits section.
         document.getElementById("raceTraits").style.display = "none";
 
         if (raceData.languages && raceData.languages.choice > 0) {
@@ -1208,7 +1210,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         sessionStorage.setItem("popupOpened", "true");
         openRaceExtrasModal(selections);
-        // Hide the confirm button to prevent re-click.
         document.getElementById("confirmRaceSelection").style.display = "none";
       });
   });

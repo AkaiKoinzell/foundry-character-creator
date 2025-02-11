@@ -181,19 +181,20 @@ function handleSpellcasting(data, containerId) {
 
     // 📌 Caso 3: Scelta dell'abilità di lancio (Aarakocra, Genasi)
     if (data.spellcasting.ability_choices && Array.isArray(data.spellcasting.ability_choices)) {
-        if (data.spellcasting.ability_choices.length === 1) {
-          console.log(`🧙‍♂️ ${data.name} usa automaticamente ${data.spellcasting.ability_choices[0]} come abilità di lancio.`);
-          // 🔹 Non mostra la selezione, perché ce n'è solo una
+        if (data.name === "Elf (High)") {
+            console.log(`🧙‍♂️ ${data.name} usa sempre Intelligence come abilità di lancio, quindi non mostriamo il dropdown.`);
+        } else if (data.spellcasting.ability_choices.length === 1) {
+            console.log(`🧙‍♂️ ${data.name} usa automaticamente ${data.spellcasting.ability_choices[0]} come abilità di lancio.`);
         } else {
-          const abilityOptions = data.spellcasting.ability_choices
-            .map(a => `<option value="${a}">${a}</option>`)
-            .join("");
-      
-          container.innerHTML += `
-            <p><strong>🧠 Seleziona l'abilità di lancio:</strong></p>
-            <select id="castingAbility">
-              <option value="">Seleziona...</option>${abilityOptions}
-            </select>`;
+            const abilityOptions = data.spellcasting.ability_choices
+              .map(a => `<option value="${a}">${a}</option>`)
+              .join("");
+    
+            container.innerHTML += `
+              <p><strong>🧠 Seleziona l'abilità di lancio:</strong></p>
+              <select id="castingAbility">
+                <option value="">Seleziona...</option>${abilityOptions}
+              </select>`;
         }
       }
     }

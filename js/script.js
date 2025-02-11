@@ -670,13 +670,12 @@ function openRaceExtrasModal(selections) {
 
   document.getElementById("raceExtraTraitsContainer").style.display = "none";
   document.getElementById("raceExtrasModal").style.display = "flex";
-}
-
+  
   const extraContainer = document.getElementById("raceExtraTraitsContainer");
   const modal = document.getElementById("raceExtrasModal");
   if (extraContainer) extraContainer.style.display = "none";
   if (modal) modal.style.display = "flex";
-
+}
 
 function updateExtraSelectionsView() {
   console.log("🔄 Aggiornamento visualizzazione delle scelte extra...");
@@ -1254,8 +1253,6 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("confirmRaceSelection").style.display = "none";
       }) // ✅ **CHIUSURA DEL `.then()` CORRETTA!**
       .catch(error => handleError(`Errore caricando i dati della razza: ${error}`));
-    
+    });
     initializeValues();
-  });
-
 }); 

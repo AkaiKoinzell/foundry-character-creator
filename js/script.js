@@ -1390,89 +1390,76 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("classSelect").addEventListener("change", updateClassSpells);
   document.getElementById("generateJson").addEventListener("click", generateFinalJson);
 
-  // 🟢 ✅ **CORRETTO: FETCH PER CONFERMAZIONE RAZZA**
-  document.getElementById("confirmRaceSelection").addEventListener("click", () => {
+  // 🟢 ✅ **CORRETTO: FETCH PER CONFERMAZIONE RAZZA**document.getElementById("confirmRaceSelection").addEventListener("click", () => {
     const selectedRace = document.getElementById("raceSelect").value;
     if (!selectedRace) {
-      alert("⚠️ Seleziona una razza prima di procedere!");
-      return;
+        alert("⚠️ Seleziona una razza prima di procedere!");
+        return;
     }
 
     fetch(selectedRace)
-      .then(response => response.json())
-      .then(data => {
-        const raceData = convertRaceData(data);
-        const selections = [];
-        document.getElementById("raceTraits").style.display = "none";
+        .then(response => response.json())
+        .then(data => {
+            const raceData = convertRaceData(data);
+            const selections = [];
+            document.getElementById("raceTraits").style.display = "none";
 
-        addExtraSelection("Languages", "Choose an additional language.", 
-    ["Elvish", "Dwarvish", "Halfling", "Orc", "Gnomish", "Draconic", "Celestial"], 
-    raceData.languages.choice);
-        
-        addExtraSelection("Skill Proficiency", "Choose skill proficiencies.", 
-    raceData.skill_choices.options, raceData.skill_choices.number);
-        
-        addExtraSelection("Tool Proficiency", "Choose a tool proficiency.", raceData.tool_choices.options);
+            // 🔥 Fix: Controlla se esistono prima di accedere a .options
+            if (raceData.languages && raceData.languages.choice > 0) {
+                addExtraSelection("Languages", "Choose an additional language.", 
+                    ["Elvish", "Dwarvish", "Halfling", "Orc", "Gnomish", "Draconic", "Celestial"], 
+                    raceData.languages.choice);
+            }
 
-        // ✅ **Aggiungere Spellcasting alle scelte nel Pop-up**
-        if (raceData.spellcasting) {
-          if (raceData.spellcasting.ability_choices && raceData.spellcasting.ability_choices.length > 0) {
-              if (raceData.name.toLowerCase().includes("deep gnome")) {
-                  console.log("🧠 Deep Gnome: aggiunta selezione per Spellcasting Ability nel pop-up.");
-                  addExtraSelection("Spellcasting Ability", 
-                      "Choose Intelligence, Wisdom, or Charisma as your spellcasting ability for your racial spells.", 
-                      raceData.spellcasting.ability_choices);
-              } else {
-                  selections.push({
-                      name: "Spellcasting Ability",
-                      description: "Choose a spellcasting ability.",
-                      selection: raceData.spellcasting.ability_choices,
-                      count: 1
-                  });
-              }
-          }
+            if (raceData.skill_choices && raceData.skill_choices.options) {
+                addExtraSelection("Skill Proficiency", "Choose skill proficiencies.", 
+                    raceData.skill_choices.options, raceData.skill_choices.number);
+            }
 
-          if (raceData.spellcasting.spell_choices) {
-            if (raceData.spellcasting.spell_choices.type === "fixed_list") {
-              selections.push({
-                name: "Spellcasting",
-                description: "Choose a spell.",
-                selection: raceData.spellcasting.spell_choices.options,
-                count: 1
-              });
-            } else if (raceData.spellcasting.spell_choices.type === "filter") {
-              const spellLevel = 0; // Normalmente i Cantrip
-              const spellClassParts = raceData.spellcasting.spell_choices.filter.split("|");
-              const spellClass = spellClassParts.length > 1 ? spellClassParts[1].split("=")[1] : null;
+            if (raceData.tool_choices && raceData.tool_choices.options) {
+                addExtraSelection("Tool Proficiency", "Choose a tool proficiency.", raceData.tool_choices.options);
+            }
 
-              if (spellClass) {
-                loadSpells(spellList => {
-                  const filteredSpells = spellList
-                    .filter(spell => parseInt(spell.level) === spellLevel && spell.spell_list.includes(spellClass))
-                    .map(spell => spell.name);
+            // ✅ **Aggiungere Spellcasting alle scelte nel Pop-up**
+            if (raceData.spellcasting) {
+                if (raceData.spellcasting.ability_choices && raceData.spellcasting.ability_choices.length > 0) {
+                    addExtraSelection("Spellcasting Ability", 
+                        "Choose Intelligence, Wisdom, or Charisma as your spellcasting ability for your racial spells.", 
+                        raceData.spellcasting.ability_choices);
+                }
 
-                  if (filteredSpells.length > 0) {
-                    selections.push({
-                      name: "Spellcasting",
-                      description: `Choose a cantrip from ${spellClass}.`,
-                      selection: filteredSpells,
-                      count: 1
-                    });
-                  }
+                if (raceData.spellcasting.spell_choices) {
+                    if (raceData.spellcasting.spell_choices.type === "fixed_list") {
+                        addExtraSelection("Spellcasting", "Choose a spell.", 
+                            raceData.spellcasting.spell_choices.options, 1);
+                    } else if (raceData.spellcasting.spell_choices.type === "filter") {
+                        const spellClassParts = raceData.spellcasting.spell_choices.filter.split("|");
+                        const spellClass = spellClassParts.length > 1 ? spellClassParts[1].split("=")[1] : null;
 
-                  sessionStorage.setItem("popupOpened", "true");
-                  openRaceExtrasModal(selections);
-                });
-              } 
+                        if (spellClass) {
+                            loadSpells(spellList => {
+                                const filteredSpells = spellList
+                                    .filter(spell => spell.spell_list.includes(spellClass))
+                                    .map(spell => spell.name);
+
+                                if (filteredSpells.length > 0) {
+                                    addExtraSelection("Spellcasting", 
+                                        `Choose a cantrip from ${spellClass}.`, 
+                                        filteredSpells, 1);
+                                }
+                                sessionStorage.setItem("popupOpened", "true");
+                                openRaceExtrasModal(selections);
+                            });
+                        } 
+                    } 
+                }
             } 
-          } 
-        } 
 
-        sessionStorage.setItem("popupOpened", "true");
-        openRaceExtrasModal(selections);
-        document.getElementById("confirmRaceSelection").style.display = "none";
-      }) // ✅ **CHIUSURA DEL `.then()` CORRETTA!**
-      .catch(error => handleError(`Errore caricando i dati della razza: ${error}`));
-    });
+            sessionStorage.setItem("popupOpened", "true");
+            openRaceExtrasModal(selections);
+            document.getElementById("confirmRaceSelection").style.display = "none";
+        })
+        .catch(error => handleError(`Errore caricando i dati della razza: ${error}`));
+});
     initializeValues();
 }); 

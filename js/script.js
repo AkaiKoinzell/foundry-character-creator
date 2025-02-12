@@ -515,72 +515,73 @@ function convertRaceData(rawData) {
 
   // Spellcasting – complete processing
   let spellcasting = null;
-  
-  if (rawData.additionalSpells && rawData.additionalSpells.length > 0) {
-      let spellsArray = [];
-      let abilityChoices = [];
-  
-      rawData.additionalSpells.forEach(spellData => {
-          if (spellData.known) {
-              Object.keys(spellData.known).forEach(levelKey => {
-                  if (spellData.known[levelKey]._ && Array.isArray(spellData.known[levelKey]._)) {
-                      spellData.known[levelKey]._.forEach(spell => {
-                          if (typeof spell === "string") {
-                              spellsArray.push({ name: spell, level: parseInt(levelKey) });
-                          } else if (spell.choose) {
-                              spellcasting = spellcasting || {};  
-                              spellcasting.spell_choices = { type: "filter", filter: spell.choose };
-                          }
-                      });
-                  }
-              });
-          }
-  
-          // 📌 FIX: Assicura che l'Alto Elfo non abbia un dropdown per l'abilità di lancio
-          if (spellData.ability) {
-              if (typeof spellData.ability === "string") { 
-                  abilityChoices.push(spellData.ability.toUpperCase()); 
-              } else if (spellData.ability.choose && Array.isArray(spellData.ability.choose)) {
-                  abilityChoices = spellData.ability.choose.map(a => a.toUpperCase());
-              }
-          }
-          
-          // 🔥 Se il Deep Gnome ha una scelta multipla, aggiungila nel pop-up
-          if (abilityChoices.length > 1 && rawData.name.toLowerCase().includes("deep gnome")) {
-              console.log("🧠 Deep Gnome: aggiunta selezione per Spellcasting Ability nel pop-up.");
-              extraSelections.push({
-                  name: "Spellcasting Ability",
-                  description: "Choose Intelligence, Wisdom, or Charisma as your spellcasting ability for your racial spells.",
-                  selection: abilityChoices,
-                  count: 1
-              });
-          }
-      });
-  
-      if (spellsArray.length > 0) {
-          spellcasting = spellcasting || {};  
-          spellcasting.spell_choices = {
-              type: "fixed_list",
-              options: spellsArray.map(s => s.name)
-          };
-      }
-  
-      spellcasting = spellcasting || {};  
-  
-      // 🔹 FIX: Se l'Alto Elfo ha solo INT come abilità di lancio, non deve avere un dropdown
-      if (rawData.name.toLowerCase().includes("elf (high)")) {
-        // Se è un Alto Elfo, forziamo INT senza mostrare la scelta
+
+if (rawData.additionalSpells && rawData.additionalSpells.length > 0) {
+    let spellsArray = [];
+    let abilityChoices = new Set(); // Usiamo un Set per evitare duplicati
+
+    rawData.additionalSpells.forEach(spellData => {
+        // 📌 Gestione degli incantesimi conosciuti
+        if (spellData.known) {
+            Object.keys(spellData.known).forEach(levelKey => {
+                if (spellData.known[levelKey]._ && Array.isArray(spellData.known[levelKey]._)) {
+                    spellData.known[levelKey]._.forEach(spell => {
+                        if (typeof spell === "string") {
+                            spellsArray.push({ name: spell, level: parseInt(levelKey) });
+                        } else if (spell.choose) {
+                            spellcasting = spellcasting || {};  
+                            spellcasting.spell_choices = { type: "filter", filter: spell.choose };
+                        }
+                    });
+                }
+            });
+        }
+
+        // 📌 Raccolta delle opzioni per lo spellcasting ability
+        if (spellData.ability) {
+            if (typeof spellData.ability === "string") { 
+                abilityChoices.add(spellData.ability.toUpperCase()); 
+            } else if (spellData.ability.choose && Array.isArray(spellData.ability.choose)) {
+                spellData.ability.choose.forEach(a => abilityChoices.add(a.toUpperCase()));
+            }
+        }
+    });
+
+    // 📌 Se sono presenti incantesimi conosciuti, aggiungiamo la lista di selezione fissa
+    if (spellsArray.length > 0) {
+        spellcasting = spellcasting || {};  
+        spellcasting.spell_choices = {
+            type: "fixed_list",
+            options: spellsArray.map(s => s.name)
+        };
+    }
+
+    spellcasting = spellcasting || {};  
+
+    // 📌 Gestione specifica per Alto Elfo e Deep Gnome
+    if (rawData.name.toLowerCase().includes("elf (high)")) {
+        // L'Alto Elfo usa solo INT e non deve avere il dropdown
         console.log(`🧠 ${rawData.name}: Spellcasting Ability forzata a INT.`);
         spellcasting.ability_choices = ["INT"];
-    } else if (rawData.name.toLowerCase().includes("deep gnome")) {
-        // Se è un Deep Gnome, assicuriamoci che la scelta venga mantenuta
-        console.log(`🧠 ${rawData.name}: Manteniamo la selezione per l'abilità di lancio.`);
-        spellcasting.ability_choices = abilityChoices.length > 1 ? abilityChoices : ["INT", "WIS", "CHA"];
-    } else {
+    } 
+    else if (rawData.name.toLowerCase().includes("deep gnome")) {
+        // Il Deep Gnome deve avere la scelta tra INT, WIS e CHA
+        console.log(`🧠 ${rawData.name}: Spellcasting Ability selezionabile.`);
+        spellcasting.ability_choices = abilityChoices.size > 0 ? Array.from(abilityChoices) : ["INT", "WIS", "CHA"];
+
+        // Aggiungiamo la selezione delle abilità di lancio nel pop-up
+        extraSelections.push({
+            name: "Spellcasting Ability",
+            description: "Choose Intelligence, Wisdom, or Charisma as your spellcasting ability for your racial spells.",
+            selection: spellcasting.ability_choices,
+            count: 1
+        });
+    } 
+    else {
         // Per tutte le altre razze, assegniamo semplicemente le scelte disponibili
-        spellcasting.ability_choices = abilityChoices;
+        spellcasting.ability_choices = Array.from(abilityChoices);
     }
-  }
+}
   // Languages
   let languages = { fixed: [], choice: 0, options: [] };
   if (rawData.languageProficiencies && rawData.languageProficiencies.length > 0) {

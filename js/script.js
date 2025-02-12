@@ -121,6 +121,11 @@ function handleVariantFeatureChoices(data) {
             selection: data.variant_feature_choices.map(v => v.name),
             count: 1
         });
+
+        // 🔥 Apri il pop-up automaticamente dopo aver aggiunto la Variant Feature
+        setTimeout(() => {
+            openRaceExtrasModal(extraSelections);
+        }, 200);
     }
 }
 
@@ -539,7 +544,7 @@ function convertRaceData(rawData) {
               }
           }
           
-          // 🔥 FIX: Se il Deep Gnome ha un'abilità di lancio multipla, deve andare nel pop-up
+          // 🔥 Se il Deep Gnome ha una scelta multipla, aggiungila nel pop-up
           if (abilityChoices.length > 1 && rawData.name.toLowerCase().includes("deep gnome")) {
               console.log("🧠 Deep Gnome: aggiunta selezione per Spellcasting Ability nel pop-up.");
               extraSelections.push({
@@ -856,8 +861,8 @@ document.getElementById("closeModal").addEventListener("click", () => {
   setTimeout(() => {
     // 🔥 Pulisci e ricarica la visualizzazione dei tratti e delle selezioni
     document.getElementById("raceTraits").innerHTML = "";
-    updateExtraSelectionsView();
-    displayRaceTraits();
+    displayRaceTraits(); // ✅ Aggiorna i tratti
+    updateExtraSelectionsView(); // ✅ Aggiorna le selezioni
   }, 300);
 });
 

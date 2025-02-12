@@ -567,12 +567,18 @@ function convertRaceData(rawData) {
       spellcasting = spellcasting || {};  
   
       // 🔹 FIX: Se l'Alto Elfo ha solo INT come abilità di lancio, non deve avere un dropdown
-      if (abilityChoices.length === 1 && abilityChoices[0] === "INT" && rawData.name.toLowerCase().includes("elf (high)")) {
-          console.log(`🧠 ${rawData.name} ha solo INT come abilità di lancio. Nessun dropdown.`);
-          spellcasting.ability_choices = [];
-      } else {
-          spellcasting.ability_choices = abilityChoices;
-      }
+      if (rawData.name.toLowerCase().includes("elf (high)")) {
+        // Se è un Alto Elfo, forziamo INT senza mostrare la scelta
+        console.log(`🧠 ${rawData.name}: Spellcasting Ability forzata a INT.`);
+        spellcasting.ability_choices = ["INT"];
+    } else if (rawData.name.toLowerCase().includes("deep gnome")) {
+        // Se è un Deep Gnome, assicuriamoci che la scelta venga mantenuta
+        console.log(`🧠 ${rawData.name}: Manteniamo la selezione per l'abilità di lancio.`);
+        spellcasting.ability_choices = abilityChoices.length > 1 ? abilityChoices : ["INT", "WIS", "CHA"];
+    } else {
+        // Per tutte le altre razze, assegniamo semplicemente le scelte disponibili
+        spellcasting.ability_choices = abilityChoices;
+    }
   }
   // Languages
   let languages = { fixed: [], choice: 0, options: [] };

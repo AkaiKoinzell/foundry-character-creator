@@ -854,15 +854,21 @@ document.getElementById("closeModal").addEventListener("click", () => {
   document.getElementById("raceExtrasModal").style.display = "none";
   sessionStorage.removeItem("popupOpened");
 
-  // ✅ Salviamo i dati selezionati per non perderli
+  // ✅ Salviamo le selezioni extra PRIMA di ricaricare i tratti
   sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
   console.log("📝 Selezioni salvate prima dell'update:", selectedData);
 
   showStep("step2");
 
   setTimeout(() => {
-    displayRaceTraits(); // ✅ Ricarica i tratti senza sovrascrivere i dati salvati
-    setTimeout(() => updateExtraSelectionsView(), 100); // 🔥 FORZA IL RENDERING DELLE SELEZIONI EXTRA
+    console.log("🛠 Eseguo displayRaceTraits()...");
+    displayRaceTraits(); 
+
+    // 🔥 **Aspettiamo che `displayRaceTraits()` finisca e poi forziamo le selezioni extra**
+    setTimeout(() => {
+      console.log("✅ Forzando updateExtraSelectionsView()...");
+      updateExtraSelectionsView();
+    }, 500); // 🔥 Ritardo di 500ms per essere sicuri che il rendering sia completato
   }, 300);
 });
 
@@ -902,13 +908,13 @@ function displayRaceTraits() {
 
   // ✅ NON cancelliamo il contenuto se esistono già dati salvati!
   ["skillSelectionContainer", "toolSelectionContainer", "spellSelectionContainer",
-   "variantFeatureSelectionContainer", "variantExtraContainer", "languageSelection", "ancestrySelection"]
-      .forEach(id => {
-        const el = document.getElementById(id);
-        if (el && (!selectedData || Object.keys(selectedData).length === 0)) {
-          el.innerHTML = ""; // ✅ Cancella solo se `selectedData` è vuoto
-        }
-      });
+ "variantFeatureSelectionContainer", "variantExtraContainer", "languageSelection", "ancestrySelection"]
+    .forEach(id => {
+      const el = document.getElementById(id);
+      if (el && (!selectedData || Object.keys(selectedData).length === 0)) {
+        el.innerHTML = ""; // ✅ Cancella solo se non ci sono selezioni extra salvate
+      }
+    });
 
    if (!racePath) {
     console.warn("⚠️ displayRaceTraits(): Nessuna razza selezionata.");

@@ -146,12 +146,15 @@ document.getElementById("variantFeatureChoice").addEventListener("change", handl
 
 async function fetchData(jsonPath) {
     try {
+        console.log(`📡 Tentativo di caricare: ${jsonPath}`);
         const response = await fetch(jsonPath);
         if (!response.ok) throw new Error(`Errore caricando ${jsonPath}: ${response.statusText}`);
-        return await response.json();
+        const data = await response.json();
+        console.log(`✅ Dati caricati da ${jsonPath}:`, data);
+        return data;
     } catch (error) {
         console.error(`❌ ${error.message}`);
-        alert(`⚠️ Errore nel caricamento dei dati. Riprova!`);
+        alert(`⚠️ Errore nel caricamento dei dati (${jsonPath}). Riprova!`);
         return null;
     }
 }
@@ -425,6 +428,8 @@ function populateDropdown(selectId, options, defaultText = "Seleziona...") {
     console.warn(`⚠️ Dropdown #${selectId} non trovato.`);
     return;
   }
+
+  console.log(`📜 Popolando dropdown #${selectId} con ${options.length} opzioni...`);
 
   select.innerHTML = `<option value="">${defaultText}</option>`;
   options.forEach(option => {

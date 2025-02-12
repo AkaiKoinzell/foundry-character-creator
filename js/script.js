@@ -1390,7 +1390,8 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("classSelect").addEventListener("change", updateClassSpells);
   document.getElementById("generateJson").addEventListener("click", generateFinalJson);
 
-  // 🟢 ✅ **CORRETTO: FETCH PER CONFERMAZIONE RAZZA**document.getElementById("confirmRaceSelection").addEventListener("click", () => {
+  // 🟢 ✅ **CORRETTO: FETCH PER CONFERMAZIONE RAZZA**
+  document.getElementById("confirmRaceSelection").addEventListener("click", () => {
     const selectedRace = document.getElementById("raceSelect").value;
     if (!selectedRace) {
         alert("⚠️ Seleziona una razza prima di procedere!");

@@ -685,7 +685,9 @@ function renderTables(entries) {
 // ==================== POPUP FOR EXTRA SELECTIONS ====================
 
 // Global variables for the extra selections popup
-let selectedData = {}; // Inizializza l'oggetto per memorizzare le scelte fatte nel pop-up
+let selectedData = sessionStorage.getItem("selectedData")
+  ? JSON.parse(sessionStorage.getItem("selectedData"))
+  : {};
 let extraSelections = [];
 let currentSelectionIndex = 0;
 
@@ -731,15 +733,19 @@ function openRaceExtrasModal(selections) {
 function updateExtraSelectionsView() {
   console.log("🔄 Aggiornamento visualizzazione delle scelte extra...");
 
+  // ✅ Recupera i dati dalla sessione (se presenti)
+  selectedData = sessionStorage.getItem("selectedData")
+    ? JSON.parse(sessionStorage.getItem("selectedData"))
+    : selectedData;
+
   function updateContainer(id, title, dataKey) {
     const container = document.getElementById(id);
     if (container) {
-      if (selectedData[dataKey] && selectedData[dataKey].filter(v => v).length > 0) {
+      if (selectedData[dataKey] && selectedData[dataKey].length > 0) {
         container.innerHTML = `<p><strong>${title}:</strong> ${selectedData[dataKey].join(", ")}</p>`;
         container.style.display = "block";  
       } else {
-        container.innerHTML = `<p><strong>${title}:</strong> Nessuna selezione.</p>`;
-        container.style.display = "block";  
+        container.style.display = "none";  
       }
     }
   }
@@ -847,6 +853,9 @@ document.getElementById("closeModal").addEventListener("click", () => {
   document.getElementById("raceExtrasModal").style.display = "none";
   sessionStorage.removeItem("popupOpened");
 
+  // ✅ Memorizza le selezioni in sessionStorage per evitare di perderle dopo il pop-up
+  sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
+
   console.log("📝 Selezioni salvate prima dell'update:", selectedData);
 
   showStep("step2");
@@ -891,12 +900,14 @@ function displayRaceTraits() {
   const raceTraitsDiv = document.getElementById("raceTraits");
   const racialBonusDiv = document.getElementById("racialBonusSelection");
 
-  // Clear extra containers.
+  // ✅ Pulisce i contenitori solo se non ci sono dati salvati
   ["skillSelectionContainer", "toolSelectionContainer", "spellSelectionContainer",
    "variantFeatureSelectionContainer", "variantExtraContainer", "languageSelection", "ancestrySelection"]
     .forEach(id => {
       const el = document.getElementById(id);
-      if (el) el.innerHTML = "";
+      if (el && (!selectedData || !Object.keys(selectedData).length)) {
+        el.innerHTML = "";
+      }
     });
 
    if (!racePath) {

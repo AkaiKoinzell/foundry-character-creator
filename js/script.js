@@ -111,15 +111,18 @@ function handleVariantFeatureChoices(data) {
   console.log(`📌 Trovata Variant Feature per ${data.name}:`, data.variant_feature_choices);
   
   // Se il Mezzelfo ha una Variant Feature, spostiamola nel pop-up
-  if (data.name.toLowerCase().includes("half-elf")) {
-    extraSelections.push({
-      name: "Variant Feature",
-      description: "Scegli una Variant Feature.",
-      selection: data.variant_feature_choices.map(v => v.name),
-      count: 1
-    });
-    return;
-  }
+  if (data.variant_feature_choices && data.variant_feature_choices.length > 0) {
+    console.log(`📌 Mezzelfo trovato! Aggiungo la Variant Feature:`, data.variant_feature_choices);
+    
+    if (data.name.toLowerCase().includes("half-elf")) {
+        extraSelections.push({
+            name: "Variant Feature",
+            description: "Scegli una Variant Feature.",
+            selection: data.variant_feature_choices.map(v => v.name),
+            count: 1
+        });
+    }
+}
 
   // Per le altre razze manteniamo il comportamento originale
   const container = document.getElementById("variantFeatureSelectionContainer");
@@ -535,6 +538,17 @@ function convertRaceData(rawData) {
                   abilityChoices = spellData.ability.choose.map(a => a.toUpperCase());
               }
           }
+          
+          // 🔥 FIX: Se il Deep Gnome ha un'abilità di lancio multipla, deve andare nel pop-up
+          if (abilityChoices.length > 1 && rawData.name.toLowerCase().includes("deep gnome")) {
+              console.log("🧠 Deep Gnome: aggiunta selezione per Spellcasting Ability nel pop-up.");
+              extraSelections.push({
+                  name: "Spellcasting Ability",
+                  description: "Choose Intelligence, Wisdom, or Charisma as your spellcasting ability for your racial spells.",
+                  selection: abilityChoices,
+                  count: 1
+              });
+          }
       });
   
       if (spellsArray.length > 0) {
@@ -833,20 +847,18 @@ document.getElementById("nextTrait").addEventListener("click", () => {
   // Gather selections from each dropdown, grouped by data-category.
 document.getElementById("closeModal").addEventListener("click", () => {
   console.log("🔄 Chiusura pop-up e aggiornamento UI...");
-
   document.getElementById("raceExtrasModal").style.display = "none";
   sessionStorage.removeItem("popupOpened");
-
   console.log("📝 **Selezioni salvate:**", selectedData);
 
-  // 🔄 Mostra di nuovo lo step 2
   showStep("step2");
 
-  // 🛠 Forziamo un aggiornamento della UI dopo un piccolo ritardo
   setTimeout(() => {
-    displayRaceTraits(); // Ricarica i tratti della razza
-    updateExtraSelectionsView(); // Mostra le selezioni extra
-  }, 300); // Ritardo per permettere il re-rendering del DOM
+    // 🔥 Pulisci e ricarica la visualizzazione dei tratti e delle selezioni
+    document.getElementById("raceTraits").innerHTML = "";
+    updateExtraSelectionsView();
+    displayRaceTraits();
+  }, 300);
 });
 
   // Aggiorna l'interfaccia con le scelte fatte

@@ -531,6 +531,8 @@ function convertRaceData(rawData) {
           if (spellData.ability) {
               if (typeof spellData.ability === "string") { 
                   abilityChoices.push(spellData.ability.toUpperCase()); 
+              } else if (spellData.ability.choose && Array.isArray(spellData.ability.choose)) {
+                  abilityChoices = spellData.ability.choose.map(a => a.toUpperCase());
               }
           }
       });
@@ -1233,13 +1235,24 @@ document.addEventListener("DOMContentLoaded", () => {
         // ✅ **Aggiungere Spellcasting alle scelte nel Pop-up**
         if (raceData.spellcasting) {
           if (raceData.spellcasting.ability_choices && raceData.spellcasting.ability_choices.length > 0) {
-            selections.push({
-              name: "Spellcasting Ability",
-              description: "Choose a spellcasting ability.",
-              selection: raceData.spellcasting.ability_choices,
-              count: 1
-            });
+          // 🔥 Se il Deep Gnome ha una scelta multipla, la forziamo nel pop-up
+          if (raceData.name.toLowerCase().includes("deep gnome")) {
+              console.log("🧠 Deep Gnome: aggiunta selezione per Spellcasting Ability nel pop-up.");
+              extraSelections.push({
+                  name: "Spellcasting Ability",
+                  description: "Choose Intelligence, Wisdom, or Charisma as your spellcasting ability for your racial spells.",
+                  selection: raceData.spellcasting.ability_choices,
+                  count: 1
+              });
+          } else {
+              selections.push({
+                  name: "Spellcasting Ability",
+                  description: "Choose a spellcasting ability.",
+                  selection: raceData.spellcasting.ability_choices,
+                  count: 1
+              });
           }
+      }
 
           if (raceData.spellcasting.spell_choices) {
             if (raceData.spellcasting.spell_choices.type === "fixed_list") {

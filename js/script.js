@@ -124,8 +124,9 @@ function handleVariantFeatureChoices(data) {
 
         // 🔥 Apri il pop-up automaticamente dopo aver aggiunto la Variant Feature
         setTimeout(() => {
-            openRaceExtrasModal(extraSelections);
-        }, 200);
+            console.log("🔄 Ricarico i tratti extra visibili...");
+            document.getElementById("raceExtraTraitsContainer").style.display = "block";
+        }, 300);
     }
 }
 

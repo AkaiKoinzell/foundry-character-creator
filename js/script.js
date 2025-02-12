@@ -734,11 +734,12 @@ function updateExtraSelectionsView() {
   function updateContainer(id, title, dataKey) {
     const container = document.getElementById(id);
     if (container) {
-      if (selectedData[dataKey] && selectedData[dataKey].length > 0) {
+      if (selectedData[dataKey] && selectedData[dataKey].filter(v => v).length > 0) {
         container.innerHTML = `<p><strong>${title}:</strong> ${selectedData[dataKey].join(", ")}</p>`;
-        container.style.display = "block";  // 🔥 Mostra solo se c'è qualcosa
+        container.style.display = "block";  
       } else {
-        container.style.display = "none";  // 🛠️ Nasconde se vuoto
+        container.innerHTML = `<p><strong>${title}:</strong> Nessuna selezione.</p>`;
+        container.style.display = "block";  
       }
     }
   }
@@ -796,20 +797,11 @@ function showExtraSelection() {
     
         selectedData[category][index] = event.target.value;
     
-        // Aggiorna il dropdown successivo per rimuovere opzioni già scelte
-        document.querySelectorAll(`.extra-selection[data-category="${category}"]`).forEach(sel => {
-          const currentVal = sel.value;
-          sel.innerHTML = `<option value="">Seleziona...</option>`;
-          extraSelections.find(s => s.name === category).selection.forEach(option => {
-            if (!selectedData[category].includes(option) || option === currentVal) {
-              sel.innerHTML += `<option value="${option}" ${option === currentVal ? "selected" : ""}>${option}</option>`;
-            }
-          });
-        });
+        // 🔥 Rimuove elementi vuoti
+        selectedData[category] = selectedData[category].filter(value => value);
     
         console.log(`📝 Salvato: ${category} -> ${selectedData[category]}`);
-
-        // Forziamo l'aggiornamento UI in tempo reale
+    
         updateExtraSelectionsView();
       });
     });
@@ -854,15 +846,14 @@ document.getElementById("closeModal").addEventListener("click", () => {
   console.log("🔄 Chiusura pop-up e aggiornamento UI...");
   document.getElementById("raceExtrasModal").style.display = "none";
   sessionStorage.removeItem("popupOpened");
-  console.log("📝 **Selezioni salvate:**", selectedData);
+
+  console.log("📝 Selezioni salvate prima dell'update:", selectedData);
 
   showStep("step2");
 
   setTimeout(() => {
-    // 🔥 Pulisci e ricarica la visualizzazione dei tratti e delle selezioni
-    document.getElementById("raceTraits").innerHTML = "";
-    displayRaceTraits(); // ✅ Aggiorna i tratti
-    updateExtraSelectionsView(); // ✅ Aggiorna le selezioni
+    displayRaceTraits(); // ✅ Aggiorna i tratti della razza
+    updateExtraSelectionsView(); // ✅ Mostra le selezioni extra nel posto giusto
   }, 300);
 });
 

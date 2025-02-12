@@ -1407,18 +1407,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // 🔥 Fix: Controlla se esistono prima di accedere a .options
             if (raceData.languages && raceData.languages.choice > 0) {
-                addExtraSelection("Languages", "Choose an additional language.", 
-                    ["Elvish", "Dwarvish", "Halfling", "Orc", "Gnomish", "Draconic", "Celestial"], 
-                    raceData.languages.choice);
+                selections.push({
+                    name: "Languages",
+                    description: "Choose an additional language.",
+                    selection: ["Elvish", "Dwarvish", "Halfling", "Orc", "Gnomish", "Draconic", "Celestial"],
+                    count: raceData.languages.choice
+                });
             }
-
+            
             if (raceData.skill_choices && raceData.skill_choices.options) {
-                addExtraSelection("Skill Proficiency", "Choose skill proficiencies.", 
-                    raceData.skill_choices.options, raceData.skill_choices.number);
+                selections.push({
+                    name: "Skill Proficiency",
+                    description: "Choose skill proficiencies.",
+                    selection: raceData.skill_choices.options,
+                    count: raceData.skill_choices.number
+                });
             }
-
+            
             if (raceData.tool_choices && raceData.tool_choices.options) {
-                addExtraSelection("Tool Proficiency", "Choose a tool proficiency.", raceData.tool_choices.options);
+                selections.push({
+                    name: "Tool Proficiency",
+                    description: "Choose a tool proficiency.",
+                    selection: raceData.tool_choices.options
+                });
             }
 
             // ✅ **Aggiungere Spellcasting alle scelte nel Pop-up**
@@ -1455,6 +1466,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     } 
                 }
             } 
+          // ✅ Assicuriamoci che ci siano selezioni prima di aprire il pop-up
+          if (selections.length > 0) {
+              console.log("✅ Aprendo pop-up con selezioni extra:", selections);
+              openRaceExtrasModal(selections);
+          } else {
+              console.warn("⚠️ Nessuna selezione extra disponibile.");
+          }
 
             sessionStorage.setItem("popupOpened", "true");
             openRaceExtrasModal(selections);

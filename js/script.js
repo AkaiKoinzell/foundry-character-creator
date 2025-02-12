@@ -81,6 +81,18 @@ function handleVariantExtraSelections() {
     case "spells":
       loadSpells(spellList => {
         const filtered = filterSpells(spellList, mapData.filter);
+    
+        // 🔥 FIX: Se è un mezzelfo Moon/Sun, aggiungi la scelta al pop-up
+        if (selectedVariant.includes("Cantrip") && selectedVariant.toLowerCase().includes("half-elf")) {
+          extraSelections.push({
+            name: "Spellcasting",
+            description: "Scegli un Cantrip dal Wizard Spell List.",
+            selection: filtered.map(spell => spell.name),
+            count: 1
+          });
+          return;
+        }
+    
         container.innerHTML = filtered.length
           ? `<p><strong>Seleziona un incantesimo per ${selectedVariant}:</strong></p>
               <select id="variantSpellChoice">
@@ -94,21 +106,34 @@ function handleVariantExtraSelections() {
 }
 
 function handleVariantFeatureChoices(data) {
-  const container = document.getElementById("variantFeatureSelectionContainer");
-  if (!data.variant_feature_choices || !container) {
-    if (container) container.innerHTML = "";
+  if (!data.variant_feature_choices) return;
+
+  console.log(`📌 Trovata Variant Feature per ${data.name}:`, data.variant_feature_choices);
+  
+  // Se il Mezzelfo ha una Variant Feature, spostiamola nel pop-up
+  if (data.name.toLowerCase().includes("half-elf")) {
+    extraSelections.push({
+      name: "Variant Feature",
+      description: "Scegli una Variant Feature.",
+      selection: data.variant_feature_choices.map(v => v.name),
+      count: 1
+    });
     return;
   }
-  let html = `<p><strong>Scegli una Variant Feature:</strong></p><select id="variantFeatureChoice"><option value="">Seleziona...</option>`;
+
+  // Per le altre razze manteniamo il comportamento originale
+  const container = document.getElementById("variantFeatureSelectionContainer");
+  if (!container) return;
+  
+  let html = `<p><strong>Scegli una Variant Feature:</strong></p><select id="variantFeatureChoice">
+                <option value="">Seleziona...</option>`;
   data.variant_feature_choices.forEach(opt => {
     html += `<option value="${opt.name}">${opt.name}</option>`;
   });
   html += `</select>`;
+  
   container.innerHTML = html;
-  const variantSelect = document.getElementById("variantFeatureChoice");
-  if (variantSelect) {
-    variantSelect.addEventListener("change", handleVariantExtraSelections);
-  }
+  document.getElementById("variantFeatureChoice").addEventListener("change", handleVariantExtraSelections);
 }
 
 // ==================== FUNZIONI SPELLCASTING ====================
@@ -684,14 +709,15 @@ function openRaceExtrasModal(selections) {
 
 function updateExtraSelectionsView() {
   console.log("🔄 Aggiornamento visualizzazione delle scelte extra...");
-  
+
   function updateContainer(id, title, dataKey) {
     const container = document.getElementById(id);
     if (container) {
       if (selectedData[dataKey] && selectedData[dataKey].length > 0) {
         container.innerHTML = `<p><strong>${title}:</strong> ${selectedData[dataKey].join(", ")}</p>`;
+        container.style.display = "block";  // 🔥 Mostra solo se c'è qualcosa
       } else {
-        container.innerHTML = `<p><strong>${title}:</strong> Nessuna selezione.</p>`;
+        container.style.display = "none";  // 🛠️ Nasconde se vuoto
       }
     }
   }
@@ -702,9 +728,6 @@ function updateExtraSelectionsView() {
   updateContainer("spellSelectionContainer", "Spellcasting", "Spellcasting");
 
   console.log("✅ Extra selections aggiornate:", selectedData);
-
-  // 🔥 Forza il rendering per assicurarsi che le modifiche siano visibili
-  document.getElementById("raceExtraTraitsContainer").style.display = "block";
 }
 
 /**

@@ -821,6 +821,13 @@ function showExtraSelection() {
     
         updateExtraSelectionsView();
     
+        // 🔥 Disabilita opzioni già selezionate
+        document.querySelectorAll(".extra-selection").forEach(select => {
+          Array.from(select.options).forEach(option => {
+            option.disabled = selectedData[category].includes(option.value) && option.value !== select.value;
+          });
+        });
+    
         // 🔥 Controlla se tutte le selezioni sono state fatte e mostra il pulsante "Chiudi"
         const allChoicesFilled = extraSelections.every(sel => 
             selectedData[sel.name] && selectedData[sel.name].length === sel.count
@@ -912,6 +919,7 @@ document.getElementById("closeModal").addEventListener("click", () => {
 document.getElementById("raceSelect").addEventListener("change", () => {
   console.log("🔄 Razza cambiata, reset delle selezioni extra...");
   selectedData = {}; // Reset delle selezioni extra
+  extraSelections = []; // 🔥 Reset completo del pop-up
   document.getElementById("languageSelection").innerHTML = "";
   document.getElementById("skillSelectionContainer").innerHTML = "";
   document.getElementById("toolSelectionContainer").innerHTML = "";

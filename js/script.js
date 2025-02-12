@@ -900,6 +900,7 @@ document.getElementById("closeModal").addEventListener("click", () => {
     displayRaceTraits(); 
 
     triggerRaceExtrasModal();
+    });
 });
 
   // Aggiorna l'interfaccia con le scelte fatte
@@ -1470,4 +1471,3 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     initializeValues();
 }); 
-})

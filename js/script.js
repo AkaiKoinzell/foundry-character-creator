@@ -1260,24 +1260,29 @@ document.addEventListener("DOMContentLoaded", () => {
         // ✅ **Aggiungere Spellcasting alle scelte nel Pop-up**
         if (raceData.spellcasting) {
           if (raceData.spellcasting.ability_choices && raceData.spellcasting.ability_choices.length > 0) {
-          // 🔥 Se il Deep Gnome ha una scelta multipla, la forziamo nel pop-up
-          if (raceData.name.toLowerCase().includes("deep gnome")) {
-              console.log("🧠 Deep Gnome: aggiunta selezione per Spellcasting Ability nel pop-up.");
-              extraSelections.push({
-                  name: "Spellcasting Ability",
-                  description: "Choose Intelligence, Wisdom, or Charisma as your spellcasting ability for your racial spells.",
-                  selection: raceData.spellcasting.ability_choices,
-                  count: 1
-              });
-          } else {
-              selections.push({
-                  name: "Spellcasting Ability",
-                  description: "Choose a spellcasting ability.",
-                  selection: raceData.spellcasting.ability_choices,
-                  count: 1
-              });
+              if (raceData.name.toLowerCase().includes("deep gnome")) {
+                  console.log("🧠 Deep Gnome: aggiunta selezione per Spellcasting Ability nel pop-up.");
+                  extraSelections.push({
+                      name: "Spellcasting Ability",
+                      description: "Choose Intelligence, Wisdom, or Charisma as your spellcasting ability for your racial spells.",
+                      selection: raceData.spellcasting.ability_choices,
+                      count: 1
+                  });
+          
+                  // 🔥 FIX: Forza l'apertura del pop-up con un piccolo ritardo
+                  setTimeout(() => {
+                      console.log("🔄 Riapro il pop-up per il Deep Gnome con la scelta di Spellcasting.");
+                      openRaceExtrasModal(extraSelections);
+                  }, 200);
+              } else {
+                  selections.push({
+                      name: "Spellcasting Ability",
+                      description: "Choose a spellcasting ability.",
+                      selection: raceData.spellcasting.ability_choices,
+                      count: 1
+                  });
+              }
           }
-      }
 
           if (raceData.spellcasting.spell_choices) {
             if (raceData.spellcasting.spell_choices.type === "fixed_list") {

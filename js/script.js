@@ -518,10 +518,10 @@ function convertRaceData(rawData) {
 
 if (rawData.additionalSpells && rawData.additionalSpells.length > 0) {
     let spellsArray = [];
-    let abilityChoices = new Set(); // Usiamo un Set per evitare duplicati
+    let abilityChoices = new Set(); // Evitiamo duplicati
 
     rawData.additionalSpells.forEach(spellData => {
-        // 📌 Gestione degli incantesimi conosciuti
+        // 📌 Gestione incantesimi conosciuti
         if (spellData.known) {
             Object.keys(spellData.known).forEach(levelKey => {
                 if (spellData.known[levelKey]._ && Array.isArray(spellData.known[levelKey]._)) {
@@ -558,27 +558,28 @@ if (rawData.additionalSpells && rawData.additionalSpells.length > 0) {
 
     spellcasting = spellcasting || {};  
 
-    // 📌 Gestione specifica per Alto Elfo e Deep Gnome
+    // 📌 Controllo per Alto Elfo
     if (rawData.name.toLowerCase().includes("elf (high)")) {
-        // L'Alto Elfo usa solo INT e non deve avere il dropdown
-        console.log(`🧠 ${rawData.name}: Spellcasting Ability forzata a INT.`);
+        console.log(`🧠 ${rawData.name}: Spellcasting Ability forzata a INT (nessun dropdown).`);
         spellcasting.ability_choices = ["INT"];
     } 
+    // 📌 Controllo per Deep Gnome
     else if (rawData.name.toLowerCase().includes("deep gnome")) {
-        // Il Deep Gnome deve avere la scelta tra INT, WIS e CHA
-        console.log(`🧠 ${rawData.name}: Spellcasting Ability selezionabile.`);
-        spellcasting.ability_choices = abilityChoices.size > 0 ? Array.from(abilityChoices) : ["INT", "WIS", "CHA"];
+        console.log(`🧠 ${rawData.name}: Spellcasting Ability selezionabile tra INT, WIS, CHA.`);
+        spellcasting.ability_choices = Array.from(abilityChoices).length > 0 ? Array.from(abilityChoices) : ["INT", "WIS", "CHA"];
 
-        // Aggiungiamo la selezione delle abilità di lancio nel pop-up
-        extraSelections.push({
-            name: "Spellcasting Ability",
-            description: "Choose Intelligence, Wisdom, or Charisma as your spellcasting ability for your racial spells.",
-            selection: spellcasting.ability_choices,
-            count: 1
-        });
+        // 🛠 Aggiungiamo la selezione dell'abilità di lancio nel pop-up
+        if (spellcasting.ability_choices.length > 1) {
+            extraSelections.push({
+                name: "Spellcasting Ability",
+                description: "Choose Intelligence, Wisdom, or Charisma as your spellcasting ability for your racial spells.",
+                selection: spellcasting.ability_choices,
+                count: 1
+            });
+        }
     } 
+    // 📌 Per tutte le altre razze
     else {
-        // Per tutte le altre razze, assegniamo semplicemente le scelte disponibili
         spellcasting.ability_choices = Array.from(abilityChoices);
     }
 }

@@ -733,7 +733,7 @@ function openRaceExtrasModal(selections) {
 function updateExtraSelectionsView() {
   console.log("🔄 Aggiornamento visualizzazione delle scelte extra...");
 
-  // ✅ Recupera i dati dalla sessione (se presenti)
+  // ✅ Recupera i dati salvati dalla sessione, se presenti
   selectedData = sessionStorage.getItem("selectedData")
     ? JSON.parse(sessionStorage.getItem("selectedData"))
     : selectedData;
@@ -745,6 +745,7 @@ function updateExtraSelectionsView() {
         container.innerHTML = `<p><strong>${title}:</strong> ${selectedData[dataKey].join(", ")}</p>`;
         container.style.display = "block";  
       } else {
+        container.innerHTML = "";  
         container.style.display = "none";  
       }
     }
@@ -853,7 +854,6 @@ document.getElementById("closeModal").addEventListener("click", () => {
   document.getElementById("raceExtrasModal").style.display = "none";
   sessionStorage.removeItem("popupOpened");
 
-  // ✅ Memorizza le selezioni in sessionStorage per evitare di perderle dopo il pop-up
   sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
 
   console.log("📝 Selezioni salvate prima dell'update:", selectedData);
@@ -861,8 +861,8 @@ document.getElementById("closeModal").addEventListener("click", () => {
   showStep("step2");
 
   setTimeout(() => {
-    displayRaceTraits(); // ✅ Aggiorna i tratti della razza
-    updateExtraSelectionsView(); // ✅ Mostra le selezioni extra nel posto giusto
+    updateExtraSelectionsView(); // ✅ MOSTRA le selezioni extra PRIMA di ricaricare i tratti
+    displayRaceTraits(); // ✅ Ora i tratti non sovrascrivono `selectedData`
   }, 300);
 });
 
@@ -900,15 +900,15 @@ function displayRaceTraits() {
   const raceTraitsDiv = document.getElementById("raceTraits");
   const racialBonusDiv = document.getElementById("racialBonusSelection");
 
-  // ✅ Pulisce i contenitori solo se non ci sono dati salvati
+  // ✅ NON cancelliamo il contenuto se esistono già dati salvati!
   ["skillSelectionContainer", "toolSelectionContainer", "spellSelectionContainer",
    "variantFeatureSelectionContainer", "variantExtraContainer", "languageSelection", "ancestrySelection"]
-    .forEach(id => {
-      const el = document.getElementById(id);
-      if (el && (!selectedData || !Object.keys(selectedData).length)) {
-        el.innerHTML = "";
-      }
-    });
+      .forEach(id => {
+        const el = document.getElementById(id);
+        if (el && (!selectedData || Object.keys(selectedData).length === 0)) {
+          el.innerHTML = "";
+        }
+      });
 
    if (!racePath) {
     console.warn("⚠️ displayRaceTraits(): Nessuna razza selezionata.");

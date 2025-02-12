@@ -1339,6 +1339,9 @@ window.updateSubclasses = updateSubclasses;
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("✅ Script.js caricato!");
+
+  initializeValues();
+  
   const modal = document.getElementById("raceExtrasModal");
   if (modal) modal.style.display = "none";
 

@@ -731,9 +731,9 @@ function openRaceExtrasModal(selections) {
 }
 
 function updateExtraSelectionsView() {
-  console.log("🔄 Aggiornamento visualizzazione delle scelte extra...");
+  console.log("🔄 Recupero selezioni extra salvate...");
 
-  // ✅ Recupera i dati salvati dalla sessione, se presenti
+  // ✅ Assicuriamoci di recuperare i dati dallo storage
   selectedData = sessionStorage.getItem("selectedData")
     ? JSON.parse(sessionStorage.getItem("selectedData"))
     : selectedData;
@@ -745,8 +745,8 @@ function updateExtraSelectionsView() {
         container.innerHTML = `<p><strong>${title}:</strong> ${selectedData[dataKey].join(", ")}</p>`;
         container.style.display = "block";  
       } else {
-        container.innerHTML = "";  
-        container.style.display = "none";  
+        container.innerHTML = `<p><strong>${title}:</strong> Nessuna selezione.</p>`;
+        container.style.display = "block";  
       }
     }
   }
@@ -854,15 +854,15 @@ document.getElementById("closeModal").addEventListener("click", () => {
   document.getElementById("raceExtrasModal").style.display = "none";
   sessionStorage.removeItem("popupOpened");
 
+  // ✅ Salviamo i dati selezionati per non perderli
   sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
-
   console.log("📝 Selezioni salvate prima dell'update:", selectedData);
 
   showStep("step2");
 
   setTimeout(() => {
-    updateExtraSelectionsView(); // ✅ MOSTRA le selezioni extra PRIMA di ricaricare i tratti
-    displayRaceTraits(); // ✅ Ora i tratti non sovrascrivono `selectedData`
+    displayRaceTraits(); // ✅ Ricarica i tratti senza sovrascrivere i dati salvati
+    setTimeout(() => updateExtraSelectionsView(), 100); // 🔥 FORZA IL RENDERING DELLE SELEZIONI EXTRA
   }, 300);
 });
 
@@ -906,7 +906,7 @@ function displayRaceTraits() {
       .forEach(id => {
         const el = document.getElementById(id);
         if (el && (!selectedData || Object.keys(selectedData).length === 0)) {
-          el.innerHTML = "";
+          el.innerHTML = ""; // ✅ Cancella solo se `selectedData` è vuoto
         }
       });
 

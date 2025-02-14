@@ -111,12 +111,12 @@ function displayRaceTraits() {
 
   fetch(racePath)
     .then(response => response.json())
-    .then(data => {
-      console.log("📜 Dati razza caricati:", data);
-      const raceData = convertRaceData(data);
+    .then(data => convertRaceData(data)) // Gestione asincrona
+    .then(raceData => {
+      console.log("📜 Dati razza convertiti:", raceData);
       updateRaceTraitsUI(raceData);
     })
-    .catch(error => handleError(`Errore caricando i tratti della razza: ${error}`));
+    .catch(error => handleError(`❌ Errore caricando i tratti della razza: ${error}`));
 }
 
 // ✅ Aggiorna l'interfaccia con i tratti della razza

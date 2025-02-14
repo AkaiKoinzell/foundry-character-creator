@@ -110,8 +110,8 @@
     <button id="btnStep1">Step 1: Nome & Livello</button>
     <button id="btnStep2">Step 2: Razza</button>
     <button id="btnStep3">Step 3: Point Buy</button>
-    <button id="btnStep4">Step 4: Tratti Extra</button>
-    <button id="btnStep5">Step 5: Classe</button>
+    <button id="btnStep4">Step 4: Classe</button>
+    <button id="btnStep5">Step 5: Equipaggiamento</button>
     <button id="btnStep8">Step 8: Recap & Esportazione</button>
   </nav>
   <!-- Container degli step -->
@@ -148,15 +148,87 @@
       </select>
     </div>
     <!-- Step 2: Razza -->
-    <div id="step2" class="step">
-      <h2>Step 2: Scelta della Razza</h2>
-      <label for="raceSelect">Razza:</label>
-      <select id="raceSelect">
-        <option value="">Seleziona una razza</option>
-      </select>
-      <br><br>
-      <div id="raceTraits"></div>
+  <div id="step2" class="step">
+    <h2>Step 2: Scelta della Razza</h2>
+    <label for="raceSelect">Razza:</label>
+    <select id="raceSelect">
+      <option value="">Seleziona una razza</option>
+    </select>
+    <br><br>
+    <div id="raceTraits"></div>
+    
+    <button id="confirmRaceSelection" class="primary">Seleziona Razza</button>
+  
+    <!-- Contenitore dei tratti extra, inizialmente nascosto -->
+    <div id="raceExtraTraitsContainer" style="display: none;">
+      <h3>Tratti Extra</h3>
+      <div id="variantFeatureSelectionContainer"></div>
+      <div id="variantExtraContainer"></div>
+      <div id="ancestrySelection"></div> 
+      <div id="spellSelectionContainer"></div>
+      <div id="languageSelection"></div>
+      <div id="skillSelectionContainer"></div>
+      <div id="toolSelectionContainer"></div>
     </div>
+  </div>
+    <!-- 📜 MODALE PER TUTTE LE SCELTE EXTRA -->
+<div id="raceExtrasModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+    background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
+  <div style="background: #fff; padding: 20px; border-radius: 5px; max-width: 500px; width: 90%;">
+    <h2 id="extraTraitTitle"></h2>
+    <p id="extraTraitDescription"></p>
+    <div id="extraTraitSelection"></div>
+    <div style="margin-top: 10px;">
+      <button id="prevTrait">Precedente</button>
+      <button id="nextTrait">Successivo</button>
+      <button id="closeModal" style="display: none;">Chiudi</button>
+    </div>
+  </div>
+</div>
+<style>
+  /* Stile per il pop-up */
+  .modal {
+    display: none; /* Inizialmente nascosto */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal-content {
+    background: white;
+    padding: 20px;
+    width: 50%;
+    text-align: center;
+    border-radius: 10px;
+  }
+
+  .modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  #closeModal {
+    margin-top: 20px;
+    background: #28a745;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+  }
+
+  #closeModal:hover {
+    background: #218838;
+  }
+</style>
+    
     <!-- Step 3: Point Buy System -->
     <div id="step3" class="step">
       <h2>Step 3: Sistema Point Buy</h2>
@@ -275,20 +347,7 @@
     </div>
     <!-- Step 4: Tratti Extra -->
     <div id="step4" class="step">
-      <h2>Step 4: Selezione dei Tratti Extra</h2>
-      <!-- Qui verranno visualizzate le sezioni extra -->
-      <div id="variantFeatureSelectionContainer"></div>
-      <div id="variantExtraContainer"></div>
-      <div id="ancestrySelection"></div> 
-      <div id="spellSelectionContainer"></div>
-      <div id="languageSelection"></div>
-      <div id="skillSelectionContainer"></div>
-      <div id="toolSelectionContainer"></div>
-
-    </div>
-    <!-- Step 5: Classe e Sottoclasse -->
-    <div id="step5" class="step">
-      <h2>Step 5: Scelta della Classe e Sottoclasse</h2>
+      <h2>Step 4: Scelta della Classe e Sottoclasse</h2>
       <label for="classSelect">Classe:</label>
       <select id="classSelect">
         <option value="">Seleziona una classe</option>

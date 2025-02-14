@@ -53,16 +53,15 @@ function confirmRaceSelection() {
   }
 
   fetch(selectedRace)
-    .then(response => response.json())
-    .then(data => {
-      const raceData = convertRaceData(data);
-      const selections = prepareExtraSelections(raceData);
-      
-      sessionStorage.setItem("popupOpened", "true");
-      openRaceExtrasModal(selections);
-      document.getElementById("confirmRaceSelection").style.display = "none";
-    })
-    .catch(error => handleError(`Errore caricando i dati della razza: ${error}`));
+  .then(response => response.json())
+  .then(data => convertRaceData(data)) // Usa la Promise
+  .then(raceData => {
+    const selections = prepareExtraSelections(raceData);
+    sessionStorage.setItem("popupOpened", "true");
+    openRaceExtrasModal(selections);
+    document.getElementById("confirmRaceSelection").style.display = "none";
+  })
+  .catch(error => handleError(`Errore caricando i dati della razza: ${error}`));
 }
 
 // ✅ Prepara le selezioni extra per il pop-up

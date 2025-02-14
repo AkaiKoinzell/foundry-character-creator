@@ -116,7 +116,12 @@ function updateRaceTraitsUI(raceData) {
   const raceTraitsDiv = document.getElementById("raceTraits");
   raceTraitsDiv.innerHTML = `<h3>Tratti di ${raceData.name}</h3>`;
 
-  raceTraitsDiv.innerHTML += raceData.speed ? `<p><strong>Velocità:</strong> ${JSON.stringify(raceData.speed)} ft</p>` : "";
+  if (raceData.speed) {
+  let speedText = Object.entries(raceData.speed)
+    .map(([type, value]) => `${type === "walk" ? "Camminare" : type.charAt(0).toUpperCase() + type.slice(1)}: ${value} ft`)
+    .join(", ");
+  raceTraitsDiv.innerHTML += `<p><strong>Velocità:</strong> ${speedText}</p>`;
+}
   raceTraitsDiv.innerHTML += raceData.senses?.darkvision ? `<p><strong>Visione:</strong> ${raceData.senses.darkvision} ft</p>` : "";
   raceTraitsDiv.innerHTML += raceData.traits.length > 0 ? `<p><strong>Tratti:</strong></p><ul>${raceData.traits.map(t => `<li><strong>${t.name}:</strong> ${t.description || ""}</li>`).join("")}</ul>` : "";
 

@@ -69,9 +69,18 @@ function confirmRaceSelection() {
 function prepareExtraSelections(raceData) {
   let selections = [];
 
-  if (raceData.languages?.choice > 0) {
-    selections.push({ name: "Languages", description: "Choose an additional language.", selection: raceData.languages.options, count: raceData.languages.choice });
-  }
+ if (raceData.languages?.choice > 0) {
+  let availableLanguages = raceData.languages.options?.length > 0 
+    ? raceData.languages.options 
+    : ["Qualsiasi lingua (decisa con il DM)"];
+
+  selections.push({ 
+    name: "Languages", 
+    description: "Choose an additional language.", 
+    selection: availableLanguages, 
+    count: raceData.languages.choice 
+  });
+}
   if (raceData.skill_choices) {
     selections.push({ name: "Skill Proficiency", description: "Choose skill proficiencies.", selection: raceData.skill_choices.options, count: raceData.skill_choices.number });
   }

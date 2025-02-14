@@ -24,6 +24,10 @@ document.addEventListener("DOMContentLoaded", () => {
   showStep("step1");
 });
 
+let selectedData = sessionStorage.getItem("selectedData")
+  ? JSON.parse(sessionStorage.getItem("selectedData"))
+  : {};
+
 // ✅ Imposta tutti gli event listener in un'unica funzione
 function setupEventListeners() {
   document.getElementById("raceSelect").addEventListener("change", handleRaceChange);
@@ -131,8 +135,13 @@ function updateRaceTraitsUI(raceData) {
 
 // ✅ Resetta le selezioni extra
 function resetExtraSelections() {
-  selectedData = {};
+  selectedData = {}; // Ora è definito
+  sessionStorage.setItem("selectedData", JSON.stringify(selectedData)); // ✅ Salva lo stato
+
   ["languageSelection", "skillSelectionContainer", "toolSelectionContainer", "spellSelectionContainer"].forEach(id => {
-    document.getElementById(id).innerHTML = "";
+    const element = document.getElementById(id);
+    if (element) element.innerHTML = "";
   });
+
+  console.log("✅ Extra selections resettate:", selectedData);
 }

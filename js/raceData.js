@@ -1,3 +1,5 @@
+import { loadLanguages } from "./extras.js";
+
 // ==================== RACE DATA CONVERSION ====================
 export function convertRaceData(rawData) {
   // Size
@@ -143,21 +145,31 @@ export function convertRaceData(rawData) {
     }
   }
 
+  
   // Languages
-let languages = { fixed: [], choice: 0, options: [] };
-if (rawData.languageProficiencies && rawData.languageProficiencies.length > 0) {
-  const lp = rawData.languageProficiencies[0];
-  for (let lang in lp) {
-    if (lp[lang] === true) {
-      languages.fixed.push(lang.charAt(0).toUpperCase() + lang.slice(1));
-    } else if (typeof lp[lang] === "number") {
-      languages.choice = lp[lang];
+  let languages = { fixed: [], choice: 0, options: [] };
+  
+  if (rawData.languageProficiencies && rawData.languageProficiencies.length > 0) {
+    const lp = rawData.languageProficiencies[0];
+  
+    for (let lang in lp) {
+      if (lp[lang] === true) {
+        languages.fixed.push(lang.charAt(0).toUpperCase() + lang.slice(1));
+      } else if (typeof lp[lang] === "number") {
+        languages.choice = lp[lang]; // Numero di lingue extra selezionabili
+      }
     }
+  
+    // Carica le lingue disponibili dal file JSON
+    loadLanguages(availableLanguages => {
+      languages.options = availableLanguages.filter(lang => !languages.fixed.includes(lang));
+  
+      // Se non ci sono lingue disponibili, mostra un'opzione di fallback
+      if (languages.choice > 0 && languages.options.length === 0) {
+        languages.options.push("Qualsiasi lingua (decisa con il DM)");
+      }
+    });
   }
-  if (languages.choice > 0 && languages.options.length === 0) {
-    languages.options.push("Qualsiasi lingua (decisa con il DM)");
-  }
-}
 
   // ✅ Ritorno finale corretto
   return {

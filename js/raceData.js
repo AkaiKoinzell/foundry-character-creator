@@ -143,6 +143,22 @@ export function convertRaceData(rawData) {
     }
   }
 
+  // Languages
+let languages = { fixed: [], choice: 0, options: [] };
+if (rawData.languageProficiencies && rawData.languageProficiencies.length > 0) {
+  const lp = rawData.languageProficiencies[0];
+  for (let lang in lp) {
+    if (lp[lang] === true) {
+      languages.fixed.push(lang.charAt(0).toUpperCase() + lang.slice(1));
+    } else if (typeof lp[lang] === "number") {
+      languages.choice = lp[lang];
+    }
+  }
+  if (languages.choice > 0 && languages.options.length === 0) {
+    languages.options.push("Qualsiasi lingua (decisa con il DM)");
+  }
+}
+
   // ✅ Ritorno finale corretto
   return {
     name: rawData.name,
@@ -154,7 +170,7 @@ export function convertRaceData(rawData) {
     traits: traits,
     rawEntries: rawEntries,
     spellcasting: spellcasting,
-    languages: rawData.languageProficiencies || [],
+    languages: languages,
     skill_choices: rawData.skillProficiencies || null,
     tool_choices: rawData.toolProficiencies || null,
     variant_feature_choices: variant_feature_choices

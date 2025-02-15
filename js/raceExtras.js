@@ -74,21 +74,27 @@ export function showExtraSelection() {
   const descElem = document.getElementById("extraTraitDescription");
   const selectionElem = document.getElementById("extraTraitSelection");
 
-  if (!extraSelections || extraSelections.length === 0) return;
+  if (!extraSelections || extraSelections.length === 0) {
+    console.warn("⚠️ Nessuna selezione extra disponibile.");
+    return;
+  }
 
   const currentSelection = extraSelections[currentSelectionIndex];
 
   titleElem.innerText = currentSelection.name;
   descElem.innerText = currentSelection.description;
-  selectionElem.innerHTML = "";
+  selectionElem.innerHTML = ""; // Pulisce il contenuto precedente
 
   if (currentSelection.selection) {
+    const selectedValues = new Set(selectedData[currentSelection.name] || []);
     let dropdownHTML = "";
+
     for (let i = 0; i < currentSelection.count; i++) {
       dropdownHTML += `<select class="extra-selection" data-category="${currentSelection.name}" data-index="${i}">
                           <option value="">Seleziona...</option>`;
       currentSelection.selection.forEach(option => {
-        dropdownHTML += `<option value="${option}">${option}</option>`;
+        const disabled = selectedValues.has(option) && !selectedData[currentSelection.name]?.includes(option);
+        dropdownHTML += `<option value="${option}" ${disabled ? "disabled" : ""}>${option}</option>`;
       });
       dropdownHTML += `</select><br>`;
     }
@@ -99,20 +105,24 @@ export function showExtraSelection() {
       select.addEventListener("change", (event) => {
         const category = event.target.getAttribute("data-category");
         const index = event.target.getAttribute("data-index");
-
+    
         if (!selectedData[category]) {
           selectedData[category] = [];
         }
-
+    
         selectedData[category][index] = event.target.value;
+    
+        // 🔥 Rimuove elementi vuoti
         selectedData[category] = selectedData[category].filter(value => value);
-
+    
         console.log(`📝 Salvato: ${category} -> ${selectedData[category]}`);
+    
         updateExtraSelectionsView();
       });
     });
   }
 
+  // ✅ Aggiorna i pulsanti "Precedente" e "Successivo"
   document.getElementById("prevTrait").disabled = (currentSelectionIndex === 0);
   document.getElementById("nextTrait").disabled = (currentSelectionIndex === extraSelections.length - 1);
   document.getElementById("closeModal").style.display = (currentSelectionIndex === extraSelections.length - 1) ? "inline-block" : "none";

@@ -79,6 +79,8 @@ export function showExtraSelection() {
     return;
   }
 
+  console.log(`📢 Mostrando selezione extra ${currentSelectionIndex + 1} di ${extraSelections.length}`);
+  
   const currentSelection = extraSelections[currentSelectionIndex];
 
   titleElem.innerText = currentSelection.name;
@@ -126,4 +128,20 @@ export function showExtraSelection() {
   document.getElementById("prevTrait").disabled = (currentSelectionIndex === 0);
   document.getElementById("nextTrait").disabled = (currentSelectionIndex === extraSelections.length - 1);
   document.getElementById("closeModal").style.display = (currentSelectionIndex === extraSelections.length - 1) ? "inline-block" : "none";
+
+  console.log(`🔄 Pulsanti aggiornati - Indice corrente: ${currentSelectionIndex}`);
 }
+
+document.getElementById("prevTrait").addEventListener("click", () => {
+  if (currentSelectionIndex > 0) {
+    currentSelectionIndex--;
+    showExtraSelection();
+  }
+});
+
+document.getElementById("nextTrait").addEventListener("click", () => {
+  if (currentSelectionIndex < extraSelections.length - 1) {
+    currentSelectionIndex++;
+    showExtraSelection();
+  }
+});

@@ -145,3 +145,18 @@ document.getElementById("nextTrait").addEventListener("click", () => {
     showExtraSelection();
   }
 });
+
+document.getElementById("closeModal").addEventListener("click", () => {
+  console.log("🔄 Chiusura pop-up e aggiornamento UI...");
+  
+  document.getElementById("raceExtrasModal").style.display = "none";
+  sessionStorage.removeItem("popupOpened");
+
+  // ✅ Salva le selezioni extra prima di chiudere
+  sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
+  console.log("📝 Selezioni salvate prima dell'update:", selectedData);
+
+  updateExtraSelectionsView(); // Assicura che le selezioni siano aggiornate nella UI
+
+  console.log("✅ Pop-up chiuso con successo.");
+});

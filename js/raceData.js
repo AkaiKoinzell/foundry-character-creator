@@ -10,18 +10,19 @@ export function convertRaceData(rawData) {
     } else {
       size = rawData.size || "Unknown";
     }
-
-    // Speed
+   // Speed
     let speed = {};
     if (rawData.speed) {
       if (typeof rawData.speed === "object") {
-        for (let key in rawData.speed) {
-          speed[key] = (typeof rawData.speed[key] === "boolean")
-            ? (key === "fly" ? "equal to your walking speed" : "unknown")
-            : rawData.speed[key];
-        }
-      } else {
-        speed = rawData.speed;
+        // Gestisce razze con più tipi di movimento (es. Aarakocra)
+        Object.entries(rawData.speed).forEach(([type, value]) => {
+          speed[type] = (typeof value === "boolean")
+            ? (type === "fly" ? "equal to your walking speed" : "unknown")
+            : value;
+        });
+      } else if (typeof rawData.speed === "number") {
+        // Se la velocità è un numero singolo, impostiamolo come "walk"
+        speed.walk = rawData.speed;
       }
     }
 

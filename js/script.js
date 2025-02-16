@@ -126,9 +126,12 @@ function updateRaceTraitsUI(raceData) {
 
   if (raceData.speed) {
   let speedText = Object.entries(raceData.speed)
-    .map(([type, value]) => `${type === "walk" ? "Camminare" : type.charAt(0).toUpperCase() + type.slice(1)}: ${value} ft`)
+    .map(([type, value]) => {
+      let movementType = type === "walk" ? "Camminare" : type.charAt(0).toUpperCase() + type.slice(1);
+      return `${movementType}: ${value} ft`;
+    })
     .join(", ");
-  raceTraitsDiv.innerHTML += `<p><strong>Velocità:</strong> ${speedText}</p>`;
+  raceTraitsDiv.innerHTML += `<p><strong>Velocità:</strong> ${speedText || "N/A"}</p>`;
 }
   raceTraitsDiv.innerHTML += raceData.senses?.darkvision ? `<p><strong>Visione:</strong> ${raceData.senses.darkvision} ft</p>` : "";
   raceTraitsDiv.innerHTML += raceData.traits.length > 0 ? `<p><strong>Tratti:</strong></p><ul>${raceData.traits.map(t => `<li><strong>${t.name}:</strong> ${t.description || ""}</li>`).join("")}</ul>` : "";

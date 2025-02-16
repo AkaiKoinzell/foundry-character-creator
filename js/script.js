@@ -127,7 +127,7 @@ function updateRaceTraitsUI(raceData) {
   if (raceData.speed) {
   let speedText = Object.entries(raceData.speed)
     .map(([type, value]) => {
-      let movementType = type === "walk" ? "Camminare" : type.charAt(0).toUpperCase() + type.slice(1);
+      let movementType = type.charAt(0).toUpperCase() + type.slice(1);
       return `${movementType}: ${value} ft`;
     })
     .join(", ");

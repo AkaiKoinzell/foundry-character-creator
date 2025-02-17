@@ -153,6 +153,29 @@ export function convertRaceData(rawData) {
         languages.options.push("Qualsiasi lingua (decisa con il DM)");
       }
 
+    // Skill Choices
+    let skill_choices = null;
+    let automatic_skills = [];
+    
+    if (rawData.skillProficiencies && Array.isArray(rawData.skillProficiencies)) {
+      rawData.skillProficiencies.forEach(skill => {
+        if (skill.choose && skill.choose.from) {
+          // Se è una scelta, la impostiamo correttamente
+          skill_choices = {
+            number: skill.choose.count || 1,
+            options: skill.choose.from
+          };
+        } else {
+          // Se la skill è direttamente assegnata (es. "stealth": true), la aggiungiamo alla lista delle competenze automatiche
+          Object.keys(skill).forEach(skillName => {
+            if (skill[skillName] === true) {
+              automatic_skills.push(skillName.charAt(0).toUpperCase() + skillName.slice(1));
+            }
+          });
+        }
+      });
+    }
+
       resolve({
         name: rawData.name,
         source: rawData.source + (rawData.page ? `, page ${rawData.page}` : ""),

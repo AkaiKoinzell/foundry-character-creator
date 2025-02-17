@@ -155,27 +155,16 @@ export function convertRaceData(rawData) {
 
     // Skill Choices
     let skill_choices = null;
-    let automatic_skills = [];
-    
     if (rawData.skillProficiencies && Array.isArray(rawData.skillProficiencies)) {
-      rawData.skillProficiencies.forEach(skill => {
-        if (skill.choose && skill.choose.from) {
-          // Se è una scelta, la impostiamo correttamente
+      rawData.skillProficiencies.forEach(sp => {
+        if (sp.choose && sp.choose.from) {
           skill_choices = {
-            number: skill.choose.count || 1,
-            options: skill.choose.from
+            number: sp.choose.count ? sp.choose.count : 1,
+            options: sp.choose.from
           };
-        } else {
-          // Se la skill è direttamente assegnata (es. "stealth": true), la aggiungiamo alla lista delle competenze automatiche
-          Object.keys(skill).forEach(skillName => {
-            if (skill[skillName] === true) {
-              automatic_skills.push(skillName.charAt(0).toUpperCase() + skillName.slice(1));
-            }
-          });
         }
       });
     }
-
       resolve({
         name: rawData.name,
         source: rawData.source + (rawData.page ? `, page ${rawData.page}` : ""),

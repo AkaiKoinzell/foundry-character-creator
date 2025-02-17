@@ -80,58 +80,23 @@ function prepareExtraSelections(raceData) {
     count: raceData.languages.choice 
   });
 }
- if (!data.skill_choices || data.skill_choices.options?.length === 0) return;
-
-  const skillContainer = document.createElement("div");
-  skillContainer.innerHTML = `<h4>Skill Extra</h4>`;
-
-  const selectedSkills = new Set();
-
-  function createSkillDropdown(index) {
-    const select = document.createElement("select");
-    select.classList.add("skillChoice");
-    select.id = `skillChoice${index}`;
-    
-    const defaultOption = document.createElement("option");
-    defaultOption.value = "";
-    defaultOption.textContent = "Seleziona...";
-    select.appendChild(defaultOption);
-    
-    data.skill_choices.options.forEach(skill => {
-      const option = document.createElement("option");
-      option.value = skill;
-      option.textContent = skill;
-      select.appendChild(option);
+ if (raceData.skill_choices && raceData.skill_choices.options?.length > 0) {
+    selections.push({
+      name: "Skill Proficiency",
+      description: `Choose ${raceData.skill_choices.number} skill${raceData.skill_choices.number > 1 ? "s" : ""}.`,
+      selection: raceData.skill_choices.options,
+      count: raceData.skill_choices.number
     });
-
-    select.addEventListener("change", () => {
-      selectedSkills.clear();
-      document.querySelectorAll(".skillChoice").forEach(dropdown => {
-        if (dropdown.value) selectedSkills.add(dropdown.value);
-      });
-
-      document.querySelectorAll(".skillChoice").forEach(dropdown => {
-        dropdown.querySelectorAll("option").forEach(option => {
-          if (selectedSkills.has(option.value) && dropdown.value !== option.value) {
-            option.disabled = true;
-          } else {
-            option.disabled = false;
-          }
-        });
-      });
-    });
-
-    return select;
   }
 
-  for (let i = 0; i < data.skill_choices.number; i++) {
-    skillContainer.appendChild(createSkillDropdown(i));
-    skillContainer.appendChild(document.createElement("br"));
+  if (raceData.tool_choices) {
+    selections.push({ 
+      name: "Tool Proficiency", 
+      description: "Choose a tool proficiency.", 
+      selection: raceData.tool_choices.options, 
+      count: 1 
+    });
   }
-
-  const container = document.getElementById(containerId);
-  if (container) container.appendChild(skillContainer);
-}
   if (raceData.tool_choices) {
     selections.push({ name: "Tool Proficiency", description: "Choose a tool proficiency.", selection: raceData.tool_choices.options, count: 1 });
   }

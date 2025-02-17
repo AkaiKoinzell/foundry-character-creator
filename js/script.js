@@ -86,9 +86,20 @@ function prepareExtraSelections(raceData) {
   if (raceData.tool_choices) {
     selections.push({ name: "Tool Proficiency", description: "Choose a tool proficiency.", selection: raceData.tool_choices.options, count: 1 });
   }
-  if (raceData.spellcasting?.ability_choices?.length > 0) {
-    selections.push({ name: "Spellcasting Ability", description: "Choose a spellcasting ability.", selection: raceData.spellcasting.ability_choices, count: 1 });
-  }
+  if (raceData.spellcasting?.ability_choices?.length > 1) {
+  // ✅ Mostra il dropdown nel pop-up solo se ci sono più opzioni disponibili
+  selections.push({ 
+    name: "Spellcasting Ability", 
+    description: "Choose a spellcasting ability.", 
+    selection: raceData.spellcasting.ability_choices, 
+    count: 1 
+  });
+} else if (raceData.spellcasting?.ability_choices?.length === 1) {
+  // ✅ Se c'è solo un'opzione, la assegniamo direttamente senza mostrare il pop-up
+  selectedData["Spellcasting Ability"] = raceData.spellcasting.ability_choices[0];
+  sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
+  console.log(`✅ Spellcasting Ability impostata automaticamente a: ${raceData.spellcasting.ability_choices[0]}`);
+}
   if (raceData.spellcasting?.spell_choices?.type === "fixed_list") {
     selections.push({ name: "Spellcasting", description: "Choose a spell.", selection: raceData.spellcasting.spell_choices.options, count: 1 });
   }

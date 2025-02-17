@@ -80,12 +80,12 @@ function prepareExtraSelections(raceData) {
     count: raceData.languages.choice 
   });
 }
-  if (raceData.skill_choices && Array.isArray(raceData.skill_choices.options) && raceData.skill_choices.options.length > 0) {
-  selections.push({ 
-    name: "Skill Proficiency", 
-    description: "Choose skill proficiencies.", 
-    selection: raceData.skill_choices.options, 
-    count: raceData.skill_choices.number 
+  if (raceData.skill_choices && raceData.skill_choices.options?.length > 0) {
+  selections.push({
+    name: "Skill Proficiency",
+    description: "Choose a skill proficiency.",
+    selection: raceData.skill_choices.options,
+    count: raceData.skill_choices.number
   });
 }
   if (raceData.tool_choices) {

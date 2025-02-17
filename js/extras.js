@@ -33,37 +33,57 @@ export function handleExtraLanguages(data, containerId) {
 }
 
 export function handleExtraSkills(data, containerId) {
-  if (data.skill_choices) {
-    const skillOptions = JSON.stringify(data.skill_choices.options);
-    const skillContainer = document.createElement("div");
-    const title = document.createElement("h4");
-    title.textContent = "Skill Extra";
-    skillContainer.appendChild(title);
+  if (!data.skill_choices || data.skill_choices.options?.length === 0) return;
 
-    for (let i = 0; i < data.skill_choices.number; i++) {
-      const select = document.createElement("select");
-      select.classList.add("skillChoice");
-      select.id = `skillChoice${i}`;
-      select.dataset.options = JSON.stringify(data.skill_choices.options);
-      
-      const defaultOption = document.createElement("option");
-      defaultOption.value = "";
-      defaultOption.textContent = "Seleziona...";
-      select.appendChild(defaultOption);
-      
-      data.skill_choices.options.forEach(skill => {
-        const option = document.createElement("option");
-        option.value = skill;
-        option.textContent = skill;
-        select.appendChild(option);
+  const skillContainer = document.createElement("div");
+  skillContainer.innerHTML = `<h4>Skill Extra</h4>`;
+
+  const selectedSkills = new Set();
+
+  function createSkillDropdown(index) {
+    const select = document.createElement("select");
+    select.classList.add("skillChoice");
+    select.id = `skillChoice${index}`;
+    
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.textContent = "Seleziona...";
+    select.appendChild(defaultOption);
+    
+    data.skill_choices.options.forEach(skill => {
+      const option = document.createElement("option");
+      option.value = skill;
+      option.textContent = skill;
+      select.appendChild(option);
+    });
+
+    select.addEventListener("change", () => {
+      selectedSkills.clear();
+      document.querySelectorAll(".skillChoice").forEach(dropdown => {
+        if (dropdown.value) selectedSkills.add(dropdown.value);
       });
 
-      skillContainer.appendChild(select);
-    }
+      document.querySelectorAll(".skillChoice").forEach(dropdown => {
+        dropdown.querySelectorAll("option").forEach(option => {
+          if (selectedSkills.has(option.value) && dropdown.value !== option.value) {
+            option.disabled = true;
+          } else {
+            option.disabled = false;
+          }
+        });
+      });
+    });
 
-    const container = document.getElementById(containerId);
-    if (container) container.appendChild(skillContainer);
+    return select;
   }
+
+  for (let i = 0; i < data.skill_choices.number; i++) {
+    skillContainer.appendChild(createSkillDropdown(i));
+    skillContainer.appendChild(document.createElement("br"));
+  }
+
+  const container = document.getElementById(containerId);
+  if (container) container.appendChild(skillContainer);
 }
 
 export function handleExtraTools(data, containerId) {

@@ -80,7 +80,7 @@ function prepareExtraSelections(raceData) {
     count: raceData.languages.choice 
   });
 }
-  if (raceData.skill_choices && raceData.skill_choices.options.length > 0) {
+  if (raceData.skill_choices && Array.isArray(raceData.skill_choices.options) && raceData.skill_choices.options.length > 0) {
   selections.push({ 
     name: "Skill Proficiency", 
     description: "Choose skill proficiencies.", 

@@ -80,14 +80,19 @@ function prepareExtraSelections(raceData) {
     count: raceData.languages.choice 
   });
 }
- if (raceData.skill_choices && raceData.skill_choices.options?.length > 0) {
-  selections.push({
-    name: "Skill Proficiency",
-    description: `Choose ${raceData.skill_choices.number} skill${raceData.skill_choices.number > 1 ? "s" : ""}.`,
-    selection: raceData.skill_choices.options,
-    count: raceData.skill_choices.number // 🔥 Assicura che il numero di scelte sia rispettato
-  });
-}
+  
+ if (raceData.skill_choices && Array.isArray(raceData.skill_choices)) {
+    raceData.skill_choices.forEach(skillChoice => {
+      if (skillChoice.choose?.from && skillChoice.choose.count > 0) {
+        selections.push({
+          name: "Skill Proficiency",
+          description: `Choose ${skillChoice.choose.count} skill${skillChoice.choose.count > 1 ? "s" : ""}.`,
+          selection: skillChoice.choose.from,
+          count: skillChoice.choose.count
+        });
+      }
+    });
+  }
 
   if (raceData.tool_choices) {
     selections.push({ 
@@ -100,6 +105,7 @@ function prepareExtraSelections(raceData) {
   if (raceData.tool_choices) {
     selections.push({ name: "Tool Proficiency", description: "Choose a tool proficiency.", selection: raceData.tool_choices.options, count: 1 });
   }
+  
   if (raceData.spellcasting?.ability_choices?.length > 1) {
   // ✅ Mostra il dropdown nel pop-up solo se ci sono più opzioni disponibili
   selections.push({ 

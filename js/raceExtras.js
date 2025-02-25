@@ -107,18 +107,22 @@ export function showExtraSelection() {
       select.addEventListener("change", (event) => {
         const category = event.target.getAttribute("data-category");
         const index = event.target.getAttribute("data-index");
-    
+        
         if (!selectedData[category]) {
           selectedData[category] = [];
         }
     
         selectedData[category][index] = event.target.value;
     
-        // 🔥 Rimuove elementi vuoti
-        selectedData[category] = selectedData[category].filter(value => value);
+        // 🔥 Evita selezioni duplicate aggiornando gli altri dropdown della stessa categoria
+        document.querySelectorAll(`.extra-selection[data-category='${category}']`).forEach(dropdown => {
+          const selectedValues = new Set(selectedData[category]); // Valori già scelti
+          dropdown.querySelectorAll("option").forEach(option => {
+            option.disabled = selectedValues.has(option.value) && dropdown.value !== option.value;
+          });
+        });
     
-        console.log(`📝 Salvato: ${category} -> ${selectedData[category]}`);
-    
+        sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
         updateExtraSelectionsView();
       });
     });

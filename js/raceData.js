@@ -155,12 +155,12 @@ export function convertRaceData(rawData) {
 
     // Skill Choices
     let skill_choices = null;
-    if (rawData.skillProficiencies && Array.isArray(rawData.skillProficiencies)) {
+    if (rawData.skillProficiencies && rawData.skillProficiencies.length > 0) {
       rawData.skillProficiencies.forEach(sp => {
         if (sp.choose && sp.choose.from) {
-          skill_choices = {
-            number: sp.choose.count ? sp.choose.count : 1,
-            options: sp.choose.from
+          skill_choices = { 
+            number: sp.choose.count || 1, // 🟢 Usa count se presente, altrimenti assume 1
+            options: sp.choose.from 
           };
         }
       });

@@ -81,13 +81,13 @@ function prepareExtraSelections(raceData) {
   });
 }
  if (raceData.skill_choices && raceData.skill_choices.options?.length > 0) {
-    selections.push({
-      name: "Skill Proficiency",
-      description: `Choose ${raceData.skill_choices.number} skill${raceData.skill_choices.number > 1 ? "s" : ""}.`,
-      selection: raceData.skill_choices.options,
-      count: raceData.skill_choices.number
-    });
-  }
+  selections.push({
+    name: "Skill Proficiency",
+    description: `Choose ${raceData.skill_choices.number} skill${raceData.skill_choices.number > 1 ? "s" : ""}.`,
+    selection: raceData.skill_choices.options,
+    count: raceData.skill_choices.number // 🔥 Assicura che il numero di scelte sia rispettato
+  });
+}
 
   if (raceData.tool_choices) {
     selections.push({ 

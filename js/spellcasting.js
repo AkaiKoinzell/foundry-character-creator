@@ -20,14 +20,29 @@ export function handleSpellcasting(data, containerId) {
     container.innerHTML = ""; // Pulisce il contenuto precedente
     console.log(`🔍 Controllo spellcasting per ${data.name}:`, data);
 
+    // ✅ Log: spell_choices presenti?
+    if (data.spellcasting?.spell_choices) {
+        console.log(`✅ ${data.name} ha spell_choices:`, data.spellcasting.spell_choices);
+    } else {
+        console.warn(`⚠️ Nessuno spell_choices per ${data.name}`);
+    }
+
     // 🔹 Se la razza o classe ha incantesimi fissi
     if (data.spellcasting?.fixed_spell) {
+        console.log(`✅ ${data.name} ha un incantesimo fisso: ${data.spellcasting.fixed_spell}`);
         container.innerHTML += `<p><strong>✨ Incantesimo assegnato:</strong> ${data.spellcasting.fixed_spell}</p>`;
     }
 
     // 🔹 Se è presente una lista di incantesimi tra cui scegliere
     if (data.spellcasting?.spell_choices) {
         generateSpellSelectionDropdown(data.spellcasting.spell_choices, container);
+    }
+
+    // ✅ Log dettagliato su `additionalSpells`
+    if (data.additionalSpells) {
+        console.log(`🧙‍♂️ ${data.name} ha additionalSpells:`, data.additionalSpells);
+    } else {
+        console.warn(`⚠️ Nessun additionalSpells per ${data.name}`);
     }
 
     // 🔹 Se la razza/classe concede un incantesimo basato su `additionalSpells`
@@ -111,6 +126,8 @@ function handleAdditionalSpells(data, container) {
         return;
     }
 
+    console.log(`✅ ${data.name} può scegliere un Cantrip da Wizard!`);
+
     loadSpells(spellList => {
         console.log(`📜 Lista incantesimi caricata:`, spellList);
 
@@ -118,6 +135,8 @@ function handleAdditionalSpells(data, container) {
             .filter(spell => spell.level === 0 && spell.spell_list.includes("Wizard"))
             .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
             .join("");
+
+        console.log(`🔍 Cantrip disponibili:`, wizardCantrips);
 
         if (wizardCantrips) {
             container.innerHTML += `

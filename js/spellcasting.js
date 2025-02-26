@@ -39,10 +39,11 @@ export function handleSpellcasting(data, containerId) {
     }
 
     // ✅ Log dettagliato su `additionalSpells`
+     console.log(`🟢 Chiamo handleAdditionalSpells() per ${data.name}`);
     if (data.additionalSpells) {
-        console.log(`🧙‍♂️ ${data.name} ha additionalSpells:`, data.additionalSpells);
+        handleAdditionalSpells(data, container);
     } else {
-        console.warn(`⚠️ Nessun additionalSpells per ${data.name}`);
+        console.warn(`❌ Nessun additionalSpells trovato per ${data.name}`);
     }
 
     // 🔹 Se la razza/classe concede un incantesimo basato su `additionalSpells`

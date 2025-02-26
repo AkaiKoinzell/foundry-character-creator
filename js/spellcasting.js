@@ -77,18 +77,25 @@ function generateSpellSelectionDropdown(spellChoices, container) {
  * Carica la lista di incantesimi in base a un filtro (es. Cantrip da Wizard)
  * @param {Object} spellChoices - Configurazione della selezione incantesimi
  * @param {HTMLElement} container - Contenitore HTML
- */
-function loadFilteredSpells(spellChoices, container) {
+ */function loadFilteredSpells(spellChoices, container) {
+    console.log(`🟢 loadFilteredSpells() chiamata con filtro:`, spellChoices.filter);
+
     const filterParts = spellChoices.filter.split("|");
     const spellLevel = filterParts.find(part => part.startsWith("level="))?.split("=")[1];
     const spellClass = filterParts.find(part => part.startsWith("class="))?.split("=")[1];
 
+    console.log(`🔍 Filtro estratto: Level=${spellLevel}, Class=${spellClass}`);
+
     if (spellLevel && spellClass) {
         loadSpells(spellList => {
+            console.log(`📜 Lista incantesimi caricata:`, spellList);
+
             const filteredSpells = spellList
                 .filter(spell => parseInt(spell.level) === parseInt(spellLevel) && spell.spell_list.includes(spellClass))
                 .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
                 .join("");
+
+            console.log(`🔍 Cantrip disponibili dopo il filtro:`, filteredSpells);
 
             if (filteredSpells) {
                 container.innerHTML += `
@@ -97,7 +104,8 @@ function loadFilteredSpells(spellChoices, container) {
                         <option value="">Seleziona...</option>${filteredSpells}
                     </select>`;
             } else {
-                container.innerHTML += `<p><strong>⚠️ Nessun Cantrip disponibile per ${spellClass}.</strong></p>`;
+                console.warn("⚠️ Nessun Cantrip disponibile per Wizard.");
+                container.innerHTML += `<p><strong>⚠️ Nessun Cantrip disponibile per Wizard.</strong></p>`;
             }
         });
     } else {

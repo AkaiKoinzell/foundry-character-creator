@@ -4,13 +4,15 @@
  * Carica gli incantesimi dal file JSON e passa i dati alla callback
  */
 export function loadSpells(callback) {
-  fetch("data/spells.json")
-    .then(response => response.json())
-    .then(data => {
-      console.log("📖 Incantesimi caricati:", data);
-      callback(data);
-    })
-    .catch(error => console.error("❌ Errore nel caricamento degli incantesimi:", error));
+    console.log("🟢 Chiamata loadSpells()");
+    
+    fetch("data/spells.json")
+        .then(response => response.json())
+        .then(data => {
+            console.log("📜 Lista incantesimi caricata:", data);
+            callback(data);
+        })
+        .catch(error => console.error("❌ Errore nel caricamento degli incantesimi:", error));
 }
 
 export function handleSpellcasting(data, containerId) {
@@ -118,7 +120,7 @@ function generateSpellSelectionDropdown(spellChoices, container) {
  * @param {Object} data - Dati della razza o classe
  * @param {HTMLElement} container - Contenitore HTML
  */
-function handleAdditionalSpells(data, container) {
+export function handleAdditionalSpells(data, container) {
     console.log(`🧙‍♂️ Verifica di additionalSpells per ${data.name}:`, data.additionalSpells);
 
     if (!data.additionalSpells) {
@@ -136,26 +138,7 @@ function handleAdditionalSpells(data, container) {
     }
 
     console.log(`✅ ${data.name} può scegliere un Cantrip da Wizard!`);
+    console.log(`🔄 Chiamata loadFilteredSpells() con filtro level=0|class=Wizard`);
 
-    loadSpells(spellList => {
-        console.log(`📜 Lista incantesimi caricata:`, spellList);
-
-        const wizardCantrips = spellList
-            .filter(spell => spell.level === 0 && spell.spell_list.includes("Wizard"))
-            .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
-            .join("");
-
-        console.log(`🔍 Cantrip disponibili:`, wizardCantrips);
-
-        if (wizardCantrips) {
-            container.innerHTML += `
-                <p><strong>🔮 Scegli un Cantrip da Wizard:</strong></p>
-                <select id="highElfCantripSelection">
-                    <option value="">Seleziona...</option>${wizardCantrips}
-                </select>`;
-        } else {
-            console.warn("⚠️ Nessun Cantrip disponibile per Wizard.");
-            container.innerHTML += `<p><strong>⚠️ Nessun Cantrip disponibile per Wizard.</strong></p>`;
-        }
-    });
+    loadFilteredSpells({ type: "filter", filter: "level=0|class=Wizard" }, container);
 }

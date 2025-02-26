@@ -128,6 +128,8 @@ export function convertRaceData(rawData) {
 
       spellcasting = spellcasting || {};
       spellcasting.ability_choices = Array.from(abilityChoices);
+      // Dopo aver elaborato spellcasting, aggiungiamo un log per verificare i dati
+      console.log(`🔍 Razza ${rawData.name} - Spellcasting processato:`, spellcasting);
     }
 
     // Languages

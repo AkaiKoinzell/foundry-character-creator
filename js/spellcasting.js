@@ -97,26 +97,37 @@ function loadFilteredSpells(spellChoices, container) {
 function handleAdditionalSpells(data, container) {
     console.log(`🧙‍♂️ Verifica di additionalSpells per ${data.name}:`, data.additionalSpells);
 
+    if (!data.additionalSpells) {
+        console.warn("⚠️ Nessun additionalSpells trovato!");
+        return;
+    }
+
     const cantripData = data.additionalSpells.find(spell => 
         spell.known?.["1"]?.["_"]?.some(choice => choice.choose.includes("level=0|class=Wizard"))
     );
 
-    if (cantripData) {
-        loadSpells(spellList => {
-            const wizardCantrips = spellList
-                .filter(spell => spell.level === 0 && spell.spell_list.includes("Wizard"))
-                .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
-                .join("");
-
-            if (wizardCantrips) {
-                container.innerHTML += `
-                    <p><strong>🔮 Scegli un Cantrip da Wizard:</strong></p>
-                    <select id="highElfCantripSelection">
-                        <option value="">Seleziona...</option>${wizardCantrips}
-                    </select>`;
-            } else {
-                container.innerHTML += `<p><strong>⚠️ Nessun Cantrip disponibile per Wizard.</strong></p>`;
-            }
-        });
+    if (!cantripData) {
+        console.warn(`⚠️ Nessun Cantrip selezionabile trovato per ${data.name}.`);
+        return;
     }
+
+    loadSpells(spellList => {
+        console.log(`📜 Lista incantesimi caricata:`, spellList);
+
+        const wizardCantrips = spellList
+            .filter(spell => spell.level === 0 && spell.spell_list.includes("Wizard"))
+            .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
+            .join("");
+
+        if (wizardCantrips) {
+            container.innerHTML += `
+                <p><strong>🔮 Scegli un Cantrip da Wizard:</strong></p>
+                <select id="highElfCantripSelection">
+                    <option value="">Seleziona...</option>${wizardCantrips}
+                </select>`;
+        } else {
+            console.warn("⚠️ Nessun Cantrip disponibile per Wizard.");
+            container.innerHTML += `<p><strong>⚠️ Nessun Cantrip disponibile per Wizard.</strong></p>`;
+        }
+    });
 }

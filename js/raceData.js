@@ -88,49 +88,54 @@ export function convertRaceData(rawData) {
     });
 
     // Spellcasting – complete processing
-    let spellcasting = null;
-    if (rawData.additionalSpells && rawData.additionalSpells.length > 0) {
-      let spellsArray = [];
-      let abilityChoices = new Set();
+let spellcasting = null;
+if (rawData.additionalSpells && rawData.additionalSpells.length > 0) {
+    console.log(`🔎 Razza ${rawData.name} ha additionalSpells:`, rawData.additionalSpells);
 
-      rawData.additionalSpells.forEach(spellData => {
+    let spellsArray = [];
+    let abilityChoices = new Set();
+
+    rawData.additionalSpells.forEach(spellData => {
+        console.log(`📜 Analizzo additionalSpells:`, spellData);
+
         if (spellData.known) {
-          Object.keys(spellData.known).forEach(levelKey => {
-            if (spellData.known[levelKey]._ && Array.isArray(spellData.known[levelKey]._)) {
-              spellData.known[levelKey]._.forEach(spell => {
-                if (typeof spell === "string") {
-                  spellsArray.push({ name: spell, level: parseInt(levelKey) });
-                } else if (spell.choose) {
-                  spellcasting = spellcasting || {};
-                  spellcasting.spell_choices = { type: "filter", filter: spell.choose };
+            Object.keys(spellData.known).forEach(levelKey => {
+                if (spellData.known[levelKey]._ && Array.isArray(spellData.known[levelKey]._)) {
+                    spellData.known[levelKey]._.forEach(spell => {
+                        if (typeof spell === "string") {
+                            spellsArray.push({ name: spell, level: parseInt(levelKey) });
+                        } else if (spell.choose) {
+                            console.log(`🟢 Trovata una scelta di incantesimo:`, spell.choose);
+                            spellcasting = spellcasting || {};
+                            spellcasting.spell_choices = { type: "filter", filter: spell.choose };
+                        }
+                    });
                 }
-              });
-            }
-          });
+            });
         }
 
         if (spellData.ability) {
-          if (typeof spellData.ability === "string") {
-            abilityChoices.add(spellData.ability.toUpperCase());
-          } else if (spellData.ability.choose && Array.isArray(spellData.ability.choose)) {
-            spellData.ability.choose.forEach(a => abilityChoices.add(a.toUpperCase()));
-          }
+            if (typeof spellData.ability === "string") {
+                abilityChoices.add(spellData.ability.toUpperCase());
+            } else if (spellData.ability.choose && Array.isArray(spellData.ability.choose)) {
+                spellData.ability.choose.forEach(a => abilityChoices.add(a.toUpperCase()));
+            }
         }
-      });
+    });
 
-      if (spellsArray.length > 0) {
+    if (spellsArray.length > 0) {
         spellcasting = spellcasting || {};
         spellcasting.spell_choices = {
-          type: "fixed_list",
-          options: spellsArray.map(s => s.name)
+            type: "fixed_list",
+            options: spellsArray.map(s => s.name)
         };
-      }
-
-      spellcasting = spellcasting || {};
-      spellcasting.ability_choices = Array.from(abilityChoices);
-      // Dopo aver elaborato spellcasting, aggiungiamo un log per verificare i dati
-      console.log(`🔍 Razza ${rawData.name} - Spellcasting processato:`, spellcasting);
     }
+
+    spellcasting = spellcasting || {};
+    spellcasting.ability_choices = Array.from(abilityChoices);
+} else {
+    console.warn(`⚠️ ${rawData.name} non ha additionalSpells!`);
+}
 
     // Languages
     let languages = { fixed: [], choice: 0, options: [] };

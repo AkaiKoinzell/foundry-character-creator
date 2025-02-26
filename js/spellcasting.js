@@ -79,7 +79,8 @@ function generateSpellSelectionDropdown(spellChoices, container) {
  * Carica la lista di incantesimi in base a un filtro (es. Cantrip da Wizard)
  * @param {Object} spellChoices - Configurazione della selezione incantesimi
  * @param {HTMLElement} container - Contenitore HTML
- */function loadFilteredSpells(spellChoices, container) {
+ */
+function loadFilteredSpells(spellChoices, container) {
     console.log(`🟢 loadFilteredSpells() chiamata con filtro:`, spellChoices.filter);
 
     const filterParts = spellChoices.filter.split("|");

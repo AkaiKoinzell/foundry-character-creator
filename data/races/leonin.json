@@ -1,0 +1,65 @@
+{
+	"name": "Leonin",
+	"source": "MOoT",
+	"page": 20,
+	"size": [
+		"M"
+	],
+	"speed": 35,
+	"ability": [
+		{
+			"con": 2,
+			"str": 1
+		}
+	],
+	"heightAndWeight": {
+		"baseHeight": 72,
+		"heightMod": "2d10",
+		"baseWeight": 200,
+		"weightMod": "2d6"
+	},
+	"age": {
+		"mature": 18,
+		"max": 100
+	},
+	"languageProficiencies": [
+		{
+			"common": true,
+			"leonin": true
+		}
+	],
+	"entries": [
+		{
+			"name": "Claws",
+			"type": "entries",
+			"entries": [
+				"Your claws are natural weapons, dealing 1d4 slashing damage."
+			]
+		},
+		{
+			"name": "Daunting Roar",
+			"type": "entries",
+			"entries": [
+				"As a bonus action, you let out a menacing roar. Creatures within 10 feet that can hear you must succeed on a Wisdom saving throw or become frightened until the end of your next turn."
+			]
+		},
+		{
+			"name": "Hunter's Instincts",
+			"type": "entries",
+			"entries": [
+				"You gain proficiency in one of the following skills of your choice: Athletics, Intimidation, Perception, Stealth, or Survival."
+			]
+		},
+		{
+			"name": "Languages",
+			"type": "entries",
+			"entries": [
+				"You can speak, read, and write Common and Leonin."
+			]
+		}
+	],
+	"raceName": "Leonin",
+	"raceSource": "MOoT",
+	"hasFluff": true,
+	"hasFluffImages": true
+}

@@ -1,0 +1,64 @@
+{
+	"name": "Human (Standard)",
+	"source": "PHB",
+	"page": 31,
+	"size": [
+		"M"
+	],
+	"speed": 30,
+	"ability": [
+		{
+			"str": 1,
+			"dex": 1,
+			"con": 1,
+			"int": 1,
+			"wis": 1,
+			"cha": 1
+		}
+	],
+	"heightAndWeight": {
+		"baseHeight": 56,
+		"heightMod": "2d10",
+		"baseWeight": 110,
+		"weightMod": "2d4"
+	},
+	"age": {
+		"mature": 18,
+		"max": 80
+	},
+	"languageProficiencies": [
+		{
+			"common": true,
+			"anyStandard": 1
+		}
+	],
+	"entries": [
+		{
+			"name": "Age",
+			"type": "entries",
+			"entries": [
+				"Humans reach adulthood in their late teens and rarely live longer than a century."
+			]
+		},
+		{
+			"type": "entries",
+			"name": "Size",
+			"entries": [
+				"Humans vary widely in height and build, standing between 5 and over 6 feet tall. Your size is Medium."
+			]
+		},
+		{
+			"name": "Languages",
+			"type": "entries",
+			"entries": [
+				"You can speak, read, and write Common and one extra language of your choice."
+			]
+		}
+	],
+	"raceName": "Human",
+	"raceSource": "PHB",
+	"srd": true,
+	"basicRules": true,
+	"hasFluff": true,
+	"hasFluffImages": true
+}

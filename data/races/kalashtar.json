@@ -1,0 +1,73 @@
+{
+	"name": "Kalashtar",
+	"source": "ERLW",
+	"page": 29,
+	"size": [
+		"M"
+	],
+	"speed": 30,
+	"ability": [
+		{
+			"wis": 2,
+			"cha": 1
+		}
+	],
+	"heightAndWeight": {
+		"baseHeight": 56,
+		"heightMod": "2d10",
+		"baseWeight": 110,
+		"weightMod": "2d4"
+	},
+	"age": {
+		"mature": 20,
+		"max": 80
+	},
+	"languageProficiencies": [
+		{
+			"common": true,
+			"quori": true,
+			"anyStandard": 1
+		}
+	],
+	"entries": [
+		{
+			"name": "Dual Mind",
+			"type": "entries",
+			"entries": [
+				"You have advantage on all Wisdom saving throws."
+			]
+		},
+		{
+			"name": "Mental Discipline",
+			"type": "entries",
+			"entries": [
+				"You have resistance to psychic damage."
+			]
+		},
+		{
+			"name": "Mind Link",
+			"type": "entries",
+			"entries": [
+				"You can telepathically speak to any creature you can see within 60 feet."
+			]
+		},
+		{
+			"name": "Severed from Dreams",
+			"type": "entries",
+			"entries": [
+				"Kalashtar can't be put to sleep by magical means."
+			]
+		},
+		{
+			"name": "Languages",
+			"type": "entries",
+			"entries": [
+				"You can speak, read, and write Common, Quori, and one extra language of your choice."
+			]
+		}
+	],
+	"raceName": "Kalashtar",
+	"raceSource": "ERLW",
+	"hasFluff": true,
+	"hasFluffImages": true
+}

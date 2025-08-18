@@ -1,0 +1,10 @@
+{
+    "name": "Way of the Four Elements",
+    "description": "Monks of the Way of the Four Elements harness the powers of the elements in their martial arts.",
+    "features_by_level": {
+        "3": ["Disciple of the Elements"],
+        "6": ["Elemental Disciplines"],
+        "11": ["Elemental Mastery"],
+        "17": ["Elemental Body"]
+    }
+}

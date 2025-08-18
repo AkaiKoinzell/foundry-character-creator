@@ -1,0 +1,13 @@
+{
+    "name": "Ranger",
+    "subclasses": [
+        {
+            "name": "Hunter",
+            "features": ["Hunter's Prey", "Defensive Tactics", "Multiattack", "Superior Hunter's Defense"]
+        },
+        {
+            "name": "Beast Master",
+            "features": ["Ranger's Companion", "Exceptional Training", "Bestial Fury", "Share Spells"]
+        }
+    ]
+}

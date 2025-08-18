@@ -1,0 +1,13 @@
+{
+    "name": "Sorcerer",
+    "subclasses": [
+        {
+            "name": "Draconic Bloodline",
+            "features": ["Dragon Ancestor", "Draconic Resilience", "Elemental Affinity", "Dragon Wings", "Draconic Presence"]
+        },
+        {
+            "name": "Wild Magic",
+            "features": ["Wild Magic Surge", "Tides of Chaos", "Bend Luck", "Controlled Chaos", "Spell Bombardment"]
+        }
+    ]
+}

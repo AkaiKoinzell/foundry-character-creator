@@ -1,0 +1,17 @@
+{
+    "name": "Fighter",
+    "subclasses": [
+        {
+            "name": "Champion",
+            "features": ["Improved Critical", "Remarkable Athlete", "Additional Fighting Style", "Superior Critical", "Survivor"]
+        },
+        {
+            "name": "Battle Master",
+            "features": ["Combat Superiority", "Student of War", "Know Your Enemy", "Improved Combat Superiority", "Relentless"]
+        },
+        {
+            "name": "Eldritch Knight",
+            "features": ["Spellcasting", "Weapon Bond", "War Magic", "Eldritch Strike", "Arcane Charge", "Improved War Magic"]
+        }
+    ]
+}

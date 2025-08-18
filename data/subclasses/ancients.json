@@ -1,0 +1,10 @@
+{
+    "name": "Oath of the Ancients",
+    "description": "Paladins who swear this oath cherish the light and safeguard the good.",
+    "features_by_level": {
+        "3": ["Nature's Wrath", "Turn the Faithless"],
+        "7": ["Aura of Warding"],
+        "15": ["Undying Sentinel"],
+        "20": ["Elder Champion"]
+    }
+}

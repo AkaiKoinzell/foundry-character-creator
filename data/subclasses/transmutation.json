@@ -1,0 +1,10 @@
+{
+    "name": "Transmutation",
+    "description": "You master the art of altering matter and form.",
+    "features_by_level": {
+        "2": ["Transmutation Savant", "Minor Alchemy"],
+        "6": ["Transmuter's Stone"],
+        "10": ["Shapechanger"],
+        "14": ["Master Transmuter"]
+    }
+}

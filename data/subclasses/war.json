@@ -1,0 +1,11 @@
+{
+    "name": "War Domain",
+    "description": "Clerics of the War Domain excel in battle and inspire allies to fight harder.",
+    "features_by_level": {
+        "1": ["Bonus Proficiencies", "War Priest"],
+        "2": ["Channel Divinity: Guided Strike"],
+        "6": ["War God's Blessing"],
+        "8": ["Divine Strike"],
+        "17": ["Avatar of Battle"]
+    }
+}

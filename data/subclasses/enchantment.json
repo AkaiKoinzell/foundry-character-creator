@@ -1,0 +1,10 @@
+{
+    "name": "Enchantment",
+    "description": "You bend and twist the minds of others with your magic.",
+    "features_by_level": {
+        "2": ["Enchantment Savant", "Hypnotic Gaze"],
+        "6": ["Instinctive Charm"],
+        "10": ["Split Enchantment"],
+        "14": ["Alter Memories"]
+    }
+}

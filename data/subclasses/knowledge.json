@@ -1,0 +1,11 @@
+{
+    "name": "Knowledge Domain",
+    "description": "Clerics of the Knowledge Domain value learning and truth above all.",
+    "features_by_level": {
+        "1": ["Blessings of Knowledge"],
+        "2": ["Channel Divinity: Knowledge of the Ages"],
+        "6": ["Channel Divinity: Read Thoughts"],
+        "8": ["Potent Spellcasting"],
+        "17": ["Visions of the Past"]
+    }
+}

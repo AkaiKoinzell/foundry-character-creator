@@ -1,0 +1,11 @@
+{
+    "name": "Light Domain",
+    "description": "Clerics of the Light Domain are enlightened souls infused with radiance.",
+    "features_by_level": {
+        "1": ["Bonus Cantrip", "Warding Flare"],
+        "2": ["Channel Divinity: Radiance of the Dawn"],
+        "6": ["Improved Flare"],
+        "8": ["Potent Spellcasting"],
+        "17": ["Corona of Light"]
+    }
+}

@@ -1,0 +1,33 @@
+{
+    "name": "Cleric",
+    "subclasses": [
+        {
+            "name": "Knowledge Domain",
+            "features": ["Blessings of Knowledge", "Channel Divinity: Knowledge of the Ages", "Channel Divinity: Read Thoughts", "Potent Spellcasting", "Visions of the Past"]
+        },
+        {
+            "name": "Life Domain",
+            "features": ["Bonus Proficiency", "Disciple of Life", "Channel Divinity: Preserve Life", "Blessed Healer", "Divine Strike", "Supreme Healing"]
+        },
+        {
+            "name": "Light Domain",
+            "features": ["Bonus Cantrip", "Warding Flare", "Channel Divinity: Radiance of the Dawn", "Improved Flare", "Potent Spellcasting", "Corona of Light"]
+        },
+        {
+            "name": "Nature Domain",
+            "features": ["Acolyte of Nature", "Bonus Proficiency", "Channel Divinity: Charm Animals and Plants", "Dampen Elements", "Divine Strike", "Master of Nature"]
+        },
+        {
+            "name": "Tempest Domain",
+            "features": ["Bonus Proficiencies", "Wrath of the Storm", "Channel Divinity: Destructive Wrath", "Thunderbolt Strike", "Divine Strike", "Stormborn"]
+        },
+        {
+            "name": "Trickery Domain",
+            "features": ["Blessing of the Trickster", "Channel Divinity: Invoke Duplicity", "Channel Divinity: Cloak of Shadows", "Divine Strike", "Improved Duplicity"]
+        },
+        {
+            "name": "War Domain",
+            "features": ["Bonus Proficiencies", "War Priest", "Channel Divinity: Guided Strike", "War God's Blessing", "Divine Strike", "Avatar of Battle"]
+        }
+    ]
+}

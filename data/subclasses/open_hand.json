@@ -1,0 +1,10 @@
+{
+    "name": "Way of the Open Hand",
+    "description": "Monks of the Way of the Open Hand are the ultimate masters of martial arts combat.",
+    "features_by_level": {
+        "3": ["Open Hand Technique"],
+        "6": ["Wholeness of Body"],
+        "11": ["Tranquility"],
+        "17": ["Quivering Palm"]
+    }
+}

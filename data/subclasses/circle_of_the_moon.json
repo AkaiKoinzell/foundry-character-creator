@@ -1,0 +1,10 @@
+{
+    "name": "Circle of the Moon",
+    "description": "Druids of the Circle of the Moon are fierce guardians of the wilds.",
+    "features_by_level": {
+        "2": ["Combat Wild Shape", "Circle Forms"],
+        "6": ["Primal Strike"],
+        "10": ["Elemental Wild Shape"],
+        "14": ["Thousand Forms"]
+    }
+}

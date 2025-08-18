@@ -1,0 +1,10 @@
+{
+    "name": "Battle Master",
+    "description": "Battle Masters employ martial techniques passed down through generations.",
+    "features_by_level": {
+        "3": ["Combat Superiority", "Student of War"],
+        "7": ["Know Your Enemy"],
+        "10": ["Improved Combat Superiority"],
+        "15": ["Relentless"]
+    }
+}

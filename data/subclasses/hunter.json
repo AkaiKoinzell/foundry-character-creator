@@ -1,0 +1,10 @@
+{
+    "name": "Hunter",
+    "description": "Hunters seek to master any combat style that nature provides.",
+    "features_by_level": {
+        "3": ["Hunter's Prey"],
+        "7": ["Defensive Tactics"],
+        "11": ["Multiattack"],
+        "15": ["Superior Hunter's Defense"]
+    }
+}

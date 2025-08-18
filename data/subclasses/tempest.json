@@ -1,0 +1,11 @@
+{
+    "name": "Tempest Domain",
+    "description": "Tempest clerics serve deities of storm, sea, and sky.",
+    "features_by_level": {
+        "1": ["Bonus Proficiencies", "Wrath of the Storm"],
+        "2": ["Channel Divinity: Destructive Wrath"],
+        "6": ["Thunderbolt Strike"],
+        "8": ["Divine Strike"],
+        "17": ["Stormborn"]
+    }
+}

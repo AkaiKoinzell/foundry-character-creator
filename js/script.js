@@ -949,14 +949,18 @@ function displayRaceTraits() {
 function updateSubclasses() {
   const classPath = document.getElementById("classSelect").value;
   const subclassSelect = document.getElementById("subclassSelect");
+  const featuresDiv = document.getElementById("classFeatures");
   if (!classPath) {
     subclassSelect.innerHTML = `<option value="">Nessuna sottoclasse disponibile</option>`;
     subclassSelect.style.display = "none";
+    window.currentClassData = null;
+    if (featuresDiv) featuresDiv.innerHTML = `<p>Seleziona una classe per vedere i tratti.</p>`;
     return;
   }
   fetch(classPath)
     .then(response => response.json())
     .then(data => {
+      window.currentClassData = data;
       subclassSelect.innerHTML = `<option value="">Seleziona una sottoclasse</option>`;
       data.subclasses.forEach(subclass => {
         const option = document.createElement("option");
@@ -965,8 +969,34 @@ function updateSubclasses() {
         subclassSelect.appendChild(option);
       });
       subclassSelect.style.display = data.subclasses.length > 0 ? "block" : "none";
+      renderClassFeatures();
     })
     .catch(error => handleError(`Errore caricando le sottoclasse: ${error}`));
+}
+
+function renderClassFeatures() {
+  const featuresDiv = document.getElementById("classFeatures");
+  const subclassSelect = document.getElementById("subclassSelect");
+  const data = window.currentClassData;
+  if (!featuresDiv) return;
+  if (!data) {
+    featuresDiv.innerHTML = `<p>Seleziona una classe per vedere i tratti.</p>`;
+    return;
+  }
+  let html = `<h3>${data.name}</h3>`;
+  const subclassName = subclassSelect.value;
+  if (subclassName) {
+    const subclass = data.subclasses.find(sc => sc.name === subclassName);
+    if (subclass) {
+      html += `<h4>${subclass.name}</h4>`;
+      if (subclass.features && subclass.features.length > 0) {
+        html += `<ul>${subclass.features.map(f => `<li>${f}</li>`).join("")}</ul>`;
+      }
+    }
+  } else {
+    html += `<p>Seleziona una sottoclasse per vedere i tratti.</p>`;
+  }
+  featuresDiv.innerHTML = html;
 }
 
 // ==================== GENERAZIONE DEL JSON FINALE (STEP 8) ====================
@@ -1158,6 +1188,11 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnStep3").addEventListener("click", () => showStep("step3"));
   document.getElementById("btnStep4").addEventListener("click", () => showStep("step4"));
   document.getElementById("btnStep5").addEventListener("click", () => showStep("step5"));
+
+  const classSelectElem = document.getElementById("classSelect");
+  const subclassSelectElem = document.getElementById("subclassSelect");
+  if (classSelectElem) classSelectElem.addEventListener("change", updateSubclasses);
+  if (subclassSelectElem) subclassSelectElem.addEventListener("change", renderClassFeatures);
   document.getElementById("btnStep8").addEventListener("click", () => showStep("step8"));
 
   showStep("step1");

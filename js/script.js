@@ -635,16 +635,19 @@ let extraSelections = [];
 let currentSelectionIndex = 0;
 // Cached list of all languages loaded from JSON
 let availableLanguages = [];
+// Context for the extras modal ("race" or "class")
+let extraModalContext = "race";
 
 /**
  * Opens the extra selections popup.
  * Hides the background extra traits container and shows the modal.
  */
-function openRaceExtrasModal(selections) {
+function openRaceExtrasModal(selections, context = "race") {
   if (!selections || selections.length === 0) {
     console.warn("⚠️ Nessuna selezione extra disponibile, il pop-up non verrà mostrato.");
     return;
   }
+  extraModalContext = context;
   extraSelections = selections;
   currentSelectionIndex = 0;
   showExtraSelection();
@@ -660,15 +663,11 @@ function openRaceExtrasModal(selections) {
     }
   });
 
-  extraSelections = selections;
-  currentSelectionIndex = 0;
-  showExtraSelection();
-
   sessionStorage.setItem("popupOpened", "true");
 
   document.getElementById("raceExtraTraitsContainer").style.display = "none";
   document.getElementById("raceExtrasModal").style.display = "flex";
-  
+
   const extraContainer = document.getElementById("raceExtraTraitsContainer");
   const modal = document.getElementById("raceExtrasModal");
   if (extraContainer) extraContainer.style.display = "none";
@@ -799,22 +798,26 @@ document.getElementById("closeModal").addEventListener("click", () => {
   document.getElementById("raceExtrasModal").style.display = "none";
   sessionStorage.removeItem("popupOpened");
 
-  // ✅ Salviamo le selezioni extra PRIMA di ricaricare i tratti
+  // ✅ Salviamo le selezioni extra PRIMA di eventuali refresh
   sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
   console.log("📝 Selezioni salvate prima dell'update:", selectedData);
 
-  showStep("step2");
+  if (extraModalContext === "race") {
+    showStep("step2");
 
-  setTimeout(() => {
-    console.log("🛠 Eseguo displayRaceTraits()...");
-    displayRaceTraits(); 
-
-    // 🔥 **Aspettiamo che `displayRaceTraits()` finisca e poi forziamo le selezioni extra**
     setTimeout(() => {
-      console.log("✅ Forzando updateExtraSelectionsView()...");
-      updateExtraSelectionsView();
-    }, 500); // 🔥 Ritardo di 500ms per essere sicuri che il rendering sia completato
-  }, 300);
+      console.log("🛠 Eseguo displayRaceTraits()...");
+      displayRaceTraits();
+
+      // 🔥 **Aspettiamo che `displayRaceTraits()` finisca e poi forziamo le selezioni extra**
+      setTimeout(() => {
+        console.log("✅ Forzando updateExtraSelectionsView()...");
+        updateExtraSelectionsView();
+      }, 500); // 🔥 Ritardo di 500ms per essere sicuri che il rendering sia completato
+    }, 300);
+  } else if (extraModalContext === "class") {
+    renderClassFeatures();
+  }
 });
 
   // Aggiorna l'interfaccia con le scelte fatte
@@ -974,7 +977,27 @@ function updateSubclasses() {
     .catch(error => handleError(`Errore caricando le sottoclasse: ${error}`));
 }
 
-function renderClassFeatures() {
+function getSubclassFilename(name) {
+  let lower = name.toLowerCase();
+  if (lower.startsWith("college of ")) {
+    lower = "college_of_" + lower.slice("college of ".length);
+  } else if (lower.startsWith("circle of the ")) {
+    lower = "circle_of_the_" + lower.slice("circle of the ".length);
+  } else if (lower.startsWith("circle of ")) {
+    lower = "circle_of_" + lower.slice("circle of ".length);
+  } else {
+    lower = lower
+      .replace(/^(path|oath|way|school) of the /, "")
+      .replace(/^(path|oath|way|school) of /, "")
+      .replace(/^the /, "");
+    if (lower.endsWith(" domain")) {
+      lower = lower.slice(0, -" domain".length);
+    }
+  }
+  return lower.replace(/ /g, "_") + ".json";
+}
+
+async function renderClassFeatures() {
   const featuresDiv = document.getElementById("classFeatures");
   const subclassSelect = document.getElementById("subclassSelect");
   const data = window.currentClassData;
@@ -983,20 +1006,74 @@ function renderClassFeatures() {
     featuresDiv.innerHTML = `<p>Seleziona una classe per vedere i tratti.</p>`;
     return;
   }
+  const charLevel = parseInt(document.getElementById("levelSelect")?.value) || 1;
   let html = `<h3>${data.name}</h3>`;
-  const subclassName = subclassSelect.value;
-  if (subclassName) {
-    const subclass = data.subclasses.find(sc => sc.name === subclassName);
-    if (subclass) {
-      html += `<h4>${subclass.name}</h4>`;
-      if (subclass.features && subclass.features.length > 0) {
-        html += `<ul>${subclass.features.map(f => `<li>${f}</li>`).join("")}</ul>`;
+  if (data.description) {
+    html += `<p>${data.description}</p>`;
+  }
+  if (data.features_by_level) {
+    const levels = Object.keys(data.features_by_level).sort((a, b) => a - b);
+    levels.forEach(lvl => {
+      if (parseInt(lvl) <= charLevel) {
+        html += `<h4>Livello ${lvl}</h4><ul>`;
+        data.features_by_level[lvl].forEach(f => {
+          html += `<li>${f}</li>`;
+        });
+        html += `</ul>`;
       }
+    });
+  }
+  const subclassName = subclassSelect.value;
+  let selections = [];
+  if (data.choices) {
+    data.choices.forEach(choice => {
+      const choiceLevel = choice.level || 1;
+      const selected = selectedData[choice.name] || [];
+      if (choiceLevel <= charLevel && selected.length < choice.count) {
+        selections.push(choice);
+      }
+    });
+  }
+  if (subclassName) {
+    html += `<h4>${subclassName}</h4>`;
+    try {
+      const file = getSubclassFilename(subclassName);
+      const resp = await fetch(`data/subclasses/${file}`);
+      const subData = await resp.json();
+      if (subData.description) {
+        html += `<p>${subData.description}</p>`;
+      }
+      if (subData.features_by_level) {
+        const levels = Object.keys(subData.features_by_level).sort((a, b) => a - b);
+        levels.forEach(lvl => {
+          if (parseInt(lvl) <= charLevel) {
+            html += `<h5>Livello ${lvl}</h5><ul>`;
+            subData.features_by_level[lvl].forEach(f => {
+              html += `<li>${f}</li>`;
+            });
+            html += `</ul>`;
+          }
+        });
+      }
+      if (subData.choices) {
+        subData.choices.forEach(choice => {
+          const choiceLevel = choice.level || 1;
+          const selected = selectedData[choice.name] || [];
+          if (choiceLevel <= charLevel && selected.length < choice.count) {
+            selections.push(choice);
+          }
+        });
+      }
+    } catch (err) {
+      html += `<p>Dettagli della sottoclasse non disponibili.</p>`;
     }
   } else {
     html += `<p>Seleziona una sottoclasse per vedere i tratti.</p>`;
   }
   featuresDiv.innerHTML = html;
+  if (selections.length > 0) {
+    openRaceExtrasModal(selections, "class");
+  }
 }
 
 // ==================== GENERAZIONE DEL JSON FINALE (STEP 8) ====================
@@ -1166,6 +1243,7 @@ function updateSkillOptions() {
 window.displayRaceTraits = displayRaceTraits;
 window.applyRacialBonuses = applyRacialBonuses;
 window.updateSubclasses = updateSubclasses;
+window.renderClassFeatures = renderClassFeatures;
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("✅ Script.js caricato!");
@@ -1191,8 +1269,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const classSelectElem = document.getElementById("classSelect");
   const subclassSelectElem = document.getElementById("subclassSelect");
+  const levelSelectElem = document.getElementById("levelSelect");
   if (classSelectElem) classSelectElem.addEventListener("change", updateSubclasses);
   if (subclassSelectElem) subclassSelectElem.addEventListener("change", renderClassFeatures);
+  if (levelSelectElem) levelSelectElem.addEventListener("change", renderClassFeatures);
   document.getElementById("btnStep8").addEventListener("click", () => showStep("step8"));
 
   showStep("step1");

@@ -78,30 +78,19 @@ function handleVariantExtraSelections() {
         ).join(" ");
       break;
 
-    case "spells":
-      loadSpells(spellList => {
-        const filtered = filterSpells(spellList, mapData.filter);
-    
-        // 🔥 FIX: Se è un mezzelfo Moon/Sun, aggiungi la scelta al pop-up
-        if (selectedVariant.includes("Cantrip") && selectedVariant.toLowerCase().includes("half-elf")) {
-          extraSelections.push({
-            name: "Spellcasting",
-            description: "Scegli un Cantrip dal Wizard Spell List.",
-            selection: filtered.map(spell => spell.name),
-            count: 1
-          });
-          return;
-        }
-    
-        container.innerHTML = filtered.length
-          ? `<p><strong>Seleziona un incantesimo per ${selectedVariant}:</strong></p>
-              <select id="variantSpellChoice">
-                <option value="">Seleziona...</option>
-                ${filtered.map(spell => `<option value="${spell.name}">${spell.name}</option>`).join("")}
-              </select>`
-          : `<p>Nessun incantesimo trovato per il filtro: ${mapData.filter}</p>`;
-      });
-      break;
+      case "spells":
+        loadSpells(spellList => {
+          const filtered = filterSpells(spellList, mapData.filter);
+
+          container.innerHTML = filtered.length
+            ? `<p><strong>Seleziona un incantesimo per ${selectedVariant}:</strong></p>
+                <select id="variantSpellChoice">
+                  <option value="">Seleziona...</option>
+                  ${filtered.map(spell => `<option value="${spell.name}">${spell.name}</option>`).join("")}
+                </select>`
+            : `<p>Nessun incantesimo trovato per il filtro: ${mapData.filter}</p>`;
+        });
+        break;
   }
 }
 
@@ -109,38 +98,17 @@ function handleVariantFeatureChoices(data) {
   if (!data.variant_feature_choices) return;
 
   console.log(`📌 Trovata Variant Feature per ${data.name}:`, data.variant_feature_choices);
-  
-  // Se il Mezzelfo ha una Variant Feature, spostiamola nel pop-up
-  if (data.variant_feature_choices && data.variant_feature_choices.length > 0) {
-    console.log(`📌 Mezzelfo trovato! Aggiungo la Variant Feature:`, data.variant_feature_choices);
-    
-    if (data.name.toLowerCase().includes("half-elf")) {
-        extraSelections.push({
-            name: "Variant Feature",
-            description: "Scegli una Variant Feature.",
-            selection: data.variant_feature_choices.map(v => v.name),
-            count: 1
-        });
 
-        // 🔥 Apri il pop-up automaticamente dopo aver aggiunto la Variant Feature
-        setTimeout(() => {
-            console.log("🔄 Ricarico i tratti extra visibili...");
-            document.getElementById("raceExtraTraitsContainer").style.display = "block";
-        }, 300);
-    }
-}
-
-  // Per le altre razze manteniamo il comportamento originale
   const container = document.getElementById("variantFeatureSelectionContainer");
   if (!container) return;
-  
+
   let html = `<p><strong>Scegli una Variant Feature:</strong></p><select id="variantFeatureChoice">
                 <option value="">Seleziona...</option>`;
   data.variant_feature_choices.forEach(opt => {
     html += `<option value="${opt.name}">${opt.name}</option>`;
   });
   html += `</select>`;
-  
+
   container.innerHTML = html;
   document.getElementById("variantFeatureChoice").addEventListener("change", handleVariantExtraSelections);
 }
@@ -221,22 +189,12 @@ function handleSpellcasting(data, containerId) {
         // ✅ Caso 3: **Scelta dell'abilità di lancio**
         if (data.spellcasting.ability_choices && Array.isArray(data.spellcasting.ability_choices)) {
           console.log(`🧙‍♂️ Verifica dell'abilità di lancio per ${data.name}:`, data.spellcasting.ability_choices);
-      
-          // 🔹 Se l'Alto Elfo ha solo una scelta (INT), saltiamo la creazione del dropdown
-          if (data.name.toLowerCase().includes("elf (high)") && 
-              data.spellcasting.ability_choices.length === 1 && 
-              typeof data.spellcasting.ability_choices[0] === "string") {
-              
-              console.log(`🧠 ${data.name} usa sempre ${data.spellcasting.ability_choices[0]} come abilità di lancio. Nessun dropdown mostrato.`);
-              return;
-          }
-      
-          // 🔹 Se ci sono più opzioni, mostra il dropdown
+
           if (data.spellcasting.ability_choices.length > 1) {
               const abilityOptions = data.spellcasting.ability_choices
                   .map(a => `<option value="${a.toUpperCase()}">${a.toUpperCase()}</option>`)
                   .join("");
-      
+
               container.innerHTML += `
                   <p><strong>🧠 Seleziona l'abilità di lancio:</strong></p>
                   <select id="castingAbility">
@@ -556,33 +514,9 @@ if (rawData.additionalSpells && rawData.additionalSpells.length > 0) {
         };
     }
 
-    spellcasting = spellcasting || {};  
-
-    // 📌 Controllo per Alto Elfo
-    if (rawData.name.toLowerCase().includes("elf (high)")) {
-        console.log(`🧠 ${rawData.name}: Spellcasting Ability forzata a INT (nessun dropdown).`);
-        spellcasting.ability_choices = ["INT"];
-    } 
-    // 📌 Controllo per Deep Gnome
-    else if (rawData.name.toLowerCase().includes("deep gnome")) {
-        console.log(`🧠 ${rawData.name}: Spellcasting Ability selezionabile tra INT, WIS, CHA.`);
-        spellcasting.ability_choices = Array.from(abilityChoices).length > 0 ? Array.from(abilityChoices) : ["INT", "WIS", "CHA"];
-
-        // 🛠 Aggiungiamo la selezione dell'abilità di lancio nel pop-up
-        if (spellcasting.ability_choices.length > 1) {
-            extraSelections.push({
-                name: "Spellcasting Ability",
-                description: "Choose Intelligence, Wisdom, or Charisma as your spellcasting ability for your racial spells.",
-                selection: spellcasting.ability_choices,
-                count: 1
-            });
-        }
-    } 
-    // 📌 Per tutte le altre razze
-    else {
-        spellcasting.ability_choices = Array.from(abilityChoices);
+      spellcasting = spellcasting || {};
+      spellcasting.ability_choices = Array.from(abilityChoices);
     }
-}
   // Languages
   let languages = { fixed: [], choice: 0, options: [] };
   if (rawData.languageProficiencies && rawData.languageProficiencies.length > 0) {
@@ -1277,29 +1211,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // ✅ **Aggiungere Spellcasting alle scelte nel Pop-up**
         if (raceData.spellcasting) {
-          if (raceData.spellcasting.ability_choices && raceData.spellcasting.ability_choices.length > 0) {
-              if (raceData.name.toLowerCase().includes("deep gnome")) {
-                  console.log("🧠 Deep Gnome: aggiunta selezione per Spellcasting Ability nel pop-up.");
-                  extraSelections.push({
-                      name: "Spellcasting Ability",
-                      description: "Choose Intelligence, Wisdom, or Charisma as your spellcasting ability for your racial spells.",
-                      selection: raceData.spellcasting.ability_choices,
-                      count: 1
-                  });
-          
-                  // 🔥 FIX: Forza l'apertura del pop-up con un piccolo ritardo
-                  setTimeout(() => {
-                      console.log("🔄 Riapro il pop-up per il Deep Gnome con la scelta di Spellcasting.");
-                      openRaceExtrasModal(extraSelections);
-                  }, 200);
-              } else {
-                  selections.push({
-                      name: "Spellcasting Ability",
-                      description: "Choose a spellcasting ability.",
-                      selection: raceData.spellcasting.ability_choices,
-                      count: 1
-                  });
-              }
+          if (raceData.spellcasting.ability_choices && raceData.spellcasting.ability_choices.length > 1) {
+              selections.push({
+                  name: "Spellcasting Ability",
+                  description: "Choose a spellcasting ability.",
+                  selection: raceData.spellcasting.ability_choices,
+                  count: 1
+              });
           }
 
           if (raceData.spellcasting.spell_choices) {
@@ -1333,10 +1251,10 @@ document.addEventListener("DOMContentLoaded", () => {
                   sessionStorage.setItem("popupOpened", "true");
                   openRaceExtrasModal(selections);
                 });
-              } 
-            } 
-          } 
-        } 
+              }
+            }
+          }
+        }
 
         sessionStorage.setItem("popupOpened", "true");
         openRaceExtrasModal(selections);

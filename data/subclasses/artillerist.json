@@ -1,0 +1,20 @@
+{
+  "name": "Artillerist",
+  "description": "You specialize in using magic to hurl energy and explosions on the battlefield.",
+  "features_by_level": {
+    "3": [
+      { "name": "Tool Proficiency", "description": "You gain proficiency with woodcarver's tools. If you already have it, gain proficiency with another set of artisan's tools of your choice." },
+      { "name": "Artillerist Spells", "description": "You always have certain spells prepared: 3rd—shield, thunderwave; 5th—scorching ray, shatter; 9th—fireball, wind wall; 13th—ice storm, wall of fire; 17th—cone of cold, wall of force. These count as artificer spells for you and don't count against spells prepared." },
+      { "name": "Eldritch Cannon", "description": "As an action, use woodcarver's or smith's tools to create a Small or Tiny magical cannon. Once per long rest or by expending a spell slot, you can create a cannon that lasts for up to 1 hour and can be activated as a bonus action to produce a flamethrower, force ballista, or protector effect. It has AC 18, hit points equal to five times your artificer level, and can move 15 ft as part of the activation." }
+    ],
+    "5": [
+      { "name": "Arcane Firearm", "description": "At the end of a long rest, you can carve sigils into a wand, staff, or rod to use as an arcane firearm. When you cast an artificer spell through it, roll a d8 and add the number rolled to one damage roll of the spell." }
+    ],
+    "9": [
+      { "name": "Explosive Cannon", "description": "Your eldritch cannons deal an extra d8 damage. As an action, you can detonate a cannon to deal 3d8 force damage to creatures within 20 feet (Dexterity save for half), destroying the cannon." }
+    ],
+    "15": [
+      { "name": "Fortified Position", "description": "You and your allies have half cover while within 10 ft of any eldritch cannon you create. You can maintain two cannons at once and can activate both with the same bonus action." }
+    ]
+  }
+}

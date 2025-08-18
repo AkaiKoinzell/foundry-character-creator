@@ -1,5 +1,6 @@
 {
     "classes": {
+        "Artificer": "data/classes/artificer.json",
         "Barbarian": "data/classes/barbarian.json",
         "Bard": "data/classes/bard.json",
         "Cleric": "data/classes/cleric.json",

@@ -1,0 +1,10 @@
+{
+    "name": "Thief",
+    "description": "A rogue who focuses on stealth and agility.",
+    "features_by_level": {
+        "3": ["Fast Hands", "Second-Story Work"],
+        "9": ["Supreme Sneak"],
+        "13": ["Use Magic Device"],
+        "17": ["Thief's Reflexes"]
+    }
+}

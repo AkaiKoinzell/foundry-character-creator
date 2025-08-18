@@ -1,0 +1,10 @@
+{
+    "name": "Arcane Trickster",
+    "description": "A rogue who uses magic to enhance their cunning.",
+    "features_by_level": {
+        "3": ["Spellcasting", "Mage Hand Legerdemain"],
+        "9": ["Magical Ambush"],
+        "13": ["Versatile Trickster"],
+        "17": ["Spell Thief"]
+    }
+}

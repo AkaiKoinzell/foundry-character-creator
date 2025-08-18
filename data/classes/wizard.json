@@ -1,0 +1,13 @@
+{
+    "name": "Wizard",
+    "subclasses": [
+        {
+            "name": "School of Evocation",
+            "features": ["Evocation Savant", "Sculpt Spells", "Potent Cantrip", "Empowered Evocation", "Overchannel"]
+        },
+        {
+            "name": "School of Illusion",
+            "features": ["Illusion Savant", "Improved Minor Illusion", "Malleable Illusions", "Illusory Self", "Illusory Reality"]
+        }
+    ]
+}

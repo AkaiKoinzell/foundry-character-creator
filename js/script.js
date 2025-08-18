@@ -699,6 +699,8 @@ let selectedData = sessionStorage.getItem("selectedData")
   : {};
 let extraSelections = [];
 let currentSelectionIndex = 0;
+// Cached list of all languages loaded from JSON
+let availableLanguages = [];
 
 /**
  * Opens the extra selections popup.
@@ -1080,7 +1082,7 @@ function generateFinalJson() {
       charisma: document.getElementById("chaRaceModifier").textContent
     },
     languages: {
-      selected: document.getElementById("languageSelection").innerText.replace("Lingue Extra:","").trim() || ""
+      selected: selectedData["Languages"] || []
     },
     chromatic_ancestry: chromaticAncestry,
     tool_proficiency: toolProficiency,
@@ -1212,6 +1214,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   loadDropdownData("data/races.json", "raceSelect", "races");
   loadDropdownData("data/classes.json", "classSelect", "classes");
+  // Preload list of languages for later selections
+  loadLanguages(langs => {
+    availableLanguages = langs;
+  });
 
   document.getElementById("btnStep1").addEventListener("click", () => showStep("step1"));
   document.getElementById("btnStep2").addEventListener("click", () => showStep("step2"));
@@ -1242,10 +1248,13 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("raceTraits").style.display = "none";
 
         if (raceData.languages && raceData.languages.choice > 0) {
+          const availableLangs = availableLanguages.filter(
+            lang => !raceData.languages.fixed.includes(lang)
+          );
           selections.push({
             name: "Languages",
             description: "Choose an additional language.",
-            selection: ["Elvish", "Dwarvish", "Halfling", "Orc", "Gnomish", "Draconic", "Celestial"],
+            selection: availableLangs,
             count: raceData.languages.choice
           });
         }

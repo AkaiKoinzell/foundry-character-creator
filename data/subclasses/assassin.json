@@ -1,0 +1,10 @@
+{
+    "name": "Assassin",
+    "description": "A master of infiltration and deadly strikes.",
+    "features_by_level": {
+        "3": ["Bonus Proficiencies", "Assassinate"],
+        "9": ["Infiltration Expertise"],
+        "13": ["Impostor"],
+        "17": ["Death Strike"]
+    }
+}

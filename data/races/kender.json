@@ -1,0 +1,65 @@
+{
+	"name": "Kender",
+	"source": "DLSotDQ",
+	"page": 18,
+	"size": [
+		"S"
+	],
+	"speed": 30,
+	"ability": [
+		{
+			"cha": 2,
+			"dex": 1
+		}
+	],
+	"heightAndWeight": {
+		"baseHeight": 42,
+		"heightMod": "2d4",
+		"baseWeight": 55,
+		"weightMod": "1d4"
+	},
+	"age": {
+		"mature": 20,
+		"max": 100
+	},
+	"languageProficiencies": [
+		{
+			"common": true,
+			"kenderspeak": true
+		}
+	],
+	"entries": [
+		{
+			"name": "Fearless",
+			"type": "entries",
+			"entries": [
+				"You have advantage on saving throws against being frightened."
+			]
+		},
+		{
+			"name": "Kender Ace",
+			"type": "entries",
+			"entries": [
+				"As a bonus action, you can pull an item from your pouches. The object disappears after 1 hour."
+			]
+		},
+		{
+			"name": "Taunt",
+			"type": "entries",
+			"entries": [
+				"As a bonus action, you can unleash a barrage of insults at a creature within 60 feet, imposing disadvantage on attack rolls against others."
+			]
+		},
+		{
+			"name": "Languages",
+			"type": "entries",
+			"entries": [
+				"You can speak, read, and write Common and Kenderspeak."
+			]
+		}
+	],
+	"raceName": "Kender",
+	"raceSource": "DLSotDQ",
+	"hasFluff": true,
+	"hasFluffImages": true
+}

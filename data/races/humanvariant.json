@@ -1,0 +1,79 @@
+{
+	"name": "Human (Variant)",
+	"source": "PHB",
+	"page": 31,
+	"size": [
+		"M"
+	],
+	"speed": 30,
+	"ability": [
+		{
+			"choose": {
+				"from": [
+					"str",
+					"dex",
+					"con",
+					"int",
+					"wis",
+					"cha"
+				],
+				"count": 2
+			}
+		}
+	],
+	"heightAndWeight": {
+		"baseHeight": 56,
+		"heightMod": "2d10",
+		"baseWeight": 110,
+		"weightMod": "2d4"
+	},
+	"age": {
+		"mature": 18,
+		"max": 80
+	},
+	"skillProficiencies": [
+		{
+			"any": 1
+		}
+	],
+	"languageProficiencies": [
+		{
+			"common": true,
+			"anyStandard": 1
+		}
+	],
+	"entries": [
+		{
+			"name": "Age",
+			"type": "entries",
+			"entries": [
+				"Humans reach adulthood in their late teens and rarely live longer than a century."
+			]
+		},
+		{
+			"type": "entries",
+			"name": "Size",
+			"entries": [
+				"Humans vary widely in height and build. Your size is Medium."
+			]
+		},
+		{
+			"name": "Feat",
+			"type": "entries",
+			"entries": [
+				"You gain one feat of your choice."
+			]
+		},
+		{
+			"name": "Languages",
+			"type": "entries",
+			"entries": [
+				"You can speak, read, and write Common and one extra language of your choice."
+			]
+		}
+	],
+	"raceName": "Human",
+	"raceSource": "PHB",
+	"hasFluff": true,
+	"hasFluffImages": true
+}

@@ -1,0 +1,75 @@
+{
+	"name": "Locathah",
+	"source": "LR",
+	"page": 5,
+	"size": [
+		"M"
+	],
+	"speed": {
+		"walk": 30,
+		"swim": 30
+	},
+	"ability": [
+		{
+			"con": 2,
+			"dex": 1
+		}
+	],
+	"heightAndWeight": {
+		"baseHeight": 55,
+		"heightMod": "2d8",
+		"baseWeight": 100,
+		"weightMod": "2d6"
+	},
+	"age": {
+		"mature": 10,
+		"max": 80
+	},
+	"languageProficiencies": [
+		{
+			"common": true,
+			"aquan": true
+		}
+	],
+	"entries": [
+		{
+			"name": "Limited Amphibiousness",
+			"type": "entries",
+			"entries": [
+				"You can breathe air for up to 1 hour, after which you begin to suffocate."
+			]
+		},
+		{
+			"name": "Natural Armor",
+			"type": "entries",
+			"entries": [
+				"When you aren't wearing armor, your AC is 12 plus your Dexterity modifier."
+			]
+		},
+		{
+			"name": "Leviathan Will",
+			"type": "entries",
+			"entries": [
+				"You have advantage on saving throws against being frightened, charmed, paralyzed, poisoned, stunned, or put to sleep."
+			]
+		},
+		{
+			"name": "Observant & Athletic",
+			"type": "entries",
+			"entries": [
+				"You have proficiency in the Athletics and Perception skills."
+			]
+		},
+		{
+			"name": "Languages",
+			"type": "entries",
+			"entries": [
+				"You can speak, read, and write Common and Aquan."
+			]
+		}
+	],
+	"raceName": "Locathah",
+	"raceSource": "LR",
+	"hasFluff": true,
+	"hasFluffImages": true
+}

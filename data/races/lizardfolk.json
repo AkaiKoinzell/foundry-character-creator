@@ -1,0 +1,89 @@
+{
+	"name": "Lizardfolk",
+	"source": "MPMM",
+	"page": 22,
+	"size": [
+		"M"
+	],
+	"speed": {
+		"walk": 30,
+		"swim": 30
+	},
+	"ability": [
+		{
+			"con": 2,
+			"wis": 1
+		}
+	],
+	"heightAndWeight": {
+		"baseHeight": 60,
+		"heightMod": "2d10",
+		"baseWeight": 120,
+		"weightMod": "2d6"
+	},
+	"age": {
+		"mature": 14,
+		"max": 60
+	},
+	"languageProficiencies": [
+		{
+			"common": true,
+			"draconic": true
+		}
+	],
+	"entries": [
+		{
+			"name": "Bite",
+			"type": "entries",
+			"entries": [
+				"Your fanged maw is a natural weapon that deals 1d6 piercing damage."
+			]
+		},
+		{
+			"name": "Cunning Artisan",
+			"type": "entries",
+			"entries": [
+				"As part of a short rest, you can harvest bone and hide from a slain creature to craft items."
+			]
+		},
+		{
+			"name": "Hold Breath",
+			"type": "entries",
+			"entries": [
+				"You can hold your breath for up to 15 minutes."
+			]
+		},
+		{
+			"name": "Hunter's Lore",
+			"type": "entries",
+			"entries": [
+				"You gain proficiency in two skills of your choice from Animal Handling, Nature, Perception, Stealth, and Survival."
+			]
+		},
+		{
+			"name": "Natural Armor",
+			"type": "entries",
+			"entries": [
+				"You have tough, scaly skin. When you aren't wearing armor, your AC is 13 plus your Dexterity modifier."
+			]
+		},
+		{
+			"name": "Hungry Jaws",
+			"type": "entries",
+			"entries": [
+				"As a bonus action, you can make a special attack with your bite. If it hits, you gain temporary hit points equal to your proficiency bonus."
+			]
+		},
+		{
+			"name": "Languages",
+			"type": "entries",
+			"entries": [
+				"You can speak, read, and write Common and Draconic."
+			]
+		}
+	],
+	"raceName": "Lizardfolk",
+	"raceSource": "MPMM",
+	"hasFluff": true,
+	"hasFluffImages": true
+}

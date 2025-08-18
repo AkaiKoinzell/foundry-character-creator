@@ -1,0 +1,79 @@
+{
+	"name": "Loxodon",
+	"source": "GGR",
+	"page": 18,
+	"size": [
+		"M"
+	],
+	"speed": 30,
+	"ability": [
+		{
+			"con": 2,
+			"wis": 1
+		}
+	],
+	"heightAndWeight": {
+		"baseHeight": 84,
+		"heightMod": "2d10",
+		"baseWeight": 300,
+		"weightMod": "2d6"
+	},
+	"age": {
+		"mature": 60,
+		"max": 450
+	},
+	"languageProficiencies": [
+		{
+			"common": true,
+			"loxodon": true
+		}
+	],
+	"entries": [
+		{
+			"name": "Powerful Build",
+			"type": "entries",
+			"entries": [
+				"You count as one size larger when determining your carrying capacity and the weight you can push, drag, or lift."
+			]
+		},
+		{
+			"name": "Loxodon Serenity",
+			"type": "entries",
+			"entries": [
+				"You have advantage on saving throws against being charmed or frightened."
+			]
+		},
+		{
+			"name": "Natural Armor",
+			"type": "entries",
+			"entries": [
+				"When you aren't wearing armor, your AC is 12 plus your Constitution modifier."
+			]
+		},
+		{
+			"name": "Trunk",
+			"type": "entries",
+			"entries": [
+				"You can grasp things with your trunk, and it has a reach of 5 feet."
+			]
+		},
+		{
+			"name": "Keen Smell",
+			"type": "entries",
+			"entries": [
+				"You have advantage on Wisdom (Perception), Wisdom (Survival), and Intelligence (Investigation) checks that rely on smell."
+			]
+		},
+		{
+			"name": "Languages",
+			"type": "entries",
+			"entries": [
+				"You can speak, read, and write Common and Loxodon."
+			]
+		}
+	],
+	"raceName": "Loxodon",
+	"raceSource": "GGR",
+	"hasFluff": true,
+	"hasFluffImages": true
+}

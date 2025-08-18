@@ -1,0 +1,65 @@
+{
+	"name": "Kenku",
+	"source": "MPMM",
+	"page": 20,
+	"size": [
+		"M"
+	],
+	"speed": 30,
+	"ability": [
+		{
+			"dex": 2,
+			"wis": 1
+		}
+	],
+	"heightAndWeight": {
+		"baseHeight": 60,
+		"heightMod": "2d8",
+		"baseWeight": 90,
+		"weightMod": "2d4"
+	},
+	"age": {
+		"mature": 12,
+		"max": 60
+	},
+	"languageProficiencies": [
+		{
+			"common": true,
+			"auran": true
+		}
+	],
+	"entries": [
+		{
+			"name": "Expert Forgery",
+			"type": "entries",
+			"entries": [
+				"You can duplicate other creatures' handwriting and craftwork."
+			]
+		},
+		{
+			"name": "Kenku Training",
+			"type": "entries",
+			"entries": [
+				"You gain proficiency in two skills of your choice from Acrobatics, Deception, Stealth, or Sleight of Hand."
+			]
+		},
+		{
+			"name": "Mimicry",
+			"type": "entries",
+			"entries": [
+				"You can mimic any sounds you have heard."
+			]
+		},
+		{
+			"name": "Languages",
+			"type": "entries",
+			"entries": [
+				"You can read and write Common and Auran but speak only by mimicking sounds you have heard."
+			]
+		}
+	],
+	"raceName": "Kenku",
+	"raceSource": "MPMM",
+	"hasFluff": true,
+	"hasFluffImages": true
+}

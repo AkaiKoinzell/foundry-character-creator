@@ -1,0 +1,10 @@
+{
+    "name": "The Fiend",
+    "description": "You have made a pact with a fiend from the lower planes of existence.",
+    "features_by_level": {
+        "1": ["Dark One's Blessing"],
+        "6": ["Dark One's Own Luck"],
+        "10": ["Fiendish Resilience"],
+        "14": ["Hurl Through Hell"]
+    }
+}

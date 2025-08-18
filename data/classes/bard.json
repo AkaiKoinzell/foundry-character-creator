@@ -1,0 +1,13 @@
+{
+    "name": "Bard",
+    "subclasses": [
+        {
+            "name": "College of Lore",
+            "features": ["Bonus Proficiencies", "Cutting Words", "Additional Magical Secrets", "Peerless Skill"]
+        },
+        {
+            "name": "College of Valor",
+            "features": ["Bonus Proficiencies", "Combat Inspiration", "Extra Attack", "Battle Magic"]
+        }
+    ]
+}

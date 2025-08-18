@@ -1,0 +1,10 @@
+{
+    "name": "Wild Magic",
+    "description": "Your innate magic comes from the wild forces of chaos.",
+    "features_by_level": {
+        "1": ["Wild Magic Surge", "Tides of Chaos"],
+        "6": ["Bend Luck"],
+        "14": ["Controlled Chaos"],
+        "18": ["Spell Bombardment"]
+    }
+}

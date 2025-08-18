@@ -1,0 +1,10 @@
+{
+    "name": "Beast Master",
+    "description": "Beast Masters bond with an animal companion to fight alongside them.",
+    "features_by_level": {
+        "3": ["Ranger's Companion"],
+        "7": ["Exceptional Training"],
+        "11": ["Bestial Fury"],
+        "15": ["Share Spells"]
+    }
+}

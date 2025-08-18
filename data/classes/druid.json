@@ -1,0 +1,13 @@
+{
+    "name": "Druid",
+    "subclasses": [
+        {
+            "name": "Circle of the Land",
+            "features": ["Circle Spells", "Natural Recovery", "Land's Stride", "Nature's Ward", "Nature's Sanctuary"]
+        },
+        {
+            "name": "Circle of the Moon",
+            "features": ["Combat Wild Shape", "Circle Forms", "Primal Strike", "Elemental Wild Shape", "Thousand Forms"]
+        }
+    ]
+}

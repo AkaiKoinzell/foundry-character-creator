@@ -1,0 +1,10 @@
+{
+    "name": "Illusion",
+    "description": "You dedicate yourself to perfecting the art of tricking the senses.",
+    "features_by_level": {
+        "2": ["Illusion Savant", "Improved Minor Illusion"],
+        "6": ["Malleable Illusions"],
+        "10": ["Illusory Self"],
+        "14": ["Illusory Reality"]
+    }
+}

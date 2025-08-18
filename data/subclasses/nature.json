@@ -1,0 +1,11 @@
+{
+    "name": "Nature Domain",
+    "description": "Clerics of the Nature Domain are champions of the natural world.",
+    "features_by_level": {
+        "1": ["Acolyte of Nature", "Bonus Proficiency"],
+        "2": ["Channel Divinity: Charm Animals and Plants"],
+        "6": ["Dampen Elements"],
+        "8": ["Divine Strike"],
+        "17": ["Master of Nature"]
+    }
+}

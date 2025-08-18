@@ -1,0 +1,10 @@
+{
+    "name": "The Archfey",
+    "description": "Your patron is a lord or lady of the fey.",
+    "features_by_level": {
+        "1": ["Fey Presence"],
+        "6": ["Misty Escape"],
+        "10": ["Beguiling Defenses"],
+        "14": ["Dark Delirium"]
+    }
+}

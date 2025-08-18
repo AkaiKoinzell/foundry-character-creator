@@ -1,0 +1,11 @@
+{
+    "name": "Life Domain",
+    "description": "The Life Domain is focused on vibrant positive energy.",
+    "features_by_level": {
+        "1": ["Bonus Proficiency", "Disciple of Life"],
+        "2": ["Channel Divinity: Preserve Life"],
+        "6": ["Blessed Healer"],
+        "8": ["Divine Strike"],
+        "17": ["Supreme Healing"]
+    }
+}

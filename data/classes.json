@@ -1,7 +1,16 @@
 {
     "classes": {
         "Barbarian": "data/classes/barbarian.json",
-        "Wizard": "data/classes/wizard.json",
-        "Rogue": "data/classes/rogue.json"
+        "Bard": "data/classes/bard.json",
+        "Cleric": "data/classes/cleric.json",
+        "Druid": "data/classes/druid.json",
+        "Fighter": "data/classes/fighter.json",
+        "Monk": "data/classes/monk.json",
+        "Paladin": "data/classes/paladin.json",
+        "Ranger": "data/classes/ranger.json",
+        "Rogue": "data/classes/rogue.json",
+        "Sorcerer": "data/classes/sorcerer.json",
+        "Warlock": "data/classes/warlock.json",
+        "Wizard": "data/classes/wizard.json"
     }
 }

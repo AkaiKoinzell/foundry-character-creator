@@ -1,0 +1,17 @@
+{
+    "name": "Monk",
+    "subclasses": [
+        {
+            "name": "Way of the Open Hand",
+            "features": ["Open Hand Technique", "Wholeness of Body", "Tranquility", "Quivering Palm"]
+        },
+        {
+            "name": "Way of Shadow",
+            "features": ["Shadow Arts", "Shadow Step", "Cloak of Shadows", "Opportunist"]
+        },
+        {
+            "name": "Way of the Four Elements",
+            "features": ["Disciple of the Elements", "Elemental Disciplines", "Elemental Mastery", "Elemental Body"]
+        }
+    ]
+}

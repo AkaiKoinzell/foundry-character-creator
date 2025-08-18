@@ -1,0 +1,37 @@
+{
+    "name": "Wizard",
+    "subclasses": [
+        {
+            "name": "School of Abjuration",
+            "features": ["Abjuration Savant", "Arcane Ward", "Projected Ward", "Improved Abjuration", "Spell Resistance"]
+        },
+        {
+            "name": "School of Conjuration",
+            "features": ["Conjuration Savant", "Minor Conjuration", "Benign Transposition", "Focused Conjuration", "Durable Summons"]
+        },
+        {
+            "name": "School of Divination",
+            "features": ["Divination Savant", "Portent", "Expert Divination", "The Third Eye", "Greater Portent"]
+        },
+        {
+            "name": "School of Enchantment",
+            "features": ["Enchantment Savant", "Hypnotic Gaze", "Instinctive Charm", "Split Enchantment", "Alter Memories"]
+        },
+        {
+            "name": "School of Evocation",
+            "features": ["Evocation Savant", "Sculpt Spells", "Potent Cantrip", "Empowered Evocation", "Overchannel"]
+        },
+        {
+            "name": "School of Illusion",
+            "features": ["Illusion Savant", "Improved Minor Illusion", "Malleable Illusions", "Illusory Self", "Illusory Reality"]
+        },
+        {
+            "name": "School of Necromancy",
+            "features": ["Necromancy Savant", "Grim Harvest", "Undead Thralls", "Inured to Undeath", "Command Undead"]
+        },
+        {
+            "name": "School of Transmutation",
+            "features": ["Transmutation Savant", "Minor Alchemy", "Transmuter's Stone", "Shapechanger", "Master Transmuter"]
+        }
+    ]
+}

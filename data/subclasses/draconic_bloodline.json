@@ -1,0 +1,10 @@
+{
+    "name": "Draconic Bloodline",
+    "description": "Your innate magic comes from draconic ancestry.",
+    "features_by_level": {
+        "1": ["Dragon Ancestor", "Draconic Resilience"],
+        "6": ["Elemental Affinity"],
+        "14": ["Dragon Wings"],
+        "18": ["Draconic Presence"]
+    }
+}

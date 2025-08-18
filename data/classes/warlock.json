@@ -1,0 +1,17 @@
+{
+    "name": "Warlock",
+    "subclasses": [
+        {
+            "name": "The Archfey",
+            "features": ["Fey Presence", "Misty Escape", "Beguiling Defenses", "Dark Delirium"]
+        },
+        {
+            "name": "The Fiend",
+            "features": ["Dark One's Blessing", "Dark One's Own Luck", "Fiendish Resilience", "Hurl Through Hell"]
+        },
+        {
+            "name": "The Great Old One",
+            "features": ["Awakened Mind", "Entropic Ward", "Thought Shield", "Create Thrall"]
+        }
+    ]
+}

@@ -1,0 +1,9 @@
+{
+    "name": "College of Lore",
+    "description": "Bards of the College of Lore pursue knowledge and weave it into their music and spells.",
+    "features_by_level": {
+        "3": ["Bonus Proficiencies", "Cutting Words"],
+        "6": ["Additional Magical Secrets"],
+        "14": ["Peerless Skill"]
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "name": "Totem Warrior",
+    "description": "A warrior who channels animal spirits to guide and protect.",
+    "features_by_level": {
+        "3": ["Spirit Seeker", "Totem Spirit"],
+        "6": ["Aspect of the Beast"],
+        "10": ["Spirit Walker"],
+        "14": ["Totemic Attunement"]
+    }
+}

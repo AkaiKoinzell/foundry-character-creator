@@ -1,0 +1,9 @@
+{
+    "name": "College of Valor",
+    "description": "Bards of the College of Valor are brave warriors who inspire others in battle.",
+    "features_by_level": {
+        "3": ["Bonus Proficiencies", "Combat Inspiration"],
+        "6": ["Extra Attack"],
+        "14": ["Battle Magic"]
+    }
+}

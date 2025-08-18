@@ -1,0 +1,10 @@
+{
+    "name": "Conjuration",
+    "description": "You focus on summoning creatures and objects.",
+    "features_by_level": {
+        "2": ["Conjuration Savant", "Minor Conjuration"],
+        "6": ["Benign Transposition"],
+        "10": ["Focused Conjuration"],
+        "14": ["Durable Summons"]
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "name": "The Great Old One",
+    "description": "Your patron is a mysterious entity from the far realms of madness.",
+    "features_by_level": {
+        "1": ["Awakened Mind"],
+        "6": ["Entropic Ward"],
+        "10": ["Thought Shield"],
+        "14": ["Create Thrall"]
+    }
+}

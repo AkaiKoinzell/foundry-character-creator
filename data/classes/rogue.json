@@ -1,0 +1,17 @@
+{
+    "name": "Rogue",
+    "subclasses": [
+        {
+            "name": "Thief",
+            "features": ["Fast Hands", "Second-Story Work", "Supreme Sneak", "Use Magic Device", "Thief's Reflexes"]
+        },
+        {
+            "name": "Assassin",
+            "features": ["Bonus Proficiencies", "Assassinate", "Infiltration Expertise", "Impostor", "Death Strike"]
+        },
+        {
+            "name": "Arcane Trickster",
+            "features": ["Spellcasting", "Mage Hand Legerdemain", "Magical Ambush", "Versatile Trickster", "Spell Thief"]
+        }
+    ]
+}

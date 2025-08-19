@@ -1,0 +1,24 @@
+{
+  "name": "Skilled",
+  "source": "PHB",
+  "page": 170,
+  "reprintedAs": [
+    "Skilled|XPHB"
+  ],
+  "skillToolLanguageProficiencies": [
+    {
+      "choose": [
+        {
+          "from": [
+            "anySkill",
+            "anyTool"
+          ],
+          "count": 3
+        }
+      ]
+    }
+  ],
+  "entries": [
+    "You gain proficiency in any combination of three {@table skills|phb} or {@filter tools|items|type=tool;artisan's tools;instrument;gaming set;vehicle (land);vehicle (water)} of your choice."
+  ]
+}

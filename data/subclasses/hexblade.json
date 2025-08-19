@@ -1,0 +1,47 @@
+{
+  "name": "The Hexblade",
+  "description": "You have made your pact with a mysterious entity from the Shadowfell.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Hexblade's Curse",
+        "description": "Description for Hexblade's Curse."
+      },
+      {
+        "name": "Hex Warrior",
+        "description": "Description for Hex Warrior."
+      }
+    ],
+    "6": [
+      {
+        "name": "Accursed Specter",
+        "description": "Description for Accursed Specter."
+      }
+    ],
+    "10": [
+      {
+        "name": "Armor of Hexes",
+        "description": "Description for Armor of Hexes."
+      }
+    ],
+    "14": [
+      {
+        "name": "Master of Hexes",
+        "description": "Description for Master of Hexes."
+      }
+    ]
+  },
+  "choices": [
+    {
+      "level": 1,
+      "name": "The Hexblade Feature",
+      "description": "Choose an option for the The Hexblade subclass",
+      "count": 1,
+      "selection": [
+        "The Hexblade Option 1",
+        "The Hexblade Option 2"
+      ],
+      "type": "The Hexblade Feature"
+    }
+  ]
+}

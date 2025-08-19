@@ -1,0 +1,47 @@
+{
+  "name": "The Celestial",
+  "description": "Your patron is a powerful being of the Upper Planes.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Bonus Cantrips",
+        "description": "Description for Bonus Cantrips."
+      },
+      {
+        "name": "Healing Light",
+        "description": "Description for Healing Light."
+      }
+    ],
+    "6": [
+      {
+        "name": "Radiant Soul",
+        "description": "Description for Radiant Soul."
+      }
+    ],
+    "10": [
+      {
+        "name": "Celestial Resilience",
+        "description": "Description for Celestial Resilience."
+      }
+    ],
+    "14": [
+      {
+        "name": "Searing Vengeance",
+        "description": "Description for Searing Vengeance."
+      }
+    ]
+  },
+  "choices": [
+    {
+      "level": 1,
+      "name": "The Celestial Feature",
+      "description": "Choose an option for the The Celestial subclass",
+      "count": 1,
+      "selection": [
+        "The Celestial Option 1",
+        "The Celestial Option 2"
+      ],
+      "type": "The Celestial Feature"
+    }
+  ]
+}

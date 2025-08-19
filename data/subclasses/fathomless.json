@@ -1,0 +1,51 @@
+{
+  "name": "The Fathomless",
+  "description": "You have plunged into a pact with the deeps.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Tentacle of the Deeps",
+        "description": "Description for Tentacle of the Deeps."
+      },
+      {
+        "name": "Gift of the Sea",
+        "description": "Description for Gift of the Sea."
+      }
+    ],
+    "6": [
+      {
+        "name": "Oceanic Soul",
+        "description": "Description for Oceanic Soul."
+      },
+      {
+        "name": "Guardian Coil",
+        "description": "Description for Guardian Coil."
+      }
+    ],
+    "10": [
+      {
+        "name": "Grasping Tentacles",
+        "description": "Description for Grasping Tentacles."
+      }
+    ],
+    "14": [
+      {
+        "name": "Fathomless Plunge",
+        "description": "Description for Fathomless Plunge."
+      }
+    ]
+  },
+  "choices": [
+    {
+      "level": 1,
+      "name": "The Fathomless Feature",
+      "description": "Choose an option for the The Fathomless subclass",
+      "count": 1,
+      "selection": [
+        "The Fathomless Option 1",
+        "The Fathomless Option 2"
+      ],
+      "type": "The Fathomless Feature"
+    }
+  ]
+}

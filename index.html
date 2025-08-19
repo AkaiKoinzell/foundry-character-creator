@@ -7,40 +7,6 @@
   <link rel="stylesheet" href="css/site-theme.css">
   <script type="module" src="js/main.js"></script>
   <style>
-  /* Stile per il pop-up */
-  .modal {
-    display: none; /* hidden until activated via script */
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    justify-content: center;
-    align-items: center;
-  }
-
-  .modal-content {
-    background: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    max-width: 500px;
-    width: 90%;
-    text-align: center;
-  }
-
-  .modal-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
-
-  #closeModal {
-    margin-top: 20px;
-    display: none;
-  }
-
   #raceExtraTraitsContainer {
     display: none;
   }
@@ -138,6 +104,7 @@
         <div id="divineDomainSelection" style="display:none;"></div>
         <div id="metamagicSelection" style="display:none;"></div>
         <div id="abilityImprovementSelection" style="display:none;"></div>
+        <div id="classExtrasAccordion" class="accordion"></div>
       </div>
       <!-- Step 3: Scelta della Razza -->
       <div id="step3" class="step">
@@ -149,21 +116,8 @@
         <br><br>
         <div id="raceTraits"></div>
         <button id="confirmRaceSelection" class="btn btn-primary">Seleziona Razza</button>
-        <!-- Contenitore dei tratti extra (vuoto, mantenuto per compatibilità) -->
-        <div id="raceExtraTraitsContainer"></div>
-      </div>
-      <!-- 📜 MODALE PER TUTTE LE SCELTE EXTRA -->
-      <div id="raceExtrasModal" class="modal">
-        <div class="modal-content">
-          <h2 id="extraTraitTitle"></h2>
-          <p id="extraTraitDescription"></p>
-          <div id="extraTraitSelection"></div>
-          <div class="modal-buttons">
-            <button id="prevTrait" class="btn">Precedente</button>
-            <button id="nextTrait" class="btn">Successivo</button>
-            <button id="closeModal" class="btn btn-primary">Chiudi</button>
-          </div>
-        </div>
+        <!-- Contenitore dei tratti extra -->
+        <div id="raceExtraTraitsContainer" class="accordion"></div>
       </div>
       <!-- Step 4: Background -->
       <div id="step4" class="step">

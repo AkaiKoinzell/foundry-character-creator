@@ -26,18 +26,5 @@
         "description": "Description for Indestructible Life."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 1,
-      "name": "The Undying Feature",
-      "description": "Choose an option for the The Undying subclass",
-      "count": 1,
-      "selection": [
-        "The Undying Option 1",
-        "The Undying Option 2"
-      ],
-      "type": "The Undying Feature"
-    }
-  ]
+  }
 }

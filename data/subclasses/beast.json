@@ -5,7 +5,7 @@
     "3": [
       {
         "name": "Form of the Beast",
-        "description": "When you rage, manifest natural weapons—bite, claws, or tail—each granting unique benefits and counting as simple melee weapons."
+        "description": "When you rage, manifest natural weapons\u2014bite, claws, or tail\u2014each granting unique benefits and counting as simple melee weapons."
       }
     ],
     "6": [
@@ -26,18 +26,5 @@
         "description": "When you rage, choose creatures equal to your Constitution modifier to gain 5 temporary hit points. Until the rage ends, they can add 1d6 damage once per turn. Uses equal to your proficiency bonus per long rest."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Beast Feature",
-      "description": "Choose an option for the Beast subclass",
-      "count": 1,
-      "selection": [
-        "Beast Option 1",
-        "Beast Option 2"
-      ],
-      "type": "Beast Feature"
-    }
-  ]
+  }
 }

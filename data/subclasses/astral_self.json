@@ -26,18 +26,5 @@
         "description": "Spend 5 ki points to fully manifest your astral self for 10 minutes, gaining +2 AC and attacking three times with astral arms when you use Extra Attack."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Way of the Astral Self Feature",
-      "description": "Choose an option for the Way of the Astral Self subclass",
-      "count": 1,
-      "selection": [
-        "Way of the Astral Self Option 1",
-        "Way of the Astral Self Option 2"
-      ],
-      "type": "Way of the Astral Self Feature"
-    }
-  ]
+  }
 }

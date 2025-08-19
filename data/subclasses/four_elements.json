@@ -30,18 +30,5 @@
         "description": "Learn a final elemental discipline, and you may replace one you know."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Way of the Four Elements Feature",
-      "description": "Choose an option for the Way of the Four Elements subclass",
-      "count": 1,
-      "selection": [
-        "Way of the Four Elements Option 1",
-        "Way of the Four Elements Option 2"
-      ],
-      "type": "Way of the Four Elements Feature"
-    }
-  ]
+  }
 }

@@ -26,18 +26,5 @@
         "description": "As an action, touch a creature and spend 1 to 10 ki points; the target takes 2d10 necrotic damage per ki point on a failed Constitution save, or half as much on a success."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Way of the Long Death Feature",
-      "description": "Choose an option for the Way of the Long Death subclass",
-      "count": 1,
-      "selection": [
-        "Way of the Long Death Option 1",
-        "Way of the Long Death Option 2"
-      ],
-      "type": "Way of the Long Death Feature"
-    }
-  ]
+  }
 }

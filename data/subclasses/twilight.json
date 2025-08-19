@@ -40,18 +40,5 @@
         "description": "Creatures in your Twilight Sanctuary have half cover."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 1,
-      "name": "Twilight Domain Feature",
-      "description": "Choose an option for the Twilight Domain subclass",
-      "count": 1,
-      "selection": [
-        "Twilight Domain Option 1",
-        "Twilight Domain Option 2"
-      ],
-      "type": "Twilight Domain Feature"
-    }
-  ]
+  }
 }

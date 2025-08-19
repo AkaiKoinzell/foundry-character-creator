@@ -26,18 +26,5 @@
         "description": "When a creature within 5 feet of you is hit by an attack made by another creature, use your reaction to make a melee attack against it."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Way of Shadow Feature",
-      "description": "Choose an option for the Way of Shadow subclass",
-      "count": 1,
-      "selection": [
-        "Way of Shadow Option 1",
-        "Way of Shadow Option 2"
-      ],
-      "type": "Way of Shadow Feature"
-    }
-  ]
+  }
 }

@@ -24,18 +24,5 @@
         "description": "You can create multiple items with Performance of Creation up to a number equal to your Charisma modifier, ignoring gp limits; only one can be of the maximum size."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "College of Creation Feature",
-      "description": "Choose an option for the College of Creation subclass",
-      "count": 1,
-      "selection": [
-        "College of Creation Option 1",
-        "College of Creation Option 2"
-      ],
-      "type": "College of Creation Feature"
-    }
-  ]
+  }
 }

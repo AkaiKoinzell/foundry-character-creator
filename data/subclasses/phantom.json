@@ -30,18 +30,5 @@
         "description": "Wails from the Grave damages both the first and second creature, and you gain a soul trinket at the end of a long rest if you have none."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Phantom Feature",
-      "description": "Choose an option for the Phantom subclass",
-      "count": 1,
-      "selection": [
-        "Phantom Option 1",
-        "Phantom Option 2"
-      ],
-      "type": "Phantom Feature"
-    }
-  ]
+  }
 }

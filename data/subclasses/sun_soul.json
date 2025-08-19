@@ -26,18 +26,5 @@
         "description": "You shed bright light in a 30-foot radius and can use your reaction to deal radiant damage equal to 5 + Wisdom modifier to creatures that hit you in melee."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Way of the Sun Soul Feature",
-      "description": "Choose an option for the Way of the Sun Soul subclass",
-      "count": 1,
-      "selection": [
-        "Way of the Sun Soul Option 1",
-        "Way of the Sun Soul Option 2"
-      ],
-      "type": "Way of the Sun Soul Feature"
-    }
-  ]
+  }
 }

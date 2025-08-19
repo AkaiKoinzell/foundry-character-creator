@@ -34,18 +34,5 @@
         "description": "Description for Fathomless Plunge."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 1,
-      "name": "The Fathomless Feature",
-      "description": "Choose an option for the The Fathomless subclass",
-      "count": 1,
-      "selection": [
-        "The Fathomless Option 1",
-        "The Fathomless Option 2"
-      ],
-      "type": "The Fathomless Feature"
-    }
-  ]
+  }
 }

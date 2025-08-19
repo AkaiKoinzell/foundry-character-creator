@@ -9,7 +9,7 @@
       },
       {
         "name": "Artillerist Spells",
-        "description": "You always have certain spells prepared: 3rd—shield, thunderwave; 5th—scorching ray, shatter; 9th—fireball, wind wall; 13th—ice storm, wall of fire; 17th—cone of cold, wall of force. These count as artificer spells for you and don't count against spells prepared."
+        "description": "You always have certain spells prepared: 3rd\u2014shield, thunderwave; 5th\u2014scorching ray, shatter; 9th\u2014fireball, wind wall; 13th\u2014ice storm, wall of fire; 17th\u2014cone of cold, wall of force. These count as artificer spells for you and don't count against spells prepared."
       },
       {
         "name": "Eldritch Cannon",
@@ -34,18 +34,5 @@
         "description": "You and your allies have half cover while within 10 ft of any eldritch cannon you create. You can maintain two cannons at once and can activate both with the same bonus action."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Artillerist Feature",
-      "description": "Choose an option for the Artillerist subclass",
-      "count": 1,
-      "selection": [
-        "Artillerist Option 1",
-        "Artillerist Option 2"
-      ],
-      "type": "Artillerist Feature"
-    }
-  ]
+  }
 }

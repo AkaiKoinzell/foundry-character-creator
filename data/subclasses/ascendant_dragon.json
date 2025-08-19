@@ -30,18 +30,5 @@
         "description": "Augment your breath to larger shapes and higher damage, gain 10-foot blindsight, and unleash explosive fury when you activate Aspect of the Wyrm."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Way of the Ascendant Dragon Feature",
-      "description": "Choose an option for the Way of the Ascendant Dragon subclass",
-      "count": 1,
-      "selection": [
-        "Way of the Ascendant Dragon Option 1",
-        "Way of the Ascendant Dragon Option 2"
-      ],
-      "type": "Way of the Ascendant Dragon Feature"
-    }
-  ]
+  }
 }

@@ -30,7 +30,5 @@
         "description": "When you roll the highest number on a damage die for a spell, roll that die again and add it to the damage once per turn."
       }
     ]
-  },
-  "choices": []
+  }
 }
-

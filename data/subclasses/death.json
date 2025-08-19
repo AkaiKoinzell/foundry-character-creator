@@ -36,18 +36,5 @@
         "description": "When you cast a necromancy spell of 1st through 5th level that targets only one creature, you can target two creatures within 5 feet of each other instead."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 1,
-      "name": "Death Domain Feature",
-      "description": "Choose an option for the Death Domain subclass",
-      "count": 1,
-      "selection": [
-        "Death Domain Option 1",
-        "Death Domain Option 2"
-      ],
-      "type": "Death Domain Feature"
-    }
-  ]
+  }
 }

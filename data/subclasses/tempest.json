@@ -36,18 +36,5 @@
         "description": "You have a flying speed equal to your walking speed whenever you are not underground or indoors."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 1,
-      "name": "Tempest Domain Feature",
-      "description": "Choose an option for the Tempest Domain subclass",
-      "count": 1,
-      "selection": [
-        "Tempest Domain Option 1",
-        "Tempest Domain Option 2"
-      ],
-      "type": "Tempest Domain Feature"
-    }
-  ]
+  }
 }

@@ -38,18 +38,5 @@
         "description": "Gain a third language and skill proficiency or doubled proficiency from the list."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Way of the Cobalt Soul Feature",
-      "description": "Choose an option for the Way of the Cobalt Soul subclass",
-      "count": 1,
-      "selection": [
-        "Way of the Cobalt Soul Option 1",
-        "Way of the Cobalt Soul Option 2"
-      ],
-      "type": "Way of the Cobalt Soul Feature"
-    }
-  ]
+  }
 }

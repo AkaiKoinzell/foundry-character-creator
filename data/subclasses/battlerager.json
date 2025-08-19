@@ -4,7 +4,7 @@
   "features_by_level": {
     "3": [
       {
-        "name": "Restriction—Dwarves Only",
+        "name": "Restriction\u2014Dwarves Only",
         "description": "Only dwarves can choose this path, though a DM may lift this restriction to suit the campaign."
       },
       {
@@ -30,18 +30,5 @@
         "description": "While raging in spiked armor, a creature that hits you with a melee attack takes 3 piercing damage if it is within 5 feet of you."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Battlerager Feature",
-      "description": "Choose an option for the Battlerager subclass",
-      "count": 1,
-      "selection": [
-        "Battlerager Option 1",
-        "Battlerager Option 2"
-      ],
-      "type": "Battlerager Feature"
-    }
-  ]
+  }
 }

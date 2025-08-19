@@ -26,18 +26,5 @@
         "description": "Description for Dark Delirium."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 1,
-      "name": "The Archfey Feature",
-      "description": "Choose an option for the The Archfey subclass",
-      "count": 1,
-      "selection": [
-        "The Archfey Option 1",
-        "The Archfey Option 2"
-      ],
-      "type": "The Archfey Feature"
-    }
-  ]
+  }
 }

@@ -30,18 +30,5 @@
         "description": "Description for Illusory Reality."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 2,
-      "name": "Illusion Feature",
-      "description": "Choose an option for the Illusion subclass",
-      "count": 1,
-      "selection": [
-        "Illusion Option 1",
-        "Illusion Option 2"
-      ],
-      "type": "Illusion Feature"
-    }
-  ]
+  }
 }

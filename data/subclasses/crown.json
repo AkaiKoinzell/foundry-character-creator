@@ -5,44 +5,30 @@
     "3": [
       {
         "name": "Champion Challenge",
-        "description": "As a bonus action, compel creatures you choose within 30 feet to make a Wisdom save or be unable to willingly move more than 30 feet away from you." 
+        "description": "As a bonus action, compel creatures you choose within 30 feet to make a Wisdom save or be unable to willingly move more than 30 feet away from you."
       },
       {
         "name": "Turn the Tide",
-        "description": "As a bonus action, each creature of your choice within 30 feet that can hear you regains 1d6 + your Charisma modifier hit points if it has no more than half its hit points." 
+        "description": "As a bonus action, each creature of your choice within 30 feet that can hear you regains 1d6 + your Charisma modifier hit points if it has no more than half its hit points."
       }
     ],
     "7": [
       {
         "name": "Divine Allegiance",
-        "description": "When a creature within 5 feet of you takes damage, you can use your reaction to take the damage instead." 
+        "description": "When a creature within 5 feet of you takes damage, you can use your reaction to take the damage instead."
       }
     ],
     "15": [
       {
         "name": "Unyielding Spirit",
-        "description": "You have advantage on saving throws to avoid becoming paralyzed or stunned." 
+        "description": "You have advantage on saving throws to avoid becoming paralyzed or stunned."
       }
     ],
     "20": [
       {
         "name": "Exalted Champion",
-        "description": "For 1 hour, you gain resistance to nonmagical weapon damage, allies within 30 feet have advantage on death saves, and you and allies within 30 feet have advantage on Wisdom saves. Once per long rest." 
+        "description": "For 1 hour, you gain resistance to nonmagical weapon damage, allies within 30 feet have advantage on death saves, and you and allies within 30 feet have advantage on Wisdom saves. Once per long rest."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Oath of the Crown Feature",
-      "description": "Choose an option for the Oath of the Crown subclass",
-      "count": 1,
-      "selection": [
-        "Oath of the Crown Option 1",
-        "Oath of the Crown Option 2"
-      ],
-      "type": "Oath of the Crown Feature"
-    }
-  ]
+  }
 }
-

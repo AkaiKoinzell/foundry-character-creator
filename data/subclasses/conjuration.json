@@ -30,18 +30,5 @@
         "description": "Description for Durable Summons."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 2,
-      "name": "Conjuration Feature",
-      "description": "Choose an option for the Conjuration subclass",
-      "count": 1,
-      "selection": [
-        "Conjuration Option 1",
-        "Conjuration Option 2"
-      ],
-      "type": "Conjuration Feature"
-    }
-  ]
+  }
 }

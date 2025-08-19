@@ -9,7 +9,7 @@
       },
       {
         "name": "Alchemist Spells",
-        "description": "You always have certain spells prepared: 3rd—healing word, ray of sickness; 5th—flaming sphere, Melf's acid arrow; 9th—gaseous form, mass healing word; 13th—blight, death ward; 17th—cloudkill, raise dead. These count as artificer spells for you and don't count against spells prepared."
+        "description": "You always have certain spells prepared: 3rd\u2014healing word, ray of sickness; 5th\u2014flaming sphere, Melf's acid arrow; 9th\u2014gaseous form, mass healing word; 13th\u2014blight, death ward; 17th\u2014cloudkill, raise dead. These count as artificer spells for you and don't count against spells prepared."
       },
       {
         "name": "Experimental Elixir",
@@ -34,18 +34,5 @@
         "description": "You gain resistance to acid and poison damage and immunity to the poisoned condition. You can cast greater restoration and heal without expending spell slots or material components once per long rest each when using alchemist's supplies as the focus."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Alchemist Feature",
-      "description": "Choose an option for the Alchemist subclass",
-      "count": 1,
-      "selection": [
-        "Alchemist Option 1",
-        "Alchemist Option 2"
-      ],
-      "type": "Alchemist Feature"
-    }
-  ]
+  }
 }

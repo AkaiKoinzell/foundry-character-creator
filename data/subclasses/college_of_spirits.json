@@ -28,18 +28,5 @@
         "description": "When rolling on the Spirit Tales table, roll twice and choose which effect to use; if you roll the same number, choose any tale."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "College of Spirits Feature",
-      "description": "Choose an option for the College of Spirits subclass",
-      "count": 1,
-      "selection": [
-        "College of Spirits Option 1",
-        "College of Spirits Option 2"
-      ],
-      "type": "College of Spirits Feature"
-    }
-  ]
+  }
 }

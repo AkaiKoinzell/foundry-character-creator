@@ -26,18 +26,5 @@
         "description": "Description for Spirit Projection."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 1,
-      "name": "The Undead Feature",
-      "description": "Choose an option for the The Undead subclass",
-      "count": 1,
-      "selection": [
-        "The Undead Option 1",
-        "The Undead Option 2"
-      ],
-      "type": "The Undead Feature"
-    }
-  ]
+  }
 }

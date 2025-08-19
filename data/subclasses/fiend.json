@@ -26,18 +26,5 @@
         "description": "Description for Hurl Through Hell."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 1,
-      "name": "The Fiend Feature",
-      "description": "Choose an option for the The Fiend subclass",
-      "count": 1,
-      "selection": [
-        "The Fiend Option 1",
-        "The Fiend Option 2"
-      ],
-      "type": "The Fiend Feature"
-    }
-  ]
+  }
 }

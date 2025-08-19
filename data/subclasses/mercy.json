@@ -34,18 +34,5 @@
         "description": "As an action, spend 5 ki points to revive a creature that died within the last 24 hours, restoring hit points and removing certain conditions."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Way of Mercy Feature",
-      "description": "Choose an option for the Way of Mercy subclass",
-      "count": 1,
-      "selection": [
-        "Way of Mercy Option 1",
-        "Way of Mercy Option 2"
-      ],
-      "type": "Way of Mercy Feature"
-    }
-  ]
+  }
 }

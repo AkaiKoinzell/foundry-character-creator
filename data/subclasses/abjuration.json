@@ -30,18 +30,5 @@
         "description": "Description for Spell Resistance."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 2,
-      "name": "Abjuration Feature",
-      "description": "Choose an option for the Abjuration subclass",
-      "count": 1,
-      "selection": [
-        "Abjuration Option 1",
-        "Abjuration Option 2"
-      ],
-      "type": "Abjuration Feature"
-    }
-  ]
+  }
 }

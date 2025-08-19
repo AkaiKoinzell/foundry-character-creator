@@ -30,18 +30,5 @@
         "description": "Description for Master of Hexes."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 1,
-      "name": "The Hexblade Feature",
-      "description": "Choose an option for the The Hexblade subclass",
-      "count": 1,
-      "selection": [
-        "The Hexblade Option 1",
-        "The Hexblade Option 2"
-      ],
-      "type": "The Hexblade Feature"
-    }
-  ]
+  }
 }

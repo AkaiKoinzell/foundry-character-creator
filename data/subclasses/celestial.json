@@ -30,18 +30,5 @@
         "description": "Description for Searing Vengeance."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 1,
-      "name": "The Celestial Feature",
-      "description": "Choose an option for the The Celestial subclass",
-      "count": 1,
-      "selection": [
-        "The Celestial Option 1",
-        "The Celestial Option 2"
-      ],
-      "type": "The Celestial Feature"
-    }
-  ]
+  }
 }

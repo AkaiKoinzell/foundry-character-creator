@@ -36,18 +36,5 @@
         "description": "When you deal Divine Strike damage to a creature, you can curse it. The next ally to hit it deals an extra 2d8 psychic damage and the curse ends."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 1,
-      "name": "Order Domain Feature",
-      "description": "Choose an option for the Order Domain subclass",
-      "count": 1,
-      "selection": [
-        "Order Domain Option 1",
-        "Order Domain Option 2"
-      ],
-      "type": "Order Domain Feature"
-    }
-  ]
+  }
 }

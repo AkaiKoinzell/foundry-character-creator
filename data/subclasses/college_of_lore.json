@@ -24,18 +24,5 @@
         "description": "When you make an ability check, expend a Bardic Inspiration die and add it to the roll. You can decide after seeing the d20 but before the DM determines success."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "College of Lore Feature",
-      "description": "Choose an option for the College of Lore subclass",
-      "count": 1,
-      "selection": [
-        "College of Lore Option 1",
-        "College of Lore Option 2"
-      ],
-      "type": "College of Lore Feature"
-    }
-  ]
+  }
 }

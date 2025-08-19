@@ -30,18 +30,5 @@
         "description": "When you use Flurry of Blows, make up to three additional attacks provided each targets a different creature."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Way of the Drunken Master Feature",
-      "description": "Choose an option for the Way of the Drunken Master subclass",
-      "count": 1,
-      "selection": [
-        "Way of the Drunken Master Option 1",
-        "Way of the Drunken Master Option 2"
-      ],
-      "type": "Way of the Drunken Master Feature"
-    }
-  ]
+  }
 }

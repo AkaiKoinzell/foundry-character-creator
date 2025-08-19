@@ -36,18 +36,5 @@
         "description": "You are immune to fire damage and have resistance to nonmagical bludgeoning, piercing, and slashing damage while wearing heavy armor."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 1,
-      "name": "Forge Domain Feature",
-      "description": "Choose an option for the Forge Domain subclass",
-      "count": 1,
-      "selection": [
-        "Forge Domain Option 1",
-        "Forge Domain Option 2"
-      ],
-      "type": "Forge Domain Feature"
-    }
-  ]
+  }
 }

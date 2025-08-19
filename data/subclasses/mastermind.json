@@ -30,18 +30,5 @@
         "description": "Your thoughts can't be read, you can present false thoughts, and magic can't compel you to tell the truth."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Mastermind Feature",
-      "description": "Choose an option for the Mastermind subclass",
-      "count": 1,
-      "selection": [
-        "Mastermind Option 1",
-        "Mastermind Option 2"
-      ],
-      "type": "Mastermind Feature"
-    }
-  ]
+  }
 }

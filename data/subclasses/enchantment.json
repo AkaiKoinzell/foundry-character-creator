@@ -30,18 +30,5 @@
         "description": "Description for Alter Memories."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 2,
-      "name": "Enchantment Feature",
-      "description": "Choose an option for the Enchantment subclass",
-      "count": 1,
-      "selection": [
-        "Enchantment Option 1",
-        "Enchantment Option 2"
-      ],
-      "type": "Enchantment Feature"
-    }
-  ]
+  }
 }

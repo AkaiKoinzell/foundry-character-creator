@@ -35,7 +35,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const classSelectElem = document.getElementById('classSelect');
   const subclassSelectElem = document.getElementById('subclassSelect');
   const levelSelectElem = document.getElementById('levelSelect');
-  if (classSelectElem) classSelectElem.addEventListener('change', updateSubclasses);
+  if (classSelectElem)
+    classSelectElem.addEventListener('change', () => {
+      classSelectionConfirmed = false;
+      if (window.selectedData) {
+        Object.keys(window.selectedData).forEach(k => delete window.selectedData[k]);
+        sessionStorage.setItem('selectedData', JSON.stringify(window.selectedData));
+      }
+      const confirmBtn = document.getElementById('confirmClassSelection');
+      if (confirmBtn) confirmBtn.style.display = 'inline-block';
+      updateSubclasses();
+    });
   if (subclassSelectElem)
     subclassSelectElem.addEventListener('change', async () => {
       const selections = await renderClassFeatures();
@@ -85,9 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (selections.length > 0) {
       openExtrasModal(selections, 'class');
     }
-    classSelect.disabled = true;
-    subclassSelect.disabled = true;
-    document.getElementById('confirmClassSelection').style.display = 'none';
   });
 
   document.getElementById('confirmRaceSelection').addEventListener('click', () => {

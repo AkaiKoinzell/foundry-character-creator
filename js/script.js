@@ -1200,6 +1200,15 @@ async function renderClassFeatures() {
   });
 
   const allChoices = [...(data.choices || []), ...(subData?.choices || [])];
+  if (data.skill_proficiencies && !allChoices.some(c => c.name === 'Skill Proficiency')) {
+    allChoices.push({
+      level: 1,
+      name: 'Skill Proficiency',
+      description: `Choose ${data.skill_proficiencies.choose} from the class skill list`,
+      count: data.skill_proficiencies.choose,
+      selection: data.skill_proficiencies.options
+    });
+  }
   const selections = gatherExtraSelections({ choices: allChoices }, "class", charLevel);
 
   if (!subclassName) {

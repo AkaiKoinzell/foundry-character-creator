@@ -1,0 +1,42 @@
+{
+  "name": "Echo Knight",
+  "description": "Echo Knights manifest shades of themselves from unrealized timelines to aid in battle.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Manifest Echo",
+        "description": "Use a bonus action to create a magical echo that you can move and attack from."
+      },
+      {
+        "name": "Unleash Incarnation",
+        "description": "When you take the Attack action, make an additional melee attack from your echo's position a number of times equal to your Constitution modifier per long rest."
+      }
+    ],
+    "7": [
+      {
+        "name": "Echo Avatar",
+        "description": "Project your consciousness into your echo, allowing it to scout up to 1,000 feet away."
+      }
+    ],
+    "10": [
+      {
+        "name": "Shadow Martyr",
+        "description": "Use your reaction to have your echo intercept an attack meant for another creature."
+      }
+    ],
+    "15": [
+      {
+        "name": "Reclaim Potential",
+        "description": "When your echo is destroyed, gain temporary hit points."
+      }
+    ],
+    "18": [
+      {
+        "name": "Legion of One",
+        "description": "Create two echoes at once and regain an Unleash Incarnation use if you have none when rolling initiative."
+      }
+    ]
+  },
+  "choices": []
+}
+

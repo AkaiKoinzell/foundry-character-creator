@@ -1,0 +1,58 @@
+{
+  "name": "Rune Knight",
+  "description": "Rune Knights use the magical power of runes to enhance their martial prowess.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Bonus Proficiencies",
+        "description": "Gain proficiency with smith's tools and learn the Giant language."
+      },
+      {
+        "name": "Rune Carver",
+        "description": "Learn two magical runes, inscribing them on gear to gain special powers."
+      },
+      {
+        "name": "Giant's Might",
+        "description": "As a bonus action, become Large, gain advantage on Strength checks and saves, and deal extra damage."
+      }
+    ],
+    "7": [
+      {
+        "name": "Runic Shield",
+        "description": "Use a reaction to force an attacker to reroll an attack against a creature within 60 feet."
+      },
+      {
+        "name": "Additional Rune Known",
+        "description": "Learn one additional rune."
+      }
+    ],
+    "10": [
+      {
+        "name": "Great Stature",
+        "description": "Grow 3d4 inches and your Giant's Might extra damage increases to 1d8."
+      },
+      {
+        "name": "Additional Rune Known",
+        "description": "Learn one additional rune."
+      }
+    ],
+    "15": [
+      {
+        "name": "Master of Runes",
+        "description": "Invoke each rune you know twice per rest instead of once."
+      },
+      {
+        "name": "Additional Rune Known",
+        "description": "Learn one additional rune."
+      }
+    ],
+    "18": [
+      {
+        "name": "Runic Juggernaut",
+        "description": "Giant's Might extra damage becomes 1d10, you can grow to Huge size, and your reach increases by 5 feet."
+      }
+    ]
+  },
+  "choices": []
+}
+

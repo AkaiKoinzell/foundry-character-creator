@@ -1,0 +1,42 @@
+{
+  "name": "Samurai",
+  "description": "Samurai draw on an implacable fighting spirit to overcome enemies.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Bonus Proficiency",
+        "description": "Gain proficiency in one skill or one language of your choice."
+      },
+      {
+        "name": "Fighting Spirit",
+        "description": "As a bonus action, gain advantage on weapon attacks until end of turn and temporary hit points, usable three times per long rest."
+      }
+    ],
+    "7": [
+      {
+        "name": "Elegant Courtier",
+        "description": "Add your Wisdom modifier to Persuasion checks and gain proficiency in Wisdom saves or another save."
+      }
+    ],
+    "10": [
+      {
+        "name": "Tireless Spirit",
+        "description": "Regain one use of Fighting Spirit when you roll initiative and have none."
+      }
+    ],
+    "15": [
+      {
+        "name": "Rapid Strike",
+        "description": "Forgo advantage on an attack to make an additional weapon attack against the same target."
+      }
+    ],
+    "18": [
+      {
+        "name": "Strength before Death",
+        "description": "Use your reaction to take an extra turn when reduced to 0 hit points, before falling unconscious."
+      }
+    ]
+  },
+  "choices": []
+}
+

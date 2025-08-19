@@ -2,13 +2,13 @@
   "name": "Fighter",
   "subclasses": [
     {
-      "name": "Champion",
+      "name": "Arcane Archer",
       "features": [
-        "Improved Critical",
-        "Remarkable Athlete",
-        "Additional Fighting Style",
-        "Superior Critical",
-        "Survivor"
+        "Arcane Archer Lore",
+        "Arcane Shot",
+        "Magic Arrow",
+        "Curving Shot",
+        "Ever-Ready Shot"
       ]
     },
     {
@@ -22,6 +22,39 @@
       ]
     },
     {
+      "name": "Cavalier",
+      "features": [
+        "Bonus Proficiency",
+        "Born to the Saddle",
+        "Unwavering Mark",
+        "Warding Maneuver",
+        "Hold the Line",
+        "Ferocious Charger",
+        "Vigilant Defender"
+      ]
+    },
+    {
+      "name": "Champion",
+      "features": [
+        "Improved Critical",
+        "Remarkable Athlete",
+        "Additional Fighting Style",
+        "Superior Critical",
+        "Survivor"
+      ]
+    },
+    {
+      "name": "Echo Knight",
+      "features": [
+        "Manifest Echo",
+        "Unleash Incarnation",
+        "Echo Avatar",
+        "Shadow Martyr",
+        "Reclaim Potential",
+        "Legion of One"
+      ]
+    },
+    {
       "name": "Eldritch Knight",
       "features": [
         "Spellcasting",
@@ -31,20 +64,182 @@
         "Arcane Charge",
         "Improved War Magic"
       ]
+    },
+    {
+      "name": "Psi Warrior",
+      "features": [
+        "Psionic Power",
+        "Telekinetic Adept",
+        "Guarded Mind",
+        "Bulwark of Force",
+        "Telekinetic Master"
+      ]
+    },
+    {
+      "name": "Purple Dragon Knight (Banneret)",
+      "features": [
+        "Rallying Cry",
+        "Royal Envoy",
+        "Inspiring Surge",
+        "Bulwark"
+      ]
+    },
+    {
+      "name": "Rune Knight",
+      "features": [
+        "Bonus Proficiencies",
+        "Rune Carver",
+        "Giant's Might",
+        "Runic Shield",
+        "Great Stature",
+        "Master of Runes",
+        "Runic Juggernaut"
+      ]
+    },
+    {
+      "name": "Samurai",
+      "features": [
+        "Bonus Proficiency",
+        "Fighting Spirit",
+        "Elegant Courtier",
+        "Tireless Spirit",
+        "Rapid Strike",
+        "Strength before Death"
+      ]
     }
   ],
-  "description": "Description for Fighter class.",
+  "description": "A master of martial combat, skilled with a variety of weapons and armor.",
   "features_by_level": {
     "1": [
       {
-        "name": "Fighter Feature 1",
-        "description": "Description for Fighter feature at level 1."
+        "name": "Fighting Style",
+        "description": "Adopt a particular style of fighting as your specialty." 
+      },
+      {
+        "name": "Second Wind",
+        "description": "Use a bonus action to regain hit points equal to 1d10 + your fighter level once per short or long rest."
       }
     ],
     "2": [
       {
-        "name": "Fighter Feature 2",
-        "description": "Description for Fighter feature at level 2."
+        "name": "Action Surge",
+        "description": "Take one additional action on your turn; usable once per short or long rest."
+      }
+    ],
+    "3": [
+      {
+        "name": "Martial Archetype",
+        "description": "Choose an archetype that grants features at 3rd, 7th, 10th, 15th, and 18th levels."
+      }
+    ],
+    "4": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1, or take a feat if allowed."
+      },
+      {
+        "name": "Martial Versatility",
+        "description": "(Optional) When you gain an Ability Score Improvement, you can replace a fighting style or a maneuver you know."
+      }
+    ],
+    "5": [
+      {
+        "name": "Extra Attack",
+        "description": "Attack twice, instead of once, whenever you take the Attack action on your turn."
+      }
+    ],
+    "6": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "7": [
+      {
+        "name": "Martial Archetype Feature",
+        "description": "Gain a feature from your chosen Martial Archetype."
+      }
+    ],
+    "8": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "9": [
+      {
+        "name": "Indomitable",
+        "description": "Reroll a failed saving throw once per long rest."
+      }
+    ],
+    "10": [
+      {
+        "name": "Martial Archetype Feature",
+        "description": "Gain a feature from your chosen Martial Archetype."
+      }
+    ],
+    "11": [
+      {
+        "name": "Extra Attack (2)",
+        "description": "You can attack three times whenever you take the Attack action on your turn."
+      }
+    ],
+    "12": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "13": [
+      {
+        "name": "Indomitable (two uses)",
+        "description": "You can use Indomitable twice between long rests."
+      }
+    ],
+    "14": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "15": [
+      {
+        "name": "Martial Archetype Feature",
+        "description": "Gain a feature from your chosen Martial Archetype."
+      }
+    ],
+    "16": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "17": [
+      {
+        "name": "Action Surge (two uses)",
+        "description": "You can use Action Surge twice between rests, but only once per turn."
+      },
+      {
+        "name": "Indomitable (three uses)",
+        "description": "You can use Indomitable three times between long rests."
+      }
+    ],
+    "18": [
+      {
+        "name": "Martial Archetype Feature",
+        "description": "Gain a feature from your chosen Martial Archetype."
+      }
+    ],
+    "19": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "20": [
+      {
+        "name": "Extra Attack (3)",
+        "description": "You can attack four times whenever you take the Attack action on your turn."
       }
     ]
   },
@@ -57,11 +252,16 @@
       "type": "fighting style",
       "selection": [
         "Archery",
+        "Blind Fighting",
         "Defense",
         "Dueling",
         "Great Weapon Fighting",
+        "Interception",
         "Protection",
-        "Two-Weapon Fighting"
+        "Superior Technique",
+        "Thrown Weapon Fighting",
+        "Two-Weapon Fighting",
+        "Unarmed Fighting"
       ]
     },
     {
@@ -98,21 +298,6 @@
         "Increase one ability score by 2",
         "Increase two ability scores by 1",
         "Feat"
-      ]
-    },
-    {
-      "level": 10,
-      "name": "Additional Fighting Style",
-      "description": "Choose an additional fighting style",
-      "count": 2,
-      "type": "fighting style",
-      "selection": [
-        "Archery",
-        "Defense",
-        "Dueling",
-        "Great Weapon Fighting",
-        "Protection",
-        "Two-Weapon Fighting"
       ]
     },
     {
@@ -165,3 +350,4 @@
     }
   ]
 }
+

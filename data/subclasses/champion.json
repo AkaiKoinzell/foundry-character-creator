@@ -5,45 +5,55 @@
     "3": [
       {
         "name": "Improved Critical",
-        "description": "Description for Improved Critical."
+        "description": "Your weapon attacks score a critical hit on a roll of 19 or 20."
       }
     ],
     "7": [
       {
         "name": "Remarkable Athlete",
-        "description": "Description for Remarkable Athlete."
+        "description": "Add half your proficiency bonus to Strength, Dexterity, or Constitution checks that don't already use it, and increase your running long jump distance."
       }
     ],
     "10": [
       {
         "name": "Additional Fighting Style",
-        "description": "Description for Additional Fighting Style."
+        "description": "You can choose a second option from the Fighting Style class feature."
       }
     ],
     "15": [
       {
         "name": "Superior Critical",
-        "description": "Description for Superior Critical."
+        "description": "Your weapon attacks score a critical hit on a roll of 18-20."
       }
     ],
     "18": [
       {
         "name": "Survivor",
-        "description": "Description for Survivor."
+        "description": "At the start of each of your turns, regain hit points if you have no more than half your hit points left."
       }
     ]
   },
   "choices": [
     {
-      "level": 3,
-      "name": "Champion Feature",
-      "description": "Choose an option for the Champion subclass",
+      "level": 10,
+      "name": "Additional Fighting Style",
+      "description": "Choose an additional fighting style",
       "count": 1,
+      "type": "fighting style",
       "selection": [
-        "Champion Option 1",
-        "Champion Option 2"
-      ],
-      "type": "Champion Feature"
+        "Archery",
+        "Blind Fighting",
+        "Defense",
+        "Dueling",
+        "Great Weapon Fighting",
+        "Interception",
+        "Protection",
+        "Superior Technique",
+        "Thrown Weapon Fighting",
+        "Two-Weapon Fighting",
+        "Unarmed Fighting"
+      ]
     }
   ]
 }
+

@@ -281,8 +281,6 @@ let selectedData = sessionStorage.getItem("selectedData")
   ? JSON.parse(sessionStorage.getItem("selectedData"))
   : {};
 window.selectedData = selectedData;
-let extraSelections = [];
-let currentSelectionIndex = 0;
 // Cached list of all languages loaded from JSON
 let availableLanguages = [];
 export function setAvailableLanguages(langs) {
@@ -290,8 +288,6 @@ export function setAvailableLanguages(langs) {
 }
 // Cached list of feats loaded from JSON
 let availableFeats = [];
-// Context for the extras modal ("race" or "class")
-let extraModalContext = "race";
 // Flag to track confirmation of class selection
 
 // Mapping and descriptions for extra selection categories
@@ -428,25 +424,31 @@ function saveFeatureSelection(select) {
   sessionStorage.setItem('selectedData', JSON.stringify(selectedData));
 }
 
+function initializeAccordion(root) {
+  if (!root) return;
+  root.querySelectorAll('.accordion-header').forEach(header => {
+    header.addEventListener('click', () => {
+      header.classList.toggle('active');
+      const content = header.nextElementSibling;
+      content.classList.toggle('show');
+    });
+  });
+}
+
 /**
- * Opens the extra selections popup.
- * Hides the background extra traits container and shows the modal.
+ * Render extra selections inside an accordion rather than a modal.
  */
 function openExtrasModal(selections, context = "race") {
   if (!selections || selections.length === 0) {
     console.warn("⚠️ Nessuna selezione extra disponibile, il pop-up non verrà mostrato.");
     return;
   }
-  extraModalContext = context;
-  extraSelections = selections;
-  currentSelectionIndex = 0;
-  showExtraSelection();
 
-  if (!sessionStorage.getItem("popupOpened")) {
-    sessionStorage.setItem("popupOpened", "true");
-  }
+  const containerId = context === "class" ? "classExtrasAccordion" : "raceExtraTraitsContainer";
+  const container = document.getElementById(containerId);
+  if (!container) return;
 
-  // Inizializza le categorie in selectedData se non esistono già
+  // Ensure categories exist in selectedData
   selections.forEach(selection => {
     const key = extraCategoryAliases[selection.name] || selection.name;
     if (!selectedData[key]) {
@@ -454,15 +456,86 @@ function openExtrasModal(selections, context = "race") {
     }
   });
 
-  sessionStorage.setItem("popupOpened", "true");
+  container.innerHTML = "";
 
-  document.getElementById("raceExtraTraitsContainer").style.display = "none";
-  document.getElementById("raceExtrasModal").style.display = "flex";
+  selections.forEach((selection, selIdx) => {
+    const categoryKey = extraCategoryAliases[selection.name] || selection.name;
+    const item = document.createElement('div');
+    item.classList.add('accordion-item');
 
-  const extraContainer = document.getElementById("raceExtraTraitsContainer");
-  const modal = document.getElementById("raceExtrasModal");
-  if (extraContainer) extraContainer.style.display = "none";
-  if (modal) modal.style.display = "flex";
+    const header = document.createElement('button');
+    header.type = 'button';
+    header.classList.add('accordion-header');
+    header.textContent = selection.name;
+    item.appendChild(header);
+
+    const content = document.createElement('div');
+    content.classList.add('accordion-content');
+
+    if (categoryKey === "Ability Score Improvement") {
+      for (let i = 0; i < selection.count; i++) {
+        const block = document.createElement('div');
+        const sel = document.createElement('select');
+        sel.classList.add('asi-type');
+        sel.dataset.index = i;
+        sel.innerHTML = `<option value="">Seleziona...</option>` +
+          selection.selection.map(opt => `<option value="${opt}">${opt}</option>`).join("");
+        block.appendChild(sel);
+        const extraDiv = document.createElement('div');
+        extraDiv.id = `asi-extra-${selIdx}-${i}`;
+        block.appendChild(extraDiv);
+        content.appendChild(block);
+
+        sel.addEventListener('change', e => {
+          const index = i;
+          const choice = e.target.value;
+          const targetDiv = document.getElementById(`asi-extra-${selIdx}-${i}`);
+          if (!selectedData["Ability Score Improvement"]) {
+            selectedData["Ability Score Improvement"] = [];
+          }
+          selectedData["Ability Score Improvement"][index] = undefined;
+          sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
+          updateExtraSelectionsView();
+          targetDiv.innerHTML = "";
+          if (choice === "Increase one ability score by 2") {
+            renderAbilityOptions(targetDiv, index, 1, 2);
+          } else if (choice === "Increase two ability scores by 1") {
+            renderAbilityOptions(targetDiv, index, 2, 1);
+          } else if (choice === "Feat") {
+            renderFeatSelection(targetDiv, index);
+          }
+        });
+      }
+    } else {
+      for (let i = 0; i < selection.count; i++) {
+        const sel = document.createElement('select');
+        sel.classList.add('extra-selection');
+        sel.dataset.category = categoryKey;
+        sel.dataset.index = i;
+        sel.innerHTML = `<option value="">Seleziona...</option>` +
+          selection.selection.map(opt => `<option value="${opt}">${opt}</option>`).join("");
+        content.appendChild(sel);
+
+        sel.addEventListener('change', e => {
+          const category = e.target.dataset.category;
+          const index = e.target.dataset.index;
+          if (!selectedData[category]) {
+            selectedData[category] = [];
+          }
+          selectedData[category][index] = e.target.value;
+          sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
+          updateExtraSelectionsView();
+        });
+      }
+    }
+
+    item.appendChild(content);
+    container.appendChild(item);
+  });
+
+  initializeAccordion(container);
+  container.style.display = 'block';
+  updateExtraSelectionsView();
 }
 
 function updateExtraSelectionsView() {
@@ -570,159 +643,6 @@ function renderFeatSelection(container, index) {
     initFeatureSelectionHandlers(container);
   });
 }
-
-/**
- * Displays the current extra selection in the popup.
- * Each dropdown gets a data-category attribute set to the current selection's name.
- * The "Close" button is shown only when on the last extra selection.
- */
-function showExtraSelection() {
-  const titleElem = document.getElementById("extraTraitTitle");
-  const descElem = document.getElementById("extraTraitDescription");
-  const selectionElem = document.getElementById("extraTraitSelection");
-
-  if (!extraSelections || extraSelections.length === 0) return;
-
-  const currentSelection = extraSelections[currentSelectionIndex];
-
-  titleElem.innerText = currentSelection.name;
-  const desc = currentSelection.description || extraCategoryDescriptions[currentSelection.name] || "";
-  descElem.innerText = desc;
-  selectionElem.innerHTML = ""; // Pulisce il contenuto precedente
-
-  if (currentSelection.selection) {
-    const categoryKey = extraCategoryAliases[currentSelection.name] || currentSelection.name;
-    const selectedValues = new Set((selectedData[categoryKey] || []).filter(v => v));
-
-    if (categoryKey === "Ability Score Improvement") {
-      let html = "";
-      for (let i = 0; i < currentSelection.count; i++) {
-        html += `<div class="asi-block">
-                    <select class="asi-type" data-index="${i}">
-                      <option value="">Seleziona...</option>
-                      ${currentSelection.selection.map(opt => `<option value="${opt}">${opt}</option>`).join("")}
-                    </select>
-                    <div id="asi-extra-${i}"></div>
-                 </div>`;
-      }
-      selectionElem.innerHTML = html;
-
-      document.querySelectorAll(".asi-type").forEach(select => {
-        select.addEventListener("change", e => {
-          const index = e.target.getAttribute("data-index");
-          const choice = e.target.value;
-          const extraDiv = document.getElementById(`asi-extra-${index}`);
-          if (!selectedData["Ability Score Improvement"]) {
-            selectedData["Ability Score Improvement"] = [];
-          }
-          selectedData["Ability Score Improvement"][index] = undefined;
-          sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
-          updateExtraSelectionsView();
-          extraDiv.innerHTML = "";
-          if (choice === "Increase one ability score by 2") {
-            renderAbilityOptions(extraDiv, index, 1, 2);
-          } else if (choice === "Increase two ability scores by 1") {
-            renderAbilityOptions(extraDiv, index, 2, 1);
-          } else if (choice === "Feat") {
-            renderFeatSelection(extraDiv, index);
-          }
-        });
-      });
-    } else {
-      let dropdownHTML = "";
-      for (let i = 0; i < currentSelection.count; i++) {
-        dropdownHTML += `<select class="extra-selection" data-category="${categoryKey}" data-index="${i}">
-                          <option value="">Seleziona...</option>`;
-        currentSelection.selection.forEach(option => {
-          const disabled = selectedValues.has(option) && !selectedData[categoryKey]?.includes(option);
-          dropdownHTML += `<option value="${option}" ${disabled ? "disabled" : ""}>${option}</option>`;
-        });
-        dropdownHTML += `</select><br>`;
-      }
-      selectionElem.innerHTML = dropdownHTML;
-
-      document.querySelectorAll(".extra-selection").forEach(select => {
-        select.addEventListener("change", (event) => {
-          const rawCategory = event.target.getAttribute("data-category");
-          const category = extraCategoryAliases[rawCategory] || rawCategory;
-          const index = event.target.getAttribute("data-index");
-
-          if (!selectedData[category]) {
-            selectedData[category] = [];
-          }
-
-          selectedData[category][index] = event.target.value;
-
-          console.log(`📝 Salvato: ${category} -> ${selectedData[category]}`);
-
-          sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
-          updateExtraSelectionsView();
-        });
-      });
-    }
-  }
-
-  document.getElementById("prevTrait").disabled = (currentSelectionIndex === 0);
-  document.getElementById("nextTrait").disabled = (currentSelectionIndex === extraSelections.length - 1);
-  document.getElementById("closeModal").style.display = (currentSelectionIndex === extraSelections.length - 1) ? "inline-block" : "none";
-}
-
-  // Enable/disable navigation buttons and manage the Close button visibility.
-  const prevBtn = document.getElementById("prevTrait");
-  const nextBtn = document.getElementById("nextTrait");
-  // Mostra il pulsante "Chiudi" solo dopo l'ultimo step e se tutte le selezioni sono fatte
-  const closeBtn = document.getElementById("closeModal");
-  const allChoicesFilled = extraSelections.every(sel =>
-    selectedData[sel.name] && selectedData[sel.name].filter(v => v).length === sel.count
-  );
-
-  if (currentSelectionIndex === extraSelections.length - 1 && allChoicesFilled) {
-    closeBtn.style.display = "inline-block";
-  } else {
-    closeBtn.style.display = "none";
-  }
-
-// Navigation buttons for the popup
-document.getElementById("prevTrait").addEventListener("click", () => {
-  if (currentSelectionIndex > 0) {
-    currentSelectionIndex--;
-    showExtraSelection();
-  }
-});
-
-document.getElementById("nextTrait").addEventListener("click", () => {
-  if (currentSelectionIndex < extraSelections.length - 1) {
-    currentSelectionIndex++;
-    showExtraSelection();
-  }
-});
-  // Gather selections from each dropdown, grouped by data-category.
-document.getElementById("closeModal").addEventListener("click", () => {
-  console.log("🔄 Chiusura pop-up e aggiornamento UI...");
-  document.getElementById("raceExtrasModal").style.display = "none";
-  sessionStorage.removeItem("popupOpened");
-
-  // ✅ Salviamo le selezioni extra PRIMA di eventuali refresh
-  sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
-  console.log("📝 Selezioni salvate prima dell'update:", selectedData);
-
-  if (extraModalContext === "race") {
-    showStep("step3");
-
-    setTimeout(() => {
-      console.log("🛠 Eseguo displayRaceTraits()...");
-      displayRaceTraits();
-
-      // 🔥 **Aspettiamo che `displayRaceTraits()` finisca e poi forziamo le selezioni extra**
-      setTimeout(() => {
-        console.log("✅ Forzando updateExtraSelectionsView()...");
-        updateExtraSelectionsView();
-      }, 500); // 🔥 Ritardo di 500ms per essere sicuri che il rendering sia completato
-    }, 300);
-  } else if (extraModalContext === "class") {
-    renderClassFeatures();
-  }
-});
 
 updateExtraSelectionsView();
 

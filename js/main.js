@@ -20,13 +20,6 @@ let classSelectionConfirmed = false;
 
 document.addEventListener('DOMContentLoaded', () => {
   console.log('✅ Main.js caricato!');
-  const modal = document.getElementById('raceExtrasModal');
-  if (modal) modal.style.display = 'none';
-
-  if (sessionStorage.getItem('popupOpened') === 'true') {
-    console.log('🛑 Il pop-up non verrà riaperto automaticamente.');
-    sessionStorage.removeItem('popupOpened');
-  }
 
   loadDropdownData('data/races.json', 'raceSelect', 'races');
   loadDropdownData('data/classes.json', 'classSelect', 'classes');
@@ -108,17 +101,14 @@ document.addEventListener('DOMContentLoaded', () => {
       .then(response => response.json())
       .then(data => {
         const raceData = convertRaceData(data);
-        document.getElementById('raceTraits').style.display = 'none';
         const selections = gatherExtraSelections(raceData, 'race');
         if (raceData.spellcasting && raceData.spellcasting.spell_choices && raceData.spellcasting.spell_choices.type === 'filter') {
           loadSpells(spellList => {
             const filtered = filterSpells(spellList, raceData.spellcasting.spell_choices.filter).map(spell => spell.name);
             selections.push({ name: 'Cantrips', description: 'Choose a spell.', selection: filtered, count: 1 });
-            sessionStorage.setItem('popupOpened', 'true');
             openExtrasModal(selections);
           });
         } else {
-          sessionStorage.setItem('popupOpened', 'true');
           openExtrasModal(selections);
         }
         document.getElementById('confirmRaceSelection').style.display = 'none';

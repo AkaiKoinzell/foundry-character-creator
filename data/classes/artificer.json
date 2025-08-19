@@ -1,6 +1,44 @@
 {
   "name": "Artificer",
   "description": "Masters of invention, artificers use ingenuity to channel arcane power into wondrous items.",
+  "hit_die": "d8",
+  "hp_at_1st_level": "8 + your Constitution modifier",
+  "hp_at_higher_levels": "1d8 (or 5) + your Constitution modifier per Artificer level after 1st",
+  "saving_throws": ["Constitution", "Intelligence"],
+  "skill_proficiencies": {
+    "choose": 2,
+    "options": [
+      "Arcana",
+      "History",
+      "Investigation",
+      "Medicine",
+      "Nature",
+      "Perception",
+      "Sleight of Hand"
+    ]
+  },
+  "weapon_proficiencies": ["simple weapons", "firearms"],
+  "tool_proficiencies": ["thieves' tools", "tinker's tools", "one type of artisan's tools of your choice"],
+  "armor_proficiencies": ["light armor", "medium armor", "shields"],
+  "starting_equipment": {
+    "choices": [
+      ["Studded leather armor", "Scale mail"]
+    ],
+    "fixed": [
+      "Any two simple weapons",
+      "Light crossbow and 20 bolts",
+      "Thieves' tools",
+      "Dungeoneer's pack"
+    ],
+    "gold_alternative": "5d4 × 10 gp"
+  },
+  "multiclassing": {
+    "prerequisites": {"Intelligence": 13},
+    "proficiencies": {
+      "tools": ["thieves' tools", "tinker's tools"],
+      "armor": ["light armor", "medium armor", "shields"]
+    }
+  },
   "features_by_level": {
     "1": [
       {

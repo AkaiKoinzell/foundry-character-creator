@@ -637,6 +637,8 @@ let currentSelectionIndex = 0;
 let availableLanguages = [];
 // Context for the extras modal ("race" or "class")
 let extraModalContext = "race";
+// Flag to track confirmation of class selection
+let classSelectionConfirmed = false;
 
 // Mapping and descriptions for extra selection categories
 const extraCategoryAliases = {
@@ -1109,9 +1111,7 @@ async function renderClassFeatures() {
     html += `<p>Seleziona una sottoclasse per vedere i tratti.</p>`;
   }
   featuresDiv.innerHTML = html;
-  if (selections.length > 0) {
-    openRaceExtrasModal(selections, "class");
-  }
+  return selections;
 }
 
 // ==================== GENERAZIONE DEL JSON FINALE (STEP 8) ====================
@@ -1309,8 +1309,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const subclassSelectElem = document.getElementById("subclassSelect");
   const levelSelectElem = document.getElementById("levelSelect");
   if (classSelectElem) classSelectElem.addEventListener("change", updateSubclasses);
-  if (subclassSelectElem) subclassSelectElem.addEventListener("change", renderClassFeatures);
-  if (levelSelectElem) levelSelectElem.addEventListener("change", renderClassFeatures);
+  if (subclassSelectElem)
+    subclassSelectElem.addEventListener("change", async () => {
+      const selections = await renderClassFeatures();
+      if (classSelectionConfirmed && selections.length > 0) {
+        openRaceExtrasModal(selections, "class");
+      }
+    });
+  if (levelSelectElem)
+    levelSelectElem.addEventListener("change", async () => {
+      const selections = await renderClassFeatures();
+      if (classSelectionConfirmed && selections.length > 0) {
+        openRaceExtrasModal(selections, "class");
+      }
+    });
   document.getElementById("btnStep8").addEventListener("click", () => showStep("step8"));
 
   showStep("step1");
@@ -1318,6 +1330,27 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("raceSelect").addEventListener("change", displayRaceTraits);
   document.getElementById("levelSelect").addEventListener("change", () => displayRaceTraits());
   document.getElementById("generateJson").addEventListener("click", generateFinalJson);
+
+  document.getElementById("confirmClassSelection").addEventListener("click", async () => {
+    const classSelect = document.getElementById("classSelect");
+    const subclassSelect = document.getElementById("subclassSelect");
+    if (!classSelect.value) {
+      alert("⚠️ Seleziona una classe prima di procedere!");
+      return;
+    }
+    if (subclassSelect.style.display !== "none" && !subclassSelect.value) {
+      alert("⚠️ Seleziona una sottoclasse prima di procedere!");
+      return;
+    }
+    classSelectionConfirmed = true;
+    const selections = await renderClassFeatures();
+    if (selections.length > 0) {
+      openRaceExtrasModal(selections, "class");
+    }
+    classSelect.disabled = true;
+    subclassSelect.disabled = true;
+    document.getElementById("confirmClassSelection").style.display = "none";
+  });
 
   // 🟢 ✅ **CORRETTO: FETCH PER CONFERMAZIONE RAZZA**
   document.getElementById("confirmRaceSelection").addEventListener("click", () => {

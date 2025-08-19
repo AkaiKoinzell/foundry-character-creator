@@ -12,8 +12,8 @@ import {
   initializeValues,
   setAvailableLanguages
 } from './script.js';
+import './step4.js';
 import './step5.js';
-import './step6.js';
 
 let classSelectionConfirmed = false;
 
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnStep4').addEventListener('click', () => showStep('step4'));
   document.getElementById('btnStep5').addEventListener('click', () => showStep('step5'));
   document.getElementById('btnStep6').addEventListener('click', () => showStep('step6'));
-  document.getElementById('btnStep8').addEventListener('click', () => showStep('step8'));
+  document.getElementById('btnStep7').addEventListener('click', () => showStep('step7'));
 
   const classSelectElem = document.getElementById('classSelect');
   const subclassSelectElem = document.getElementById('subclassSelect');

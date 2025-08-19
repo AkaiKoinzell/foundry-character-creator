@@ -31,5 +31,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "Wild Magic Feature",
+      "description": "Choose an option for the Wild Magic subclass",
+      "count": 1,
+      "selection": [
+        "Wild Magic Option 1",
+        "Wild Magic Option 2"
+      ]
+    }
+  ]
 }

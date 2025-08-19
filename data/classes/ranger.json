@@ -35,5 +35,35 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 1,
+      "name": "Favored Enemy",
+      "description": "Choose a type of favored enemy",
+      "count": 1,
+      "selection": [
+        "Aberrations",
+        "Beasts",
+        "Dragons",
+        "Monstrosities",
+        "Undead"
+      ]
+    },
+    {
+      "level": 1,
+      "name": "Natural Explorer",
+      "description": "Choose one type of favored terrain",
+      "count": 1,
+      "selection": [
+        "Arctic",
+        "Coast",
+        "Desert",
+        "Forest",
+        "Grassland",
+        "Mountain",
+        "Swamp",
+        "Underdark"
+      ]
+    }
+  ]
 }

@@ -27,5 +27,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "Way of Shadow Feature",
+      "description": "Choose an option for the Way of Shadow subclass",
+      "count": 1,
+      "selection": [
+        "Way of Shadow Option 1",
+        "Way of Shadow Option 2"
+      ]
+    }
+  ]
 }

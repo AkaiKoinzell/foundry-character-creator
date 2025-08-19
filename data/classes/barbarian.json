@@ -234,5 +234,20 @@
       ]
     }
   ],
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "Primal Knowledge",
+      "description": "Gain proficiency in one skill from the barbarian list",
+      "count": 1,
+      "selection": [
+        "Animal Handling",
+        "Athletics",
+        "Intimidation",
+        "Nature",
+        "Perception",
+        "Survival"
+      ]
+    }
+  ]
 }

@@ -35,5 +35,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "Artillerist Feature",
+      "description": "Choose an option for the Artillerist subclass",
+      "count": 1,
+      "selection": [
+        "Artillerist Option 1",
+        "Artillerist Option 2"
+      ]
+    }
+  ]
 }

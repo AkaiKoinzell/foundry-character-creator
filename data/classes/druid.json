@@ -188,5 +188,18 @@
       ]
     }
   ],
-  "choices": []
+  "choices": [
+    {
+      "level": 1,
+      "name": "Cantrip",
+      "description": "Choose two druid cantrips to learn",
+      "count": 2,
+      "selection": [
+        "Guidance",
+        "Produce Flame",
+        "Shillelagh",
+        "Thorn Whip"
+      ]
+    }
+  ]
 }

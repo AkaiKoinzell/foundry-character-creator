@@ -48,5 +48,20 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 1,
+      "name": "Fighting Style",
+      "description": "Choose a fighting style",
+      "count": 1,
+      "selection": [
+        "Archery",
+        "Defense",
+        "Dueling",
+        "Great Weapon Fighting",
+        "Protection",
+        "Two-Weapon Fighting"
+      ]
+    }
+  ]
 }

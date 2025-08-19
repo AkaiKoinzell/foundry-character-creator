@@ -33,5 +33,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 1,
+      "name": "Knowledge Domain Feature",
+      "description": "Choose an option for the Knowledge Domain subclass",
+      "count": 1,
+      "selection": [
+        "Knowledge Domain Option 1",
+        "Knowledge Domain Option 2"
+      ]
+    }
+  ]
 }

@@ -31,5 +31,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "Oath of the Ancients Feature",
+      "description": "Choose an option for the Oath of the Ancients subclass",
+      "count": 1,
+      "selection": [
+        "Oath of the Ancients Option 1",
+        "Oath of the Ancients Option 2"
+      ]
+    }
+  ]
 }

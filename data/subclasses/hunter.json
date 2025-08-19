@@ -27,5 +27,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "Hunter Feature",
+      "description": "Choose an option for the Hunter subclass",
+      "count": 1,
+      "selection": [
+        "Hunter Option 1",
+        "Hunter Option 2"
+      ]
+    }
+  ]
 }

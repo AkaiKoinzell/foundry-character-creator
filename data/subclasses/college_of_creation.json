@@ -25,5 +25,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "College of Creation Feature",
+      "description": "Choose an option for the College of Creation subclass",
+      "count": 1,
+      "selection": [
+        "College of Creation Option 1",
+        "College of Creation Option 2"
+      ]
+    }
+  ]
 }

@@ -39,5 +39,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 2,
+      "name": "Circle of the Blighted Feature",
+      "description": "Choose an option for the Circle of the Blighted subclass",
+      "count": 1,
+      "selection": [
+        "Circle of the Blighted Option 1",
+        "Circle of the Blighted Option 2"
+      ]
+    }
+  ]
 }

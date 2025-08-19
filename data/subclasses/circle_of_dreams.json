@@ -27,5 +27,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 2,
+      "name": "Circle of Dreams Feature",
+      "description": "Choose an option for the Circle of Dreams subclass",
+      "count": 1,
+      "selection": [
+        "Circle of Dreams Option 1",
+        "Circle of Dreams Option 2"
+      ]
+    }
+  ]
 }

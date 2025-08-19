@@ -37,5 +37,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 1,
+      "name": "Tempest Domain Feature",
+      "description": "Choose an option for the Tempest Domain subclass",
+      "count": 1,
+      "selection": [
+        "Tempest Domain Option 1",
+        "Tempest Domain Option 2"
+      ]
+    }
+  ]
 }

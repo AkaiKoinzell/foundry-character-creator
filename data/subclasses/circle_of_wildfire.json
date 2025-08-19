@@ -31,5 +31,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 2,
+      "name": "Circle of Wildfire Feature",
+      "description": "Choose an option for the Circle of Wildfire subclass",
+      "count": 1,
+      "selection": [
+        "Circle of Wildfire Option 1",
+        "Circle of Wildfire Option 2"
+      ]
+    }
+  ]
 }

@@ -33,14 +33,14 @@
   },
   "choices": [
     {
-      "name": "Tool Proficiency",
+      "level": 2,
+      "name": "Abjuration Feature",
+      "description": "Choose an option for the Abjuration subclass",
       "count": 1,
       "selection": [
-        "Alchemist's supplies",
-        "Calligrapher's supplies",
-        "Glassblower's tools"
-      ],
-      "level": 2
+        "Abjuration Option 1",
+        "Abjuration Option 2"
+      ]
     }
   ]
 }

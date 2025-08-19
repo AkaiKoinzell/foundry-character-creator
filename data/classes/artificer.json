@@ -171,5 +171,18 @@
       ]
     }
   ],
-  "choices": []
+  "choices": [
+    {
+      "level": 2,
+      "name": "Infusion",
+      "description": "Choose two infusions to learn",
+      "count": 2,
+      "selection": [
+        "Enhanced Defense",
+        "Enhanced Weapon",
+        "Repeating Shot",
+        "Returning Weapon"
+      ]
+    }
+  ]
 }

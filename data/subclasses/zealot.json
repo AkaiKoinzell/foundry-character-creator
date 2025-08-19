@@ -31,5 +31,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "Zealot Feature",
+      "description": "Choose an option for the Zealot subclass",
+      "count": 1,
+      "selection": [
+        "Zealot Option 1",
+        "Zealot Option 2"
+      ]
+    }
+  ]
 }

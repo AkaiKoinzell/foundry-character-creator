@@ -37,5 +37,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 1,
+      "name": "Peace Domain Feature",
+      "description": "Choose an option for the Peace Domain subclass",
+      "count": 1,
+      "selection": [
+        "Peace Domain Option 1",
+        "Peace Domain Option 2"
+      ]
+    }
+  ]
 }

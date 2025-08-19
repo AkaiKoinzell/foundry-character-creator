@@ -29,5 +29,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "College of Swords Feature",
+      "description": "Choose an option for the College of Swords subclass",
+      "count": 1,
+      "selection": [
+        "College of Swords Option 1",
+        "College of Swords Option 2"
+      ]
+    }
+  ]
 }

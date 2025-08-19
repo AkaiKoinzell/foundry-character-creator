@@ -31,5 +31,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "Battlerager Feature",
+      "description": "Choose an option for the Battlerager subclass",
+      "count": 1,
+      "selection": [
+        "Battlerager Option 1",
+        "Battlerager Option 2"
+      ]
+    }
+  ]
 }

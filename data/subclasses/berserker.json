@@ -27,5 +27,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "Berserker Feature",
+      "description": "Choose an option for the Berserker subclass",
+      "count": 1,
+      "selection": [
+        "Berserker Option 1",
+        "Berserker Option 2"
+      ]
+    }
+  ]
 }

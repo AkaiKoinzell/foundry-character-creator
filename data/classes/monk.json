@@ -44,5 +44,17 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 1,
+      "name": "Monk Weapon",
+      "description": "Choose a monk weapon to focus on",
+      "count": 1,
+      "selection": [
+        "Shortsword",
+        "Quarterstaff",
+        "Spear"
+      ]
+    }
+  ]
 }

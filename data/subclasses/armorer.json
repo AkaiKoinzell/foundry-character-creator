@@ -39,5 +39,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "Armorer Feature",
+      "description": "Choose an option for the Armorer subclass",
+      "count": 1,
+      "selection": [
+        "Armorer Option 1",
+        "Armorer Option 2"
+      ]
+    }
+  ]
 }

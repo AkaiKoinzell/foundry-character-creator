@@ -31,5 +31,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 2,
+      "name": "Necromancy Feature",
+      "description": "Choose an option for the Necromancy subclass",
+      "count": 1,
+      "selection": [
+        "Necromancy Option 1",
+        "Necromancy Option 2"
+      ]
+    }
+  ]
 }

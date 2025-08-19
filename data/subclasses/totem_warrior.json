@@ -31,5 +31,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "Totem Warrior Feature",
+      "description": "Choose an option for the Totem Warrior subclass",
+      "count": 1,
+      "selection": [
+        "Totem Warrior Option 1",
+        "Totem Warrior Option 2"
+      ]
+    }
+  ]
 }

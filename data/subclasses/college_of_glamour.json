@@ -25,5 +25,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "College of Glamour Feature",
+      "description": "Choose an option for the College of Glamour subclass",
+      "count": 1,
+      "selection": [
+        "College of Glamour Option 1",
+        "College of Glamour Option 2"
+      ]
+    }
+  ]
 }

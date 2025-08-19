@@ -287,5 +287,19 @@
       ]
     }
   ],
-  "choices": []
+  "choices": [
+    {
+      "level": 1,
+      "name": "Skill Proficiency",
+      "description": "Choose two skills from the cleric list",
+      "count": 2,
+      "selection": [
+        "History",
+        "Insight",
+        "Medicine",
+        "Persuasion",
+        "Religion"
+      ]
+    }
+  ]
 }

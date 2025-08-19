@@ -37,5 +37,22 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "Metamagic",
+      "description": "Choose two Metamagic options",
+      "count": 2,
+      "selection": [
+        "Careful Spell",
+        "Distant Spell",
+        "Empowered Spell",
+        "Extended Spell",
+        "Heightened Spell",
+        "Quickened Spell",
+        "Subtle Spell",
+        "Twinned Spell"
+      ]
+    }
+  ]
 }

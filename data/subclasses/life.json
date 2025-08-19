@@ -37,5 +37,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 1,
+      "name": "Life Domain Feature",
+      "description": "Choose an option for the Life Domain subclass",
+      "count": 1,
+      "selection": [
+        "Life Domain Option 1",
+        "Life Domain Option 2"
+      ]
+    }
+  ]
 }

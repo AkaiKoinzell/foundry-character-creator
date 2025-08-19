@@ -31,5 +31,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "Oath of Devotion Feature",
+      "description": "Choose an option for the Oath of Devotion subclass",
+      "count": 1,
+      "selection": [
+        "Oath of Devotion Option 1",
+        "Oath of Devotion Option 2"
+      ]
+    }
+  ]
 }

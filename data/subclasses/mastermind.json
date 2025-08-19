@@ -1,0 +1,47 @@
+{
+  "name": "Mastermind",
+  "description": "Your focus is on people and the influence and secrets they have.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Master of Intrigue",
+        "description": "Gain proficiency with the disguise kit, the forgery kit, and one gaming set; learn two languages and can mimic speech patterns."
+      },
+      {
+        "name": "Master of Tactics",
+        "description": "You can use the Help action as a bonus action, and when you aid an ally attacking a creature, the target can be within 30 feet of you."
+      }
+    ],
+    "9": [
+      {
+        "name": "Insightful Manipulator",
+        "description": "After observing a creature for 1 minute outside combat, learn how it compares to you in key abilities or levels."
+      }
+    ],
+    "13": [
+      {
+        "name": "Misdirection",
+        "description": "When an attack targets you while a creature within 5 feet provides cover, you can have the attack target that creature instead."
+      }
+    ],
+    "17": [
+      {
+        "name": "Soul of Deceit",
+        "description": "Your thoughts can't be read, you can present false thoughts, and magic can't compel you to tell the truth."
+      }
+    ]
+  },
+  "choices": [
+    {
+      "level": 3,
+      "name": "Mastermind Feature",
+      "description": "Choose an option for the Mastermind subclass",
+      "count": 1,
+      "selection": [
+        "Mastermind Option 1",
+        "Mastermind Option 2"
+      ],
+      "type": "Mastermind Feature"
+    }
+  ]
+}

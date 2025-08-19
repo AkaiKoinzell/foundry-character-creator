@@ -1,0 +1,47 @@
+{
+  "name": "Soulknife",
+  "description": "You channel psionic energy to manifest blades of psychic power.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Psionic Power",
+        "description": "You gain Psionic Energy dice (d6) equal to twice your proficiency bonus to fuel psionic abilities like Psi-Bolstered Knack and Psychic Whispers. Die size increases at higher levels."
+      },
+      {
+        "name": "Psychic Blades",
+        "description": "Whenever you take the Attack action, manifest a psychic blade (1d6 psychic damage, finesse, thrown 60 ft) and a second blade as a bonus action (1d4 damage)."
+      }
+    ],
+    "9": [
+      {
+        "name": "Soul Blades",
+        "description": "Gain Homing Strikes to add a Psionic Energy die to a missed attack and Psychic Teleportation to throw a blade and teleport to its space."
+      }
+    ],
+    "13": [
+      {
+        "name": "Psychic Veil",
+        "description": "As an action, become invisible, along with gear, for 1 hour or until you attack or force a save; you can expend a Psionic Energy die to use this feature again before finishing a long rest."
+      }
+    ],
+    "17": [
+      {
+        "name": "Rend Mind",
+        "description": "When you deal Sneak Attack damage, force a Wisdom save or the target is stunned for 1 minute. Once per long rest or by expending three Psionic Energy dice."
+      }
+    ]
+  },
+  "choices": [
+    {
+      "level": 3,
+      "name": "Soulknife Feature",
+      "description": "Choose an option for the Soulknife subclass",
+      "count": 1,
+      "selection": [
+        "Soulknife Option 1",
+        "Soulknife Option 2"
+      ],
+      "type": "Soulknife Feature"
+    }
+  ]
+}

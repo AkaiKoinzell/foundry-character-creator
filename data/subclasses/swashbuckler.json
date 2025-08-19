@@ -1,0 +1,47 @@
+{
+  "name": "Swashbuckler",
+  "description": "You rely on speed, elegance, and charm in equal measure.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Fancy Footwork",
+        "description": "When you make a melee attack against a creature, that creature can't make opportunity attacks against you for the rest of your turn."
+      },
+      {
+        "name": "Rakish Audacity",
+        "description": "Add your Charisma modifier to initiative, and you can use Sneak Attack if you're within 5 feet of a target and no other enemies are within 5 feet of you."
+      }
+    ],
+    "9": [
+      {
+        "name": "Panache",
+        "description": "As an action, make a Persuasion check contested by a creature's Insight; on success, charm or distract the creature for 1 minute depending on its attitude toward you."
+      }
+    ],
+    "13": [
+      {
+        "name": "Elegant Maneuver",
+        "description": "Use a bonus action to gain advantage on the next Acrobatics or Athletics check you make this turn."
+      }
+    ],
+    "17": [
+      {
+        "name": "Master Duelist",
+        "description": "If you miss with an attack, you can reroll it with advantage. Once used, this feature can't be used again until a short or long rest."
+      }
+    ]
+  },
+  "choices": [
+    {
+      "level": 3,
+      "name": "Swashbuckler Feature",
+      "description": "Choose an option for the Swashbuckler subclass",
+      "count": 1,
+      "selection": [
+        "Swashbuckler Option 1",
+        "Swashbuckler Option 2"
+      ],
+      "type": "Swashbuckler Feature"
+    }
+  ]
+}

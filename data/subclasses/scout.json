@@ -1,0 +1,47 @@
+{
+  "name": "Scout",
+  "description": "You are skilled in stealth and survival, serving as the eyes and ears of your companions.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Skirmisher",
+        "description": "When an enemy ends its turn within 5 feet of you, you can use your reaction to move up to half your speed without provoking opportunity attacks."
+      },
+      {
+        "name": "Survivalist",
+        "description": "Gain proficiency in Nature and Survival, and your proficiency bonus is doubled for checks using them."
+      }
+    ],
+    "9": [
+      {
+        "name": "Superior Mobility",
+        "description": "Your walking speed increases by 10 feet, and this bonus applies to any climbing or swimming speed you have."
+      }
+    ],
+    "13": [
+      {
+        "name": "Ambush Master",
+        "description": "You have advantage on initiative rolls, and the first creature you hit during the first round of combat grants advantage to attacks against it until your next turn."
+      }
+    ],
+    "17": [
+      {
+        "name": "Sudden Strike",
+        "description": "When you take the Attack action, you can make one additional attack as a bonus action. Each attack can use Sneak Attack, but not against the same target more than once per turn."
+      }
+    ]
+  },
+  "choices": [
+    {
+      "level": 3,
+      "name": "Scout Feature",
+      "description": "Choose an option for the Scout subclass",
+      "count": 1,
+      "selection": [
+        "Scout Option 1",
+        "Scout Option 2"
+      ],
+      "type": "Scout Feature"
+    }
+  ]
+}

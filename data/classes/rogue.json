@@ -30,20 +30,201 @@
         "Versatile Trickster",
         "Spell Thief"
       ]
+    },
+    {
+      "name": "Inquisitive",
+      "features": [
+        "Ear for Deceit",
+        "Eye for Detail",
+        "Insightful Fighting",
+        "Steady Eye",
+        "Unerring Eye",
+        "Eye for Weakness"
+      ]
+    },
+    {
+      "name": "Mastermind",
+      "features": [
+        "Master of Intrigue",
+        "Master of Tactics",
+        "Insightful Manipulator",
+        "Misdirection",
+        "Soul of Deceit"
+      ]
+    },
+    {
+      "name": "Phantom",
+      "features": [
+        "Whispers of the Dead",
+        "Wails from the Grave",
+        "Tokens of the Departed",
+        "Ghost Walk",
+        "Death's Friend"
+      ]
+    },
+    {
+      "name": "Scout",
+      "features": [
+        "Skirmisher",
+        "Survivalist",
+        "Superior Mobility",
+        "Ambush Master",
+        "Sudden Strike"
+      ]
+    },
+    {
+      "name": "Soulknife",
+      "features": [
+        "Psionic Power",
+        "Psychic Blades",
+        "Soul Blades",
+        "Psychic Veil",
+        "Rend Mind"
+      ]
+    },
+    {
+      "name": "Swashbuckler",
+      "features": [
+        "Fancy Footwork",
+        "Rakish Audacity",
+        "Panache",
+        "Elegant Maneuver",
+        "Master Duelist"
+      ]
     }
   ],
-  "description": "Description for Rogue class.",
+  "description": "A scoundrel who uses stealth and trickery to overcome obstacles and enemies.",
   "features_by_level": {
     "1": [
       {
-        "name": "Rogue Feature 1",
-        "description": "Description for Rogue feature at level 1."
+        "name": "Expertise",
+        "description": "Choose two of your skill proficiencies, or one skill and your thieves' tools; your proficiency bonus is doubled for any ability check that uses them."
+      },
+      {
+        "name": "Sneak Attack",
+        "description": "Once per turn, deal extra damage to one creature you hit if you have advantage on the attack roll or an ally is within 5 feet of the target."
+      },
+      {
+        "name": "Thieves' Cant",
+        "description": "You know the secret rogues' language of thieves' cant and the signs used to convey hidden messages."
       }
     ],
     "2": [
       {
-        "name": "Rogue Feature 2",
-        "description": "Description for Rogue feature at level 2."
+        "name": "Cunning Action",
+        "description": "You can take a bonus action each turn to Dash, Disengage, or Hide."
+      }
+    ],
+    "3": [
+      {
+        "name": "Roguish Archetype",
+        "description": "Choose a Roguish Archetype, which grants features at 3rd, 9th, 13th, and 17th levels."
+      },
+      {
+        "name": "Steady Aim",
+        "description": "As a bonus action, give yourself advantage on your next attack roll if you haven't moved this turn; your speed becomes 0 until the end of the turn."
+      }
+    ],
+    "4": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2, two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "5": [
+      {
+        "name": "Uncanny Dodge",
+        "description": "Use your reaction to halve the damage of an attack you can see."
+      }
+    ],
+    "6": [
+      {
+        "name": "Expertise",
+        "description": "Choose two more of your proficiencies to gain expertise."
+      }
+    ],
+    "7": [
+      {
+        "name": "Evasion",
+        "description": "When subjected to an effect that allows a Dexterity save for half damage, you take no damage on a success and half on a failure."
+      }
+    ],
+    "8": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2, two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "9": [
+      {
+        "name": "Roguish Archetype Feature",
+        "description": "Gain a feature from your Roguish Archetype."
+      }
+    ],
+    "10": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2, two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "11": [
+      {
+        "name": "Reliable Talent",
+        "description": "Treat a d20 roll of 9 or lower as a 10 when making an ability check that uses your proficiency bonus."
+      }
+    ],
+    "12": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2, two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "13": [
+      {
+        "name": "Roguish Archetype Feature",
+        "description": "Gain a feature from your Roguish Archetype."
+      }
+    ],
+    "14": [
+      {
+        "name": "Blindsense",
+        "description": "If you are able to hear, you are aware of the location of any hidden or invisible creature within 10 feet of you."
+      }
+    ],
+    "15": [
+      {
+        "name": "Slippery Mind",
+        "description": "You gain proficiency in Wisdom saving throws."
+      }
+    ],
+    "16": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2, two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "17": [
+      {
+        "name": "Roguish Archetype Feature",
+        "description": "Gain a feature from your Roguish Archetype."
+      }
+    ],
+    "18": [
+      {
+        "name": "Elusive",
+        "description": "No attack roll has advantage against you while you aren't incapacitated."
+      }
+    ],
+    "19": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2, two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "20": [
+      {
+        "name": "Stroke of Luck",
+        "description": "Turn a missed attack into a hit or a failed ability check into a 20 once per rest."
       }
     ]
   },
@@ -64,6 +245,7 @@
         "Perception",
         "Performance",
         "Persuasion",
+        "Sleight of Hand",
         "Stealth"
       ]
     },
@@ -95,6 +277,7 @@
         "Perception",
         "Performance",
         "Persuasion",
+        "Sleight of Hand",
         "Stealth"
       ]
     },

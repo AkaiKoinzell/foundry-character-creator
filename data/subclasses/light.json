@@ -1,39 +1,39 @@
 {
   "name": "Light Domain",
-  "description": "Clerics of the Light Domain are enlightened souls infused with radiance.",
+  "description": "Clerics of the Light domain are enlightened souls infused with radiance.",
   "features_by_level": {
     "1": [
       {
         "name": "Bonus Cantrip",
-        "description": "Description for Bonus Cantrip."
+        "description": "You learn the light cantrip if you don't already know it."
       },
       {
         "name": "Warding Flare",
-        "description": "Description for Warding Flare."
+        "description": "When a creature you can see attacks you, use your reaction to impose disadvantage on the attack. Uses equal to your Wisdom modifier per long rest."
       }
     ],
     "2": [
       {
         "name": "Channel Divinity: Radiance of the Dawn",
-        "description": "Description for Channel Divinity: Radiance of the Dawn."
+        "description": "Use Channel Divinity to dispel magical darkness and deal radiant damage to hostile creatures within 30 feet."
       }
     ],
     "6": [
       {
         "name": "Improved Flare",
-        "description": "Description for Improved Flare."
+        "description": "You can use Warding Flare when a creature you can see attacks a creature other than you within 30 feet."
       }
     ],
     "8": [
       {
         "name": "Potent Spellcasting",
-        "description": "Description for Potent Spellcasting."
+        "description": "Add your Wisdom modifier to the damage you deal with cleric cantrips."
       }
     ],
     "17": [
       {
         "name": "Corona of Light",
-        "description": "Description for Corona of Light."
+        "description": "As an action, emit bright light in a 60-foot radius for 1 minute. Enemies in the light have disadvantage on saving throws against fire or radiant spells."
       }
     ]
   }

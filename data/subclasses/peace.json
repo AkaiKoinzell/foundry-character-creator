@@ -1,0 +1,40 @@
+{
+  "name": "Peace Domain",
+  "description": "Peace domain clerics foster harmony and strengthen bonds between allies.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Implement of Peace",
+        "description": "Gain proficiency in Insight, Performance, or Persuasion."
+      },
+      {
+        "name": "Emboldening Bond",
+        "description": "As an action, bond creatures within 30 feet for 10 minutes. While bonded and within 30 feet of each other, they can add a d4 to an attack roll, ability check, or saving throw once per turn. Uses equal to your proficiency bonus per long rest."
+      }
+    ],
+    "2": [
+      {
+        "name": "Channel Divinity: Balm of Peace",
+        "description": "Move without provoking opportunity attacks and heal creatures you pass within 5 feet for 2d6 + Wisdom modifier."
+      }
+    ],
+    "6": [
+      {
+        "name": "Protective Bond",
+        "description": "When a bonded creature takes damage, another bonded creature can use its reaction to teleport near it and take the damage instead."
+      }
+    ],
+    "8": [
+      {
+        "name": "Potent Spellcasting",
+        "description": "Add your Wisdom modifier to the damage you deal with cleric cantrips."
+      }
+    ],
+    "17": [
+      {
+        "name": "Expansive Bond",
+        "description": "Your bond and protective bond work within 60 feet, and the creature that takes another's damage has resistance to that damage."
+      }
+    ]
+  }
+}

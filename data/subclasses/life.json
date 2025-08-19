@@ -1,39 +1,39 @@
 {
   "name": "Life Domain",
-  "description": "The Life Domain is focused on vibrant positive energy.",
+  "description": "The Life domain focuses on vibrant positive energy and healing.",
   "features_by_level": {
     "1": [
       {
         "name": "Bonus Proficiency",
-        "description": "Description for Bonus Proficiency."
+        "description": "Gain proficiency with heavy armor."
       },
       {
         "name": "Disciple of Life",
-        "description": "Description for Disciple of Life."
+        "description": "Healing spells of 1st level or higher restore extra hit points equal to 2 + the spell's level."
       }
     ],
     "2": [
       {
         "name": "Channel Divinity: Preserve Life",
-        "description": "Description for Channel Divinity: Preserve Life."
+        "description": "Use Channel Divinity to distribute healing equal to five times your cleric level among creatures within 30 feet, up to half their maximum hit points."
       }
     ],
     "6": [
       {
         "name": "Blessed Healer",
-        "description": "Description for Blessed Healer."
+        "description": "When you heal others with a spell of 1st level or higher, you also regain hit points equal to 2 + the spell's level."
       }
     ],
     "8": [
       {
         "name": "Divine Strike",
-        "description": "Description for Divine Strike."
+        "description": "Once on each of your turns, deal an extra 1d8 radiant damage on a weapon attack (2d8 at 14th level)."
       }
     ],
     "17": [
       {
         "name": "Supreme Healing",
-        "description": "Description for Supreme Healing."
+        "description": "When you roll dice to restore hit points, use the highest number possible for each die."
       }
     ]
   }

@@ -1,0 +1,40 @@
+{
+  "name": "Order Domain",
+  "description": "Clerics of the Order domain uphold law and rightful authority.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Bonus Proficiencies",
+        "description": "Gain proficiency with heavy armor and in either Intimidation or Persuasion."
+      },
+      {
+        "name": "Voice of Authority",
+        "description": "When you cast a spell on an ally using a spell slot, that ally can use its reaction to make one weapon attack."
+      }
+    ],
+    "2": [
+      {
+        "name": "Channel Divinity: Order's Demand",
+        "description": "Present your holy symbol to charm creatures of your choice within 30 feet, and you can make them drop what they are holding."
+      }
+    ],
+    "6": [
+      {
+        "name": "Embodiment of the Law",
+        "description": "You can cast an enchantment spell of 1st level or higher as a bonus action. Uses equal to your Wisdom modifier per long rest."
+      }
+    ],
+    "8": [
+      {
+        "name": "Divine Strike",
+        "description": "Once on each of your turns, deal an extra 1d8 psychic damage on a weapon attack (2d8 at 14th level)."
+      }
+    ],
+    "17": [
+      {
+        "name": "Order's Wrath",
+        "description": "When you deal Divine Strike damage to a creature, you can curse it. The next ally to hit it deals an extra 2d8 psychic damage and the curse ends."
+      }
+    ]
+  }
+}

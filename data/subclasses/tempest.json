@@ -1,39 +1,39 @@
 {
   "name": "Tempest Domain",
-  "description": "Tempest clerics serve deities of storm, sea, and sky.",
+  "description": "Tempest domain clerics call upon storms, sea, and sky to smite their foes.",
   "features_by_level": {
     "1": [
       {
         "name": "Bonus Proficiencies",
-        "description": "Description for Bonus Proficiencies."
+        "description": "Gain proficiency with martial weapons and heavy armor."
       },
       {
         "name": "Wrath of the Storm",
-        "description": "Description for Wrath of the Storm."
+        "description": "When a creature within 5 feet hits you, use your reaction to deal 2d8 lightning or thunder damage, Dexterity save for half. Uses equal to your Wisdom modifier per long rest."
       }
     ],
     "2": [
       {
         "name": "Channel Divinity: Destructive Wrath",
-        "description": "Description for Channel Divinity: Destructive Wrath."
+        "description": "Use Channel Divinity to deal maximum damage instead of rolling lightning or thunder damage."
       }
     ],
     "6": [
       {
         "name": "Thunderbolt Strike",
-        "description": "Description for Thunderbolt Strike."
+        "description": "When you deal lightning damage to a Large or smaller creature, you can push it up to 10 feet away from you."
       }
     ],
     "8": [
       {
         "name": "Divine Strike",
-        "description": "Description for Divine Strike."
+        "description": "Once on each of your turns, deal an extra 1d8 thunder damage on a weapon attack (2d8 at 14th level)."
       }
     ],
     "17": [
       {
         "name": "Stormborn",
-        "description": "Description for Stormborn."
+        "description": "You have a flying speed equal to your walking speed whenever you are not underground or indoors."
       }
     ]
   }

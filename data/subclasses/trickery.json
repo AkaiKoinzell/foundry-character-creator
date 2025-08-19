@@ -1,35 +1,35 @@
 {
   "name": "Trickery Domain",
-  "description": "Clerics of the Trickery Domain are mischief-makers and illusions specialists.",
+  "description": "Clerics of trickery relish mischief and deception.",
   "features_by_level": {
     "1": [
       {
         "name": "Blessing of the Trickster",
-        "description": "Description for Blessing of the Trickster."
+        "description": "As an action, give a creature advantage on Dexterity (Stealth) checks for 1 hour."
       }
     ],
     "2": [
       {
         "name": "Channel Divinity: Invoke Duplicity",
-        "description": "Description for Channel Divinity: Invoke Duplicity."
+        "description": "Create an illusory duplicate for 1 minute. You can cast spells from the duplicate's space and gain advantage on attacks when both you and the illusion are adjacent to a creature."
       }
     ],
     "6": [
       {
         "name": "Channel Divinity: Cloak of Shadows",
-        "description": "Description for Channel Divinity: Cloak of Shadows."
+        "description": "As an action, become invisible until the end of your next turn or until you attack or cast a spell."
       }
     ],
     "8": [
       {
         "name": "Divine Strike",
-        "description": "Description for Divine Strike."
+        "description": "Once on each of your turns, deal an extra 1d8 poison damage on a weapon attack (2d8 at 14th level)."
       }
     ],
     "17": [
       {
         "name": "Improved Duplicity",
-        "description": "Description for Improved Duplicity."
+        "description": "You can create up to four duplicates with Invoke Duplicity and move any number of them up to 30 feet each as a bonus action."
       }
     ]
   }

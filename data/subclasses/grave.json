@@ -1,0 +1,40 @@
+{
+  "name": "Grave Domain",
+  "description": "Grave domain clerics stand watch over the line between life and death.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Circle of Mortality",
+        "description": "When you heal a creature at 0 HP, treat any dice as if they rolled the maximum. You also learn spare the dying, which has a 30-foot range and can be cast as a bonus action."
+      },
+      {
+        "name": "Eyes of the Grave",
+        "description": "As an action, detect undead within 60 feet. Uses equal to your Wisdom modifier per long rest."
+      }
+    ],
+    "2": [
+      {
+        "name": "Channel Divinity: Path to the Grave",
+        "description": "Curse a creature, making it vulnerable to all damage from the next attack against it before your next turn ends."
+      }
+    ],
+    "6": [
+      {
+        "name": "Sentinel at Death's Door",
+        "description": "As a reaction, turn a critical hit on a creature within 30 feet into a normal hit. Uses equal to your Wisdom modifier per long rest."
+      }
+    ],
+    "8": [
+      {
+        "name": "Potent Spellcasting",
+        "description": "Add your Wisdom modifier to the damage you deal with cleric cantrips."
+      }
+    ],
+    "17": [
+      {
+        "name": "Keeper of Souls",
+        "description": "When an enemy dies within 60 feet, you or an ally within the same range regains hit points equal to the enemy's Hit Dice. Once per turn."
+      }
+    ]
+  }
+}

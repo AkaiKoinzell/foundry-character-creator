@@ -1,0 +1,44 @@
+{
+  "name": "Twilight Domain",
+  "description": "Twilight clerics bring the comfort and protection of dusk to those who need it.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Bonus Proficiencies",
+        "description": "Gain proficiency with martial weapons and heavy armor."
+      },
+      {
+        "name": "Eyes of Night",
+        "description": "You have 300-foot darkvision and can share it with others for 1 hour. Once per long rest or by expending a spell slot."
+      },
+      {
+        "name": "Vigilant Blessing",
+        "description": "As an action, give a creature advantage on its next initiative roll."
+      }
+    ],
+    "2": [
+      {
+        "name": "Channel Divinity: Twilight Sanctuary",
+        "description": "Create a 30-foot radius sphere of twilight that moves with you for 1 minute. Creatures ending their turns in it gain temporary hit points or end charm and fear effects."
+      }
+    ],
+    "6": [
+      {
+        "name": "Steps of Night",
+        "description": "In dim light or darkness, use a bonus action to gain a flying speed equal to your walking speed for 1 minute. Uses equal to your proficiency bonus per long rest."
+      }
+    ],
+    "8": [
+      {
+        "name": "Divine Strike",
+        "description": "Once on each of your turns, deal an extra 1d8 radiant damage on a weapon attack (2d8 at 14th level)."
+      }
+    ],
+    "17": [
+      {
+        "name": "Twilight Shroud",
+        "description": "Creatures in your Twilight Sanctuary have half cover."
+      }
+    ]
+  }
+}

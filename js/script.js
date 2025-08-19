@@ -1011,28 +1011,57 @@ async function renderClassFeatures() {
     return;
   }
   const charLevel = parseInt(document.getElementById("levelSelect")?.value) || 1;
+  const subclassName = subclassSelect.value;
   let html = `<h3>${data.name}</h3>`;
   if (data.description) {
     html += `<p>${data.description}</p>`;
   }
-  if (data.features_by_level) {
-    const levels = Object.keys(data.features_by_level).sort((a, b) => a - b);
-    levels.forEach(lvl => {
-      if (parseInt(lvl) <= charLevel) {
-        html += `<h4>Livello ${lvl}</h4><ul>`;
-        data.features_by_level[lvl].forEach(f => {
-          if (typeof f === "string") {
-            html += `<li>${f}</li>`;
-          } else {
-            const desc = f.description ? `: ${f.description}` : "";
-            html += `<li><strong>${f.name}</strong>${desc}</li>`;
-          }
-        });
-        html += `</ul>`;
+
+  // Fetch subclass data first if one is selected
+  let subData = null;
+  if (subclassName) {
+    try {
+      const file = getSubclassFilename(subclassName);
+      const resp = await fetch(`data/subclasses/${file}`);
+      subData = await resp.json();
+      if (subData.description) {
+        html += `<p>${subData.description}</p>`;
       }
+    } catch (err) {
+      html += `<p>Dettagli della sottoclasse non disponibili.</p>`;
+    }
+  }
+
+  // Merge class and subclass features by level
+  const mergedFeatures = {};
+  if (data.features_by_level) {
+    Object.entries(data.features_by_level).forEach(([lvl, feats]) => {
+      mergedFeatures[lvl] = [...feats];
     });
   }
-  const subclassName = subclassSelect.value;
+  if (subData?.features_by_level) {
+    Object.entries(subData.features_by_level).forEach(([lvl, feats]) => {
+      if (!mergedFeatures[lvl]) mergedFeatures[lvl] = [];
+      mergedFeatures[lvl].push(...feats);
+    });
+  }
+
+  const levels = Object.keys(mergedFeatures).sort((a, b) => a - b);
+  levels.forEach(lvl => {
+    if (parseInt(lvl) <= charLevel) {
+      html += `<h4>Livello ${lvl}</h4><ul>`;
+      mergedFeatures[lvl].forEach(f => {
+        if (typeof f === "string") {
+          html += `<li>${f}</li>`;
+        } else {
+          const desc = f.description ? `: ${f.description}` : "";
+          html += `<li><strong>${f.name}</strong>${desc}</li>`;
+        }
+      });
+      html += `</ul>`;
+    }
+  });
+
   let selections = [];
   if (data.choices) {
     data.choices.forEach(choice => {
@@ -1043,45 +1072,17 @@ async function renderClassFeatures() {
       }
     });
   }
-  if (subclassName) {
-    html += `<h4>${subclassName}</h4>`;
-    try {
-      const file = getSubclassFilename(subclassName);
-      const resp = await fetch(`data/subclasses/${file}`);
-      const subData = await resp.json();
-      if (subData.description) {
-        html += `<p>${subData.description}</p>`;
+  if (subData?.choices) {
+    subData.choices.forEach(choice => {
+      const choiceLevel = choice.level || 1;
+      const selected = selectedData[choice.name] || [];
+      if (choiceLevel <= charLevel && selected.length < choice.count) {
+        selections.push(choice);
       }
-      if (subData.features_by_level) {
-        const levels = Object.keys(subData.features_by_level).sort((a, b) => a - b);
-        levels.forEach(lvl => {
-          if (parseInt(lvl) <= charLevel) {
-            html += `<h5>Livello ${lvl}</h5><ul>`;
-            subData.features_by_level[lvl].forEach(f => {
-              if (typeof f === "string") {
-                html += `<li>${f}</li>`;
-              } else {
-                const desc = f.description ? `: ${f.description}` : "";
-                html += `<li><strong>${f.name}</strong>${desc}</li>`;
-              }
-            });
-            html += `</ul>`;
-          }
-        });
-      }
-      if (subData.choices) {
-        subData.choices.forEach(choice => {
-          const choiceLevel = choice.level || 1;
-          const selected = selectedData[choice.name] || [];
-          if (choiceLevel <= charLevel && selected.length < choice.count) {
-            selections.push(choice);
-          }
-        });
-      }
-    } catch (err) {
-      html += `<p>Dettagli della sottoclasse non disponibili.</p>`;
-    }
-  } else {
+    });
+  }
+
+  if (!subclassName) {
     html += `<p>Seleziona una sottoclasse per vedere i tratti.</p>`;
   }
   featuresDiv.innerHTML = html;

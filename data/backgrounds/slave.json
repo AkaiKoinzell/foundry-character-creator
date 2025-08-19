@@ -14,24 +14,7 @@
   },
   "languages": {
     "choose": 1,
-    "options": [
-      "Common",
-      "Dwarvish",
-      "Elvish",
-      "Giant",
-      "Gnomish",
-      "Goblin",
-      "Halfling",
-      "Orc",
-      "Abyssal",
-      "Celestial",
-      "Draconic",
-      "Deep Speech",
-      "Infernal",
-      "Primordial",
-      "Sylvan",
-      "Undercommon"
-    ]
+    "any": true
   },
   "featOptions": [
     "Beast Tamer",

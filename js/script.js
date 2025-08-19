@@ -786,13 +786,11 @@ function displayRaceTraits() {
 
       // Trait details
       if (raceData.traits && raceData.traits.length > 0) {
-        raceData.traits.forEach(trait => {
-          const traitId = `trait-${trait.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
-          traitsHtml += `<details class="race-trait" id="${traitId}"><summary>${trait.name}</summary><p>${trait.description || ""}</p></details>`;
         traitsHtml += `<h4>Tratti:</h4>`;
         raceData.traits.forEach((trait, tIdx) => {
+          const traitId = `trait-${trait.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
           const featureKey = trait.name.replace(/"/g, '&quot;');
-          let block = `<details class="feature-block" id="race-trait-${tIdx}"><summary>${trait.name}</summary>`;
+          let block = `<details class="race-trait feature-block" id="${traitId}"><summary>${trait.name}</summary>`;
           block += `<div class="feature-desc">${trait.description || ''}</div>`;
           const choices = trait.choices || trait.variant_feature_choices;
           if (choices) {

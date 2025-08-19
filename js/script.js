@@ -281,6 +281,17 @@ let selectedData = sessionStorage.getItem("selectedData")
   ? JSON.parse(sessionStorage.getItem("selectedData"))
   : {};
 window.selectedData = selectedData;
+
+// These variables are referenced throughout the extra selections workflow.
+// In earlier refactors they were implicitly assumed to exist which caused
+// runtime ReferenceError issues when the script loaded before any
+// selections were defined.  Initialising them here ensures that later
+// checks like `extraSelections.every(...)` can safely run even if no
+// extra selections have been generated yet.
+let extraSelections = [];
+let currentSelectionIndex = 0;
+let extraModalContext = "";
+
 // Cached list of all languages loaded from JSON
 let availableLanguages = [];
 export function setAvailableLanguages(langs) {
@@ -443,6 +454,12 @@ function openExtrasModal(selections, context = "race") {
     console.warn("⚠️ Nessuna selezione extra disponibile, il pop-up non verrà mostrato.");
     return;
   }
+
+  // Store the selections and context so that navigation and other
+  // handlers (e.g. the close button) can reference them safely.
+  extraSelections = selections;
+  currentSelectionIndex = 0;
+  extraModalContext = context;
 
   const containerId = context === "class" ? "classExtrasAccordion" : "raceExtraTraitsContainer";
   const container = document.getElementById(containerId);
@@ -738,67 +755,71 @@ function showExtraSelection() {
     }
   }
 
-  document.getElementById("prevTrait").disabled = (currentSelectionIndex === 0);
-  document.getElementById("nextTrait").disabled = (currentSelectionIndex === extraSelections.length - 1);
-  document.getElementById("closeModal").style.display = (currentSelectionIndex === extraSelections.length - 1) ? "inline-block" : "none";
+  const prevTraitEl = document.getElementById("prevTrait");
+  const nextTraitEl = document.getElementById("nextTrait");
+  const closeModalEl = document.getElementById("closeModal");
+  if (prevTraitEl && nextTraitEl && closeModalEl) {
+    prevTraitEl.disabled = (currentSelectionIndex === 0);
+    nextTraitEl.disabled = (currentSelectionIndex === extraSelections.length - 1);
+
+    const allChoicesFilled = extraSelections.every(sel =>
+      selectedData[sel.name] && selectedData[sel.name].filter(v => v).length === sel.count
+    );
+
+    if (currentSelectionIndex === extraSelections.length - 1 && allChoicesFilled) {
+      closeModalEl.style.display = "inline-block";
+    } else {
+      closeModalEl.style.display = "none";
+    }
+  }
 }
 
-  // Enable/disable navigation buttons and manage the Close button visibility.
-  const prevBtn = document.getElementById("prevTrait");
-  const nextBtn = document.getElementById("nextTrait");
-  // Mostra il pulsante "Chiudi" solo dopo l'ultimo step e se tutte le selezioni sono fatte
-  const closeBtn = document.getElementById("closeModal");
-  const allChoicesFilled = extraSelections.every(sel =>
-    selectedData[sel.name] && selectedData[sel.name].filter(v => v).length === sel.count
-  );
+  // Navigation buttons for the popup
+  if (prevTraitEl && nextTraitEl) {
+    prevTraitEl.addEventListener("click", () => {
+      if (currentSelectionIndex > 0) {
+        currentSelectionIndex--;
+        showExtraSelection();
+      }
+    });
 
-  if (currentSelectionIndex === extraSelections.length - 1 && allChoicesFilled) {
-    closeBtn.style.display = "inline-block";
-  } else {
-    closeBtn.style.display = "none";
+    nextTraitEl.addEventListener("click", () => {
+      if (currentSelectionIndex < extraSelections.length - 1) {
+        currentSelectionIndex++;
+        showExtraSelection();
+      }
+    });
   }
 
-// Navigation buttons for the popup
-document.getElementById("prevTrait").addEventListener("click", () => {
-  if (currentSelectionIndex > 0) {
-    currentSelectionIndex--;
-    showExtraSelection();
+  if (closeModalEl) {
+    closeModalEl.addEventListener("click", () => {
+      console.log("🔄 Chiusura pop-up e aggiornamento UI...");
+      const raceModal = document.getElementById("raceExtrasModal");
+      if (raceModal) raceModal.style.display = "none";
+      sessionStorage.removeItem("popupOpened");
+
+      // ✅ Salviamo le selezioni extra PRIMA di eventuali refresh
+      sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
+      console.log("📝 Selezioni salvate prima dell'update:", selectedData);
+
+      if (extraModalContext === "race") {
+        showStep("step3");
+
+        setTimeout(() => {
+          console.log("🛠 Eseguo displayRaceTraits()...");
+          displayRaceTraits();
+
+          // 🔥 **Aspettiamo che `displayRaceTraits()` finisca e poi forziamo le selezioni extra**
+          setTimeout(() => {
+            console.log("✅ Forzando updateExtraSelectionsView()...");
+            updateExtraSelectionsView();
+          }, 500); // 🔥 Ritardo di 500ms per essere sicuri che il rendering sia completato
+        }, 300);
+      } else if (extraModalContext === "class") {
+        renderClassFeatures();
+      }
+    });
   }
-});
-
-document.getElementById("nextTrait").addEventListener("click", () => {
-  if (currentSelectionIndex < extraSelections.length - 1) {
-    currentSelectionIndex++;
-    showExtraSelection();
-  }
-});
-  // Gather selections from each dropdown, grouped by data-category.
-document.getElementById("closeModal").addEventListener("click", () => {
-  console.log("🔄 Chiusura pop-up e aggiornamento UI...");
-  document.getElementById("raceExtrasModal").style.display = "none";
-  sessionStorage.removeItem("popupOpened");
-
-  // ✅ Salviamo le selezioni extra PRIMA di eventuali refresh
-  sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
-  console.log("📝 Selezioni salvate prima dell'update:", selectedData);
-
-  if (extraModalContext === "race") {
-    showStep("step3");
-
-    setTimeout(() => {
-      console.log("🛠 Eseguo displayRaceTraits()...");
-      displayRaceTraits();
-
-      // 🔥 **Aspettiamo che `displayRaceTraits()` finisca e poi forziamo le selezioni extra**
-      setTimeout(() => {
-        console.log("✅ Forzando updateExtraSelectionsView()...");
-        updateExtraSelectionsView();
-      }, 500); // 🔥 Ritardo di 500ms per essere sicuri che il rendering sia completato
-    }, 300);
-  } else if (extraModalContext === "class") {
-    renderClassFeatures();
-  }
-});
 
 updateExtraSelectionsView();
 

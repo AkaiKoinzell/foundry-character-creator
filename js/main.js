@@ -33,13 +33,10 @@ document.addEventListener('DOMContentLoaded', () => {
     setAvailableLanguages(langs);
   });
 
-  document.getElementById('btnStep1').addEventListener('click', () => showStep('step1'));
-  document.getElementById('btnStep2').addEventListener('click', () => showStep('step2'));
-  document.getElementById('btnStep3').addEventListener('click', () => showStep('step3'));
-  document.getElementById('btnStep4').addEventListener('click', () => showStep('step4'));
-  document.getElementById('btnStep5').addEventListener('click', () => showStep('step5'));
-  document.getElementById('btnStep6').addEventListener('click', () => showStep('step6'));
-  document.getElementById('btnStep7').addEventListener('click', () => showStep('step7'));
+  ['step1','step2','step3','step4','step5','step6','step7'].forEach((stepId, idx) => {
+    const btn = document.getElementById(`btnStep${idx + 1}`);
+    if (btn) btn.addEventListener('click', () => showStep(stepId));
+  });
 
   const classSelectElem = document.getElementById('classSelect');
   const subclassSelectElem = document.getElementById('subclassSelect');
@@ -62,7 +59,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initializeValues();
   const lastStep = loadFormData();
-  showStep(lastStep || 'step1');
+  const stepMap = {
+    nameStep: 'step1',
+    classStep: 'step2',
+    raceStep: 'step3',
+    backgroundStep: 'step4',
+    equipmentStep: 'step5',
+    pointBuyStep: 'step6',
+    recapStep: 'step7'
+  };
+  const normalizedStep = stepMap[lastStep] || lastStep;
+  showStep(normalizedStep || 'step1');
 
   document.getElementById('raceSelect').addEventListener('change', displayRaceTraits);
   document.getElementById('levelSelect').addEventListener('change', () => displayRaceTraits());

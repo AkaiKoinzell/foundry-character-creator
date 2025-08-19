@@ -1,0 +1,51 @@
+{
+  "name": "Divine Soul",
+  "description": "Your magic is a gift from the divine, allowing you to blend sorcerer and cleric spellcasting.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Divine Magic",
+        "description": "When learning or replacing spells, you may choose from the cleric list; choose a divine affinity that grants an extra spell."
+      },
+      {
+        "name": "Favored by the Gods",
+        "description": "If you fail a saving throw or miss an attack, roll 2d4 and add it, once per short or long rest."
+      }
+    ],
+    "6": [
+      {
+        "name": "Empowered Healing",
+        "description": "Spend 1 sorcery point to reroll any number of dice to determine hit points restored by a spell you or an ally casts within 5 feet."
+      }
+    ],
+    "14": [
+      {
+        "name": "Otherworldly Wings",
+        "description": "As a bonus action, sprout spectral wings that grant a 30-foot flying speed."
+      }
+    ],
+    "18": [
+      {
+        "name": "Unearthly Recovery",
+        "description": "When below half your hit points, use a bonus action to regain hit points equal to half your maximum once per long rest."
+      }
+    ]
+  },
+  "choices": [
+    {
+      "level": 1,
+      "name": "Divine Affinity",
+      "description": "Select the nature of your divine power.",
+      "count": 1,
+      "selection": [
+        "Good",
+        "Evil",
+        "Law",
+        "Chaos",
+        "Neutrality"
+      ],
+      "type": "divine affinity"
+    }
+  ]
+}
+

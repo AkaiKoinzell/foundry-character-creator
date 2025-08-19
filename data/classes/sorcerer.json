@@ -2,6 +2,37 @@
   "name": "Sorcerer",
   "subclasses": [
     {
+      "name": "Aberrant Mind",
+      "features": [
+        "Psionic Spells",
+        "Telepathic Speech",
+        "Psionic Sorcery",
+        "Psychic Defenses",
+        "Revelation in Flesh",
+        "Warping Implosion"
+      ]
+    },
+    {
+      "name": "Clockwork Soul",
+      "features": [
+        "Clockwork Magic",
+        "Restore Balance",
+        "Bastion of Law",
+        "Trance of Order",
+        "Clockwork Cavalcade"
+      ]
+    },
+    {
+      "name": "Divine Soul",
+      "features": [
+        "Divine Magic",
+        "Favored by the Gods",
+        "Empowered Healing",
+        "Otherworldly Wings",
+        "Unearthly Recovery"
+      ]
+    },
+    {
       "name": "Draconic Bloodline",
       "features": [
         "Dragon Ancestor",
@@ -9,6 +40,50 @@
         "Elemental Affinity",
         "Dragon Wings",
         "Draconic Presence"
+      ]
+    },
+    {
+      "name": "Lunar Sorcery",
+      "features": [
+        "Lunar Embodiment",
+        "Moon Fire",
+        "Lunar Boons",
+        "Waxing and Waning",
+        "Lunar Empowerment",
+        "Lunar Phenomenon"
+      ]
+    },
+    {
+      "name": "Runechild",
+      "features": [
+        "Essence Runes",
+        "Runic Magic",
+        "Glyph of Aegis",
+        "Sigilic Augmentation",
+        "Manifest Inscriptions",
+        "Runic Torrent",
+        "Arcane Exemplar"
+      ]
+    },
+    {
+      "name": "Shadow Magic",
+      "features": [
+        "Eyes of the Dark",
+        "Strength of the Grave",
+        "Hound of Ill Omen",
+        "Shadow Walk",
+        "Umbral Form"
+      ]
+    },
+    {
+      "name": "Storm Sorcery",
+      "features": [
+        "Wind Speaker",
+        "Tempestuous Magic",
+        "Heart of the Storm",
+        "Storm Guide",
+        "Storm's Fury",
+        "Wind Soul"
       ]
     },
     {
@@ -22,18 +97,108 @@
       ]
     }
   ],
-  "description": "Description for Sorcerer class.",
+  "description": "A spellcaster who draws arcane power from an innate magical source and shapes it through force of will.",
   "features_by_level": {
     "1": [
       {
-        "name": "Sorcerer Feature 1",
-        "description": "Description for Sorcerer feature at level 1."
+        "name": "Spellcasting",
+        "description": "You know four cantrips and two 1st-level spells from the sorcerer list, gaining more as you level. Charisma is your spellcasting ability."
+      },
+      {
+        "name": "Sorcerous Origin",
+        "description": "Choose a source of your innate magic, gaining features at 1st, 6th, 14th, and 18th levels."
       }
     ],
     "2": [
       {
-        "name": "Sorcerer Feature 2",
-        "description": "Description for Sorcerer feature at level 2."
+        "name": "Sorcery Points",
+        "description": "You have a pool of sorcery points to fuel magical effects, regaining all expended points after a long rest."
+      },
+      {
+        "name": "Flexible Casting",
+        "description": "As a bonus action, convert sorcery points into spell slots and spell slots into sorcery points."
+      }
+    ],
+    "3": [
+      {
+        "name": "Metamagic",
+        "description": "Choose two Metamagic options to twist your spells; you learn more options at higher levels."
+      }
+    ],
+    "4": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1, or take a feat if allowed."
+      },
+      {
+        "name": "Sorcerous Versatility",
+        "description": "(Optional) When you gain an Ability Score Improvement, you can replace a Metamagic option or a cantrip."
+      }
+    ],
+    "5": [
+      {
+        "name": "Magical Guidance",
+        "description": "(Optional) Spend 1 sorcery point to reroll a failed ability check."
+      }
+    ],
+    "6": [
+      {
+        "name": "Sorcerous Origin Feature",
+        "description": "Gain a feature from your chosen Sorcerous Origin."
+      }
+    ],
+    "8": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "10": [
+      {
+        "name": "Metamagic",
+        "description": "Learn one additional Metamagic option."
+      }
+    ],
+    "12": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "14": [
+      {
+        "name": "Sorcerous Origin Feature",
+        "description": "Gain a feature from your chosen Sorcerous Origin."
+      }
+    ],
+    "16": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "17": [
+      {
+        "name": "Metamagic",
+        "description": "Learn one additional Metamagic option."
+      }
+    ],
+    "18": [
+      {
+        "name": "Sorcerous Origin Feature",
+        "description": "Gain a feature from your chosen Sorcerous Origin."
+      }
+    ],
+    "19": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "20": [
+      {
+        "name": "Sorcerous Restoration",
+        "description": "Regain 4 expended sorcery points whenever you finish a short rest."
       }
     ]
   },
@@ -52,7 +217,9 @@
         "Heightened Spell",
         "Quickened Spell",
         "Subtle Spell",
-        "Twinned Spell"
+        "Twinned Spell",
+        "Seeking Spell",
+        "Transmuted Spell"
       ]
     },
     {
@@ -93,7 +260,9 @@
         "Heightened Spell",
         "Quickened Spell",
         "Subtle Spell",
-        "Twinned Spell"
+        "Twinned Spell",
+        "Seeking Spell",
+        "Transmuted Spell"
       ]
     },
     {
@@ -134,7 +303,9 @@
         "Heightened Spell",
         "Quickened Spell",
         "Subtle Spell",
-        "Twinned Spell"
+        "Twinned Spell",
+        "Seeking Spell",
+        "Transmuted Spell"
       ]
     },
     {
@@ -151,3 +322,4 @@
     }
   ]
 }
+

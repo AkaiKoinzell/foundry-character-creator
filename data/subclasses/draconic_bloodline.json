@@ -1,47 +1,56 @@
 {
   "name": "Draconic Bloodline",
-  "description": "Your innate magic comes from draconic ancestry.",
+  "description": "Your innate magic stems from draconic ancestry, manifesting in tough scales and elemental power.",
   "features_by_level": {
     "1": [
       {
         "name": "Dragon Ancestor",
-        "description": "Description for Dragon Ancestor."
+        "description": "Choose a type of dragon as your ancestor; you learn Draconic and double your proficiency on Charisma checks with dragons."
       },
       {
         "name": "Draconic Resilience",
-        "description": "Description for Draconic Resilience."
+        "description": "Your hit point maximum increases by 1 per sorcerer level, and when not wearing armor your AC equals 13 + your Dexterity modifier."
       }
     ],
     "6": [
       {
         "name": "Elemental Affinity",
-        "description": "Description for Elemental Affinity."
+        "description": "When you cast a spell that deals damage of your ancestor's type, add your Charisma modifier to one damage roll and spend 1 sorcery point to gain resistance to that damage for 1 hour."
       }
     ],
     "14": [
       {
         "name": "Dragon Wings",
-        "description": "Description for Dragon Wings."
+        "description": "As a bonus action, sprout dragon wings to gain a flying speed equal to your speed. They disappear at your command."
       }
     ],
     "18": [
       {
         "name": "Draconic Presence",
-        "description": "Description for Draconic Presence."
+        "description": "Spend 5 sorcery points as an action to exude an aura of awe or fear in a 60-foot radius for 1 minute."
       }
     ]
   },
   "choices": [
     {
       "level": 1,
-      "name": "Draconic Bloodline Feature",
-      "description": "Choose an option for the Draconic Bloodline subclass",
+      "name": "Dragon Ancestor",
+      "description": "Select the type of dragon whose magic infuses you.",
       "count": 1,
       "selection": [
-        "Draconic Bloodline Option 1",
-        "Draconic Bloodline Option 2"
+        "Black (Acid)",
+        "Blue (Lightning)",
+        "Brass (Fire)",
+        "Bronze (Lightning)",
+        "Copper (Acid)",
+        "Gold (Fire)",
+        "Green (Poison)",
+        "Red (Fire)",
+        "Silver (Cold)",
+        "White (Cold)"
       ],
-      "type": "Draconic Bloodline Feature"
+      "type": "draconic ancestor"
     }
   ]
 }
+

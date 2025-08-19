@@ -9,9 +9,13 @@ function renderEquipment() {
   const classDiv = document.getElementById('classEquipmentChoices');
   const upgradeDiv = document.getElementById('equipmentUpgrades');
 
-  standardDiv.innerHTML = `<h3>Equipaggiamento Standard</h3><ul>${equipmentData.standard
+  const standardDetail = document.createElement('details');
+  standardDetail.className = 'feature-block';
+  standardDetail.innerHTML = `<summary>Equipaggiamento Standard</summary><ul>${equipmentData.standard
     .map(item => `<li>${item}</li>`)
     .join('')}</ul>`;
+  standardDiv.innerHTML = '';
+  standardDiv.appendChild(standardDetail);
 
   classDiv.innerHTML = '';
   upgradeDiv.innerHTML = '';
@@ -19,16 +23,16 @@ function renderEquipment() {
   const classInfo = equipmentData.classes[className];
   if (classInfo) {
     if (Array.isArray(classInfo.fixed) && classInfo.fixed.length > 0) {
-      const fixedP = document.createElement('p');
-      fixedP.innerHTML = `<strong>Equipaggiamento fisso:</strong> ${classInfo.fixed.join(', ')}`;
-      classDiv.appendChild(fixedP);
+      const fixedDetail = document.createElement('details');
+      fixedDetail.className = 'feature-block';
+      fixedDetail.innerHTML = `<summary>Equipaggiamento fisso</summary><p>${classInfo.fixed.join(', ')}</p>`;
+      classDiv.appendChild(fixedDetail);
     }
     if (Array.isArray(classInfo.choices)) {
       classInfo.choices.forEach((choice, idx) => {
-        const group = document.createElement('div');
-        const lbl = document.createElement('p');
-        lbl.innerHTML = `<strong>${choice.label || 'Scegli'}:</strong>`;
-        group.appendChild(lbl);
+        const detail = document.createElement('details');
+        detail.className = 'feature-block needs-selection incomplete';
+        detail.innerHTML = `<summary>${choice.label || 'Scegli'}</summary>`;
         choice.options.forEach((opt, oIdx) => {
           const id = `equipChoice_${idx}_${oIdx}`;
           const input = document.createElement('input');
@@ -39,11 +43,17 @@ function renderEquipment() {
           const lab = document.createElement('label');
           lab.htmlFor = id;
           lab.textContent = opt.label || opt;
-          group.appendChild(input);
-          group.appendChild(lab);
-          group.appendChild(document.createElement('br'));
+          detail.appendChild(input);
+          detail.appendChild(lab);
+          detail.appendChild(document.createElement('br'));
         });
-        classDiv.appendChild(group);
+        const update = () => {
+          const anyChecked = detail.querySelectorAll('input:checked').length > 0;
+          detail.classList.toggle('incomplete', !anyChecked);
+        };
+        detail.querySelectorAll('input').forEach(inp => inp.addEventListener('change', update));
+        classDiv.appendChild(detail);
+        update();
       });
     }
   } else {
@@ -52,13 +62,13 @@ function renderEquipment() {
 
   if (equipmentData.upgrades && level >= (equipmentData.upgrades.minLevel || 0)) {
     const up = equipmentData.upgrades;
-    const head = document.createElement('h3');
-    head.textContent = 'Opzioni Avanzate';
-    upgradeDiv.appendChild(head);
+    const upDetail = document.createElement('details');
+    upDetail.className = 'feature-block';
+    upDetail.innerHTML = '<summary>Opzioni Avanzate</summary>';
     if (Array.isArray(up.armor)) {
       const armorLabel = document.createElement('p');
       armorLabel.innerHTML = '<strong>Armatura:</strong>';
-      upgradeDiv.appendChild(armorLabel);
+      upDetail.appendChild(armorLabel);
       up.armor.forEach((armor, idx) => {
         const id = `upgradeArmor_${idx}`;
         const input = document.createElement('input');
@@ -69,9 +79,9 @@ function renderEquipment() {
         const lab = document.createElement('label');
         lab.htmlFor = id;
         lab.textContent = armor;
-        upgradeDiv.appendChild(input);
-        upgradeDiv.appendChild(lab);
-        upgradeDiv.appendChild(document.createElement('br'));
+        upDetail.appendChild(input);
+        upDetail.appendChild(lab);
+        upDetail.appendChild(document.createElement('br'));
       });
     }
     if (up.weapon) {
@@ -83,9 +93,10 @@ function renderEquipment() {
       const lab = document.createElement('label');
       lab.htmlFor = id;
       lab.textContent = up.weapon;
-      upgradeDiv.appendChild(input);
-      upgradeDiv.appendChild(lab);
+      upDetail.appendChild(input);
+      upDetail.appendChild(lab);
     }
+    upgradeDiv.appendChild(upDetail);
   }
 }
 

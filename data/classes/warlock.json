@@ -11,15 +11,6 @@
   },
   "weapon_proficiencies": ["simple weapons"],
   "armor_proficiencies": ["light armor"],
-  "starting_equipment": {
-    "choices": [
-      ["Light crossbow and 20 bolts", "Any simple weapon"],
-      ["Component pouch", "Arcane focus"],
-      ["Scholar's pack", "Dungeoneer's pack"]
-    ],
-    "fixed": ["Leather armor", "Any simple weapon", "Two daggers"],
-    "gold_alternative": "4d4 × 10 gp"
-  },
   "multiclassing": {
     "prerequisites": {"Charisma": 13},
     "proficiencies": {"weapons": ["simple weapons"], "armor": ["light armor"]}

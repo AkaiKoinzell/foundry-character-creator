@@ -18,14 +18,6 @@
   },
   "weapon_proficiencies": ["simple weapons", "shortswords"],
   "tool_proficiencies": ["one type of artisan's tools or one musical instrument"],
-  "starting_equipment": {
-    "choices": [
-      ["Shortsword", "Any simple weapon"],
-      ["Dungeoneer's pack", "Explorer's pack"]
-    ],
-    "fixed": ["10 darts"],
-    "gold_alternative": "5d4 gp"
-  },
   "multiclassing": {
     "prerequisites": {"Dexterity": 13, "Wisdom": 13},
     "proficiencies": {"weapons": ["simple weapons", "shortswords"]}

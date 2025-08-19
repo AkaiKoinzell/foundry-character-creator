@@ -1116,21 +1116,6 @@ async function renderClassFeatures() {
   if (data.skill_proficiencies && data.skill_proficiencies.choose) {
     html += `<p><strong>Skill Proficiencies:</strong> Choose ${data.skill_proficiencies.choose} from ${data.skill_proficiencies.options.join(", ")}</p>`;
   }
-  if (data.starting_equipment) {
-    let equipText = "";
-    if (Array.isArray(data.starting_equipment.fixed) && data.starting_equipment.fixed.length > 0) {
-      equipText += data.starting_equipment.fixed.join(", ");
-    }
-    if (Array.isArray(data.starting_equipment.choices)) {
-      data.starting_equipment.choices.forEach(choice => {
-        equipText += `; ${choice[0]} or ${choice[1]}`;
-      });
-    }
-    if (data.starting_equipment.gold_alternative) {
-      equipText += `; or ${data.starting_equipment.gold_alternative} to buy equipment`;
-    }
-    html += `<p><strong>Starting Equipment:</strong> ${equipText.replace(/^; /, "")}</p>`;
-  }
   if (data.multiclassing && data.multiclassing.prerequisites) {
     const prereqs = Object.entries(data.multiclassing.prerequisites)
       .map(([ability, score]) => `${ability} ${score}`)

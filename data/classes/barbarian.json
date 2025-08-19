@@ -18,14 +18,6 @@
   },
   "weapon_proficiencies": ["simple weapons", "martial weapons"],
   "armor_proficiencies": ["light armor", "medium armor", "shields"],
-  "starting_equipment": {
-    "choices": [
-      ["Greataxe", "Any martial melee weapon"],
-      ["Two handaxes", "Any simple weapon"]
-    ],
-    "fixed": ["Explorer's pack", "Four javelins"],
-    "gold_alternative": "2d4 × 10 gp"
-  },
   "multiclassing": {
     "prerequisites": {"Strength": 13},
     "proficiencies": {

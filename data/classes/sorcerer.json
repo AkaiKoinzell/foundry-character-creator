@@ -10,15 +10,6 @@
     "options": ["Arcana", "Deception", "Insight", "Intimidation", "Persuasion", "Religion"]
   },
   "weapon_proficiencies": ["daggers", "darts", "slings", "quarterstaffs", "light crossbows"],
-  "starting_equipment": {
-    "choices": [
-      ["Light crossbow and 20 bolts", "Any simple weapon"],
-      ["Component pouch", "Arcane focus"],
-      ["Dungeoneer's pack", "Explorer's pack"]
-    ],
-    "fixed": ["Two daggers"],
-    "gold_alternative": "3d4 × 10 gp"
-  },
   "multiclassing": {"prerequisites": {"Charisma": 13}},
   "subclasses": [
     {

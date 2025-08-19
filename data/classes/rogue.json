@@ -24,15 +24,6 @@
   "weapon_proficiencies": ["simple weapons", "hand crossbows", "longswords", "rapiers", "shortswords"],
   "tool_proficiencies": ["thieves' tools"],
   "armor_proficiencies": ["light armor"],
-  "starting_equipment": {
-    "choices": [
-      ["Rapier", "Shortsword"],
-      ["Shortbow and quiver of 20 arrows", "Shortsword"],
-      ["Burglar's pack", "Dungeoneer's pack", "Explorer's pack"]
-    ],
-    "fixed": ["Leather armor", "Two daggers", "Thieves' tools"],
-    "gold_alternative": "4d4 × 10 gp"
-  },
   "multiclassing": {
     "prerequisites": {"Dexterity": 13},
     "proficiencies": {

@@ -1,4 +1,7 @@
 export function showStep(stepId) {
+  // Salva i dati correnti prima di cambiare step
+  saveFormData();
+
   const steps = document.querySelectorAll('.step');
   steps.forEach(step => {
     if (step.id === stepId) {
@@ -7,4 +10,44 @@ export function showStep(stepId) {
       step.classList.remove('active');
     }
   });
+
+  updateProgress(stepId);
+  localStorage.setItem('currentStep', stepId);
+}
+
+function updateProgress(stepId) {
+  const progressBar = document.getElementById('progressBar');
+  if (!progressBar) return;
+  const steps = Array.from(document.querySelectorAll('.step'));
+  const index = steps.findIndex(step => step.id === stepId);
+  const percent = ((index + 1) / steps.length) * 100;
+  progressBar.style.width = `${percent}%`;
+}
+
+function saveFormData() {
+  const fields = document.querySelectorAll('input, select, textarea');
+  fields.forEach(field => {
+    if (!field.id) return;
+    if (field.type === 'checkbox' || field.type === 'radio') {
+      localStorage.setItem(field.id, field.checked);
+    } else {
+      localStorage.setItem(field.id, field.value);
+    }
+  });
+}
+
+export function loadFormData() {
+  const fields = document.querySelectorAll('input, select, textarea');
+  fields.forEach(field => {
+    if (!field.id) return;
+    const stored = localStorage.getItem(field.id);
+    if (stored !== null) {
+      if (field.type === 'checkbox' || field.type === 'radio') {
+        field.checked = stored === 'true';
+      } else {
+        field.value = stored;
+      }
+    }
+  });
+  return localStorage.getItem('currentStep');
 }

@@ -867,16 +867,26 @@ function renderAbilityOptions(container, index, maxSelections, bonus) {
 
 function renderFeatSelection(container, index) {
   loadFeats(feats => {
+    const selectedRace =
+      document.getElementById("raceSelect")?.selectedOptions[0]?.text || "";
     const options = feats
-      .map(f => `<option value="${f}">${f}</option>`)
+      .filter(
+        f =>
+          !f.races ||
+          f.races.some(r =>
+            selectedRace.toLowerCase().includes(r.toLowerCase())
+          )
+      )
+      .map(f => `<option value="${f.name}">${f.name}</option>`)
       .join("");
     container.innerHTML = `<select class="asi-feat" data-index="${index}"><option value="">Seleziona...</option>${options}</select>`;
     container.querySelector(".asi-feat").addEventListener("change", e => {
       if (!selectedData["Ability Score Improvement"]) {
         selectedData["Ability Score Improvement"] = [];
       }
-      selectedData["Ability Score Improvement"][index] = e.target.value
-        ? `Feat: ${e.target.value}`
+      const chosen = feats.find(f => f.name === e.target.value);
+      selectedData["Ability Score Improvement"][index] = chosen
+        ? `Feat: ${chosen.name}`
         : undefined;
       sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
       updateExtraSelectionsView();

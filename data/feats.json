@@ -1,7 +1,888 @@
 {
   "feats": [
-    "Alert",
-    "Athlete",
-    "Actor"
+    {
+      "name": "Actor",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:actor",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:actor for full details."
+    },
+    {
+      "name": "Adept of the Black Robes",
+      "asi": false,
+      "link": "https://5e-tools.com/feats.html#adept%20of%20the%20black%20robes_dsotdq",
+      "source": "DSotDQ",
+      "races": null,
+      "description": "See https://5e-tools.com/feats.html#adept%20of%20the%20black%20robes_dsotdq for full details."
+    },
+    {
+      "name": "Adept of the Red Robes",
+      "asi": false,
+      "link": "https://5e-tools.com/feats.html#adept%20of%20the%20red%20robes_dsotdq",
+      "source": "DSotDQ",
+      "races": null,
+      "description": "See https://5e-tools.com/feats.html#adept%20of%20the%20red%20robes_dsotdq for full details."
+    },
+    {
+      "name": "Adept of the White Robes",
+      "asi": false,
+      "link": "https://5e-tools.com/feats.html#adept%20of%20the%20white%20robes_dsotdq",
+      "source": "DSotDQ",
+      "races": null,
+      "description": "See https://5e-tools.com/feats.html#adept%20of%20the%20white%20robes_dsotdq for full details."
+    },
+    {
+      "name": "Agile",
+      "asi": false,
+      "link": "https://docs.google.com/document/d/1a4wCW1rViJnOTQmHRlMzpkuiPYHuomouKqApxbBZ6_g/edit?usp=sharing",
+      "source": "HB",
+      "races": null,
+      "description": "See https://docs.google.com/document/d/1a4wCW1rViJnOTQmHRlMzpkuiPYHuomouKqApxbBZ6_g/edit?usp=sharing for full details."
+    },
+    {
+      "name": "Alert",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:alert",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:alert for full details."
+    },
+    {
+      "name": "Antiquarian",
+      "asi": true,
+      "link": "https://docs.google.com/document/d/1PvqFE2NIDQgWC-Nr3zuKmij1JEred0CilIvpLAFWnpY/edit",
+      "source": "Homebrew",
+      "races": null,
+      "description": "See https://docs.google.com/document/d/1PvqFE2NIDQgWC-Nr3zuKmij1JEred0CilIvpLAFWnpY/edit for full details."
+    },
+    {
+      "name": "Apothecary",
+      "asi": true,
+      "link": "https://docs.google.com/document/d/1d07ladiaQuV0RYbNBZG748lBsgcXSfwPDoOgWGWpZLA/edit",
+      "source": "Homebrew",
+      "races": null,
+      "description": "See https://docs.google.com/document/d/1d07ladiaQuV0RYbNBZG748lBsgcXSfwPDoOgWGWpZLA/edit for full details."
+    },
+    {
+      "name": "Artificer Initiate",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:artificer-initiate",
+      "source": "TCE",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:artificer-initiate for full details."
+    },
+    {
+      "name": "Athlete",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:athlete",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:athlete for full details."
+    },
+    {
+      "name": "Beast Tamer",
+      "asi": false,
+      "link": "https://docs.google.com/document/d/1DY2CpFTc5X1Yn1Xeg_taV4z84h94GY3ZZYx2D7CUai8/edit",
+      "source": "Homebrew",
+      "races": null,
+      "description": "See https://docs.google.com/document/d/1DY2CpFTc5X1Yn1Xeg_taV4z84h94GY3ZZYx2D7CUai8/edit for full details."
+    },
+    {
+      "name": "Bountiful Luck",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:bountiful-luck",
+      "source": "XGTE",
+      "races": [
+        "Halfling"
+      ],
+      "description": "See http://dnd5e.wikidot.com/feat:bountiful-luck for full details."
+    },
+    {
+      "name": "Charger",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:charger",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:charger for full details."
+    },
+    {
+      "name": "Chef",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:chef",
+      "source": "TCE",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:chef for full details."
+    },
+    {
+      "name": "Crossbow Expert",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:crossbow-expert",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:crossbow-expert for full details."
+    },
+    {
+      "name": "Cruel",
+      "asi": false,
+      "link": "https://5e.tools/feats.html#cruel_tdcsr",
+      "source": "TDCSR",
+      "races": null,
+      "description": "See https://5e.tools/feats.html#cruel_tdcsr for full details."
+    },
+    {
+      "name": "Crusher",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:crusher",
+      "source": "TCE",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:crusher for full details."
+    },
+    {
+      "name": "Defensive Duelist",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:defensive-duelist",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:defensive-duelist for full details."
+    },
+    {
+      "name": "Die Hard",
+      "asi": true,
+      "link": "https://docs.google.com/document/d/1QXgokwbEchPj0eZvaTxo2-rDKlWFx8SOHfuw5-6Ia0o/edit",
+      "source": "HB",
+      "races": null,
+      "description": "See https://docs.google.com/document/d/1QXgokwbEchPj0eZvaTxo2-rDKlWFx8SOHfuw5-6Ia0o/edit for full details."
+    },
+    {
+      "name": "Dragon Fear",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:dragon-fear",
+      "source": "XGW",
+      "races": [
+        "Dragonborn"
+      ],
+      "description": "See http://dnd5e.wikidot.com/feat:dragon-fear for full details."
+    },
+    {
+      "name": "Dragon Hide",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:dragon-hide",
+      "source": "XGTE",
+      "races": [
+        "Dragonborn"
+      ],
+      "description": "See http://dnd5e.wikidot.com/feat:dragon-hide for full details."
+    },
+    {
+      "name": "Drow High Magic",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:drow-high-magic",
+      "source": "XGTE",
+      "races": [
+        "Drow"
+      ],
+      "description": "See http://dnd5e.wikidot.com/feat:drow-high-magic for full details."
+    },
+    {
+      "name": "Dual Weapon Master",
+      "asi": false,
+      "link": "https://docs.google.com/document/d/1Bqt5T97qGJciOiYd9v4030o1v3XL3AdV4JoETIhvkPo/edit?usp=drive_link",
+      "source": "HB",
+      "races": null,
+      "description": "See https://docs.google.com/document/d/1Bqt5T97qGJciOiYd9v4030o1v3XL3AdV4JoETIhvkPo/edit?usp=drive_link for full details."
+    },
+    {
+      "name": "Dual Wielder",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:dual-wielder",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:dual-wielder for full details."
+    },
+    {
+      "name": "Dungeon Delver",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:dungeon-delver",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:dungeon-delver for full details."
+    },
+    {
+      "name": "Durable",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:durable",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:durable for full details."
+    },
+    {
+      "name": "Dwarven Fortitude",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:dwarven-resilience",
+      "source": "XGTE",
+      "races": [
+        "Dwarf"
+      ],
+      "description": "See http://dnd5e.wikidot.com/feat:dwarven-resilience for full details."
+    },
+    {
+      "name": "Eldritch Adept",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:eldritch-adept",
+      "source": "TCE",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:eldritch-adept for full details."
+    },
+    {
+      "name": "Elemental Adept",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:elemental-adept",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:elemental-adept for full details."
+    },
+    {
+      "name": "Elven Accuracy",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:elven-accuracy",
+      "source": "XGTE",
+      "races": [
+        "Elf",
+        "Half-Elf"
+      ],
+      "description": "See http://dnd5e.wikidot.com/feat:elven-accuracy for full details."
+    },
+    {
+      "name": "Ember of the Fire Giant",
+      "asi": true,
+      "link": "https://5e.tools/feats.html#ember%20of%20the%20fire%20giant_bgg",
+      "source": "BGG",
+      "races": null,
+      "description": "See https://5e.tools/feats.html#ember%20of%20the%20fire%20giant_bgg for full details."
+    },
+    {
+      "name": "Erudite",
+      "asi": true,
+      "link": "https://docs.google.com/document/d/1CbiVVQNcNwrgxDMk3V_gaQOjdNvk2b9r0K9feDo6Bdw/edit",
+      "source": "HB",
+      "races": null,
+      "description": "See https://docs.google.com/document/d/1CbiVVQNcNwrgxDMk3V_gaQOjdNvk2b9r0K9feDo6Bdw/edit for full details."
+    },
+    {
+      "name": "Fade Away",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:fade-away",
+      "source": "XGTE",
+      "races": [
+        "Gnome"
+      ],
+      "description": "See http://dnd5e.wikidot.com/feat:fade-away for full details."
+    },
+    {
+      "name": "Fey Teleportation",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:fey-teleportation",
+      "source": "XGTE",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:fey-teleportation for full details."
+    },
+    {
+      "name": "Fey Touched",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:fey-touched",
+      "source": "TCE",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:fey-touched for full details."
+    },
+    {
+      "name": "Fighting Initiate",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:fighting-initiate",
+      "source": "TCE",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:fighting-initiate for full details."
+    },
+    {
+      "name": "Flames of Phlegethos",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:flames-of-phlegethos",
+      "source": "XGTE",
+      "races": [
+        "Tiefling"
+      ],
+      "description": "See http://dnd5e.wikidot.com/feat:flames-of-phlegethos for full details."
+    },
+    {
+      "name": "Flash Recall",
+      "asi": false,
+      "link": "https://5e.tools/feats.html#flash%20recall_tdcsr",
+      "source": "TDCSR",
+      "races": null,
+      "description": "See https://5e.tools/feats.html#flash%20recall_tdcsr for full details."
+    },
+    {
+      "name": "Fury of the Frost Giant",
+      "asi": true,
+      "link": "https://5e.tools/feats.html#fury%20of%20the%20frost%20giant_bgg",
+      "source": "BGG",
+      "races": null,
+      "description": "See https://5e.tools/feats.html#fury%20of%20the%20frost%20giant_bgg for full details."
+    },
+    {
+      "name": "Gift of the Chromatic Dragon",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:gift-of-the-chromatic-dragon",
+      "source": "FTD",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:gift-of-the-chromatic-dragon for full details."
+    },
+    {
+      "name": "Gift of the Gem Dragon",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:gift-of-the-gem-dragon",
+      "source": "FTD",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:gift-of-the-gem-dragon for full details."
+    },
+    {
+      "name": "Gift of the Metallic Dragon",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:gift-of-the-metallic-dragon",
+      "source": "FTD",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:gift-of-the-metallic-dragon for full details."
+    },
+    {
+      "name": "Grappler",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:grappler",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:grappler for full details."
+    },
+    {
+      "name": "Great Weapon Master",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:great-weapon-master",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:great-weapon-master for full details."
+    },
+    {
+      "name": "Guile of the Cloud Giant",
+      "asi": true,
+      "link": "https://5e.tools/feats.html#guile%20of%20the%20cloud%20giant_bgg",
+      "source": "BGG",
+      "races": null,
+      "description": "See https://5e.tools/feats.html#guile%20of%20the%20cloud%20giant_bgg for full details."
+    },
+    {
+      "name": "Gunner",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:gunner",
+      "source": "TCE",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:gunner for full details."
+    },
+    {
+      "name": "Healer",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:healer",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:healer for full details."
+    },
+    {
+      "name": "Heavily Armored",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:heavily-armored",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:heavily-armored for full details."
+    },
+    {
+      "name": "Heavy Armor Master",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:heavy-armor-master",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:heavy-armor-master for full details."
+    },
+    {
+      "name": "Infernal Constitution",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:infernal-constitution",
+      "source": "XGTE",
+      "races": [
+        "Tiefling"
+      ],
+      "description": "See http://dnd5e.wikidot.com/feat:infernal-constitution for full details."
+    },
+    {
+      "name": "Initiate of High Sorcery",
+      "asi": false,
+      "link": "https://5e-tools.com/feats.html#initiate%20of%20high%20sorcery_dsotdq",
+      "source": "DSotDQ",
+      "races": null,
+      "description": "See https://5e-tools.com/feats.html#initiate%20of%20high%20sorcery_dsotdq for full details."
+    },
+    {
+      "name": "Inspiring Leader",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:inspiring-leader",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:inspiring-leader for full details."
+    },
+    {
+      "name": "Keen Mind",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:keen-mind",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:keen-mind for full details."
+    },
+    {
+      "name": "Keenness of the Stone Giant",
+      "asi": true,
+      "link": "https://5e.tools/feats.html#keenness%20of%20the%20stone%20giant_bgg",
+      "source": "BGG",
+      "races": null,
+      "description": "See https://5e.tools/feats.html#keenness%20of%20the%20stone%20giant_bgg for full details."
+    },
+    {
+      "name": "Knight of the Crown",
+      "asi": true,
+      "link": "https://5e-tools.com/feats.html#knight%20of%20the%20crown_dsotdq",
+      "source": "DSotDQ",
+      "races": null,
+      "description": "See https://5e-tools.com/feats.html#knight%20of%20the%20crown_dsotdq for full details."
+    },
+    {
+      "name": "Knight of the Rose",
+      "asi": true,
+      "link": "https://5e-tools.com/feats.html#knight%20of%20the%20rose_dsotdq",
+      "source": "DSotDQ",
+      "races": null,
+      "description": "See https://5e-tools.com/feats.html#knight%20of%20the%20rose_dsotdq for full details."
+    },
+    {
+      "name": "Knight of the Sword",
+      "asi": true,
+      "link": "https://5e-tools.com/feats.html#knight%20of%20the%20sword_dsotdq",
+      "source": "DSotDQ",
+      "races": null,
+      "description": "See https://5e-tools.com/feats.html#knight%20of%20the%20sword_dsotdq for full details."
+    },
+    {
+      "name": "Lightly Armored",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:lightly-armored",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:lightly-armored for full details."
+    },
+    {
+      "name": "Linguist",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:linguist",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:linguist for full details."
+    },
+    {
+      "name": "Loyal Companion",
+      "asi": false,
+      "link": "https://docs.google.com/document/d/1TYXvbwObfMKEF-LLjFs_tmO3096F4TaKqrv_JEI_nyA/edit?usp=sharing",
+      "source": "HB",
+      "races": null,
+      "description": "See https://docs.google.com/document/d/1TYXvbwObfMKEF-LLjFs_tmO3096F4TaKqrv_JEI_nyA/edit?usp=sharing for full details."
+    },
+    {
+      "name": "Lucky",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:lucky",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:lucky for full details."
+    },
+    {
+      "name": "Mage Slayer",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:mage-slayer",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:mage-slayer for full details."
+    },
+    {
+      "name": "Magic Initiate",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:magic-initiate",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:magic-initiate for full details."
+    },
+    {
+      "name": "Martial Adept",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:martial-adept",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:martial-adept for full details."
+    },
+    {
+      "name": "Medium Armor Master",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:medium-armor-master",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:medium-armor-master for full details."
+    },
+    {
+      "name": "Metamagic Adept",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:metamagic-adept",
+      "source": "TCE",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:metamagic-adept for full details."
+    },
+    {
+      "name": "Mobile",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:mobile",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:mobile for full details."
+    },
+    {
+      "name": "Moderately Armored",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:moderately-armored",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:moderately-armored for full details."
+    },
+    {
+      "name": "Mounted Combatant",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:mounted-combatant",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:mounted-combatant for full details."
+    },
+    {
+      "name": "Observant",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:observant",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:observant for full details."
+    },
+    {
+      "name": "Orcish Fury",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:orcish-fury",
+      "source": "XGTE",
+      "races": [
+        "Orc",
+        "Half-Orc"
+      ],
+      "description": "See http://dnd5e.wikidot.com/feat:orcish-fury for full details."
+    },
+    {
+      "name": "Persuasive",
+      "asi": true,
+      "link": "https://docs.google.com/document/d/1jHic0zFE9xraP570XGPFAJf4kX61PI28aNDI1gSZuRY/edit",
+      "source": "Homebrew",
+      "races": null,
+      "description": "See https://docs.google.com/document/d/1jHic0zFE9xraP570XGPFAJf4kX61PI28aNDI1gSZuRY/edit for full details."
+    },
+    {
+      "name": "Piercer",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:piercer",
+      "source": "TCE",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:piercer for full details."
+    },
+    {
+      "name": "Poison Expert",
+      "asi": false,
+      "link": "https://docs.google.com/document/d/18On4nB9eMgjXy6sLUPkMj1Lo17ZhPUyMWTj-e87pOKA/edit",
+      "source": "Homebrew",
+      "races": null,
+      "description": "See https://docs.google.com/document/d/18On4nB9eMgjXy6sLUPkMj1Lo17ZhPUyMWTj-e87pOKA/edit for full details."
+    },
+    {
+      "name": "Polearm Master",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:polearm-master",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:polearm-master for full details."
+    },
+    {
+      "name": "Prodigy",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:prodigy",
+      "source": "XGTE",
+      "races": [
+        "Half-Elf",
+        "Half-Orc",
+        "Human"
+      ],
+      "description": "See http://dnd5e.wikidot.com/feat:prodigy for full details."
+    },
+    {
+      "name": "Resilient",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:resilient",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:resilient for full details."
+    },
+    {
+      "name": "Ritual Caster",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:ritual-caster",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:ritual-caster for full details."
+    },
+    {
+      "name": "Rune Shaper",
+      "asi": false,
+      "link": "https://5e.tools/feats.html#rune%20shaper_bgg",
+      "source": "BGG",
+      "races": null,
+      "description": "See https://5e.tools/feats.html#rune%20shaper_bgg for full details."
+    },
+    {
+      "name": "Savage Attacker",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:savage-attacker",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:savage-attacker for full details."
+    },
+    {
+      "name": "Second Chance",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:second-chance",
+      "source": "XGTE",
+      "races": [
+        "Halfling"
+      ],
+      "description": "See http://dnd5e.wikidot.com/feat:second-chance for full details."
+    },
+    {
+      "name": "Sentinel",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:sentinel",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:sentinel for full details."
+    },
+    {
+      "name": "Shadow Touched",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:shadow-touched",
+      "source": "TCE",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:shadow-touched for full details."
+    },
+    {
+      "name": "Shaft Specialist",
+      "asi": true,
+      "link": "https://docs.google.com/document/d/1sNUzU98Dv5nMeRsAWrtd0XzYz05dbDhVaveJSlxzxbQ/edit",
+      "source": "HB",
+      "races": null,
+      "description": "See https://docs.google.com/document/d/1sNUzU98Dv5nMeRsAWrtd0XzYz05dbDhVaveJSlxzxbQ/edit for full details."
+    },
+    {
+      "name": "Sharpshooter",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:sharpshooter",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:sharpshooter for full details."
+    },
+    {
+      "name": "Shield Master",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:shield-master",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:shield-master for full details."
+    },
+    {
+      "name": "Skill Expert",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:skill-expert",
+      "source": "TCE",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:skill-expert for full details."
+    },
+    {
+      "name": "Skilled",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:skilled",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:skilled for full details."
+    },
+    {
+      "name": "Skulker",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:skulker",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:skulker for full details."
+    },
+    {
+      "name": "Slasher",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:slasher",
+      "source": "TCE",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:slasher for full details."
+    },
+    {
+      "name": "Soul of the Storm Giant",
+      "asi": true,
+      "link": "https://5e.tools/feats.html#soul%20of%20the%20storm%20giant_bgg",
+      "source": "BGG",
+      "races": null,
+      "description": "See https://5e.tools/feats.html#soul%20of%20the%20storm%20giant_bgg for full details."
+    },
+    {
+      "name": "Spell Sniper",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:spell-sniper",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:spell-sniper for full details."
+    },
+    {
+      "name": "Spelldriver",
+      "asi": false,
+      "link": "https://5e.tools/feats.html#spelldriver_tdcsr",
+      "source": "TDCSR",
+      "races": null,
+      "description": "See https://5e.tools/feats.html#spelldriver_tdcsr for full details."
+    },
+    {
+      "name": "Squat Nimbleness",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:squat-nimbleness",
+      "source": "XGTE",
+      "races": [
+        "Dwarf",
+        "Halfling",
+        "Gnome"
+      ],
+      "description": "See http://dnd5e.wikidot.com/feat:squat-nimbleness for full details."
+    },
+    {
+      "name": "Squire of Solamnia",
+      "asi": false,
+      "link": "https://5e-tools.com/feats.html#squire%20of%20solamnia_dsotdq",
+      "source": "DSotDQ",
+      "races": null,
+      "description": "See https://5e-tools.com/feats.html#squire%20of%20solamnia_dsotdq for full details."
+    },
+    {
+      "name": "Strike of the Giants",
+      "asi": false,
+      "link": "https://5e.tools/feats.html#strike%20of%20the%20giants_bgg",
+      "source": "BGG",
+      "races": null,
+      "description": "See https://5e.tools/feats.html#strike%20of%20the%20giants_bgg for full details."
+    },
+    {
+      "name": "Svirfneblin Magic",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:svirfneblin-magic",
+      "source": "MTF",
+      "races": [
+        "Deep Gnome"
+      ],
+      "description": "See http://dnd5e.wikidot.com/feat:svirfneblin-magic for full details."
+    },
+    {
+      "name": "Tavern Brawler",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:tavern-brawler",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:tavern-brawler for full details."
+    },
+    {
+      "name": "Telekinetic",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:telekinetic",
+      "source": "TCE",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:telekinetic for full details."
+    },
+    {
+      "name": "Telepathic",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:telepathic",
+      "source": "TCE",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:telepathic for full details."
+    },
+    {
+      "name": "Tinkerer's Infusion",
+      "asi": false,
+      "link": "https://docs.google.com/document/d/1QAdsQIBvL2_ctgOZG04WHWCUnsCGkav1c169Nmc4fNI/edit",
+      "source": "Homebrew",
+      "races": null,
+      "description": "See https://docs.google.com/document/d/1QAdsQIBvL2_ctgOZG04WHWCUnsCGkav1c169Nmc4fNI/edit for full details."
+    },
+    {
+      "name": "Tough",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:tough",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:tough for full details."
+    },
+    {
+      "name": "Vigor of the Hill Giant",
+      "asi": true,
+      "link": "https://5e.tools/feats.html#vigor%20of%20the%20hill%20giant_bgg",
+      "source": "BGG",
+      "races": null,
+      "description": "See https://5e.tools/feats.html#vigor%20of%20the%20hill%20giant_bgg for full details."
+    },
+    {
+      "name": "War Caster",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:war-caster",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:war-caster for full details."
+    },
+    {
+      "name": "Weapon Master",
+      "asi": true,
+      "link": "http://dnd5e.wikidot.com/feat:weapon-master",
+      "source": "PHB",
+      "races": null,
+      "description": "See http://dnd5e.wikidot.com/feat:weapon-master for full details."
+    },
+    {
+      "name": "Wood Elf Magic",
+      "asi": false,
+      "link": "http://dnd5e.wikidot.com/feat:wood-elf-magic",
+      "source": "XGTE",
+      "races": [
+        "Wood Elf"
+      ],
+      "description": "See http://dnd5e.wikidot.com/feat:wood-elf-magic for full details."
+    }
   ]
 }

@@ -645,13 +645,20 @@ const extraCategoryAliases = {
   "Cantrip": "Cantrips",
   "Cantrips": "Cantrips",
   "Skill Proficiency": "Skill Proficiency",
-  "Tool Proficiency": "Tool Proficiency"
+  "Tool Proficiency": "Tool Proficiency",
+  "Fighting Style": "Fighting Style",
+  "Additional Fighting Style": "Fighting Style",
+  "Divine Domain": "Divine Domain",
+  "Metamagic": "Metamagic"
 };
 
 const extraCategoryDescriptions = {
   "Cantrips": "Scegli i tuoi cantrip.",
   "Skill Proficiency": "Seleziona le competenze nelle abilità.",
-  "Tool Proficiency": "Seleziona le competenze negli strumenti."
+  "Tool Proficiency": "Seleziona le competenze negli strumenti.",
+  "Fighting Style": "Scegli il tuo stile di combattimento.",
+  "Divine Domain": "Seleziona il tuo dominio divino.",
+  "Metamagic": "Scegli le opzioni di Metamagia."
 };
 
 /**
@@ -717,7 +724,10 @@ function updateExtraSelectionsView() {
     "Skill Proficiency": ["skillSelectionContainer", "Skill Proficiency"],
     "Tool Proficiency": ["toolSelectionContainer", "Tool Proficiency"],
     "Spellcasting": ["spellSelectionContainer", "Spellcasting"],
-    "Cantrips": ["spellSelectionContainer", "Cantrips"]
+    "Cantrips": ["spellSelectionContainer", "Cantrips"],
+    "Fighting Style": ["fightingStyleSelection", "Fighting Style"],
+    "Divine Domain": ["divineDomainSelection", "Divine Domain"],
+    "Metamagic": ["metamagicSelection", "Metamagic"]
   };
   Object.entries(summaryMap).forEach(([key, [id, title]]) => {
     updateContainer(id, title, key);

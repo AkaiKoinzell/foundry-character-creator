@@ -1,0 +1,47 @@
+{
+  "name": "Resilient",
+  "source": "PHB",
+  "page": 168,
+  "reprintedAs": [
+    "Resilient|XPHB"
+  ],
+  "ability": [
+    {
+      "choose": {
+        "from": [
+          "str",
+          "dex",
+          "con",
+          "int",
+          "wis",
+          "cha"
+        ],
+        "amount": 1,
+        "entry": "Increase the chosen ability score by 1, to a maximum of 20."
+      }
+    }
+  ],
+  "savingThrowProficiencies": [
+    {
+      "choose": {
+        "from": [
+          "str",
+          "dex",
+          "con",
+          "int",
+          "wis",
+          "cha"
+        ]
+      }
+    }
+  ],
+  "entries": [
+    "Choose one ability score. You gain the following benefits:",
+    {
+      "type": "list",
+      "items": [
+        "You gain proficiency in saving throws using the chosen ability."
+      ]
+    }
+  ]
+}

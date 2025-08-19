@@ -1,0 +1,29 @@
+{
+  "name": "Observant",
+  "source": "PHB",
+  "page": 168,
+  "reprintedAs": [
+    "Observant|XPHB"
+  ],
+  "ability": [
+    {
+      "choose": {
+        "from": [
+          "int",
+          "wis"
+        ],
+        "amount": 1
+      }
+    }
+  ],
+  "entries": [
+    "Quick to notice details of your environment, you gain the following benefits:",
+    {
+      "type": "list",
+      "items": [
+        "If you can see a creature's mouth while it is speaking a language you understand, you can interpret what it's saying by reading its lips.",
+        "You have a +5 bonus to your passive Wisdom ({@skill Perception}) and passive Intelligence ({@skill Investigation}) scores."
+      ]
+    }
+  ]
+}

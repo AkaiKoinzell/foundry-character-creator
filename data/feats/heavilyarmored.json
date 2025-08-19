@@ -1,0 +1,36 @@
+{
+  "name": "Heavily Armored",
+  "source": "PHB",
+  "page": 167,
+  "reprintedAs": [
+    "Heavily Armored|XPHB"
+  ],
+  "prerequisite": [
+    {
+      "proficiency": [
+        {
+          "armor": "medium"
+        }
+      ]
+    }
+  ],
+  "ability": [
+    {
+      "str": 1
+    }
+  ],
+  "armorProficiencies": [
+    {
+      "heavy": true
+    }
+  ],
+  "entries": [
+    "You have trained to master the use of heavy armor, gaining the following benefits:",
+    {
+      "type": "list",
+      "items": [
+        "You gain proficiency with heavy armor."
+      ]
+    }
+  ]
+}

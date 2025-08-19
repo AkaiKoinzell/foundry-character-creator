@@ -1,0 +1,33 @@
+{
+  "name": "Lightly Armored",
+  "source": "PHB",
+  "page": 167,
+  "reprintedAs": [
+    "Lightly Armored|XPHB"
+  ],
+  "ability": [
+    {
+      "choose": {
+        "from": [
+          "str",
+          "dex"
+        ],
+        "amount": 1
+      }
+    }
+  ],
+  "armorProficiencies": [
+    {
+      "light": true
+    }
+  ],
+  "entries": [
+    "You have trained to master the use of light armor, gaining the following benefits:",
+    {
+      "type": "list",
+      "items": [
+        "You gain proficiency with light armor."
+      ]
+    }
+  ]
+}

@@ -31,15 +31,6 @@
   "weapon_proficiencies": ["simple weapons", "hand crossbows", "longswords", "rapiers", "shortswords"],
   "tool_proficiencies": ["three musical instruments of your choice"],
   "armor_proficiencies": ["light armor"],
-  "starting_equipment": {
-    "choices": [
-      ["Rapier", "Longsword", "Any simple weapon"],
-      ["Diplomat's pack", "Entertainer's pack"],
-      ["Lute", "Any other musical instrument"]
-    ],
-    "fixed": ["Leather armor", "Dagger"],
-    "gold_alternative": "5d4 × 10 gp"
-  },
   "multiclassing": {
     "prerequisites": {"Charisma": 13},
     "proficiencies": {

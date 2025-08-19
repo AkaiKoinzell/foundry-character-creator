@@ -10,15 +10,6 @@
     "options": ["Arcana", "History", "Insight", "Investigation", "Medicine", "Religion"]
   },
   "weapon_proficiencies": ["daggers", "darts", "slings", "quarterstaffs", "light crossbows"],
-  "starting_equipment": {
-    "choices": [
-      ["Quarterstaff", "Dagger"],
-      ["Component pouch", "Arcane focus"],
-      ["Scholar's pack", "Explorer's pack"]
-    ],
-    "fixed": ["Spellbook"],
-    "gold_alternative": "4d4 × 10 gp"
-  },
   "multiclassing": {"prerequisites": {"Intelligence": 13}},
   "subclasses": [
     {

@@ -32,14 +32,6 @@
   ],
   "tool_proficiencies": ["Herbalism kit"],
   "armor_proficiencies": ["light armor", "medium armor", "shields (non-metal)"],
-  "starting_equipment": {
-    "choices": [
-      ["Wooden shield", "Any simple weapon"],
-      ["Scimitar", "Any simple melee weapon"]
-    ],
-    "fixed": ["Leather armor", "Explorer's pack", "Druidic focus"],
-    "gold_alternative": "2d4 × 10 gp"
-  },
   "multiclassing": {
     "prerequisites": {"Wisdom": 13},
     "proficiencies": {"armor": ["light armor", "medium armor", "shields (non-metal)"]}

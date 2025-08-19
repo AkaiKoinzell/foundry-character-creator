@@ -11,15 +11,6 @@
   },
   "weapon_proficiencies": ["simple weapons", "martial weapons"],
   "armor_proficiencies": ["light armor", "medium armor", "heavy armor", "shields"],
-  "starting_equipment": {
-    "choices": [
-      ["A martial weapon and a shield", "Two martial weapons"],
-      ["Five javelins", "Any simple melee weapon"],
-      ["Priest's pack", "Explorer's pack"]
-    ],
-    "fixed": ["Chain mail", "Holy symbol"],
-    "gold_alternative": "5d4 × 10 gp"
-  },
   "multiclassing": {
     "prerequisites": {"Strength": 13, "Charisma": 13},
     "proficiencies": {

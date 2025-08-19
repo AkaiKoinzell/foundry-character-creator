@@ -20,16 +20,6 @@
   },
   "weapon_proficiencies": ["simple weapons", "martial weapons"],
   "armor_proficiencies": ["light armor", "medium armor", "heavy armor", "shields"],
-  "starting_equipment": {
-    "choices": [
-      ["Chain mail", "Leather armor, longbow, and 20 arrows"],
-      ["A martial weapon and a shield", "Two martial weapons"],
-      ["Light crossbow and 20 bolts", "Two handaxes"],
-      ["Dungeoneer's pack", "Explorer's pack"]
-    ],
-    "fixed": [],
-    "gold_alternative": "5d4 × 10 gp"
-  },
   "multiclassing": {
     "prerequisites": {"Strength": 13, "Dexterity": 13},
     "proficiencies": {

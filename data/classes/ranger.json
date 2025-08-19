@@ -20,15 +20,6 @@
   },
   "weapon_proficiencies": ["simple weapons", "martial weapons"],
   "armor_proficiencies": ["light armor", "medium armor", "shields"],
-  "starting_equipment": {
-    "choices": [
-      ["Scale mail", "Leather armor"],
-      ["Two shortswords", "Two simple melee weapons"],
-      ["Dungeoneer's pack", "Explorer's pack"]
-    ],
-    "fixed": ["Longbow", "Quiver of 20 arrows"],
-    "gold_alternative": "5d4 × 10 gp"
-  },
   "multiclassing": {
     "prerequisites": {"Dexterity": 13, "Wisdom": 13},
     "proficiencies": {

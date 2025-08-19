@@ -1,0 +1,30 @@
+{
+  "name": "Ancestral Guardian",
+  "description": "Barbarians who call on the spirits of their ancestors to protect allies and hinder foes.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Ancestral Protectors",
+        "description": "When you rage, the first creature you hit on your turn has disadvantage on attacks against others, and those targets have resistance to its damage until your next turn."
+      }
+    ],
+    "6": [
+      {
+        "name": "Spirit Shield",
+        "description": "While raging, you can use your reaction to reduce damage to a creature within 30 feet by 2d6, increasing at higher levels."
+      }
+    ],
+    "10": [
+      {
+        "name": "Consult the Spirits",
+        "description": "You can cast augury or clairvoyance without a spell slot or components, summoning an ancestral spirit as the sensor. Once used, you must finish a short or long rest."
+      }
+    ],
+    "14": [
+      {
+        "name": "Vengeful Ancestors",
+        "description": "When you use Spirit Shield, the attacker takes force damage equal to the damage prevented."
+      }
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Storm Herald",
+  "description": "Barbarians who channel the fury of nature into a magical storm that surrounds them.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Storm Aura",
+        "description": "While raging, you emanate a 10-foot aura chosen from desert, sea, or tundra, creating effects when you rage and as a bonus action."
+      }
+    ],
+    "6": [
+      {
+        "name": "Storm Soul",
+        "description": "Gain benefits even when your aura isn't active, based on your chosen environment such as resistance to fire, lightning, or cold and related abilities."
+      }
+    ],
+    "10": [
+      {
+        "name": "Shielding Storm",
+        "description": "Each creature of your choice in your Storm Aura gains the damage resistance provided by your Storm Soul."
+      }
+    ],
+    "14": [
+      {
+        "name": "Raging Storm",
+        "description": "Your aura lashes out at foes with effects based on your environment, such as burning attackers or knocking enemies prone."
+      }
+    ]
+  }
+}

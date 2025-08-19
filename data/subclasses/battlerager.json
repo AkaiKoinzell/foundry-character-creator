@@ -1,0 +1,34 @@
+{
+  "name": "Battlerager",
+  "description": "Dwarven warriors who hurl themselves into battle clad in spiked armor.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Restriction—Dwarves Only",
+        "description": "Only dwarves can choose this path, though a DM may lift this restriction to suit the campaign."
+      },
+      {
+        "name": "Battlerager Armor",
+        "description": "While wearing spiked armor and raging, you can use a bonus action to make a melee attack for 1d4 piercing damage and deal 3 piercing damage when you successfully grapple."
+      }
+    ],
+    "6": [
+      {
+        "name": "Reckless Abandon",
+        "description": "When you use Reckless Attack while raging, you gain temporary hit points equal to your Constitution modifier."
+      }
+    ],
+    "10": [
+      {
+        "name": "Battlerager Charge",
+        "description": "You can take the Dash action as a bonus action while you are raging."
+      }
+    ],
+    "14": [
+      {
+        "name": "Spiked Retribution",
+        "description": "While raging in spiked armor, a creature that hits you with a melee attack takes 3 piercing damage if it is within 5 feet of you."
+      }
+    ]
+  }
+}

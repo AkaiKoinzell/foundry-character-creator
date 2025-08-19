@@ -616,7 +616,7 @@ document.getElementById("closeModal").addEventListener("click", () => {
   console.log("📝 Selezioni salvate prima dell'update:", selectedData);
 
   if (extraModalContext === "race") {
-    showStep("step2");
+    showStep("step3");
 
     setTimeout(() => {
       console.log("🛠 Eseguo displayRaceTraits()...");

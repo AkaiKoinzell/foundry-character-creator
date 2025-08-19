@@ -1,147 +1,186 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const step4Container = document.getElementById("step4");
-  if (!step4Container) return;
+// Step 4: Background selection and feat handling
+import { loadDropdownData } from './common.js';
 
-  // Imposta il markup iniziale dello step 4
-  step4Container.innerHTML = `
-    <h2>Step 4: Selezione dei Tratti Extra</h2>
-    <div id="extraSpellcasting"></div>
-    <div id="extraLanguages"></div>
-    <div id="extraSkills"></div>
-    <div id="extraTools"></div>
-  `;
+let featPathIndex = {};
+let currentFeatData = null;
 
-  // --------------------------
-  // Render Extra Spellcasting
-  // --------------------------
-  function renderExtraSpellcasting(raceData) {
-    // Controlla se esiste la proprietà spellcasting in modalità "filter"
-    if (
-      raceData.spellcasting &&
-      raceData.spellcasting.spell_choices &&
-      raceData.spellcasting.spell_choices.type === "filter" &&
-      Array.isArray(raceData.spellcasting.allSpells)
-    ) {
-      const levelSelect = document.getElementById("levelSelect");
-      const currentLevel = levelSelect ? parseInt(levelSelect.value) || 1 : 1;
-      // Filtra gli incantesimi in base al livello
-      const filteredSpells = raceData.spellcasting.allSpells.filter(
-        spell => parseInt(spell.level) <= currentLevel
-      );
-      // Raggruppa gli incantesimi per livello
-      const groupedSpells = {};
-      filteredSpells.forEach(spell => {
-        const lvl = parseInt(spell.level);
-        if (!groupedSpells[lvl]) groupedSpells[lvl] = [];
-        groupedSpells[lvl].push(spell);
-      });
-      const levels = Object.keys(groupedSpells).map(Number).sort((a, b) => a - b);
-      let html = "<h4>Spellcasting</h4>";
-      levels.forEach(lvl => {
-        const spellsAtLvl = groupedSpells[lvl];
-        if (spellsAtLvl.length === 1) {
-          // Se c'è un solo incantesimo, lo mostriamo come testo fisso
-          html += `<p>Incantesimo di livello ${lvl}: ${spellsAtLvl[0].name}</p>`;
-        } else if (spellsAtLvl.length > 1) {
-          // Se ci sono più incantesimi, creiamo un dropdown
-          const options = spellsAtLvl
-            .map(
-              spell =>
-                `<option value="${spell.name}">${spell.name} (lvl ${spell.level})</option>`
-            )
-            .join("");
-          html += `<p>Incantesimo di livello ${lvl}: 
-                    <select id="extraSpellSelection_level_${lvl}">
-                      <option value="">Seleziona...</option>
-                      ${options}
-                    </select>
-                   </p>`;
-        }
-      });
-      // Gestione dell'abilità di lancio
-      if (
-        raceData.spellcasting.ability_choices &&
-        Array.isArray(raceData.spellcasting.ability_choices)
-      ) {
-        if (raceData.spellcasting.ability_choices.length === 1) {
-          html += `<p>Abilità di lancio: ${raceData.spellcasting.ability_choices[0]}</p>`;
-        } else if (raceData.spellcasting.ability_choices.length > 1) {
-          const abilityOptions = raceData.spellcasting.ability_choices
-            .map(ability => `<option value="${ability}">${ability}</option>`)
-            .join("");
-          html += `<p>Abilità di lancio: 
-                    <select id="extraCastingAbility">
-                      <option value="">Seleziona...</option>
-                      ${abilityOptions}
-                    </select>
-                   </p>`;
-        }
-      }
-      document.getElementById("extraSpellcasting").innerHTML = html;
-    } else {
-      document.getElementById("extraSpellcasting").innerHTML = "";
-    }
-  }
+function resetBackgroundTalentFields() {
+  ["str", "dex", "con", "int", "wis", "cha"].forEach(ab => {
+    const el = document.getElementById(ab + "BackgroundTalent");
+    if (el) el.value = 0;
+  });
+}
 
-  // --------------------------
-  // Render Extra Languages
-  // --------------------------
-  function renderExtraLanguages(raceData) {
-    if (raceData.languages && raceData.languages.choice > 0) {
-      loadLanguages(langs => {
-        // Filtra le lingue già conosciute
-        const availableLangs = langs.filter(
-          lang => !raceData.languages.fixed.includes(lang)
-        );
-        const options = availableLangs
-          .map(lang => `<option value="${lang}">${lang}</option>`)
-          .join("");
-        const html = `<h4>Lingue Extra</h4>
-                      <select id="extraLanguageSelect">
-                        <option value="">Seleziona...</option>
-                        ${options}
-                      </select>`;
-        document.getElementById("extraLanguages").innerHTML = html;
-      });
-    } else {
-      document.getElementById("extraLanguages").innerHTML = "";
-    }
-  }
-
-  // --------------------------
-  // (Placeholder) Render Extra Skills
-  // --------------------------
-  function renderExtraSkills(raceData) {
-    // Se nel JSON della razza esiste una proprietà per skills extra, gestiscila qui.
-    // In questo esempio base non abbiamo una proprietà specifica, quindi puliamo il container.
-    document.getElementById("extraSkills").innerHTML = "";
-  }
-
-  // --------------------------
-  // (Placeholder) Render Extra Tools
-  // --------------------------
-  function renderExtraTools(raceData) {
-    // Analogamente, se esiste una proprietà per tools extra, gestiscila qui.
-    document.getElementById("extraTools").innerHTML = "";
-  }
-
-  // --------------------------
-  // Render dei Tratti Extra se i dati della razza sono già disponibili
-  // --------------------------
-  if (window.currentRaceData) {
-    renderExtraSpellcasting(window.currentRaceData);
-    renderExtraLanguages(window.currentRaceData);
-    renderExtraSkills(window.currentRaceData);
-    renderExtraTools(window.currentRaceData);
-  }
-
-  // Se il livello cambia (presente nello step1 o in un header globale), aggiorna la sezione spellcasting
-  const levelSelect = document.getElementById("levelSelect");
-  if (levelSelect) {
-    levelSelect.addEventListener("change", () => {
-      if (window.currentRaceData) {
-        renderExtraSpellcasting(window.currentRaceData);
-      }
+function applyFeatAbilityChoices() {
+  resetBackgroundTalentFields();
+  if (currentFeatData && currentFeatData.fixedAbilities) {
+    currentFeatData.fixedAbilities.forEach(obj => {
+      const ability = Object.keys(obj)[0];
+      const val = obj[ability];
+      const el = document.getElementById(ability + "BackgroundTalent");
+      if (el) el.value = val;
     });
   }
+  const selects = document.querySelectorAll(".featAbilityChoice");
+  selects.forEach(sel => {
+    if (sel.value) {
+      const amt = parseInt(sel.dataset.amount || "1");
+      const el = document.getElementById(sel.value + "BackgroundTalent");
+      if (el) el.value = amt;
+    }
+  });
+  updateFinalScores();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const step = document.getElementById("step4");
+  if (!step) return;
+
+  window.backgroundData = { name: "", skills: [], tools: [], languages: [], feat: "" };
+
+  loadDropdownData("data/backgrounds.json", "backgroundSelect", "backgrounds");
+  fetch("data/feats.json").then(r => r.json()).then(d => { featPathIndex = d.feats || {}; });
+
+  document.getElementById("backgroundSelect").addEventListener("change", async e => {
+    const val = e.target.value;
+    if (!val) return;
+    const res = await fetch(val);
+    const data = await res.json();
+    backgroundData.name = data.name;
+
+    const skillDiv = document.getElementById("backgroundSkills");
+    skillDiv.innerHTML = "";
+    backgroundData.skills = Array.isArray(data.skills) ? data.skills.slice() : [];
+    if (backgroundData.skills.length > 0) {
+      skillDiv.innerHTML = `<p><strong>Abilità:</strong> ${backgroundData.skills.join(", ")}</p>`;
+    }
+    if (data.skillChoices) {
+      const num = data.skillChoices.choose || 0;
+      const opts = data.skillChoices.options || [];
+      skillDiv.innerHTML += `<p><strong>Scegli ${num} abilità:</strong></p>`;
+      for (let i = 0; i < num; i++) {
+        const sel = document.createElement("select");
+        sel.className = "backgroundSkillChoice";
+        sel.innerHTML = `<option value="">Seleziona</option>` + opts.map(o => `<option value="${o}">${o}</option>`).join("");
+        sel.addEventListener("change", () => {
+          const chosen = Array.from(document.querySelectorAll(".backgroundSkillChoice")).map(s => s.value).filter(Boolean);
+          backgroundData.skills = (data.skills || []).concat(chosen);
+        });
+        skillDiv.appendChild(sel);
+      }
+    }
+
+    const toolDiv = document.getElementById("backgroundTools");
+    toolDiv.innerHTML = "";
+    backgroundData.tools = Array.isArray(data.tools) ? data.tools.slice() : [];
+    if (Array.isArray(data.tools) && data.tools.length > 0) {
+      toolDiv.innerHTML = `<p><strong>Strumenti:</strong> ${data.tools.join(", ")}</p>`;
+    }
+    if (data.tools && data.tools.choose) {
+      const num = data.tools.choose;
+      const opts = data.tools.options || [];
+      toolDiv.innerHTML += `<p><strong>Scegli ${num} strumento:</strong></p>`;
+      for (let i = 0; i < num; i++) {
+        const sel = document.createElement("select");
+        sel.className = "backgroundToolChoice";
+        sel.innerHTML = `<option value="">Seleziona</option>` + opts.map(o => `<option value="${o}">${o}</option>`).join("");
+        sel.addEventListener("change", () => {
+          const chosen = Array.from(document.querySelectorAll(".backgroundToolChoice")).map(s => s.value).filter(Boolean);
+          backgroundData.tools = chosen;
+        });
+        toolDiv.appendChild(sel);
+      }
+    }
+    if (data.toolChoices) {
+      const num = data.toolChoices.choose || 0;
+      const opts = data.toolChoices.options || [];
+      toolDiv.innerHTML += `<p><strong>Scegli ${num} strumento:</strong></p>`;
+      for (let i = 0; i < num; i++) {
+        const sel = document.createElement("select");
+        sel.className = "backgroundToolChoice";
+        sel.innerHTML = `<option value="">Seleziona</option>` + opts.map(o => `<option value="${o}">${o}</option>`).join("");
+        sel.addEventListener("change", () => {
+          const chosen = Array.from(document.querySelectorAll(".backgroundToolChoice")).map(s => s.value).filter(Boolean);
+          const base = Array.isArray(data.tools) ? data.tools.slice() : [];
+          backgroundData.tools = base.concat(chosen);
+        });
+        toolDiv.appendChild(sel);
+      }
+    }
+
+    const langDiv = document.getElementById("backgroundLanguages");
+    langDiv.innerHTML = "";
+    backgroundData.languages = Array.isArray(data.languages) ? data.languages.slice() : [];
+    if (Array.isArray(data.languages) && data.languages.length > 0) {
+      langDiv.innerHTML = `<p><strong>Linguaggi:</strong> ${data.languages.join(", ")}</p>`;
+    } else if (data.languages && data.languages.choose) {
+      const num = data.languages.choose;
+      const opts = data.languages.options || [];
+      langDiv.innerHTML = `<p><strong>Scegli ${num} linguaggi:</strong></p>`;
+      for (let i = 0; i < num; i++) {
+        const sel = document.createElement("select");
+        sel.className = "backgroundLanguageChoice";
+        sel.innerHTML = `<option value="">Seleziona</option>` + opts.map(o => `<option value="${o}">${o}</option>`).join("");
+        sel.addEventListener("change", () => {
+          const chosen = Array.from(document.querySelectorAll(".backgroundLanguageChoice")).map(s => s.value).filter(Boolean);
+          backgroundData.languages = chosen;
+        });
+        langDiv.appendChild(sel);
+      }
+    }
+
+    const featDiv = document.getElementById("backgroundFeat");
+    featDiv.innerHTML = "";
+    backgroundData.feat = "";
+    currentFeatData = null;
+    if (Array.isArray(data.featOptions) && data.featOptions.length > 0) {
+      const label = document.createElement("label");
+      label.htmlFor = "backgroundFeatSelect";
+      label.textContent = "Feat:";
+      const select = document.createElement("select");
+      select.id = "backgroundFeatSelect";
+      select.innerHTML = `<option value="">Seleziona un talento</option>` +
+        data.featOptions
+          .map(name => `<option value="${name}">${name}</option>`)
+          .join("");
+      const abilDiv = document.createElement("div");
+      abilDiv.id = "featAbilityChoices";
+      select.addEventListener("change", () => {
+        currentFeatData = null;
+        abilDiv.innerHTML = "";
+        backgroundData.feat = select.value || "";
+        resetBackgroundTalentFields();
+        if (!select.value || !featPathIndex[select.value]) {
+          updateFinalScores();
+          return;
+        }
+        fetch(featPathIndex[select.value])
+          .then(r => r.json())
+          .then(feat => {
+            const fixed = [];
+            if (feat.ability) {
+              feat.ability.forEach(ab => {
+                if (ab.choose) {
+                  const sel = document.createElement("select");
+                  sel.className = "featAbilityChoice";
+                  sel.dataset.amount = ab.choose.amount || 1;
+                  sel.innerHTML = `<option value="">Seleziona caratteristica</option>` +
+                    ab.choose.from.map(a => `<option value="${a}">${a.toUpperCase()}</option>`).join("");
+                  sel.addEventListener("change", applyFeatAbilityChoices);
+                  abilDiv.appendChild(sel);
+                } else {
+                  fixed.push(ab);
+                }
+              });
+            }
+            currentFeatData = { fixedAbilities: fixed };
+            applyFeatAbilityChoices();
+          });
+      });
+      featDiv.appendChild(label);
+      featDiv.appendChild(select);
+      featDiv.appendChild(abilDiv);
+    }
+  });
 });
+

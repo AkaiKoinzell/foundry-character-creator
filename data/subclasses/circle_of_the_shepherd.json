@@ -1,0 +1,34 @@
+{
+  "name": "Circle of the Shepherd",
+  "description": "Druids who call on animal and fey spirits to protect their charges.",
+  "features_by_level": {
+    "2": [
+      {
+        "name": "Speech of the Woods",
+        "description": "Learn Sylvan and communicate with beasts; they can understand you and you can interpret their noises." 
+      },
+      {
+        "name": "Spirit Totem",
+        "description": "As a bonus action, summon an aura-creating spirit (bear, hawk or unicorn) for 1 minute, usable once per short rest." 
+      }
+    ],
+    "6": [
+      {
+        "name": "Mighty Summoner",
+        "description": "Beasts and fey you summon have 2 extra hit points per Hit Die and their attacks count as magical." 
+      }
+    ],
+    "10": [
+      {
+        "name": "Guardian Spirit",
+        "description": "Creatures you summoned regain hit points equal to half your druid level when they end their turn in your Spirit Totem aura." 
+      }
+    ],
+    "14": [
+      {
+        "name": "Faithful Summons",
+        "description": "If reduced to 0 hit points or incapacitated, automatically cast conjure animals at 9th level to summon protective beasts." 
+      }
+    ]
+  }
+}

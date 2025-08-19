@@ -1,0 +1,30 @@
+{
+  "name": "Circle of Dreams",
+  "description": "Druids with ties to the Feywild who use dreamlike magic to heal and protect.",
+  "features_by_level": {
+    "2": [
+      {
+        "name": "Balm of the Summer Court",
+        "description": "As a bonus action, heal a creature within 120 feet using a pool of d6s equal to your druid level, granting temporary hit points as well."
+      }
+    ],
+    "6": [
+      {
+        "name": "Hearth of Moonlight and Shadow",
+        "description": "During a rest, create a 30-foot sphere that grants +5 to Stealth and Perception and masks light within it." 
+      }
+    ],
+    "10": [
+      {
+        "name": "Hidden Paths",
+        "description": "Teleport 60 feet as a bonus action or teleport a willing creature 30 feet as an action a number of times equal to your Wisdom modifier per long rest." 
+      }
+    ],
+    "14": [
+      {
+        "name": "Walker in Dreams",
+        "description": "After a short rest, cast dream, scrying, or teleportation circle (to your last long-rest location) once per long rest without expending a slot." 
+      }
+    ]
+  }
+}

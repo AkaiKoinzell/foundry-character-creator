@@ -1,5 +1,25 @@
 {
   "name": "Sorcerer",
+  "description": "A spellcaster who draws on inherent magic from a gift or bloodline.",
+  "hit_die": "d6",
+  "hp_at_1st_level": "6 + your Constitution modifier",
+  "hp_at_higher_levels": "1d6 (or 4) + your Constitution modifier per Sorcerer level after 1st",
+  "saving_throws": ["Constitution", "Charisma"],
+  "skill_proficiencies": {
+    "choose": 2,
+    "options": ["Arcana", "Deception", "Insight", "Intimidation", "Persuasion", "Religion"]
+  },
+  "weapon_proficiencies": ["daggers", "darts", "slings", "quarterstaffs", "light crossbows"],
+  "starting_equipment": {
+    "choices": [
+      ["Light crossbow and 20 bolts", "Any simple weapon"],
+      ["Component pouch", "Arcane focus"],
+      ["Dungeoneer's pack", "Explorer's pack"]
+    ],
+    "fixed": ["Two daggers"],
+    "gold_alternative": "3d4 × 10 gp"
+  },
+  "multiclassing": {"prerequisites": {"Charisma": 13}},
   "subclasses": [
     {
       "name": "Aberrant Mind",

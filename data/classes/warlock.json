@@ -1,6 +1,29 @@
 {
   "name": "Warlock",
   "description": "A wielder of magic derived from a bargain with an extraplanar patron.",
+  "hit_die": "d8",
+  "hp_at_1st_level": "8 + your Constitution modifier",
+  "hp_at_higher_levels": "1d8 (or 5) + your Constitution modifier per Warlock level after 1st",
+  "saving_throws": ["Wisdom", "Charisma"],
+  "skill_proficiencies": {
+    "choose": 2,
+    "options": ["Arcana", "Deception", "History", "Intimidation", "Investigation", "Nature", "Religion"]
+  },
+  "weapon_proficiencies": ["simple weapons"],
+  "armor_proficiencies": ["light armor"],
+  "starting_equipment": {
+    "choices": [
+      ["Light crossbow and 20 bolts", "Any simple weapon"],
+      ["Component pouch", "Arcane focus"],
+      ["Scholar's pack", "Dungeoneer's pack"]
+    ],
+    "fixed": ["Leather armor", "Any simple weapon", "Two daggers"],
+    "gold_alternative": "4d4 × 10 gp"
+  },
+  "multiclassing": {
+    "prerequisites": {"Charisma": 13},
+    "proficiencies": {"weapons": ["simple weapons"], "armor": ["light armor"]}
+  },
   "features_by_level": {
     "1": [
       {

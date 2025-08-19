@@ -1,5 +1,46 @@
 {
   "name": "Rogue",
+  "description": "A scoundrel who uses stealth and trickery to overcome obstacles and enemies.",
+  "hit_die": "d8",
+  "hp_at_1st_level": "8 + your Constitution modifier",
+  "hp_at_higher_levels": "1d8 (or 5) + your Constitution modifier per Rogue level after 1st",
+  "saving_throws": ["Dexterity", "Intelligence"],
+  "skill_proficiencies": {
+    "choose": 4,
+    "options": [
+      "Acrobatics",
+      "Athletics",
+      "Deception",
+      "Insight",
+      "Intimidation",
+      "Investigation",
+      "Perception",
+      "Performance",
+      "Persuasion",
+      "Sleight of Hand",
+      "Stealth"
+    ]
+  },
+  "weapon_proficiencies": ["simple weapons", "hand crossbows", "longswords", "rapiers", "shortswords"],
+  "tool_proficiencies": ["thieves' tools"],
+  "armor_proficiencies": ["light armor"],
+  "starting_equipment": {
+    "choices": [
+      ["Rapier", "Shortsword"],
+      ["Shortbow and quiver of 20 arrows", "Shortsword"],
+      ["Burglar's pack", "Dungeoneer's pack", "Explorer's pack"]
+    ],
+    "fixed": ["Leather armor", "Two daggers", "Thieves' tools"],
+    "gold_alternative": "4d4 × 10 gp"
+  },
+  "multiclassing": {
+    "prerequisites": {"Dexterity": 13},
+    "proficiencies": {
+      "skills": ["Choose one Rogue skill"],
+      "tools": ["thieves' tools"],
+      "armor": ["light armor"]
+    }
+  },
   "subclasses": [
     {
       "name": "Thief",

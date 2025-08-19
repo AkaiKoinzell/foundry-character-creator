@@ -1,6 +1,38 @@
 {
   "name": "Barbarian",
   "description": "A fierce warrior of primitive background who can enter a battle rage.",
+  "hit_die": "d12",
+  "hp_at_1st_level": "12 + your Constitution modifier",
+  "hp_at_higher_levels": "1d12 (or 7) + your Constitution modifier per Barbarian level after 1st",
+  "saving_throws": ["Strength", "Constitution"],
+  "skill_proficiencies": {
+    "choose": 2,
+    "options": [
+      "Animal Handling",
+      "Athletics",
+      "Intimidation",
+      "Nature",
+      "Perception",
+      "Survival"
+    ]
+  },
+  "weapon_proficiencies": ["simple weapons", "martial weapons"],
+  "armor_proficiencies": ["light armor", "medium armor", "shields"],
+  "starting_equipment": {
+    "choices": [
+      ["Greataxe", "Any martial melee weapon"],
+      ["Two handaxes", "Any simple weapon"]
+    ],
+    "fixed": ["Explorer's pack", "Four javelins"],
+    "gold_alternative": "2d4 × 10 gp"
+  },
+  "multiclassing": {
+    "prerequisites": {"Strength": 13},
+    "proficiencies": {
+      "weapons": ["simple weapons", "martial weapons"],
+      "armor": ["shields"]
+    }
+  },
   "features_by_level": {
     "1": [
       {

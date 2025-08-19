@@ -1,5 +1,42 @@
 {
   "name": "Fighter",
+  "description": "A master of martial combat, skilled with a variety of weapons and armor.",
+  "hit_die": "d10",
+  "hp_at_1st_level": "10 + your Constitution modifier",
+  "hp_at_higher_levels": "1d10 (or 6) + your Constitution modifier per Fighter level after 1st",
+  "saving_throws": ["Strength", "Constitution"],
+  "skill_proficiencies": {
+    "choose": 2,
+    "options": [
+      "Acrobatics",
+      "Animal Handling",
+      "Athletics",
+      "History",
+      "Insight",
+      "Intimidation",
+      "Perception",
+      "Survival"
+    ]
+  },
+  "weapon_proficiencies": ["simple weapons", "martial weapons"],
+  "armor_proficiencies": ["light armor", "medium armor", "heavy armor", "shields"],
+  "starting_equipment": {
+    "choices": [
+      ["Chain mail", "Leather armor, longbow, and 20 arrows"],
+      ["A martial weapon and a shield", "Two martial weapons"],
+      ["Light crossbow and 20 bolts", "Two handaxes"],
+      ["Dungeoneer's pack", "Explorer's pack"]
+    ],
+    "fixed": [],
+    "gold_alternative": "5d4 × 10 gp"
+  },
+  "multiclassing": {
+    "prerequisites": {"Strength": 13, "Dexterity": 13},
+    "proficiencies": {
+      "weapons": ["simple weapons", "martial weapons"],
+      "armor": ["light armor", "medium armor", "shields"]
+    }
+  },
   "subclasses": [
     {
       "name": "Arcane Archer",

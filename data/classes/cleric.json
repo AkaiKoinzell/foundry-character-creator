@@ -1,6 +1,30 @@
 {
   "name": "Cleric",
   "description": "A priestly champion who wields divine magic in service of a higher power.",
+  "hit_die": "d8",
+  "hp_at_1st_level": "8 + your Constitution modifier",
+  "hp_at_higher_levels": "1d8 (or 5) + your Constitution modifier per Cleric level after 1st",
+  "saving_throws": ["Wisdom", "Charisma"],
+  "skill_proficiencies": {
+    "choose": 2,
+    "options": ["History", "Insight", "Medicine", "Persuasion", "Religion"]
+  },
+  "weapon_proficiencies": ["simple weapons"],
+  "armor_proficiencies": ["light armor", "medium armor", "shields"],
+  "starting_equipment": {
+    "choices": [
+      ["Mace", "Warhammer (if proficient)"],
+      ["Scale mail", "Leather armor", "Chain mail (if proficient)"],
+      ["Light crossbow and 20 bolts", "Any simple weapon"],
+      ["Priest's pack", "Explorer's pack"]
+    ],
+    "fixed": ["Shield", "Holy symbol"],
+    "gold_alternative": "5d4 × 10 gp"
+  },
+  "multiclassing": {
+    "prerequisites": {"Wisdom": 13},
+    "proficiencies": {"armor": ["light armor", "medium armor", "shields"]}
+  },
   "features_by_level": {
     "1": [
       {

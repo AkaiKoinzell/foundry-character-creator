@@ -1,6 +1,53 @@
 {
   "name": "Bard",
   "description": "An inspiring magician whose power echoes music and performance.",
+  "hit_die": "d8",
+  "hp_at_1st_level": "8 + your Constitution modifier",
+  "hp_at_higher_levels": "1d8 (or 5) + your Constitution modifier per Bard level after 1st",
+  "saving_throws": ["Dexterity", "Charisma"],
+  "skill_proficiencies": {
+    "choose": 3,
+    "options": [
+      "Acrobatics",
+      "Animal Handling",
+      "Arcana",
+      "Athletics",
+      "Deception",
+      "History",
+      "Insight",
+      "Intimidation",
+      "Investigation",
+      "Medicine",
+      "Nature",
+      "Perception",
+      "Performance",
+      "Persuasion",
+      "Religion",
+      "Sleight of Hand",
+      "Stealth",
+      "Survival"
+    ]
+  },
+  "weapon_proficiencies": ["simple weapons", "hand crossbows", "longswords", "rapiers", "shortswords"],
+  "tool_proficiencies": ["three musical instruments of your choice"],
+  "armor_proficiencies": ["light armor"],
+  "starting_equipment": {
+    "choices": [
+      ["Rapier", "Longsword", "Any simple weapon"],
+      ["Diplomat's pack", "Entertainer's pack"],
+      ["Lute", "Any other musical instrument"]
+    ],
+    "fixed": ["Leather armor", "Dagger"],
+    "gold_alternative": "5d4 × 10 gp"
+  },
+  "multiclassing": {
+    "prerequisites": {"Charisma": 13},
+    "proficiencies": {
+      "skills": ["Choose any one skill"],
+      "tools": ["one musical instrument of your choice"],
+      "armor": ["light armor"]
+    }
+  },
   "features_by_level": {
     "1": [
       {

@@ -1,17 +1,51 @@
 {
-    "name": "Fighter",
-    "subclasses": [
-        {
-            "name": "Champion",
-            "features": ["Improved Critical", "Remarkable Athlete", "Additional Fighting Style", "Superior Critical", "Survivor"]
-        },
-        {
-            "name": "Battle Master",
-            "features": ["Combat Superiority", "Student of War", "Know Your Enemy", "Improved Combat Superiority", "Relentless"]
-        },
-        {
-            "name": "Eldritch Knight",
-            "features": ["Spellcasting", "Weapon Bond", "War Magic", "Eldritch Strike", "Arcane Charge", "Improved War Magic"]
-        }
+  "name": "Fighter",
+  "subclasses": [
+    {
+      "name": "Champion",
+      "features": [
+        "Improved Critical",
+        "Remarkable Athlete",
+        "Additional Fighting Style",
+        "Superior Critical",
+        "Survivor"
+      ]
+    },
+    {
+      "name": "Battle Master",
+      "features": [
+        "Combat Superiority",
+        "Student of War",
+        "Know Your Enemy",
+        "Improved Combat Superiority",
+        "Relentless"
+      ]
+    },
+    {
+      "name": "Eldritch Knight",
+      "features": [
+        "Spellcasting",
+        "Weapon Bond",
+        "War Magic",
+        "Eldritch Strike",
+        "Arcane Charge",
+        "Improved War Magic"
+      ]
+    }
+  ],
+  "description": "Description for Fighter class.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Fighter Feature 1",
+        "description": "Description for Fighter feature at level 1."
+      }
+    ],
+    "2": [
+      {
+        "name": "Fighter Feature 2",
+        "description": "Description for Fighter feature at level 2."
+      }
     ]
+  }
 }

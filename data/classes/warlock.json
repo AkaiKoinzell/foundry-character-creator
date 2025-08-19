@@ -1,17 +1,47 @@
 {
-    "name": "Warlock",
-    "subclasses": [
-        {
-            "name": "The Archfey",
-            "features": ["Fey Presence", "Misty Escape", "Beguiling Defenses", "Dark Delirium"]
-        },
-        {
-            "name": "The Fiend",
-            "features": ["Dark One's Blessing", "Dark One's Own Luck", "Fiendish Resilience", "Hurl Through Hell"]
-        },
-        {
-            "name": "The Great Old One",
-            "features": ["Awakened Mind", "Entropic Ward", "Thought Shield", "Create Thrall"]
-        }
+  "name": "Warlock",
+  "subclasses": [
+    {
+      "name": "The Archfey",
+      "features": [
+        "Fey Presence",
+        "Misty Escape",
+        "Beguiling Defenses",
+        "Dark Delirium"
+      ]
+    },
+    {
+      "name": "The Fiend",
+      "features": [
+        "Dark One's Blessing",
+        "Dark One's Own Luck",
+        "Fiendish Resilience",
+        "Hurl Through Hell"
+      ]
+    },
+    {
+      "name": "The Great Old One",
+      "features": [
+        "Awakened Mind",
+        "Entropic Ward",
+        "Thought Shield",
+        "Create Thrall"
+      ]
+    }
+  ],
+  "description": "Description for Warlock class.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Warlock Feature 1",
+        "description": "Description for Warlock feature at level 1."
+      }
+    ],
+    "2": [
+      {
+        "name": "Warlock Feature 2",
+        "description": "Description for Warlock feature at level 2."
+      }
     ]
+  }
 }

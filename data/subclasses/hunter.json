@@ -1,10 +1,30 @@
 {
-    "name": "Hunter",
-    "description": "Hunters seek to master any combat style that nature provides.",
-    "features_by_level": {
-        "3": ["Hunter's Prey"],
-        "7": ["Defensive Tactics"],
-        "11": ["Multiattack"],
-        "15": ["Superior Hunter's Defense"]
-    }
+  "name": "Hunter",
+  "description": "Hunters seek to master any combat style that nature provides.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Hunter's Prey",
+        "description": "Description for Hunter's Prey."
+      }
+    ],
+    "7": [
+      {
+        "name": "Defensive Tactics",
+        "description": "Description for Defensive Tactics."
+      }
+    ],
+    "11": [
+      {
+        "name": "Multiattack",
+        "description": "Description for Multiattack."
+      }
+    ],
+    "15": [
+      {
+        "name": "Superior Hunter's Defense",
+        "description": "Description for Superior Hunter's Defense."
+      }
+    ]
+  }
 }

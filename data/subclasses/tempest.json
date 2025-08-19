@@ -1,11 +1,40 @@
 {
-    "name": "Tempest Domain",
-    "description": "Tempest clerics serve deities of storm, sea, and sky.",
-    "features_by_level": {
-        "1": ["Bonus Proficiencies", "Wrath of the Storm"],
-        "2": ["Channel Divinity: Destructive Wrath"],
-        "6": ["Thunderbolt Strike"],
-        "8": ["Divine Strike"],
-        "17": ["Stormborn"]
-    }
+  "name": "Tempest Domain",
+  "description": "Tempest clerics serve deities of storm, sea, and sky.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Bonus Proficiencies",
+        "description": "Description for Bonus Proficiencies."
+      },
+      {
+        "name": "Wrath of the Storm",
+        "description": "Description for Wrath of the Storm."
+      }
+    ],
+    "2": [
+      {
+        "name": "Channel Divinity: Destructive Wrath",
+        "description": "Description for Channel Divinity: Destructive Wrath."
+      }
+    ],
+    "6": [
+      {
+        "name": "Thunderbolt Strike",
+        "description": "Description for Thunderbolt Strike."
+      }
+    ],
+    "8": [
+      {
+        "name": "Divine Strike",
+        "description": "Description for Divine Strike."
+      }
+    ],
+    "17": [
+      {
+        "name": "Stormborn",
+        "description": "Description for Stormborn."
+      }
+    ]
+  }
 }

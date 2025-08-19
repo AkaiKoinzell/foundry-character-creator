@@ -1,10 +1,34 @@
 {
-    "name": "Assassin",
-    "description": "A master of infiltration and deadly strikes.",
-    "features_by_level": {
-        "3": ["Bonus Proficiencies", "Assassinate"],
-        "9": ["Infiltration Expertise"],
-        "13": ["Impostor"],
-        "17": ["Death Strike"]
-    }
+  "name": "Assassin",
+  "description": "A master of infiltration and deadly strikes.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Bonus Proficiencies",
+        "description": "Description for Bonus Proficiencies."
+      },
+      {
+        "name": "Assassinate",
+        "description": "Description for Assassinate."
+      }
+    ],
+    "9": [
+      {
+        "name": "Infiltration Expertise",
+        "description": "Description for Infiltration Expertise."
+      }
+    ],
+    "13": [
+      {
+        "name": "Impostor",
+        "description": "Description for Impostor."
+      }
+    ],
+    "17": [
+      {
+        "name": "Death Strike",
+        "description": "Description for Death Strike."
+      }
+    ]
+  }
 }

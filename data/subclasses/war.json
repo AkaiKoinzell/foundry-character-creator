@@ -1,11 +1,40 @@
 {
-    "name": "War Domain",
-    "description": "Clerics of the War Domain excel in battle and inspire allies to fight harder.",
-    "features_by_level": {
-        "1": ["Bonus Proficiencies", "War Priest"],
-        "2": ["Channel Divinity: Guided Strike"],
-        "6": ["War God's Blessing"],
-        "8": ["Divine Strike"],
-        "17": ["Avatar of Battle"]
-    }
+  "name": "War Domain",
+  "description": "Clerics of the War Domain excel in battle and inspire allies to fight harder.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Bonus Proficiencies",
+        "description": "Description for Bonus Proficiencies."
+      },
+      {
+        "name": "War Priest",
+        "description": "Description for War Priest."
+      }
+    ],
+    "2": [
+      {
+        "name": "Channel Divinity: Guided Strike",
+        "description": "Description for Channel Divinity: Guided Strike."
+      }
+    ],
+    "6": [
+      {
+        "name": "War God's Blessing",
+        "description": "Description for War God's Blessing."
+      }
+    ],
+    "8": [
+      {
+        "name": "Divine Strike",
+        "description": "Description for Divine Strike."
+      }
+    ],
+    "17": [
+      {
+        "name": "Avatar of Battle",
+        "description": "Description for Avatar of Battle."
+      }
+    ]
+  }
 }

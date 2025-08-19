@@ -1,10 +1,34 @@
 {
-    "name": "Transmutation",
-    "description": "You master the art of altering matter and form.",
-    "features_by_level": {
-        "2": ["Transmutation Savant", "Minor Alchemy"],
-        "6": ["Transmuter's Stone"],
-        "10": ["Shapechanger"],
-        "14": ["Master Transmuter"]
-    }
+  "name": "Transmutation",
+  "description": "You master the art of altering matter and form.",
+  "features_by_level": {
+    "2": [
+      {
+        "name": "Transmutation Savant",
+        "description": "Description for Transmutation Savant."
+      },
+      {
+        "name": "Minor Alchemy",
+        "description": "Description for Minor Alchemy."
+      }
+    ],
+    "6": [
+      {
+        "name": "Transmuter's Stone",
+        "description": "Description for Transmuter's Stone."
+      }
+    ],
+    "10": [
+      {
+        "name": "Shapechanger",
+        "description": "Description for Shapechanger."
+      }
+    ],
+    "14": [
+      {
+        "name": "Master Transmuter",
+        "description": "Description for Master Transmuter."
+      }
+    ]
+  }
 }

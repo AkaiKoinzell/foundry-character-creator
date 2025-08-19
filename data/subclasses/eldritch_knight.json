@@ -1,11 +1,40 @@
 {
-    "name": "Eldritch Knight",
-    "description": "Eldritch Knights use magic to supplement their martial talents.",
-    "features_by_level": {
-        "3": ["Spellcasting", "Weapon Bond"],
-        "7": ["War Magic"],
-        "10": ["Eldritch Strike"],
-        "15": ["Arcane Charge"],
-        "18": ["Improved War Magic"]
-    }
+  "name": "Eldritch Knight",
+  "description": "Eldritch Knights use magic to supplement their martial talents.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Spellcasting",
+        "description": "Description for Spellcasting."
+      },
+      {
+        "name": "Weapon Bond",
+        "description": "Description for Weapon Bond."
+      }
+    ],
+    "7": [
+      {
+        "name": "War Magic",
+        "description": "Description for War Magic."
+      }
+    ],
+    "10": [
+      {
+        "name": "Eldritch Strike",
+        "description": "Description for Eldritch Strike."
+      }
+    ],
+    "15": [
+      {
+        "name": "Arcane Charge",
+        "description": "Description for Arcane Charge."
+      }
+    ],
+    "18": [
+      {
+        "name": "Improved War Magic",
+        "description": "Description for Improved War Magic."
+      }
+    ]
+  }
 }

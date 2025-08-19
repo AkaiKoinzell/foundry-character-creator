@@ -1,13 +1,38 @@
 {
-    "name": "Ranger",
-    "subclasses": [
-        {
-            "name": "Hunter",
-            "features": ["Hunter's Prey", "Defensive Tactics", "Multiattack", "Superior Hunter's Defense"]
-        },
-        {
-            "name": "Beast Master",
-            "features": ["Ranger's Companion", "Exceptional Training", "Bestial Fury", "Share Spells"]
-        }
+  "name": "Ranger",
+  "subclasses": [
+    {
+      "name": "Hunter",
+      "features": [
+        "Hunter's Prey",
+        "Defensive Tactics",
+        "Multiattack",
+        "Superior Hunter's Defense"
+      ]
+    },
+    {
+      "name": "Beast Master",
+      "features": [
+        "Ranger's Companion",
+        "Exceptional Training",
+        "Bestial Fury",
+        "Share Spells"
+      ]
+    }
+  ],
+  "description": "Description for Ranger class.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Ranger Feature 1",
+        "description": "Description for Ranger feature at level 1."
+      }
+    ],
+    "2": [
+      {
+        "name": "Ranger Feature 2",
+        "description": "Description for Ranger feature at level 2."
+      }
     ]
+  }
 }

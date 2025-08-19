@@ -1,9 +1,28 @@
 {
-    "name": "College of Lore",
-    "description": "Bards of the College of Lore pursue knowledge and weave it into their music and spells.",
-    "features_by_level": {
-        "3": ["Bonus Proficiencies", "Cutting Words"],
-        "6": ["Additional Magical Secrets"],
-        "14": ["Peerless Skill"]
-    }
+  "name": "College of Lore",
+  "description": "Bards of the College of Lore pursue knowledge and weave it into their music and spells.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Bonus Proficiencies",
+        "description": "Description for Bonus Proficiencies."
+      },
+      {
+        "name": "Cutting Words",
+        "description": "Description for Cutting Words."
+      }
+    ],
+    "6": [
+      {
+        "name": "Additional Magical Secrets",
+        "description": "Description for Additional Magical Secrets."
+      }
+    ],
+    "14": [
+      {
+        "name": "Peerless Skill",
+        "description": "Description for Peerless Skill."
+      }
+    ]
+  }
 }

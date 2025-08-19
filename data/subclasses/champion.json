@@ -1,11 +1,36 @@
 {
-    "name": "Champion",
-    "description": "Champions focus on raw physical power and improved combat prowess.",
-    "features_by_level": {
-        "3": ["Improved Critical"],
-        "7": ["Remarkable Athlete"],
-        "10": ["Additional Fighting Style"],
-        "15": ["Superior Critical"],
-        "18": ["Survivor"]
-    }
+  "name": "Champion",
+  "description": "Champions focus on raw physical power and improved combat prowess.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Improved Critical",
+        "description": "Description for Improved Critical."
+      }
+    ],
+    "7": [
+      {
+        "name": "Remarkable Athlete",
+        "description": "Description for Remarkable Athlete."
+      }
+    ],
+    "10": [
+      {
+        "name": "Additional Fighting Style",
+        "description": "Description for Additional Fighting Style."
+      }
+    ],
+    "15": [
+      {
+        "name": "Superior Critical",
+        "description": "Description for Superior Critical."
+      }
+    ],
+    "18": [
+      {
+        "name": "Survivor",
+        "description": "Description for Survivor."
+      }
+    ]
+  }
 }

@@ -1,17 +1,50 @@
 {
-    "name": "Paladin",
-    "subclasses": [
-        {
-            "name": "Oath of Devotion",
-            "features": ["Sacred Weapon", "Turn the Unholy", "Aura of Devotion", "Purity of Spirit", "Holy Nimbus"]
-        },
-        {
-            "name": "Oath of the Ancients",
-            "features": ["Nature's Wrath", "Turn the Faithless", "Aura of Warding", "Undying Sentinel", "Elder Champion"]
-        },
-        {
-            "name": "Oath of Vengeance",
-            "features": ["Abjure Enemy", "Vow of Enmity", "Relentless Avenger", "Soul of Vengeance", "Avenging Angel"]
-        }
+  "name": "Paladin",
+  "subclasses": [
+    {
+      "name": "Oath of Devotion",
+      "features": [
+        "Sacred Weapon",
+        "Turn the Unholy",
+        "Aura of Devotion",
+        "Purity of Spirit",
+        "Holy Nimbus"
+      ]
+    },
+    {
+      "name": "Oath of the Ancients",
+      "features": [
+        "Nature's Wrath",
+        "Turn the Faithless",
+        "Aura of Warding",
+        "Undying Sentinel",
+        "Elder Champion"
+      ]
+    },
+    {
+      "name": "Oath of Vengeance",
+      "features": [
+        "Abjure Enemy",
+        "Vow of Enmity",
+        "Relentless Avenger",
+        "Soul of Vengeance",
+        "Avenging Angel"
+      ]
+    }
+  ],
+  "description": "Description for Paladin class.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Paladin Feature 1",
+        "description": "Description for Paladin feature at level 1."
+      }
+    ],
+    "2": [
+      {
+        "name": "Paladin Feature 2",
+        "description": "Description for Paladin feature at level 2."
+      }
     ]
+  }
 }

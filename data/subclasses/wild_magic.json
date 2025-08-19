@@ -1,10 +1,34 @@
 {
-    "name": "Wild Magic",
-    "description": "Your innate magic comes from the wild forces of chaos.",
-    "features_by_level": {
-        "1": ["Wild Magic Surge", "Tides of Chaos"],
-        "6": ["Bend Luck"],
-        "14": ["Controlled Chaos"],
-        "18": ["Spell Bombardment"]
-    }
+  "name": "Wild Magic",
+  "description": "Your innate magic comes from the wild forces of chaos.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Wild Magic Surge",
+        "description": "Description for Wild Magic Surge."
+      },
+      {
+        "name": "Tides of Chaos",
+        "description": "Description for Tides of Chaos."
+      }
+    ],
+    "6": [
+      {
+        "name": "Bend Luck",
+        "description": "Description for Bend Luck."
+      }
+    ],
+    "14": [
+      {
+        "name": "Controlled Chaos",
+        "description": "Description for Controlled Chaos."
+      }
+    ],
+    "18": [
+      {
+        "name": "Spell Bombardment",
+        "description": "Description for Spell Bombardment."
+      }
+    ]
+  }
 }

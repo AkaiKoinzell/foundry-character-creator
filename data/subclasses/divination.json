@@ -1,10 +1,34 @@
 {
-    "name": "Divination",
-    "description": "You peer through time and space to better understand the world.",
-    "features_by_level": {
-        "2": ["Divination Savant", "Portent"],
-        "6": ["Expert Divination"],
-        "10": ["The Third Eye"],
-        "14": ["Greater Portent"]
-    }
+  "name": "Divination",
+  "description": "You peer through time and space to better understand the world.",
+  "features_by_level": {
+    "2": [
+      {
+        "name": "Divination Savant",
+        "description": "Description for Divination Savant."
+      },
+      {
+        "name": "Portent",
+        "description": "Description for Portent."
+      }
+    ],
+    "6": [
+      {
+        "name": "Expert Divination",
+        "description": "Description for Expert Divination."
+      }
+    ],
+    "10": [
+      {
+        "name": "The Third Eye",
+        "description": "Description for The Third Eye."
+      }
+    ],
+    "14": [
+      {
+        "name": "Greater Portent",
+        "description": "Description for Greater Portent."
+      }
+    ]
+  }
 }

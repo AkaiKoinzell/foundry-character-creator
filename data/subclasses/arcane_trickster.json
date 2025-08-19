@@ -1,10 +1,34 @@
 {
-    "name": "Arcane Trickster",
-    "description": "A rogue who uses magic to enhance their cunning.",
-    "features_by_level": {
-        "3": ["Spellcasting", "Mage Hand Legerdemain"],
-        "9": ["Magical Ambush"],
-        "13": ["Versatile Trickster"],
-        "17": ["Spell Thief"]
-    }
+  "name": "Arcane Trickster",
+  "description": "A rogue who uses magic to enhance their cunning.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Spellcasting",
+        "description": "Description for Spellcasting."
+      },
+      {
+        "name": "Mage Hand Legerdemain",
+        "description": "Description for Mage Hand Legerdemain."
+      }
+    ],
+    "9": [
+      {
+        "name": "Magical Ambush",
+        "description": "Description for Magical Ambush."
+      }
+    ],
+    "13": [
+      {
+        "name": "Versatile Trickster",
+        "description": "Description for Versatile Trickster."
+      }
+    ],
+    "17": [
+      {
+        "name": "Spell Thief",
+        "description": "Description for Spell Thief."
+      }
+    ]
+  }
 }

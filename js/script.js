@@ -1017,7 +1017,12 @@ async function renderClassFeatures() {
       if (parseInt(lvl) <= charLevel) {
         html += `<h4>Livello ${lvl}</h4><ul>`;
         data.features_by_level[lvl].forEach(f => {
-          html += `<li>${f}</li>`;
+          if (typeof f === "string") {
+            html += `<li>${f}</li>`;
+          } else {
+            const desc = f.description ? `: ${f.description}` : "";
+            html += `<li><strong>${f.name}</strong>${desc}</li>`;
+          }
         });
         html += `</ul>`;
       }
@@ -1049,7 +1054,12 @@ async function renderClassFeatures() {
           if (parseInt(lvl) <= charLevel) {
             html += `<h5>Livello ${lvl}</h5><ul>`;
             subData.features_by_level[lvl].forEach(f => {
-              html += `<li>${f}</li>`;
+              if (typeof f === "string") {
+                html += `<li>${f}</li>`;
+              } else {
+                const desc = f.description ? `: ${f.description}` : "";
+                html += `<li><strong>${f.name}</strong>${desc}</li>`;
+              }
             });
             html += `</ul>`;
           }

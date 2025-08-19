@@ -1,10 +1,30 @@
 {
-    "name": "The Great Old One",
-    "description": "Your patron is a mysterious entity from the far realms of madness.",
-    "features_by_level": {
-        "1": ["Awakened Mind"],
-        "6": ["Entropic Ward"],
-        "10": ["Thought Shield"],
-        "14": ["Create Thrall"]
-    }
+  "name": "The Great Old One",
+  "description": "Your patron is a mysterious entity from the far realms of madness.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Awakened Mind",
+        "description": "Description for Awakened Mind."
+      }
+    ],
+    "6": [
+      {
+        "name": "Entropic Ward",
+        "description": "Description for Entropic Ward."
+      }
+    ],
+    "10": [
+      {
+        "name": "Thought Shield",
+        "description": "Description for Thought Shield."
+      }
+    ],
+    "14": [
+      {
+        "name": "Create Thrall",
+        "description": "Description for Create Thrall."
+      }
+    ]
+  }
 }

@@ -1,10 +1,34 @@
 {
-    "name": "Thief",
-    "description": "A rogue who focuses on stealth and agility.",
-    "features_by_level": {
-        "3": ["Fast Hands", "Second-Story Work"],
-        "9": ["Supreme Sneak"],
-        "13": ["Use Magic Device"],
-        "17": ["Thief's Reflexes"]
-    }
+  "name": "Thief",
+  "description": "A rogue who focuses on stealth and agility.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Fast Hands",
+        "description": "Description for Fast Hands."
+      },
+      {
+        "name": "Second-Story Work",
+        "description": "Description for Second-Story Work."
+      }
+    ],
+    "9": [
+      {
+        "name": "Supreme Sneak",
+        "description": "Description for Supreme Sneak."
+      }
+    ],
+    "13": [
+      {
+        "name": "Use Magic Device",
+        "description": "Description for Use Magic Device."
+      }
+    ],
+    "17": [
+      {
+        "name": "Thief's Reflexes",
+        "description": "Description for Thief's Reflexes."
+      }
+    ]
+  }
 }

@@ -1,10 +1,34 @@
 {
-    "name": "Circle of the Land",
-    "description": "Druids of the Circle of the Land are mystics and sages who safeguard ancient knowledge.",
-    "features_by_level": {
-        "2": ["Circle Spells", "Natural Recovery"],
-        "6": ["Land's Stride"],
-        "10": ["Nature's Ward"],
-        "14": ["Nature's Sanctuary"]
-    }
+  "name": "Circle of the Land",
+  "description": "Druids of the Circle of the Land are mystics and sages who safeguard ancient knowledge.",
+  "features_by_level": {
+    "2": [
+      {
+        "name": "Circle Spells",
+        "description": "Description for Circle Spells."
+      },
+      {
+        "name": "Natural Recovery",
+        "description": "Description for Natural Recovery."
+      }
+    ],
+    "6": [
+      {
+        "name": "Land's Stride",
+        "description": "Description for Land's Stride."
+      }
+    ],
+    "10": [
+      {
+        "name": "Nature's Ward",
+        "description": "Description for Nature's Ward."
+      }
+    ],
+    "14": [
+      {
+        "name": "Nature's Sanctuary",
+        "description": "Description for Nature's Sanctuary."
+      }
+    ]
+  }
 }

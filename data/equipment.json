@@ -1,0 +1,59 @@
+{
+  "standard": [
+    "Zaino",
+    "Torce (10)",
+    "Razioni (10 giorni)",
+    "Corda (50 piedi)",
+    "Borraccia",
+    "Acciarino e pietra focaia"
+  ],
+  "classes": {
+    "Fighter": {
+      "fixed": ["Scudo"],
+      "choices": [
+        {
+          "label": "Armatura",
+          "type": "radio",
+          "options": [
+            { "value": "Cotta di maglia", "label": "Cotta di maglia" },
+            { "value": "Armatura di cuoio borchiato e arco lungo", "label": "Armatura di cuoio borchiato e arco lungo" }
+          ]
+        },
+        {
+          "label": "Arma",
+          "type": "radio",
+          "options": [
+            { "value": "Arma marziale e scudo", "label": "Arma marziale e scudo" },
+            { "value": "Due armi marziali", "label": "Due armi marziali" }
+          ]
+        }
+      ]
+    },
+    "Wizard": {
+      "fixed": ["Libro degli incantesimi"],
+      "choices": [
+        {
+          "label": "Arma",
+          "type": "radio",
+          "options": [
+            { "value": "Bastone ferrato", "label": "Bastone ferrato" },
+            { "value": "Pugnale", "label": "Pugnale" }
+          ]
+        },
+        {
+          "label": "Focus arcano",
+          "type": "radio",
+          "options": [
+            { "value": "Borsa delle componenti", "label": "Borsa delle componenti" },
+            { "value": "Focus arcano", "label": "Focus arcano" }
+          ]
+        }
+      ]
+    }
+  },
+  "upgrades": {
+    "minLevel": 11,
+    "armor": ["Mezza armatura di piastre", "Armatura a piastre"],
+    "weapon": "Arma incantata"
+  }
+}

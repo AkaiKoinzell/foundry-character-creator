@@ -2,10 +2,10 @@ export function loadSpells(callback) {
   fetch('data/spells.json')
     .then(response => response.json())
     .then(data => {
-      console.log('📖 Incantesimi caricati:', data);
+      console.log('📖 Spells loaded:', data);
       callback(data);
     })
-    .catch(error => console.error('❌ Errore nel caricamento degli incantesimi:', error));
+    .catch(error => console.error('❌ Error loading spells:', error));
 }
 
 export function filterSpells(spells, filterString) {
@@ -38,7 +38,7 @@ export function handleSpellcasting(data, containerId) {
     console.log(`🔍 JSON Spellcasting per ${data.name}:`, data.spellcasting);
 
     if (data.spellcasting.fixed_spell) {
-      container.innerHTML += `<p><strong>✨ Incantesimo assegnato:</strong> ${data.spellcasting.fixed_spell}</p>`;
+      container.innerHTML += `<p><strong>✨ Assigned spell:</strong> ${data.spellcasting.fixed_spell}</p>`;
     }
 
     if (data.spellcasting.spell_choices) {
@@ -47,9 +47,9 @@ export function handleSpellcasting(data, containerId) {
           .map(spell => `<option value="${spell}">${spell}</option>`)
           .join('');
         container.innerHTML += `
-          <p><strong>🔮 Scegli un incantesimo:</strong></p>
+          <p><strong>🔮 Choose a spell:</strong></p>
           <select id="spellSelection">
-            <option value="">Seleziona...</option>${options}
+            <option value="">Select...</option>${options}
           </select>`;
       } else if (data.spellcasting.spell_choices.type === 'filter') {
         const filterParts = data.spellcasting.spell_choices.filter.split('|');
@@ -65,30 +65,30 @@ export function handleSpellcasting(data, containerId) {
 
             if (filteredSpells) {
               container.innerHTML += `
-                <p><strong>🔮 Scegli un Cantrip da ${spellClass}:</strong></p>
+                <p><strong>🔮 Choose a ${spellClass} Cantrip:</strong></p>
                 <select id="spellSelection">
-                  <option value="">Seleziona...</option>${filteredSpells}
+                  <option value="">Select...</option>${filteredSpells}
                 </select>`;
             } else {
-              container.innerHTML += `<p><strong>⚠️ Nessun Cantrip disponibile per ${spellClass}.</strong></p>`;
+              container.innerHTML += `<p><strong>⚠️ No Cantrip available for ${spellClass}.</strong></p>`;
             }
           });
         } else {
-          container.innerHTML += `<p><strong>⚠️ Errore: Il filtro incantesimi non è valido per questa razza.</strong></p>`;
+          container.innerHTML += `<p><strong>⚠️ Error: Spell filter is not valid for this race.</strong></p>`;
         }
       }
     }
 
     if (data.spellcasting.ability_choices && Array.isArray(data.spellcasting.ability_choices)) {
-      console.log(`🧙‍♂️ Verifica dell'abilità di lancio per ${data.name}:`, data.spellcasting.ability_choices);
+      console.log(`🧙‍♂️ Checking casting ability for ${data.name}:`, data.spellcasting.ability_choices);
       if (data.spellcasting.ability_choices.length > 1) {
         const abilityOptions = data.spellcasting.ability_choices
           .map(a => `<option value="${a.toUpperCase()}">${a.toUpperCase()}</option>`)
           .join('');
         container.innerHTML += `
-          <p><strong>🧠 Seleziona l'abilità di lancio:</strong></p>
+          <p><strong>🧠 Select the casting ability:</strong></p>
           <select id="castingAbility">
-            <option value="">Seleziona...</option>${abilityOptions}
+            <option value="">Select...</option>${abilityOptions}
           </select>`;
       }
     }

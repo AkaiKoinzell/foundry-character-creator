@@ -1,81 +1,128 @@
 {
   "standard": [
-    "Zaino",
-    "Torce (10)",
-    "Razioni (10 giorni)",
-    "Corda (50 piedi)",
-    "Borraccia",
-    "Acciarino e pietra focaia"
+    "Backpack",
+    "Torches (10)",
+    "Rations (10 days)",
+    "Rope (50 feet)",
+    "Waterskin",
+    "Tinderbox"
   ],
   "classes": {
     "Fighter": {
-      "fixed": ["Scudo"],
+      "fixed": [
+        "Shield"
+      ],
       "choices": [
         {
-          "label": "Armatura",
+          "label": "Armor",
           "type": "radio",
           "options": [
-            { "value": "Cotta di maglia", "label": "Cotta di maglia" },
-            { "value": "Armatura di cuoio borchiato e arco lungo", "label": "Armatura di cuoio borchiato e arco lungo" }
+            {
+              "value": "Chain Mail",
+              "label": "Chain Mail"
+            },
+            {
+              "value": "Studded leather armor and longbow",
+              "label": "Studded leather armor and longbow"
+            }
           ]
         },
         {
-          "label": "Arma",
+          "label": "Weapon",
           "type": "radio",
           "options": [
-            { "value": "Arma marziale e scudo", "label": "Arma marziale e scudo" },
-            { "value": "Due armi marziali", "label": "Due armi marziali" }
+            {
+              "value": "Martial weapon and shield",
+              "label": "Martial weapon and shield"
+            },
+            {
+              "value": "Two martial weapons",
+              "label": "Two martial weapons"
+            }
           ]
         }
       ]
     },
     "Wizard": {
-      "fixed": ["Libro degli incantesimi"],
+      "fixed": [
+        "Spellbook"
+      ],
       "choices": [
         {
-          "label": "Arma",
+          "label": "Weapon",
           "type": "radio",
           "options": [
-            { "value": "Bastone ferrato", "label": "Bastone ferrato" },
-            { "value": "Pugnale", "label": "Pugnale" }
+            {
+              "value": "Quarterstaff",
+              "label": "Quarterstaff"
+            },
+            {
+              "value": "Dagger",
+              "label": "Dagger"
+            }
           ]
         },
         {
-          "label": "Focus arcano",
+          "label": "Arcane focus",
           "type": "radio",
           "options": [
-            { "value": "Borsa delle componenti", "label": "Borsa delle componenti" },
-            { "value": "Focus arcano", "label": "Focus arcano" }
+            {
+              "value": "Component pouch",
+              "label": "Component pouch"
+            },
+            {
+              "value": "Arcane focus",
+              "label": "Arcane focus"
+            }
           ]
         }
       ]
     },
     "Druid": {
-      "fixed": ["Armatura di cuoio", "Pacchetto da esploratore", "Focus druidico"],
+      "fixed": [
+        "Leather armor",
+        "Explorer's Pack",
+        "Druidic focus"
+      ],
       "choices": [
         {
-          "label": "Scudo o Arma",
+          "label": "Shield or Weapon",
           "type": "radio",
           "options": [
-            { "value": "Scudo di legno", "label": "Scudo di legno" },
-            { "value": "Arma semplice", "label": "Arma semplice" }
+            {
+              "value": "Wooden shield",
+              "label": "Wooden shield"
+            },
+            {
+              "value": "Simple weapon",
+              "label": "Simple weapon"
+            }
           ]
         },
         {
-          "label": "Arma secondaria",
+          "label": "Secondary weapon",
           "type": "radio",
           "options": [
-            { "value": "Scimitarra", "label": "Scimitarra" },
-            { "value": "Arma semplice da mischia", "label": "Arma semplice da mischia" }
+            {
+              "value": "Scimitar",
+              "label": "Scimitar"
+            },
+            {
+              "value": "Simple melee weapon",
+              "label": "Simple melee weapon"
+            }
           ]
         }
       ],
-      "goldAlternative": "2d4 × 10 gp"
+      "goldAlternative": "2d4 \u00d7 10 gp"
     }
   },
   "upgrades": {
     "minLevel": 11,
-    "armor": ["Mezza armatura di piastre", "Armatura a piastre"],
-    "weapon": "Arma incantata"
+    "armor": [
+      "Half plate armor",
+      "Plate armor"
+    ],
+    "weapon": "Enchanted weapon"
   }
 }

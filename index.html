@@ -52,7 +52,7 @@
 
   #progressContainer {
     width: 100%;
-    background-color: #e0e0e0;
+    background-color: var(--primary-hover);
     height: 10px;
     border-radius: 5px;
     margin: 10px 0;
@@ -61,17 +61,18 @@
   #progressBar {
     height: 100%;
     width: 0%;
-    background-color: #28a745;
+    background-color: var(--accent-color);
     border-radius: 5px;
     transition: width 0.3s ease;
   }
   </style>
 </head>
-  <body>
-  <header>
+<body>
+  <header class="banner">
     <h1>Character Creator - Foundry</h1>
     <button id="resetButton" class="btn" onclick="resetForm()">Reset Character</button>
   </header>
+  <div class="section-divider"></div>
   <div id="progressContainer">
     <div id="progressBar"></div>
   </div>
@@ -85,6 +86,7 @@
     <button id="btnStep6" class="btn">Step 6: Point Buy</button>
     <button id="btnStep7" class="btn">Step 7: Recap & Esportazione</button>
   </nav>
+  <div class="section-divider"></div>
   <!-- Container degli step -->
   <div id="stepContainer">
     <!-- Step 1: Nome & Livello -->

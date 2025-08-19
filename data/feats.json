@@ -4,6 +4,17 @@
     "Adept of the Black Robes": "data/feats/adeptoftheblackrobes.json",
     "Adept of the Red Robes": "data/feats/adeptoftheredrobes.json",
     "Adept of the White Robes": "data/feats/adeptofthewhiterobes.json",
-    "Alert": "data/feats/alert.json"
+    "Alert": "data/feats/alert.json",
+    "Athlete": "data/feats/athlete.json",
+    "Bountiful Luck": "data/feats/bountifulluck.json",
+    "Charger": "data/feats/charger.json",
+    "Chef": "data/feats/chef.json",
+    "Crossbow Expert": "data/feats/crossbowexpert.json",
+    "Crusher": "data/feats/crusher.json",
+    "Defensive Duelist": "data/feats/defensiveduelist.json",
+    "Dragon Fear": "data/feats/dragonfear.json",
+    "Dragon Hide": "data/feats/dragonhide.json",
+    "Drow High Magic": "data/feats/drowhighmagic.json",
+    "Dual Wielder": "data/feats/dualwielder.json"
   }
 }

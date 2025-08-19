@@ -296,6 +296,7 @@ function renderTables(entries) {
 let selectedData = sessionStorage.getItem("selectedData")
   ? JSON.parse(sessionStorage.getItem("selectedData"))
   : {};
+window.selectedData = selectedData;
 let extraSelections = [];
 let currentSelectionIndex = 0;
 // Cached list of all languages loaded from JSON
@@ -991,6 +992,7 @@ function generateFinalJson() {
       languages: window.backgroundData.languages || []
     } : { skills: [], tools: [], languages: [] },
     background_feat: window.backgroundData ? window.backgroundData.feat || "" : "",
+    equipment: selectedData.equipment || { standard: [], class: [], upgrades: [] },
     languages: {
       selected: selectedData["Languages"] || []
     },

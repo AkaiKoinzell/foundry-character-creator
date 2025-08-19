@@ -111,8 +111,8 @@
     <button id="btnStep2">Step 2: Razza</button>
     <button id="btnStep3">Step 3: Point Buy</button>
     <button id="btnStep4">Step 4: Classe</button>
-    <button id="btnStep5">Step 5: Background</button>
-    <button id="btnStep6">Step 6: Equipaggiamento</button>
+    <button id="btnStep5">Step 5: Equipaggiamento</button>
+    <button id="btnStep6">Step 6: Background</button>
     <button id="btnStep8">Step 8: Recap & Esportazione</button>
   </nav>
   <!-- Container degli step -->
@@ -372,9 +372,17 @@
       <div id="metamagicSelection"></div>
       <div id="abilityImprovementSelection"></div>
     </div>
-    <!-- Step 5: Background -->
+    <!-- Step 5: Equipaggiamento -->
     <div id="step5" class="step">
-      <h2>Step 5: Background</h2>
+      <h2>Step 5: Equipaggiamento</h2>
+      <div id="standardEquipment"></div>
+      <div id="classEquipmentChoices"></div>
+      <div id="equipmentUpgrades"></div>
+      <button id="confirmEquipment" class="primary">Conferma Equipaggiamento</button>
+    </div>
+<!-- Step 6: Background -->
+    <div id="step6" class="step">
+      <h2>Step 6: Background</h2>
       <label for="backgroundSelect">Background:</label>
       <select id="backgroundSelect">
         <option value="">Seleziona un background</option>
@@ -383,10 +391,6 @@
       <div id="backgroundTools"></div>
       <div id="backgroundLanguages"></div>
       <div id="backgroundFeat"></div>
-    </div>
-    <!-- Step 6: Equipaggiamento -->
-    <div id="step6" class="step">
-      <h2>Step 6: Equipaggiamento</h2>
     </div>
     <!-- Step 8: Recap & Esportazione -->
     <div id="step8" class="step">

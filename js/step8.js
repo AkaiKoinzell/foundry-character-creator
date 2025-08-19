@@ -20,7 +20,8 @@ document.addEventListener("DOMContentLoaded", () => {
         tools: window.backgroundData.tools || [],
         languages: window.backgroundData.languages || []
       } : { skills: [], tools: [], languages: [] },
-      background_feat: window.backgroundData ? window.backgroundData.feat || "" : ""
+      background_feat: window.backgroundData ? window.backgroundData.feat || "" : "",
+      equipment: window.selectedData ? window.selectedData.equipment || {} : {}
     };
     downloadJsonFile(character.name.replace(/[^a-z0-9]/gi, '_').toLowerCase() + "_character.json", character);
     document.getElementById("finalRecap").innerHTML = `<pre>${JSON.stringify(character, null, 2)}</pre>`;

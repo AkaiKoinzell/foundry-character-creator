@@ -13,6 +13,7 @@ import {
   setAvailableLanguages
 } from './script.js';
 import './step5.js';
+import './step6.js';
 
 let classSelectionConfirmed = false;
 

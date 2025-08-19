@@ -1,8 +1,8 @@
 {
-  "name": "Soldier",
+  "name": "Gladiator",
   "skills": [
     "Athletics",
-    "Intimidation"
+    "Performance"
   ],
   "tools": [
     "Gaming Set",
@@ -10,8 +10,8 @@
   ],
   "languages": [],
   "featOptions": [
-    "Fighting Initiate",
-    "Martial Adept",
-    "Weapon Master"
+    "Cruel",
+    "Savage Attacker",
+    "Tough"
   ]
 }

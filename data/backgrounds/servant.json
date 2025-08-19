@@ -1,0 +1,52 @@
+{
+  "name": "Servant",
+  "skills": [
+    "Insight",
+    "Persuasion"
+  ],
+  "tools": {
+    "choose": 1,
+    "options": [
+      "Calligrapher's Tools",
+      "Cook's Utensils",
+      "Brewer's Supplies",
+      "Bagpipes",
+      "Drum",
+      "Dulcimer",
+      "Flute",
+      "Lute",
+      "Lyre",
+      "Horn",
+      "Pan Flute",
+      "Shawm",
+      "Viol",
+      "Vehicles (Land)"
+    ]
+  },
+  "languages": {
+    "choose": 1,
+    "options": [
+      "Common",
+      "Dwarvish",
+      "Elvish",
+      "Giant",
+      "Gnomish",
+      "Goblin",
+      "Halfling",
+      "Orc",
+      "Abyssal",
+      "Celestial",
+      "Draconic",
+      "Deep Speech",
+      "Infernal",
+      "Primordial",
+      "Sylvan",
+      "Undercommon"
+    ]
+  },
+  "featOptions": [
+    "Keen Mind",
+    "Observant",
+    "Skill Expert"
+  ]
+}

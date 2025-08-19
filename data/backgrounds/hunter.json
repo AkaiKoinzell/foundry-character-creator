@@ -1,0 +1,17 @@
+{
+  "name": "Hunter",
+  "skills": [
+    "Stealth",
+    "Survival"
+  ],
+  "tools": [
+    "Carpenter's Tools",
+    "Leatherworker's Tools"
+  ],
+  "languages": [],
+  "featOptions": [
+    "Alert",
+    "Crossbow Expert",
+    "Sharpshooter"
+  ]
+}

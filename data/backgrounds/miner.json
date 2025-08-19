@@ -1,0 +1,17 @@
+{
+  "name": "Miner",
+  "skills": [
+    "Athletics",
+    "Survival"
+  ],
+  "tools": [
+    "Mason's Tools",
+    "Vehicles (Land)"
+  ],
+  "languages": [],
+  "featOptions": [
+    "Dungeon Delver",
+    "Durable",
+    "Tough"
+  ]
+}

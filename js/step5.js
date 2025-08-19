@@ -90,6 +90,22 @@ document.addEventListener("DOMContentLoaded", () => {
         toolDiv.appendChild(sel);
       }
     }
+    if (data.toolChoices) {
+      const num = data.toolChoices.choose || 0;
+      const opts = data.toolChoices.options || [];
+      toolDiv.innerHTML += `<p><strong>Scegli ${num} strumento:</strong></p>`;
+      for (let i = 0; i < num; i++) {
+        const sel = document.createElement("select");
+        sel.className = "backgroundToolChoice";
+        sel.innerHTML = `<option value="">Seleziona</option>` + opts.map(o => `<option value="${o}">${o}</option>`).join("");
+        sel.addEventListener("change", () => {
+          const chosen = Array.from(document.querySelectorAll(".backgroundToolChoice")).map(s => s.value).filter(Boolean);
+          const base = Array.isArray(data.tools) ? data.tools.slice() : [];
+          backgroundData.tools = base.concat(chosen);
+        });
+        toolDiv.appendChild(sel);
+      }
+    }
 
     const langDiv = document.getElementById("backgroundLanguages");
     langDiv.innerHTML = "";
@@ -124,7 +140,6 @@ document.addEventListener("DOMContentLoaded", () => {
       select.id = "backgroundFeatSelect";
       select.innerHTML = `<option value="">Seleziona un talento</option>` +
         data.featOptions
-          .filter(name => featPathIndex[name])
           .map(name => `<option value="${name}">${name}</option>`)
           .join("");
       const abilDiv = document.createElement("div");

@@ -1,12 +1,27 @@
 {
-  "name": "Acolyte",
+  "name": "Outlander",
   "skills": [
-    "Insight",
-    "Religion"
+    "Athletics",
+    "Survival"
   ],
   "tools": [],
+  "toolChoices": {
+    "choose": 1,
+    "options": [
+      "Bagpipes",
+      "Drum",
+      "Dulcimer",
+      "Flute",
+      "Lute",
+      "Lyre",
+      "Horn",
+      "Pan Flute",
+      "Shawm",
+      "Viol"
+    ]
+  },
   "languages": {
-    "choose": 2,
+    "choose": 1,
     "options": [
       "Common",
       "Dwarvish",
@@ -27,8 +42,8 @@
     ]
   },
   "featOptions": [
-    "Magic Initiate",
-    "Eldritch Adept",
-    "Ritual Caster"
+    "Chef",
+    "Keen Mind",
+    "Tough"
   ]
 }

@@ -1,0 +1,17 @@
+{
+  "name": "Criminal",
+  "skills": [
+    "Deception",
+    "Stealth"
+  ],
+  "tools": [
+    "Gaming Set",
+    "Thieves' Tools"
+  ],
+  "languages": [],
+  "featOptions": [
+    "Cruel",
+    "Dungeon Delver",
+    "Skulker"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "Spy",
+  "skills": [
+    "Deception",
+    "Stealth"
+  ],
+  "tools": [
+    "Disguise Kit",
+    "Forgery Kit"
+  ],
+  "languages": [],
+  "featOptions": [
+    "Actor",
+    "Keen Mind",
+    "Observant"
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "name": "Prostitute",
+  "skills": [],
+  "skillChoices": {
+    "choose": 2,
+    "options": [
+      "Deception",
+      "Insight",
+      "Performance",
+      "Persuasion"
+    ]
+  },
+  "tools": {
+    "choose": 1,
+    "options": [
+      "Disguise Kit",
+      "Dice Set",
+      "Dragonchess Set",
+      "Playing Card Set",
+      "Three-Dragon Ante Set",
+      "Bagpipes",
+      "Drum",
+      "Dulcimer",
+      "Flute",
+      "Lute",
+      "Lyre",
+      "Horn",
+      "Pan Flute",
+      "Shawm",
+      "Viol"
+    ]
+  },
+  "languages": {
+    "choose": 1,
+    "options": [
+      "Common",
+      "Dwarvish",
+      "Elvish",
+      "Giant",
+      "Gnomish",
+      "Goblin",
+      "Halfling",
+      "Orc",
+      "Abyssal",
+      "Celestial",
+      "Draconic",
+      "Deep Speech",
+      "Infernal",
+      "Primordial",
+      "Sylvan",
+      "Undercommon"
+    ]
+  },
+  "featOptions": [
+    "Observant",
+    "Persuasive",
+    "Skill Expert"
+  ]
+}

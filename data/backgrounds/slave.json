@@ -1,12 +1,19 @@
 {
-  "name": "Acolyte",
+  "name": "Slave",
   "skills": [
-    "Insight",
-    "Religion"
+    "Animal Handling",
+    "Athletics"
   ],
-  "tools": [],
+  "tools": {
+    "choose": 1,
+    "options": [
+      "Carpenter's Tools",
+      "Mason's Tools",
+      "Vehicles (Land)"
+    ]
+  },
   "languages": {
-    "choose": 2,
+    "choose": 1,
     "options": [
       "Common",
       "Dwarvish",
@@ -27,8 +34,8 @@
     ]
   },
   "featOptions": [
-    "Magic Initiate",
-    "Eldritch Adept",
-    "Ritual Caster"
+    "Beast Tamer",
+    "Die Hard",
+    "Tough"
   ]
 }

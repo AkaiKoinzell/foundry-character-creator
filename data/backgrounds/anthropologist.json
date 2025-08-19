@@ -1,5 +1,5 @@
 {
-  "name": "Acolyte",
+  "name": "Anthropologist",
   "skills": [
     "Insight",
     "Religion"
@@ -27,8 +27,8 @@
     ]
   },
   "featOptions": [
-    "Magic Initiate",
-    "Eldritch Adept",
-    "Ritual Caster"
+    "Actor",
+    "Chef",
+    "Linguist"
   ]
 }

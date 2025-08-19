@@ -1,0 +1,17 @@
+{
+  "name": "Fisherman",
+  "skills": [
+    "Athletics",
+    "Perception"
+  ],
+  "tools": [
+    "Fishing Tackle",
+    "Vehicles (Water)"
+  ],
+  "languages": [],
+  "featOptions": [
+    "Observant",
+    "Shaft Specialist",
+    "Skill Expert"
+  ]
+}

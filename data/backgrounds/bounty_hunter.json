@@ -1,0 +1,39 @@
+{
+  "name": "Bounty Hunter",
+  "skills": [],
+  "skillChoices": {
+    "choose": 2,
+    "options": [
+      "Deception",
+      "Insight",
+      "Persuasion",
+      "Stealth"
+    ]
+  },
+  "tools": {
+    "choose": 2,
+    "options": [
+      "Dice Set",
+      "Dragonchess Set",
+      "Playing Card Set",
+      "Three-Dragon Ante Set",
+      "Bagpipes",
+      "Drum",
+      "Dulcimer",
+      "Flute",
+      "Lute",
+      "Lyre",
+      "Horn",
+      "Pan Flute",
+      "Shawm",
+      "Viol",
+      "Thieves' Tools"
+    ]
+  },
+  "languages": [],
+  "featOptions": [
+    "Agile",
+    "Alert",
+    "Skulker"
+  ]
+}

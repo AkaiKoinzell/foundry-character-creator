@@ -1,8 +1,8 @@
 {
-  "name": "Acolyte",
+  "name": "City Watch",
   "skills": [
-    "Insight",
-    "Religion"
+    "Athletics",
+    "Insight"
   ],
   "tools": [],
   "languages": {
@@ -27,8 +27,8 @@
     ]
   },
   "featOptions": [
-    "Magic Initiate",
-    "Eldritch Adept",
-    "Ritual Caster"
+    "Alert",
+    "Fighting Initiate",
+    "Sentinel"
   ]
 }

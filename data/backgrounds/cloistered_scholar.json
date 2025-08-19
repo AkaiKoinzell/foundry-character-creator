@@ -1,9 +1,16 @@
 {
-  "name": "Acolyte",
+  "name": "Cloistered Scholar",
   "skills": [
-    "Insight",
-    "Religion"
+    "History"
   ],
+  "skillChoices": {
+    "choose": 1,
+    "options": [
+      "Arcana",
+      "Nature",
+      "Religion"
+    ]
+  },
   "tools": [],
   "languages": {
     "choose": 2,
@@ -27,8 +34,8 @@
     ]
   },
   "featOptions": [
-    "Magic Initiate",
-    "Eldritch Adept",
-    "Ritual Caster"
+    "Erudite",
+    "Keen Mind",
+    "Linguist"
   ]
 }

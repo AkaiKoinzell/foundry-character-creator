@@ -1,12 +1,14 @@
 {
-  "name": "Acolyte",
+  "name": "Athlete",
   "skills": [
-    "Insight",
-    "Religion"
+    "Acrobatics",
+    "Athletics"
   ],
-  "tools": [],
+  "tools": [
+    "Vehicles (Land)"
+  ],
   "languages": {
-    "choose": 2,
+    "choose": 1,
     "options": [
       "Common",
       "Dwarvish",
@@ -27,8 +29,8 @@
     ]
   },
   "featOptions": [
-    "Magic Initiate",
-    "Eldritch Adept",
-    "Ritual Caster"
+    "Athlete",
+    "Grappler",
+    "Mobile"
   ]
 }

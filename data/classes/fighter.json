@@ -80,7 +80,7 @@
       "level": 6,
       "name": "Ability Score Improvement",
       "description": "Increase one ability score by 2, two ability scores by 1, or take a feat if allowed.",
-      "count": 2,
+      "count": 1,
       "type": "Ability Score Improvement",
       "selection": [
         "Increase one ability score by 2",
@@ -92,7 +92,7 @@
       "level": 8,
       "name": "Ability Score Improvement",
       "description": "Increase one ability score by 2, two ability scores by 1, or take a feat if allowed.",
-      "count": 3,
+      "count": 1,
       "type": "Ability Score Improvement",
       "selection": [
         "Increase one ability score by 2",
@@ -119,7 +119,7 @@
       "level": 12,
       "name": "Ability Score Improvement",
       "description": "Increase one ability score by 2, two ability scores by 1, or take a feat if allowed.",
-      "count": 4,
+      "count": 1,
       "type": "Ability Score Improvement",
       "selection": [
         "Increase one ability score by 2",
@@ -131,7 +131,7 @@
       "level": 14,
       "name": "Ability Score Improvement",
       "description": "Increase one ability score by 2, two ability scores by 1, or take a feat if allowed.",
-      "count": 5,
+      "count": 1,
       "type": "Ability Score Improvement",
       "selection": [
         "Increase one ability score by 2",
@@ -143,7 +143,7 @@
       "level": 16,
       "name": "Ability Score Improvement",
       "description": "Increase one ability score by 2, two ability scores by 1, or take a feat if allowed.",
-      "count": 6,
+      "count": 1,
       "type": "Ability Score Improvement",
       "selection": [
         "Increase one ability score by 2",
@@ -155,7 +155,7 @@
       "level": 19,
       "name": "Ability Score Improvement",
       "description": "Increase one ability score by 2, two ability scores by 1, or take a feat if allowed.",
-      "count": 7,
+      "count": 1,
       "type": "Ability Score Improvement",
       "selection": [
         "Increase one ability score by 2",

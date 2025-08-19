@@ -1,0 +1,38 @@
+{
+  "name": "Psi Warrior",
+  "description": "Psi Warriors augment their physical might with psionic energy.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Psionic Power",
+        "description": "Harness psionic energy dice to fuel defensive fields, psionic strikes, and telekinetic movement."
+      }
+    ],
+    "7": [
+      {
+        "name": "Telekinetic Adept",
+        "description": "Use psionic energy to propel yourself or to shove foes with Telekinetic Thrust."
+      }
+    ],
+    "10": [
+      {
+        "name": "Guarded Mind",
+        "description": "Gain resistance to psychic damage and end charm or fear by expending a psionic die."
+      }
+    ],
+    "15": [
+      {
+        "name": "Bulwark of Force",
+        "description": "As a bonus action, grant half cover to yourself and nearby allies for 1 minute."
+      }
+    ],
+    "18": [
+      {
+        "name": "Telekinetic Master",
+        "description": "Cast telekinesis without components and make a weapon attack as a bonus action while maintaining it."
+      }
+    ]
+  },
+  "choices": []
+}
+

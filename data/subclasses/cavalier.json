@@ -1,0 +1,46 @@
+{
+  "name": "Cavalier",
+  "description": "Cavaliers excel at mounted combat and protecting their allies.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Bonus Proficiency",
+        "description": "Gain proficiency in a skill of your choice or learn one language."
+      },
+      {
+        "name": "Born to the Saddle",
+        "description": "You have advantage on checks to stay mounted and mounting or dismounting costs only 5 feet of movement."
+      },
+      {
+        "name": "Unwavering Mark",
+        "description": "Mark foes you hit, imposing disadvantage on attacks that don't include you and enabling a retaliatory strike."
+      }
+    ],
+    "7": [
+      {
+        "name": "Warding Maneuver",
+        "description": "Use a reaction to add 1d8 to a nearby target's AC and grant resistance to the attack's damage."
+      }
+    ],
+    "10": [
+      {
+        "name": "Hold the Line",
+        "description": "Creatures provoke opportunity attacks when they move 5 feet while within your reach, and your hits reduce their speed to 0."
+      }
+    ],
+    "15": [
+      {
+        "name": "Ferocious Charger",
+        "description": "If you move at least 10 feet before hitting a creature, you can knock it prone."
+      }
+    ],
+    "18": [
+      {
+        "name": "Vigilant Defender",
+        "description": "Gain a special reaction each round that can be used for opportunity attacks."
+      }
+    ]
+  },
+  "choices": []
+}
+

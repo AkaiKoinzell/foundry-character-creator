@@ -1,0 +1,58 @@
+{
+  "name": "Arcane Archer",
+  "description": "Arcane Archers weave magic into their arrows to produce supernatural effects.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Arcane Archer Lore",
+        "description": "Gain proficiency in Arcana or Nature and learn the prestidigitation or druidcraft cantrip."
+      },
+      {
+        "name": "Arcane Shot",
+        "description": "Learn two magical shot options to apply to arrows, usable twice per short or long rest."
+      },
+      {
+        "name": "Arcane Shot Options",
+        "description": "Choose from options like Banishing Arrow, Beguiling Arrow, and more to infuse your shots with magic."
+      }
+    ],
+    "7": [
+      {
+        "name": "Magic Arrow",
+        "description": "Your nonmagical arrows become magical for overcoming resistance and immunity."
+      },
+      {
+        "name": "Curving Shot",
+        "description": "Use a bonus action to reroll a missed attack against a different target within 60 feet."
+      },
+      {
+        "name": "Additional Arcane Shot Option",
+        "description": "Learn one additional Arcane Shot option."
+      }
+    ],
+    "10": [
+      {
+        "name": "Additional Arcane Shot Option",
+        "description": "Learn one additional Arcane Shot option."
+      }
+    ],
+    "15": [
+      {
+        "name": "Ever-Ready Shot",
+        "description": "If you roll initiative and have no Arcane Shot uses, regain one use."
+      },
+      {
+        "name": "Additional Arcane Shot Option",
+        "description": "Learn one additional Arcane Shot option."
+      }
+    ],
+    "18": [
+      {
+        "name": "Additional Arcane Shot Option",
+        "description": "Learn one additional Arcane Shot option; your options also deal extra damage."
+      }
+    ]
+  },
+  "choices": []
+}
+

@@ -1,0 +1,38 @@
+{
+  "name": "Purple Dragon Knight",
+  "description": "Purple Dragon Knights inspire greatness in others through brave deeds and leadership.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Rallying Cry",
+        "description": "When you use Second Wind, choose up to three allies to regain hit points equal to your fighter level."
+      }
+    ],
+    "7": [
+      {
+        "name": "Royal Envoy",
+        "description": "Gain proficiency in Persuasion, and your proficiency bonus is doubled for checks using it."
+      }
+    ],
+    "10": [
+      {
+        "name": "Inspiring Surge",
+        "description": "When you use Action Surge, one ally within 60 feet can make a weapon attack with its reaction."
+      }
+    ],
+    "15": [
+      {
+        "name": "Bulwark",
+        "description": "When you use Indomitable on a mental save, an ally within 60 feet can reroll a failed save against the same effect."
+      }
+    ],
+    "18": [
+      {
+        "name": "Inspiring Surge Improvement",
+        "description": "When you use Action Surge, two allies can make attacks instead of one."
+      }
+    ]
+  },
+  "choices": []
+}
+

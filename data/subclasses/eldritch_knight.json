@@ -5,49 +5,38 @@
     "3": [
       {
         "name": "Spellcasting",
-        "description": "Description for Spellcasting."
+        "description": "Augment your combat with wizard spells, focusing on abjuration and evocation."
       },
       {
         "name": "Weapon Bond",
-        "description": "Description for Weapon Bond."
+        "description": "Perform a ritual to bond with a weapon, preventing disarmament and allowing you to summon it."
       }
     ],
     "7": [
       {
         "name": "War Magic",
-        "description": "Description for War Magic."
+        "description": "After casting a cantrip, make one weapon attack as a bonus action."
       }
     ],
     "10": [
       {
         "name": "Eldritch Strike",
-        "description": "Description for Eldritch Strike."
+        "description": "When you hit a creature, it has disadvantage on the next saving throw against a spell you cast."
       }
     ],
     "15": [
       {
         "name": "Arcane Charge",
-        "description": "Description for Arcane Charge."
+        "description": "When you use Action Surge, teleport up to 30 feet before or after the additional action."
       }
     ],
     "18": [
       {
         "name": "Improved War Magic",
-        "description": "Description for Improved War Magic."
+        "description": "After casting a spell, make one weapon attack as a bonus action."
       }
     ]
   },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Eldritch Knight Feature",
-      "description": "Choose an option for the Eldritch Knight subclass",
-      "count": 1,
-      "selection": [
-        "Eldritch Knight Option 1",
-        "Eldritch Knight Option 2"
-      ],
-      "type": "Eldritch Knight Feature"
-    }
-  ]
+  "choices": []
 }
+

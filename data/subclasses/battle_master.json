@@ -5,43 +5,161 @@
     "3": [
       {
         "name": "Combat Superiority",
-        "description": "Description for Combat Superiority."
+        "description": "Learn maneuvers fueled by superiority dice to enhance your attacks."
       },
       {
         "name": "Student of War",
-        "description": "Description for Student of War."
+        "description": "Gain proficiency with one type of artisan's tools of your choice."
       }
     ],
     "7": [
       {
         "name": "Know Your Enemy",
-        "description": "Description for Know Your Enemy."
+        "description": "Spend 1 minute observing or interacting with a creature to learn about its capabilities compared to yours."
       }
     ],
     "10": [
       {
         "name": "Improved Combat Superiority",
-        "description": "Description for Improved Combat Superiority."
+        "description": "Your superiority dice turn into d10s."
       }
     ],
     "15": [
       {
         "name": "Relentless",
-        "description": "Description for Relentless."
+        "description": "Regain 1 superiority die if you start combat with none."
       }
     ]
   },
   "choices": [
     {
       "level": 3,
-      "name": "Battle Master Feature",
-      "description": "Choose an option for the Battle Master subclass",
-      "count": 1,
+      "name": "Maneuvers",
+      "description": "Choose three maneuvers to learn",
+      "count": 3,
+      "type": "maneuver",
       "selection": [
-        "Battle Master Option 1",
-        "Battle Master Option 2"
-      ],
-      "type": "Battle Master Feature"
+        "Commander's Strike",
+        "Disarming Attack",
+        "Distracting Strike",
+        "Evasive Footwork",
+        "Feinting Attack",
+        "Goading Attack",
+        "Lunging Attack",
+        "Maneuvering Attack",
+        "Menacing Attack",
+        "Parry",
+        "Precision Attack",
+        "Pushing Attack",
+        "Rally",
+        "Riposte",
+        "Sweeping Attack",
+        "Trip Attack",
+        "Ambush",
+        "Bait and Switch",
+        "Brace",
+        "Commanding Presence",
+        "Grappling Strike",
+        "Quick Toss",
+        "Tactical Assessment"
+      ]
+    },
+    {
+      "level": 7,
+      "name": "Additional Maneuvers",
+      "description": "Learn two additional maneuvers",
+      "count": 2,
+      "type": "maneuver",
+      "selection": [
+        "Commander's Strike",
+        "Disarming Attack",
+        "Distracting Strike",
+        "Evasive Footwork",
+        "Feinting Attack",
+        "Goading Attack",
+        "Lunging Attack",
+        "Maneuvering Attack",
+        "Menacing Attack",
+        "Parry",
+        "Precision Attack",
+        "Pushing Attack",
+        "Rally",
+        "Riposte",
+        "Sweeping Attack",
+        "Trip Attack",
+        "Ambush",
+        "Bait and Switch",
+        "Brace",
+        "Commanding Presence",
+        "Grappling Strike",
+        "Quick Toss",
+        "Tactical Assessment"
+      ]
+    },
+    {
+      "level": 10,
+      "name": "Additional Maneuvers",
+      "description": "Learn two additional maneuvers",
+      "count": 2,
+      "type": "maneuver",
+      "selection": [
+        "Commander's Strike",
+        "Disarming Attack",
+        "Distracting Strike",
+        "Evasive Footwork",
+        "Feinting Attack",
+        "Goading Attack",
+        "Lunging Attack",
+        "Maneuvering Attack",
+        "Menacing Attack",
+        "Parry",
+        "Precision Attack",
+        "Pushing Attack",
+        "Rally",
+        "Riposte",
+        "Sweeping Attack",
+        "Trip Attack",
+        "Ambush",
+        "Bait and Switch",
+        "Brace",
+        "Commanding Presence",
+        "Grappling Strike",
+        "Quick Toss",
+        "Tactical Assessment"
+      ]
+    },
+    {
+      "level": 15,
+      "name": "Additional Maneuvers",
+      "description": "Learn two additional maneuvers",
+      "count": 2,
+      "type": "maneuver",
+      "selection": [
+        "Commander's Strike",
+        "Disarming Attack",
+        "Distracting Strike",
+        "Evasive Footwork",
+        "Feinting Attack",
+        "Goading Attack",
+        "Lunging Attack",
+        "Maneuvering Attack",
+        "Menacing Attack",
+        "Parry",
+        "Precision Attack",
+        "Pushing Attack",
+        "Rally",
+        "Riposte",
+        "Sweeping Attack",
+        "Trip Attack",
+        "Ambush",
+        "Bait and Switch",
+        "Brace",
+        "Commanding Presence",
+        "Grappling Strike",
+        "Quick Toss",
+        "Tactical Assessment"
+      ]
     }
   ]
 }
+

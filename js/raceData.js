@@ -1,3 +1,36 @@
+const ALL_SKILLS = [
+  "Acrobatics",
+  "Animal Handling",
+  "Arcana",
+  "Athletics",
+  "Deception",
+  "History",
+  "Insight",
+  "Intimidation",
+  "Investigation",
+  "Medicine",
+  "Nature",
+  "Perception",
+  "Performance",
+  "Persuasion",
+  "Religion",
+  "Sleight of Hand",
+  "Stealth",
+  "Survival"
+];
+
+function flattenEntries(entries) {
+  if (!Array.isArray(entries)) return "";
+  return entries
+    .map(e => {
+      if (typeof e === "string") return e;
+      if (e.entries) return flattenEntries(e.entries);
+      if (e.items) return flattenEntries(e.items);
+      return "";
+    })
+    .join(" ");
+}
+
 export function convertRaceData(rawData) {
   // Size
   let size = "Unknown";
@@ -50,17 +83,23 @@ export function convertRaceData(rawData) {
   const rawEntries = rawData.entries || [];
   rawEntries.forEach(entry => {
     if (entry.type === 'inset' && entry.name && entry.name.toLowerCase().includes('variant feature')) {
-      let variantText = '';
-      if (Array.isArray(entry.entries)) {
-        variantText = entry.entries.map(opt => {
-          let optDesc = Array.isArray(opt.entries) ? opt.entries.join(' ') : opt.entries;
-          return `${opt.name}: ${optDesc}`;
-        }).join(' | ');
-      }
+      variant_feature_choices = (entry.entries || []).map(opt => ({
+        name: opt.name,
+        description: flattenEntries(opt.entries)
+      }));
+      const variantSummary = variant_feature_choices
+        .map(opt => `<strong>${opt.name}:</strong> ${opt.description}`)
+        .join(' ');
       traits.push({
         name: entry.name,
-        description: variantText,
+        description: variantSummary,
         level_requirement: 1
+      });
+    } else if (entry.name && entry.entries) {
+      traits.push({
+        name: entry.name,
+        description: flattenEntries(entry.entries),
+        level_requirement: entry.level || 1
       });
     }
   });
@@ -84,10 +123,12 @@ export function convertRaceData(rawData) {
   // Skill Choices
   let skill_choices = null;
   if (rawData.skillProficiencies && rawData.skillProficiencies.length > 0) {
-    const sp = rawData.skillProficiencies[0].choose;
-    if (sp && sp.from) {
-      const count = sp.count ? sp.count : 1;
-      skill_choices = { number: count, options: sp.from };
+    const spObj = rawData.skillProficiencies[0];
+    if (spObj.choose && spObj.choose.from) {
+      const count = spObj.choose.count ? spObj.choose.count : 1;
+      skill_choices = { number: count, options: spObj.choose.from };
+    } else if (typeof spObj.any === 'number') {
+      skill_choices = { number: spObj.any, options: ALL_SKILLS };
     }
   }
 

@@ -143,7 +143,45 @@ export function convertRaceData(rawData) {
   }
 
   // Spellcasting (if present)
-  let spellcasting = rawData.additionalSpells || null;
+  let spellcasting = null;
+  if (rawData.additionalSpells && rawData.additionalSpells.length > 0) {
+    const sc = rawData.additionalSpells[0];
+    spellcasting = {};
+
+    // Ability choices (store as uppercase values)
+    if (sc.ability) {
+      spellcasting.ability_choices = Array.isArray(sc.ability)
+        ? sc.ability.map(a => a.toUpperCase())
+        : [sc.ability.toUpperCase()];
+    }
+
+    // Known spells / spell choices
+    if (sc.known) {
+      const fixedSpells = [];
+      Object.values(sc.known).forEach(levelObj => {
+        const entries = levelObj._ || [];
+        entries.forEach(entry => {
+          if (typeof entry === 'string') {
+            fixedSpells.push(entry);
+          } else if (entry.choose) {
+            spellcasting.spell_choices = {
+              type: 'filter',
+              filter: entry.choose
+            };
+          }
+        });
+      });
+
+      if (!spellcasting.spell_choices && fixedSpells.length > 1) {
+        spellcasting.spell_choices = {
+          type: 'fixed_list',
+          options: fixedSpells
+        };
+      } else if (fixedSpells.length === 1) {
+        spellcasting.fixed_spell = fixedSpells[0];
+      }
+    }
+  }
 
   return {
     name: rawData.name,

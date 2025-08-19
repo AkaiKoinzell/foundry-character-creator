@@ -1,13 +1,6 @@
-function showStep(stepId) {
-  const steps = document.querySelectorAll(".step");
-  steps.forEach(step => {
-    if (step.id === stepId) {
-      step.classList.add("active");
-    } else {
-      step.classList.remove("active");
-    }
-  });
-}
+import { loadLanguages, handleError, renderTables } from './common.js';
+import { loadSpells, filterSpells, handleSpellcasting } from './spellcasting.js';
+import { convertRaceData } from './raceData.js';
 
 // ==================== MAPPING PER LE EXTRA VARIANT FEATURES ====================
 const variantExtraMapping = {
@@ -113,112 +106,7 @@ function handleVariantFeatureChoices(data) {
   document.getElementById("variantFeatureChoice").addEventListener("change", handleVariantExtraSelections);
 }
 
-// ==================== FUNZIONI SPELLCASTING ====================
-function loadSpells(callback) {
-  fetch("data/spells.json")
-    .then(response => response.json())
-    .then(data => {
-      console.log("📖 Incantesimi caricati:", data);
-      callback(data);
-    })
-    .catch(error => console.error("❌ Errore nel caricamento degli incantesimi:", error));
-}
-
-/**
- * Handles standard spellcasting options.
- * Supports two modes:
- * - fixed_list: a fixed dropdown.
- * - filter: groups spells by level and includes a dropdown for the casting ability.
- * Injects the markup into the container with the given ID.
- */
-function handleSpellcasting(data, containerId) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-
-    container.innerHTML = ""; // Pulisce il contenuto precedente
-
-    if (data.spellcasting) {
-        console.log(`🔍 JSON Spellcasting per ${data.name}:`, data.spellcasting);
-
-        // ✅ Caso 1: Incantesimi fissi (es. Drow Magic)
-        if (data.spellcasting.fixed_spell) {
-            container.innerHTML += `<p><strong>✨ Incantesimo assegnato:</strong> ${data.spellcasting.fixed_spell}</p>`;
-        }
-
-        // ✅ Caso 2: Scelta di incantesimi
-        if (data.spellcasting.spell_choices) {
-            if (data.spellcasting.spell_choices.type === "fixed_list") {
-                const options = data.spellcasting.spell_choices.options
-                    .map(spell => `<option value="${spell}">${spell}</option>`)
-                    .join("");
-
-                container.innerHTML += `
-                    <p><strong>🔮 Scegli un incantesimo:</strong></p>
-                    <select id="spellSelection">
-                        <option value="">Seleziona...</option>${options}
-                    </select>`;
-            } 
-            else if (data.spellcasting.spell_choices.type === "filter") {
-                const filterParts = data.spellcasting.spell_choices.filter.split("|");
-                const spellLevel = filterParts.find(part => part.startsWith("level="))?.split("=")[1];
-                const spellClass = filterParts.find(part => part.startsWith("class="))?.split("=")[1];
-
-                if (spellLevel && spellClass) {
-                    loadSpells(spellList => {
-                        const filteredSpells = spellList
-                            .filter(spell => parseInt(spell.level) === parseInt(spellLevel) && spell.spell_list.includes(spellClass))
-                            .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
-                            .join("");
-
-                        if (filteredSpells) {
-                            container.innerHTML += `
-                                <p><strong>🔮 Scegli un Cantrip da ${spellClass}:</strong></p>
-                                <select id="spellSelection">
-                                    <option value="">Seleziona...</option>${filteredSpells}
-                                </select>`;
-                        } else {
-                            container.innerHTML += `<p><strong>⚠️ Nessun Cantrip disponibile per ${spellClass}.</strong></p>`;
-                        }
-                    });
-                } else {
-                    container.innerHTML += `<p><strong>⚠️ Errore: Il filtro incantesimi non è valido per questa razza.</strong></p>`;
-                }
-            }
-        }
-
-        // ✅ Caso 3: **Scelta dell'abilità di lancio**
-        if (data.spellcasting.ability_choices && Array.isArray(data.spellcasting.ability_choices)) {
-          console.log(`🧙‍♂️ Verifica dell'abilità di lancio per ${data.name}:`, data.spellcasting.ability_choices);
-
-          if (data.spellcasting.ability_choices.length > 1) {
-              const abilityOptions = data.spellcasting.ability_choices
-                  .map(a => `<option value="${a.toUpperCase()}">${a.toUpperCase()}</option>`)
-                  .join("");
-
-              container.innerHTML += `
-                  <p><strong>🧠 Seleziona l'abilità di lancio:</strong></p>
-                  <select id="castingAbility">
-                      <option value="">Seleziona...</option>${abilityOptions}
-                  </select>`;
-          }
-      }
-    }
-}
-
 // ==================== EXTRAS: LANGUAGES, SKILLS, TOOLS, ANCESTRY ====================
-function loadLanguages(callback) {
-  fetch("data/languages.json")
-    .then(response => response.json())
-    .then(data => {
-      if (data.languages) {
-        callback(data.languages);
-      } else {
-        handleError("Nessuna lingua trovata nel file JSON.");
-      }
-    })
-    .catch(error => handleError(`Errore caricando le lingue: ${error}`));
-}
-
 function loadFeats(callback) {
   if (availableFeats.length > 0) {
     callback(availableFeats);
@@ -329,20 +217,6 @@ function handleExtraAncestry(data, containerId) {
 }
 
 // ==================== COMMON UTILITY FUNCTIONS ====================
-function extractSpellName(data) {
-  if (Array.isArray(data)) {
-    if (typeof data[0] === "string") {
-      return data[0].split("#")[0];
-    }
-  } else if (typeof data === "object") {
-    for (let key in data) {
-      const result = extractSpellName(data[key]);
-      if (result) return result;
-    }
-  }
-  return null;
-}
-
 function filterSpells(spells, filterString) {
   const conditions = filterString.split("|");
   return spells.filter(spell => {
@@ -363,235 +237,8 @@ function filterSpells(spells, filterString) {
   });
 }
 
-function handleError(message) {
-  console.error("❌ " + message);
-  alert("⚠️ " + message);
-}
-
-function loadDropdownData(jsonPath, selectId, key) {
-  fetch(jsonPath)
-    .then(response => response.json())
-    .then(data => {
-      console.log(`📜 Dati ricevuti da ${jsonPath}:`, data);
-      if (!data[key]) {
-        handleError(`Chiave ${key} non trovata in ${jsonPath}`);
-        return;
-      }
-      const options = Object.keys(data[key]).map(name => ({
-        name: name,
-        path: data[key][name]
-      }));
-      populateDropdown(selectId, options);
-    })
-    .catch(error => {
-      console.error(`❌ Errore caricando ${jsonPath}:`, error);
-      alert(`⚠️ Errore di connessione nel caricamento di ${jsonPath}. Riprova!`);
-    });
-}
-
-function populateDropdown(selectId, options) {
-  const select = document.getElementById(selectId);
-  if (!select) {
-    handleError(`Elemento #${selectId} non trovato!`);
-    return;
-  }
-  select.innerHTML = `<option value="">Seleziona...</option>`;
-  options.forEach(option => {
-    const opt = document.createElement("option");
-    opt.value = option.path;
-    opt.textContent = option.name;
-    select.appendChild(opt);
-  });
-}
 
 // ==================== RACE DATA CONVERSION ====================
-function convertRaceData(rawData) {
-  // Size
-  let size = "Unknown";
-  if (Array.isArray(rawData.size)) {
-    size = (rawData.size[0] === "M") ? "Medium" : (rawData.size[0] === "S") ? "Small" : rawData.size[0];
-  } else {
-    size = rawData.size || "Unknown";
-  }
-
-  // Speed
-  let speed = {};
-  if (rawData.speed) {
-    if (typeof rawData.speed === "object") {
-      for (let key in rawData.speed) {
-        speed[key] = (typeof rawData.speed[key] === "boolean")
-          ? (key === "fly" ? "equal to your walking speed" : "unknown")
-          : rawData.speed[key];
-      }
-    } else {
-      speed = rawData.speed;
-    }
-  }
-
-  // Senses
-  let senses = {};
-  if (rawData.senses && typeof rawData.senses === "object") {
-    senses = rawData.senses;
-  } else if (rawData.darkvision) {
-    senses.darkvision = rawData.darkvision;
-  }
-
-  // Ability Bonus
-  let ability_bonus = { options: [] };
-  if (rawData.ability && Array.isArray(rawData.ability)) {
-    rawData.ability.forEach(ability => {
-      if (ability.choose && ability.choose.weighted) {
-        const weights = ability.choose.weighted.weights;
-        if (weights.length === 2 && weights.includes(2)) {
-          ability_bonus.options.push({ type: "fixed", values: { any: 2, any_other: 1 } });
-        } else if (weights.length === 3) {
-          ability_bonus.options.push({ type: "three", values: { any: 1, any_other: 1, any_other_2: 1 } });
-        }
-      }
-    });
-  }
-
-  // Variant Feature and Traits
-  let variant_feature_choices = null;
-  let traits = [];
-  const rawEntries = rawData.entries || [];
-  rawEntries.forEach(entry => {
-    if (entry.type === "inset" && entry.name && entry.name.toLowerCase().includes("variant feature")) {
-      let variantText = "";
-      if (Array.isArray(entry.entries)) {
-        variantText = entry.entries.map(opt => {
-          let optDesc = Array.isArray(opt.entries) ? opt.entries.join(" ") : opt.entries;
-          return `${opt.name}: ${optDesc}`;
-        }).join(" | ");
-      }
-      traits.push({
-        name: entry.name,
-        description: variantText,
-        level_requirement: 1
-      });
-      if (variant_feature_choices === null && Array.isArray(entry.entries)) {
-        variant_feature_choices = entry.entries.map(opt => ({
-          name: opt.name,
-          description: Array.isArray(opt.entries) ? opt.entries.join(" ") : opt.entries
-        }));
-      }
-      return;
-    }
-    if (entry.entries && Array.isArray(entry.entries) && entry.entries.some(e => typeof e === "object" && e.type === "table")) {
-      traits.push(entry);
-    } else if (entry.name && entry.entries) {
-      const description = Array.isArray(entry.entries) ? entry.entries.join(" ") : entry.entries;
-      traits.push({
-        name: entry.name,
-        description: description,
-        level_requirement: 1
-      });
-    }
-  });
-
-  // Spellcasting – complete processing
-  let spellcasting = null;
-
-if (rawData.additionalSpells && rawData.additionalSpells.length > 0) {
-    let spellsArray = [];
-    let abilityChoices = new Set(); // Evitiamo duplicati
-
-    rawData.additionalSpells.forEach(spellData => {
-        // 📌 Gestione incantesimi conosciuti
-        if (spellData.known) {
-            Object.keys(spellData.known).forEach(levelKey => {
-                if (spellData.known[levelKey]._ && Array.isArray(spellData.known[levelKey]._)) {
-                    spellData.known[levelKey]._.forEach(spell => {
-                        if (typeof spell === "string") {
-                            spellsArray.push({ name: spell, level: parseInt(levelKey) });
-                        } else if (spell.choose) {
-                            spellcasting = spellcasting || {};  
-                            spellcasting.spell_choices = { type: "filter", filter: spell.choose };
-                        }
-                    });
-                }
-            });
-        }
-
-        // 📌 Raccolta delle opzioni per lo spellcasting ability
-        if (spellData.ability) {
-            if (typeof spellData.ability === "string") { 
-                abilityChoices.add(spellData.ability.toUpperCase()); 
-            } else if (spellData.ability.choose && Array.isArray(spellData.ability.choose)) {
-                spellData.ability.choose.forEach(a => abilityChoices.add(a.toUpperCase()));
-            }
-        }
-    });
-
-    // 📌 Se sono presenti incantesimi conosciuti, aggiungiamo la lista di selezione fissa
-    if (spellsArray.length > 0) {
-        spellcasting = spellcasting || {};  
-        spellcasting.spell_choices = {
-            type: "fixed_list",
-            options: spellsArray.map(s => s.name)
-        };
-    }
-
-      spellcasting = spellcasting || {};
-      spellcasting.ability_choices = Array.from(abilityChoices);
-    }
-  // Languages
-  let languages = { fixed: [], choice: 0, options: [] };
-  if (rawData.languageProficiencies && rawData.languageProficiencies.length > 0) {
-    const lp = rawData.languageProficiencies[0];
-    for (let lang in lp) {
-      if (lp[lang] === true) {
-        languages.fixed.push(lang.charAt(0).toUpperCase() + lang.slice(1));
-      } else if (typeof lp[lang] === "number") {
-        languages.choice = lp[lang];
-      }
-    }
-    if (languages.choice > 0 && languages.options.length === 0) {
-      languages.options.push("Any other language you and your DM agree is appropriate");
-    }
-  }
-
-  // Skill Choices
-  let skill_choices = null;
-  if (rawData.skillProficiencies && rawData.skillProficiencies.length > 0) {
-    const sp = rawData.skillProficiencies[0].choose;
-    if (sp && sp.from) {
-      const count = sp.count ? sp.count : 1;
-      skill_choices = { number: count, options: sp.from };
-    }
-  }
-
-  // Tool Choices
-  let tool_choices = null;
-  if (rawData.toolProficiencies && Array.isArray(rawData.toolProficiencies)) {
-    rawData.toolProficiencies.forEach(tp => {
-      if (tp.choose && tp.choose.from) {
-        tool_choices = { number: 1, options: tp.choose.from };
-      }
-    });
-  }
-
-  // ✅ Ritorno finale corretto
-  return {
-    name: rawData.name,
-    source: rawData.source + (rawData.page ? `, page ${rawData.page}` : ""),
-    size: size,
-    speed: speed,
-    senses: senses,
-    ability_bonus: ability_bonus,
-    traits: traits,
-    rawEntries: rawEntries,
-    spellcasting: spellcasting,
-    languages: languages,
-    skill_choices: skill_choices,
-    tool_choices: tool_choices,
-    variant_feature_choices: variant_feature_choices
-  };
-  console.log(`📊 Controllo spellcasting per ${rawData.name}`);
-  console.log(`✅ additionalSpells:`, rawData.additionalSpells);
-  console.log(`✅ ability_choices:`, rawData.spellcasting ? rawData.spellcasting.ability_choices : "Nessuna");
-}
-
 // ==================== RENDERING DI TABELLE ====================
 function renderTables(entries) {
   let html = "";
@@ -653,12 +300,14 @@ let extraSelections = [];
 let currentSelectionIndex = 0;
 // Cached list of all languages loaded from JSON
 let availableLanguages = [];
+export function setAvailableLanguages(langs) {
+  availableLanguages = langs;
+}
 // Cached list of feats loaded from JSON
 let availableFeats = [];
 // Context for the extras modal ("race" or "class")
 let extraModalContext = "race";
 // Flag to track confirmation of class selection
-let classSelectionConfirmed = false;
 
 // Mapping and descriptions for extra selection categories
 const extraCategoryAliases = {
@@ -1461,109 +1110,26 @@ function updateSkillOptions() {
 }
 
 // ==================== EVENT LISTENERS AND INITIALIZATION ====================
-window.displayRaceTraits = displayRaceTraits;
 window.applyRacialBonuses = applyRacialBonuses;
-window.updateSubclasses = updateSubclasses;
-window.renderClassFeatures = renderClassFeatures;
+window.updateVariantSkillOptions = updateVariantSkillOptions;
+window.adjustPoints = adjustPoints;
 
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("✅ Script.js caricato!");
-  const modal = document.getElementById("raceExtrasModal");
-  if (modal) modal.style.display = "none";
+export {
+  updateVariantSkillOptions,
+  handleVariantExtraSelections,
+  handleVariantFeatureChoices,
+  loadFeats,
+  handleExtraLanguages,
+  handleExtraSkills,
+  handleExtraTools,
+  handleExtraAncestry,
+  gatherExtraSelections,
+  updateSubclasses,
+  renderClassFeatures,
+  openExtrasModal,
+  displayRaceTraits,
+  generateFinalJson,
+  initializeValues,
+  setAvailableLanguages
+};
 
-  if (sessionStorage.getItem("popupOpened") === "true") {
-    console.log("🛑 Il pop-up non verrà riaperto automaticamente.");
-    sessionStorage.removeItem("popupOpened");
-  }
-  loadDropdownData("data/races.json", "raceSelect", "races");
-  loadDropdownData("data/classes.json", "classSelect", "classes");
-  // Preload list of languages for later selections
-  loadLanguages(langs => {
-    availableLanguages = langs;
-  });
-
-  document.getElementById("btnStep1").addEventListener("click", () => showStep("step1"));
-  document.getElementById("btnStep2").addEventListener("click", () => showStep("step2"));
-  document.getElementById("btnStep3").addEventListener("click", () => showStep("step3"));
-  document.getElementById("btnStep4").addEventListener("click", () => showStep("step4"));
-  document.getElementById("btnStep5").addEventListener("click", () => showStep("step5"));
-  document.getElementById("btnStep6").addEventListener("click", () => showStep("step6"));
-
-  const classSelectElem = document.getElementById("classSelect");
-  const subclassSelectElem = document.getElementById("subclassSelect");
-  const levelSelectElem = document.getElementById("levelSelect");
-  if (classSelectElem) classSelectElem.addEventListener("change", updateSubclasses);
-  if (subclassSelectElem)
-    subclassSelectElem.addEventListener("change", async () => {
-      const selections = await renderClassFeatures();
-      if (classSelectionConfirmed && selections.length > 0) {
-        openExtrasModal(selections, "class");
-      }
-    });
-  if (levelSelectElem)
-    levelSelectElem.addEventListener("change", async () => {
-      const selections = await renderClassFeatures();
-      if (classSelectionConfirmed && selections.length > 0) {
-        openExtrasModal(selections, "class");
-      }
-    });
-  document.getElementById("btnStep8").addEventListener("click", () => showStep("step8"));
-
-  showStep("step1");
-
-  document.getElementById("raceSelect").addEventListener("change", displayRaceTraits);
-  document.getElementById("levelSelect").addEventListener("change", () => displayRaceTraits());
-  document.getElementById("generateJson").addEventListener("click", generateFinalJson);
-
-  document.getElementById("confirmClassSelection").addEventListener("click", async () => {
-    const classSelect = document.getElementById("classSelect");
-    const subclassSelect = document.getElementById("subclassSelect");
-    if (!classSelect.value) {
-      alert("⚠️ Seleziona una classe prima di procedere!");
-      return;
-    }
-    if (subclassSelect.style.display !== "none" && !subclassSelect.value) {
-      alert("⚠️ Seleziona una sottoclasse prima di procedere!");
-      return;
-    }
-    classSelectionConfirmed = true;
-    const selections = await renderClassFeatures();
-    if (selections.length > 0) {
-      openExtrasModal(selections, "class");
-    }
-    classSelect.disabled = true;
-    subclassSelect.disabled = true;
-    document.getElementById("confirmClassSelection").style.display = "none";
-  });
-
-  // 🟢 ✅ **CORRETTO: FETCH PER CONFERMAZIONE RAZZA**
-  document.getElementById("confirmRaceSelection").addEventListener("click", () => {
-    const selectedRace = document.getElementById("raceSelect").value;
-    if (!selectedRace) {
-      alert("⚠️ Seleziona una razza prima di procedere!");
-      return;
-    }
-
-    fetch(selectedRace)
-      .then(response => response.json())
-      .then(data => {
-      const raceData = convertRaceData(data);
-      document.getElementById("raceTraits").style.display = "none";
-      const selections = gatherExtraSelections(raceData, "race");
-      if (raceData.spellcasting && raceData.spellcasting.spell_choices && raceData.spellcasting.spell_choices.type === "filter") {
-        loadSpells(spellList => {
-          const filtered = filterSpells(spellList, raceData.spellcasting.spell_choices.filter).map(spell => spell.name);
-          selections.push({ name: "Cantrips", description: "Choose a spell.", selection: filtered, count: 1 });
-          sessionStorage.setItem("popupOpened", "true");
-          openExtrasModal(selections);
-        });
-      } else {
-        sessionStorage.setItem("popupOpened", "true");
-        openExtrasModal(selections);
-      }
-      document.getElementById("confirmRaceSelection").style.display = "none";
-    })
-      .catch(error => handleError("Errore caricando i dati della razza: " + error));
-  });
-  initializeValues();
-});

@@ -1,30 +1,47 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Cinzel:wght@700&display=swap');
+
+:root {
+  --primary-color: #2c3e50;
+  --primary-hover: #34495e;
+  --secondary-color: #ecf0f1;
+  --accent-color: #3498db;
+  --accent-hover: #2a80b9;
+  --text-color: #333;
+}
 
 body {
-  font-family: 'Montserrat', sans-serif;
-  background-color: #f4f4f4;
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--secondary-color);
   margin: 20px;
-  color: #333;
+  color: var(--text-color);
 }
 
-header {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-nav {
-  background-color: #333;
+header.banner {
+  background-color: var(--primary-color);
   color: #fff;
-  padding: 10px;
-  display: flex;
-  justify-content: center;
-  gap: 10px;
+  text-align: center;
+  padding: 20px;
   border-radius: 5px;
   margin-bottom: 20px;
 }
 
+.section-divider {
+  height: 4px;
+  background-color: var(--primary-color);
+  border-radius: 2px;
+  margin: 20px 0;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
 .btn {
-  background-color: #555;
+  background-color: var(--primary-color);
   border: none;
   color: #fff;
   padding: 0.5rem 1rem;
@@ -35,25 +52,29 @@ nav {
 }
 
 .btn:hover {
-  background-color: #777;
+  background-color: var(--primary-hover);
 }
 
 .btn:focus {
-  outline: 2px solid #005fcc;
+  outline: 2px solid var(--accent-color);
   outline-offset: 2px;
 }
 
 .btn-primary {
-  background-color: #28a745;
+  background-color: var(--accent-color);
 }
 
 .btn-primary:hover {
-  background-color: #218838;
+  background-color: var(--accent-hover);
 }
 
 .btn-primary:focus {
-  outline: 2px solid #005fcc;
+  outline: 2px solid var(--accent-color);
   outline-offset: 2px;
+}
+
+h1, h2 {
+  font-family: 'Cinzel', serif;
 }
 
 .step {
@@ -86,8 +107,8 @@ label {
 }
 
 .form-control:focus {
-  outline: 2px solid #005fcc;
-  border-color: #005fcc;
+  outline: 2px solid var(--accent-color);
+  border-color: var(--accent-color);
 }
 
 table {

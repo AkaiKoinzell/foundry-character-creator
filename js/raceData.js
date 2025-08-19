@@ -150,9 +150,17 @@ export function convertRaceData(rawData) {
 
     // Ability choices (store as uppercase values)
     if (sc.ability) {
-      spellcasting.ability_choices = Array.isArray(sc.ability)
-        ? sc.ability.map(a => a.toUpperCase())
-        : [sc.ability.toUpperCase()];
+      let abilities = [];
+      if (Array.isArray(sc.ability)) {
+        abilities = sc.ability;
+      } else if (typeof sc.ability === 'object' && sc.ability.choose) {
+        abilities = Array.isArray(sc.ability.choose)
+          ? sc.ability.choose
+          : [sc.ability.choose];
+      } else {
+        abilities = [sc.ability];
+      }
+      spellcasting.ability_choices = abilities.map(a => a.toString().toUpperCase());
     }
 
     // Known spells / spell choices

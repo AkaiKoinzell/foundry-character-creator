@@ -1,0 +1,43 @@
+{
+  "name": "Way of the Long Death",
+  "description": "Monks obsessed with the study of mortality, using their knowledge to manipulate life and death.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Touch of Death",
+        "description": "When you reduce a creature within 5 feet to 0 hit points, gain temporary hit points equal to your Wisdom modifier + monk level."
+      }
+    ],
+    "6": [
+      {
+        "name": "Hour of Reaping",
+        "description": "As an action, frighten creatures within 30 feet that can see you until the end of your next turn on a failed Wisdom save."
+      }
+    ],
+    "11": [
+      {
+        "name": "Mastery of Death",
+        "description": "When reduced to 0 hit points, spend 1 ki point to have 1 hit point instead."
+      }
+    ],
+    "17": [
+      {
+        "name": "Touch of the Long Death",
+        "description": "As an action, touch a creature and spend 1 to 10 ki points; the target takes 2d10 necrotic damage per ki point on a failed Constitution save, or half as much on a success."
+      }
+    ]
+  },
+  "choices": [
+    {
+      "level": 3,
+      "name": "Way of the Long Death Feature",
+      "description": "Choose an option for the Way of the Long Death subclass",
+      "count": 1,
+      "selection": [
+        "Way of the Long Death Option 1",
+        "Way of the Long Death Option 2"
+      ],
+      "type": "Way of the Long Death Feature"
+    }
+  ]
+}

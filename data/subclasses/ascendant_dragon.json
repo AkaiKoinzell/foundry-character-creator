@@ -1,0 +1,47 @@
+{
+  "name": "Way of the Ascendant Dragon",
+  "description": "These monks channel draconic power to bolster allies and unleash elemental fury.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Draconic Disciple",
+        "description": "Tap into draconic presence, change unarmed strike damage to acid, cold, fire, lightning, or poison, and learn Draconic or another language."
+      },
+      {
+        "name": "Breath of the Dragon",
+        "description": "Replace one attack with a 20-foot cone or 30-foot line of elemental energy, dealing damage equal to two Martial Arts dice to each creature failing a Dexterity save. Uses equal to proficiency bonus or 2 ki per use when expended."
+      }
+    ],
+    "6": [
+      {
+        "name": "Wings Unfurled",
+        "description": "When you use Step of the Wind, sprout spectral wings to gain a flying speed equal to your walking speed until the end of the turn, a number of times per long rest equal to your proficiency bonus."
+      }
+    ],
+    "11": [
+      {
+        "name": "Aspect of the Wyrm",
+        "description": "As a bonus action, create a 10-foot aura for 1 minute granting either a frightful presence or damage resistance to you and allies."
+      }
+    ],
+    "17": [
+      {
+        "name": "Ascendant Aspect",
+        "description": "Augment your breath to larger shapes and higher damage, gain 10-foot blindsight, and unleash explosive fury when you activate Aspect of the Wyrm."
+      }
+    ]
+  },
+  "choices": [
+    {
+      "level": 3,
+      "name": "Way of the Ascendant Dragon Feature",
+      "description": "Choose an option for the Way of the Ascendant Dragon subclass",
+      "count": 1,
+      "selection": [
+        "Way of the Ascendant Dragon Option 1",
+        "Way of the Ascendant Dragon Option 2"
+      ],
+      "type": "Way of the Ascendant Dragon Feature"
+    }
+  ]
+}

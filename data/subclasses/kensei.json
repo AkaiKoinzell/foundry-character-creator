@@ -1,0 +1,43 @@
+{
+  "name": "Way of the Kensei",
+  "description": "Weapon masters who treat their armaments as extensions of the body and spirit.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Path of the Kensei",
+        "description": "Choose two weapons as kensei weapons and gain benefits such as Agile Parry, Kensei's Shot, and proficiency with calligrapher's or painter's supplies."
+      }
+    ],
+    "6": [
+      {
+        "name": "One with the Blade",
+        "description": "Your kensei weapons count as magical, and you can spend 1 ki point to deal extra damage with them once per turn."
+      }
+    ],
+    "11": [
+      {
+        "name": "Sharpen the Blade",
+        "description": "As a bonus action, spend up to 3 ki points to grant a kensei weapon a bonus to attack and damage rolls equal to the ki points spent for 1 minute."
+      }
+    ],
+    "17": [
+      {
+        "name": "Unerring Accuracy",
+        "description": "If you miss with a monk weapon attack on your turn, reroll the attack roll once."
+      }
+    ]
+  },
+  "choices": [
+    {
+      "level": 3,
+      "name": "Way of the Kensei Feature",
+      "description": "Choose an option for the Way of the Kensei subclass",
+      "count": 1,
+      "selection": [
+        "Way of the Kensei Option 1",
+        "Way of the Kensei Option 2"
+      ],
+      "type": "Way of the Kensei Feature"
+    }
+  ]
+}

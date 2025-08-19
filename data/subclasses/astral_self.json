@@ -1,0 +1,43 @@
+{
+  "name": "Way of the Astral Self",
+  "description": "These monks manifest a spiritual astral form to extend their presence and might.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Arms of the Astral Self",
+        "description": "As a bonus action, spend 1 ki point to summon spectral arms that deal force damage, extend your reach by 5 feet, and allow the use of Wisdom for Strength checks and attacks for 10 minutes."
+      }
+    ],
+    "6": [
+      {
+        "name": "Visage of the Astral Self",
+        "description": "Summon a spectral visage for 10 minutes, granting 120-foot darkvision, advantage on Insight and Intimidation, and the ability to speak to one creature or amplify your voice."
+      }
+    ],
+    "11": [
+      {
+        "name": "Body of the Astral Self",
+        "description": "While both arms and visage are present, a spectral body grants damage reduction against certain types and lets your arms deal extra damage once per turn."
+      }
+    ],
+    "17": [
+      {
+        "name": "Awakened Astral Self",
+        "description": "Spend 5 ki points to fully manifest your astral self for 10 minutes, gaining +2 AC and attacking three times with astral arms when you use Extra Attack."
+      }
+    ]
+  },
+  "choices": [
+    {
+      "level": 3,
+      "name": "Way of the Astral Self Feature",
+      "description": "Choose an option for the Way of the Astral Self subclass",
+      "count": 1,
+      "selection": [
+        "Way of the Astral Self Option 1",
+        "Way of the Astral Self Option 2"
+      ],
+      "type": "Way of the Astral Self Feature"
+    }
+  ]
+}

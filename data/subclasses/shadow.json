@@ -1,29 +1,29 @@
 {
   "name": "Way of Shadow",
-  "description": "Monks of the Way of Shadow follow a tradition that values stealth and subterfuge.",
+  "description": "Monks of shadow specialize in stealth, trickery, and dark magic.",
   "features_by_level": {
     "3": [
       {
         "name": "Shadow Arts",
-        "description": "Description for Shadow Arts."
+        "description": "Spend 2 ki points to cast darkness, darkvision, pass without trace, or silence, and you learn the minor illusion cantrip."
       }
     ],
     "6": [
       {
         "name": "Shadow Step",
-        "description": "Description for Shadow Step."
+        "description": "While in dim light or darkness, teleport up to 60 feet to another such space as a bonus action, gaining advantage on your next melee attack."
       }
     ],
     "11": [
       {
         "name": "Cloak of Shadows",
-        "description": "Description for Cloak of Shadows."
+        "description": "In an area of dim light or darkness, use your action to become invisible until you attack, cast a spell, or enter bright light."
       }
     ],
     "17": [
       {
         "name": "Opportunist",
-        "description": "Description for Opportunist."
+        "description": "When a creature within 5 feet of you is hit by an attack made by another creature, use your reaction to make a melee attack against it."
       }
     ]
   },

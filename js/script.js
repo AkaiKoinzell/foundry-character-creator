@@ -242,7 +242,7 @@ function checkTraitCompletion(detailId) {
   detail.classList.toggle("incomplete", incomplete);
 }
 
-export function gatherRaceTraitSelections() {
+function gatherRaceTraitSelections() {
   const result = {};
   const lang = document.getElementById("extraLanguageDropdown")?.value;
   if (lang) result.languages = [lang];

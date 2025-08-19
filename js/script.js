@@ -60,30 +60,44 @@ function handleVariantExtraSelections() {
 
   if (!mapData) return;
 
-  switch (mapData.type) {
-    case "skills":
-      container.innerHTML = `<p><strong>Seleziona ${mapData.count} skill per ${selectedVariant}:</strong></p>` +
-        Array(mapData.count).fill(0).map((_, i) => 
-          `<select class="variantSkillChoice" id="variantSkillChoice${i}" data-options='${JSON.stringify(mapData.options)}' onchange="updateVariantSkillOptions()">
+  if (mapData.type === "skills") {
+    container.innerHTML = `<p><strong>Seleziona ${mapData.count} skill per ${selectedVariant}:</strong></p>` +
+      Array(mapData.count).fill(0).map((_, i) =>
+        `<select class="variantSkillChoice" id="variantSkillChoice${i}" data-options='${JSON.stringify(mapData.options)}' onchange="updateVariantSkillOptions()">
             <option value="">Seleziona...</option>
             ${mapData.options.map(s => `<option value="${s}">${s}</option>`).join("")}
           </select>`
-        ).join(" ");
-      break;
+      ).join(" ");
+    container.querySelectorAll("select").forEach(sel => {
+      sel.addEventListener("change", () => {
+        selectedData["Variant Feature Skills"] = [...container.querySelectorAll(".variantSkillChoice")]
+          .map(s => s.value)
+          .filter(Boolean);
+        checkTraitCompletion("variantFeatureTrait");
+      });
+    });
+    checkTraitCompletion("variantFeatureTrait");
+  } else if (mapData.type === "spells") {
+    loadSpells(spellList => {
+      const filtered = filterSpells(spellList, mapData.filter);
 
-      case "spells":
-        loadSpells(spellList => {
-          const filtered = filterSpells(spellList, mapData.filter);
+      container.innerHTML = filtered.length
+        ? `<p><strong>Seleziona un incantesimo per ${selectedVariant}:</strong></p>
+            <select id="variantSpellChoice">
+              <option value="">Seleziona...</option>
+              ${filtered.map(spell => `<option value="${spell.name}">${spell.name}</option>`).join("")}
+            </select>`
+        : `<p>Nessun incantesimo trovato per il filtro: ${mapData.filter}</p>`;
 
-          container.innerHTML = filtered.length
-            ? `<p><strong>Seleziona un incantesimo per ${selectedVariant}:</strong></p>
-                <select id="variantSpellChoice">
-                  <option value="">Seleziona...</option>
-                  ${filtered.map(spell => `<option value="${spell.name}">${spell.name}</option>`).join("")}
-                </select>`
-            : `<p>Nessun incantesimo trovato per il filtro: ${mapData.filter}</p>`;
+      const spellSel = document.getElementById("variantSpellChoice");
+      if (spellSel) {
+        spellSel.addEventListener("change", () => {
+          selectedData["Variant Feature Spell"] = [spellSel.value];
+          checkTraitCompletion("variantFeatureTrait");
         });
-        break;
+        checkTraitCompletion("variantFeatureTrait");
+      }
+    });
   }
 }
 
@@ -218,6 +232,46 @@ function handleExtraAncestry(data, containerId) {
     const container = document.getElementById(containerId);
     if (container) container.innerHTML = "";
   }
+}
+
+function checkTraitCompletion(detailId) {
+  const detail = document.getElementById(detailId);
+  if (!detail) return;
+  const selects = detail.querySelectorAll("select");
+  const incomplete = [...selects].some(sel => !sel.value);
+  detail.classList.toggle("incomplete", incomplete);
+}
+
+export function gatherRaceTraitSelections() {
+  const result = {};
+  const lang = document.getElementById("extraLanguageDropdown")?.value;
+  if (lang) result.languages = [lang];
+
+  const skills = [...document.querySelectorAll("#skillSelectionContainer .skillChoice")]
+    .map(s => s.value)
+    .filter(Boolean);
+  if (skills.length) result.skills = skills;
+
+  const tools = [...document.querySelectorAll("#toolSelectionContainer .toolChoice")]
+    .map(s => s.value)
+    .filter(Boolean);
+  if (tools.length) result.tools = tools;
+
+  const variant = document.getElementById("variantFeatureChoice")?.value;
+  if (variant) {
+    result.variantFeature = variant;
+    const vSkills = [...document.querySelectorAll(".variantSkillChoice")]
+      .map(s => s.value)
+      .filter(Boolean);
+    if (vSkills.length) result.variantSkills = vSkills;
+    const vSpell = document.getElementById("variantSpellChoice")?.value;
+    if (vSpell) result.variantSpell = vSpell;
+  }
+
+  const ancestry = document.getElementById("ancestrySelection")?.value;
+  if (ancestry) result.ancestry = ancestry;
+
+  return result;
 }
 
 // ==================== POPUP FOR EXTRA SELECTIONS ====================
@@ -655,16 +709,6 @@ function displayRaceTraits() {
   const raceTraitsDiv = document.getElementById("raceTraits");
   const racialBonusDiv = document.getElementById("racialBonusSelection");
 
-  // ✅ NON cancelliamo il contenuto se esistono già dati salvati!
-  ["skillSelectionContainer", "toolSelectionContainer", "spellSelectionContainer",
- "variantFeatureSelectionContainer", "variantExtraContainer", "languageSelection", "ancestrySelection"]
-    .forEach(id => {
-      const el = document.getElementById(id);
-      if (el && (!selectedData || Object.keys(selectedData).length === 0)) {
-        el.innerHTML = ""; // ✅ Cancella solo se non ci sono selezioni extra salvate
-      }
-    });
-
    if (!racePath) {
     console.warn("⚠️ displayRaceTraits(): Nessuna razza selezionata.");
     raceTraitsDiv.innerHTML = "<p>Seleziona una razza per vedere i tratti.</p>";
@@ -703,43 +747,118 @@ function displayRaceTraits() {
         traitsHtml += `<p><strong>Visione:</strong> ${raceData.senses.darkvision} ft</p>`;
       }
 
-      // Traits
+      // Trait details
       if (raceData.traits && raceData.traits.length > 0) {
-        traitsHtml += `<p><strong>Tratti:</strong></p><ul>`;
         raceData.traits.forEach(trait => {
-          traitsHtml += `<li><strong>${trait.name}:</strong> ${trait.description || ""}</li>`;
+          const traitId = `trait-${trait.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+          traitsHtml += `<details class="race-trait" id="${traitId}"><summary>${trait.name}</summary><p>${trait.description || ""}</p></details>`;
         });
-        traitsHtml += `</ul>`;
       }
+
+      // Languages
+      if (raceData.languages && (raceData.languages.fixed.length > 0 || raceData.languages.choice > 0)) {
+        const fixedLangs = raceData.languages.fixed.length > 0 ? raceData.languages.fixed.join(", ") : "Nessuna";
+        const langClass = raceData.languages.choice > 0 ? "race-trait needs-selection incomplete" : "race-trait";
+        traitsHtml += `<details class="${langClass}" id="languageTrait"><summary>Lingue</summary><p><strong>Lingue Concesse:</strong> ${fixedLangs}</p><div id="languageSelection"></div></details>`;
+      }
+
+      // Skill choices
+      if (raceData.skill_choices) {
+        traitsHtml += `<details class="race-trait needs-selection incomplete" id="skillTrait"><summary>Abilità Extra</summary><div id="skillSelectionContainer"></div></details>`;
+      }
+
+      // Tool choices
+      if (raceData.tool_choices) {
+        traitsHtml += `<details class="race-trait needs-selection incomplete" id="toolTrait"><summary>Strumenti Extra</summary><div id="toolSelectionContainer"></div></details>`;
+      }
+
+      // Variant feature choices
+      if (raceData.variant_feature_choices) {
+        traitsHtml += `<details class="race-trait needs-selection incomplete" id="variantFeatureTrait"><summary>Variant Feature</summary><div id="variantFeatureSelectionContainer"></div><div id="variantExtraContainer"></div></details>`;
+      }
+
+      // Ancestry placeholder
+      traitsHtml += `<details class="race-trait needs-selection incomplete" id="ancestryTrait" style="display:none;"><summary>Ancestry</summary><div id="ancestrySelectionContainer"></div></details>`;
 
       // Tables (rawEntries)
       const tablesHtml = renderTables(raceData.rawEntries);
       traitsHtml += tablesHtml;
 
-      // Spellcasting – render choices in the dedicated container
-      handleSpellcasting(raceData, "spellSelectionContainer");
-
-      // Languages (display fixed languages; extra languages are chosen in the popup)
-      let languageHtml = "";
-      if (raceData.languages && Array.isArray(raceData.languages.fixed) && raceData.languages.fixed.length > 0) {
-        languageHtml = `<p><strong>Lingue Concesse:</strong> ${raceData.languages.fixed.join(", ")}</p>`;
-      } else {
-        languageHtml = `<p><strong>Lingue Concesse:</strong> Nessuna</p>`;
-      }
-      traitsHtml += languageHtml;
+      // Spellcasting container
+      traitsHtml += `<div id="spellSelectionContainer"></div>`;
 
       if (raceTraitsDiv) {
         raceTraitsDiv.innerHTML = traitsHtml;
-        raceTraitsDiv.style.display = "block";  // 🔥 FORZA IL RENDERING
+        raceTraitsDiv.style.display = "block";
         console.log("✅ Tratti della razza aggiornati con successo!");
       } else {
         console.error("❌ ERRORE: Il div dei tratti della razza non è stato trovato!");
       }
-      // Extras: Skills, Tools, Variant Features, Ancestry.
+
+      // Render selection controls
+      handleSpellcasting(raceData, "spellSelectionContainer");
+      handleExtraLanguages(raceData, "languageSelection");
       handleExtraSkills(raceData, "skillSelectionContainer");
       handleExtraTools(raceData, "toolSelectionContainer");
       handleVariantFeatureChoices(raceData);
-      handleExtraAncestry(raceData, "ancestrySelection");
+      handleExtraAncestry(raceData, "ancestrySelectionContainer");
+
+      const ancestryDetail = document.getElementById("ancestryTrait");
+      if (ancestryDetail) {
+        const ancContainer = document.getElementById("ancestrySelectionContainer");
+        if (ancContainer && ancContainer.innerHTML.trim() !== "") {
+          ancestryDetail.style.display = "block";
+        }
+      }
+
+      // Bind validation and data collection
+      const langSelect = document.getElementById("extraLanguageDropdown");
+      if (langSelect) {
+        langSelect.addEventListener("change", () => {
+          selectedData.Languages = [langSelect.value];
+          checkTraitCompletion("languageTrait");
+        });
+        checkTraitCompletion("languageTrait");
+      }
+
+      document.querySelectorAll("#skillSelectionContainer .skillChoice").forEach(sel => {
+        sel.addEventListener("change", () => {
+          selectedData["Skill Proficiency"] = [...document.querySelectorAll("#skillSelectionContainer .skillChoice")]
+            .map(s => s.value)
+            .filter(Boolean);
+          checkTraitCompletion("skillTrait");
+        });
+      });
+      checkTraitCompletion("skillTrait");
+
+      document.querySelectorAll("#toolSelectionContainer .toolChoice").forEach(sel => {
+        sel.addEventListener("change", () => {
+          selectedData["Tool Proficiency"] = [...document.querySelectorAll("#toolSelectionContainer .toolChoice")]
+            .map(s => s.value)
+            .filter(Boolean);
+          checkTraitCompletion("toolTrait");
+        });
+      });
+      checkTraitCompletion("toolTrait");
+
+      const variantSelect = document.getElementById("variantFeatureChoice");
+      if (variantSelect) {
+        variantSelect.addEventListener("change", () => {
+          selectedData["Variant Feature"] = [variantSelect.value];
+          handleVariantExtraSelections();
+          checkTraitCompletion("variantFeatureTrait");
+        });
+        checkTraitCompletion("variantFeatureTrait");
+      }
+
+      const ancestrySelect = document.getElementById("ancestrySelection");
+      if (ancestrySelect) {
+        ancestrySelect.addEventListener("change", () => {
+          selectedData["Ancestry"] = [ancestrySelect.value];
+          checkTraitCompletion("ancestryTrait");
+        });
+        checkTraitCompletion("ancestryTrait");
+      }
 
       // Selezioni extra già fatte nel pop-up (modalità view-only)
       updateExtraSelectionsView();
@@ -1108,6 +1227,7 @@ export {
   handleExtraTools,
   handleExtraAncestry,
   gatherExtraSelections,
+  gatherRaceTraitSelections,
   updateSubclasses,
   renderClassFeatures,
   openExtrasModal,

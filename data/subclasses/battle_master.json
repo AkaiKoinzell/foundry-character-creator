@@ -31,5 +31,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "Battle Master Feature",
+      "description": "Choose an option for the Battle Master subclass",
+      "count": 1,
+      "selection": [
+        "Battle Master Option 1",
+        "Battle Master Option 2"
+      ]
+    }
+  ]
 }

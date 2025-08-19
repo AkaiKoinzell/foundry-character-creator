@@ -33,5 +33,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "Champion Feature",
+      "description": "Choose an option for the Champion subclass",
+      "count": 1,
+      "selection": [
+        "Champion Option 1",
+        "Champion Option 2"
+      ]
+    }
+  ]
 }

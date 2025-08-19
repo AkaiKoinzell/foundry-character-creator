@@ -31,5 +31,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "Thief Feature",
+      "description": "Choose an option for the Thief subclass",
+      "count": 1,
+      "selection": [
+        "Thief Option 1",
+        "Thief Option 2"
+      ]
+    }
+  ]
 }

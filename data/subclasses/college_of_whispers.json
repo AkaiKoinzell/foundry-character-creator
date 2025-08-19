@@ -25,5 +25,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "College of Whispers Feature",
+      "description": "Choose an option for the College of Whispers subclass",
+      "count": 1,
+      "selection": [
+        "College of Whispers Option 1",
+        "College of Whispers Option 2"
+      ]
+    }
+  ]
 }

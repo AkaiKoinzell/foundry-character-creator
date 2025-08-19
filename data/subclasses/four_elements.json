@@ -27,5 +27,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "Way of the Four Elements Feature",
+      "description": "Choose an option for the Way of the Four Elements subclass",
+      "count": 1,
+      "selection": [
+        "Way of the Four Elements Option 1",
+        "Way of the Four Elements Option 2"
+      ]
+    }
+  ]
 }

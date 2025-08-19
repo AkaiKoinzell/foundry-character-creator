@@ -27,5 +27,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "Way of the Open Hand Feature",
+      "description": "Choose an option for the Way of the Open Hand subclass",
+      "count": 1,
+      "selection": [
+        "Way of the Open Hand Option 1",
+        "Way of the Open Hand Option 2"
+      ]
+    }
+  ]
 }

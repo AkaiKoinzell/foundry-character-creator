@@ -31,5 +31,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 2,
+      "name": "Circle of the Moon Feature",
+      "description": "Choose an option for the Circle of the Moon subclass",
+      "count": 1,
+      "selection": [
+        "Circle of the Moon Option 1",
+        "Circle of the Moon Option 2"
+      ]
+    }
+  ]
 }

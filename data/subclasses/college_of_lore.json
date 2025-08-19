@@ -25,5 +25,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "College of Lore Feature",
+      "description": "Choose an option for the College of Lore subclass",
+      "count": 1,
+      "selection": [
+        "College of Lore Option 1",
+        "College of Lore Option 2"
+      ]
+    }
+  ]
 }

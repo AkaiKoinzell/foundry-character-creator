@@ -35,5 +35,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "Alchemist Feature",
+      "description": "Choose an option for the Alchemist subclass",
+      "count": 1,
+      "selection": [
+        "Alchemist Option 1",
+        "Alchemist Option 2"
+      ]
+    }
+  ]
 }

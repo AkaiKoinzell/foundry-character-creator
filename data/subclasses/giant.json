@@ -31,5 +31,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "Giant Feature",
+      "description": "Choose an option for the Giant subclass",
+      "count": 1,
+      "selection": [
+        "Giant Option 1",
+        "Giant Option 2"
+      ]
+    }
+  ]
 }

@@ -99,28 +99,16 @@
   },
   "choices": [
     {
-      "name": "Cantrips",
-      "count": 3,
-      "selection": [
-        "Acid Splash",
-        "Fire Bolt",
-        "Mage Hand",
-        "Minor Illusion"
-      ],
-      "level": 1
-    },
-    {
-      "name": "Skill Proficiency",
+      "level": 1,
+      "name": "Cantrip",
+      "description": "Choose two wizard cantrips to learn",
       "count": 2,
       "selection": [
-        "Arcana",
-        "History",
-        "Insight",
-        "Investigation",
-        "Medicine",
-        "Religion"
-      ],
-      "level": 1
+        "Mage Hand",
+        "Prestidigitation",
+        "Ray of Frost",
+        "Light"
+      ]
     }
   ]
 }

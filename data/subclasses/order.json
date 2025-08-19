@@ -37,5 +37,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 1,
+      "name": "Order Domain Feature",
+      "description": "Choose an option for the Order Domain subclass",
+      "count": 1,
+      "selection": [
+        "Order Domain Option 1",
+        "Order Domain Option 2"
+      ]
+    }
+  ]
 }

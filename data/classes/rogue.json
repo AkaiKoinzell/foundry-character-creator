@@ -47,5 +47,24 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 1,
+      "name": "Expertise",
+      "description": "Choose two skills to gain expertise in",
+      "count": 2,
+      "selection": [
+        "Acrobatics",
+        "Athletics",
+        "Deception",
+        "Insight",
+        "Intimidation",
+        "Investigation",
+        "Perception",
+        "Performance",
+        "Persuasion",
+        "Stealth"
+      ]
+    }
+  ]
 }

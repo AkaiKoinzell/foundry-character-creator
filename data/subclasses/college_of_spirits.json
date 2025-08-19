@@ -29,5 +29,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "College of Spirits Feature",
+      "description": "Choose an option for the College of Spirits subclass",
+      "count": 1,
+      "selection": [
+        "College of Spirits Option 1",
+        "College of Spirits Option 2"
+      ]
+    }
+  ]
 }

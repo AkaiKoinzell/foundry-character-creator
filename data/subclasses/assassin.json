@@ -31,5 +31,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "Assassin Feature",
+      "description": "Choose an option for the Assassin subclass",
+      "count": 1,
+      "selection": [
+        "Assassin Option 1",
+        "Assassin Option 2"
+      ]
+    }
+  ]
 }

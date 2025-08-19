@@ -37,5 +37,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 1,
+      "name": "War Domain Feature",
+      "description": "Choose an option for the War Domain subclass",
+      "count": 1,
+      "selection": [
+        "War Domain Option 1",
+        "War Domain Option 2"
+      ]
+    }
+  ]
 }

@@ -39,5 +39,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "Battle Smith Feature",
+      "description": "Choose an option for the Battle Smith subclass",
+      "count": 1,
+      "selection": [
+        "Battle Smith Option 1",
+        "Battle Smith Option 2"
+      ]
+    }
+  ]
 }

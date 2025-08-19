@@ -33,5 +33,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 1,
+      "name": "Trickery Domain Feature",
+      "description": "Choose an option for the Trickery Domain subclass",
+      "count": 1,
+      "selection": [
+        "Trickery Domain Option 1",
+        "Trickery Domain Option 2"
+      ]
+    }
+  ]
 }

@@ -31,5 +31,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "Oath of Vengeance Feature",
+      "description": "Choose an option for the Oath of Vengeance subclass",
+      "count": 1,
+      "selection": [
+        "Oath of Vengeance Option 1",
+        "Oath of Vengeance Option 2"
+      ]
+    }
+  ]
 }

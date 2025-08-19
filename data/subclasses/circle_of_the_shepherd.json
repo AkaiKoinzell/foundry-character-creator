@@ -31,5 +31,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 2,
+      "name": "Circle of the Shepherd Feature",
+      "description": "Choose an option for the Circle of the Shepherd subclass",
+      "count": 1,
+      "selection": [
+        "Circle of the Shepherd Option 1",
+        "Circle of the Shepherd Option 2"
+      ]
+    }
+  ]
 }

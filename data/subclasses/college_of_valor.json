@@ -25,5 +25,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "College of Valor Feature",
+      "description": "Choose an option for the College of Valor subclass",
+      "count": 1,
+      "selection": [
+        "College of Valor Option 1",
+        "College of Valor Option 2"
+      ]
+    }
+  ]
 }

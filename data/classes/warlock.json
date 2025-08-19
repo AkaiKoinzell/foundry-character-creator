@@ -44,5 +44,17 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "Pact Boon",
+      "description": "Choose a pact boon",
+      "count": 1,
+      "selection": [
+        "Pact of the Chain",
+        "Pact of the Blade",
+        "Pact of the Tome"
+      ]
+    }
+  ]
 }

@@ -31,5 +31,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 2,
+      "name": "Divination Feature",
+      "description": "Choose an option for the Divination subclass",
+      "count": 1,
+      "selection": [
+        "Divination Option 1",
+        "Divination Option 2"
+      ]
+    }
+  ]
 }

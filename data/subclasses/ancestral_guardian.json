@@ -27,5 +27,16 @@
       }
     ]
   },
-  "choices": []
+  "choices": [
+    {
+      "level": 3,
+      "name": "Ancestral Guardian Feature",
+      "description": "Choose an option for the Ancestral Guardian subclass",
+      "count": 1,
+      "selection": [
+        "Ancestral Guardian Option 1",
+        "Ancestral Guardian Option 2"
+      ]
+    }
+  ]
 }

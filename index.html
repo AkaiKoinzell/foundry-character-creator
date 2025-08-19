@@ -4,101 +4,60 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Character Creator - Foundry</title>
+  <link rel="stylesheet" href="css/site-theme.css">
   <script type="module" src="js/main.js"></script>
   <style>
-    /* Stili per un look moderno e una buona UX */
-    body {
-      font-family: 'Arial', sans-serif;
-      background-color: #f4f4f4;
-      margin: 20px;
-      color: #333;
-    }
-    header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    nav {
-      background-color: #333;
-      color: #fff;
-      padding: 10px;
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      border-radius: 5px;
-      margin-bottom: 20px;
-    }
-    nav button {
-      background-color: #555;
-      border: none;
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    nav button:hover {
-      background-color: #777;
-    }
-    .step {
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-      display: none;
-    }
-    .step.active {
-      display: block;
-    }
-    label {
-      display: block;
-      margin-top: 10px;
-    }
-    input, select {
-      padding: 8px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 3px;
-      width: 100%;
-      max-width: 400px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 10px;
-      text-align: center;
-    }
-    th {
-      background-color: #f2f2f2;
-    }
-    button.primary {
-      background-color: #28a745;
-      border: none;
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    button.primary:hover {
-      background-color: #218838;
-    }
-    /* Layout per il bonus razziale in linea */
-    #bonusRow {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 10px;
-    }
-    /* Contenitori per le sezioni extra */
-    #spellSelectionContainer, #languageSelection, #skillSelectionContainer, #toolSelectionContainer, #variantFeatureSelectionContainer, #variantExtraContainer,
-    #fightingStyleSelection, #divineDomainSelection, #metamagicSelection {
-      margin-top: 15px;
-    }
+  /* Stile per il pop-up */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+  }
+
+  .modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  #closeModal {
+    margin-top: 20px;
+    background: #28a745;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    display: none;
+  }
+
+  #closeModal:hover {
+    background: #218838;
+  }
+
+  #raceExtraTraitsContainer {
+    display: none;
+  }
+
+  #subclassSelect {
+    display: none;
+  }
   </style>
 </head>
 <body onload="initializeValues()">
@@ -161,7 +120,7 @@
     <button id="confirmRaceSelection" class="primary">Seleziona Razza</button>
   
     <!-- Contenitore dei tratti extra, inizialmente nascosto -->
-    <div id="raceExtraTraitsContainer" style="display: none;">
+    <div id="raceExtraTraitsContainer">
       <h3>Tratti Extra</h3>
       <div id="variantFeatureSelectionContainer"></div>
       <div id="variantExtraContainer"></div>
@@ -173,68 +132,23 @@
     </div>
   </div>
     <!-- 📜 MODALE PER TUTTE LE SCELTE EXTRA -->
-<div id="raceExtrasModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-    background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
-  <div style="background: #fff; padding: 20px; border-radius: 5px; max-width: 500px; width: 90%;">
+<div id="raceExtrasModal" class="modal">
+  <div class="modal-content">
     <h2 id="extraTraitTitle"></h2>
     <p id="extraTraitDescription"></p>
     <div id="extraTraitSelection"></div>
-    <div style="margin-top: 10px;">
+    <div class="modal-buttons">
       <button id="prevTrait">Precedente</button>
       <button id="nextTrait">Successivo</button>
-      <button id="closeModal" style="display: none;">Chiudi</button>
+      <button id="closeModal">Chiudi</button>
     </div>
   </div>
 </div>
-<style>
-  /* Stile per il pop-up */
-  .modal {
-    display: none; /* Inizialmente nascosto */
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .modal-content {
-    background: white;
-    padding: 20px;
-    width: 50%;
-    text-align: center;
-    border-radius: 10px;
-  }
-
-  .modal-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
-
-  #closeModal {
-    margin-top: 20px;
-    background: #28a745;
-    color: white;
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-  }
-
-  #closeModal:hover {
-    background: #218838;
-  }
-</style>
-    
     <!-- Step 3: Point Buy System -->
     <div id="step3" class="step">
       <h2>Step 3: Sistema Point Buy</h2>
-      <p style="text-align: center;"><strong>Total Points Remaining:</strong> <span id="pointsRemaining">27</span></p>
-      <p style="text-align: center;">Assegna i tuoi punti tra i punteggi di caratteristica (FOR, DES, COS, INT, SAG, CAR).</p>
+      <p class="text-center"><strong>Total Points Remaining:</strong> <span id="pointsRemaining">27</span></p>
+      <p class="text-center">Assegna i tuoi punti tra i punteggi di caratteristica (FOR, DES, COS, INT, SAG, CAR).</p>
       <div id="racialBonusSelection">
         <h3>Distribuzione Bonus Razza</h3>
         <p>Distribuisci i tuoi 3 punti extra in una delle seguenti combinazioni:</p>
@@ -361,7 +275,7 @@
       </select>
       <br><br>
       <label for="subclassSelect">Sottoclasse:</label>
-      <select id="subclassSelect" style="display: none;">
+      <select id="subclassSelect">
         <option value="">Seleziona una sottoclasse</option>
       </select>
       <br><br>

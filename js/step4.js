@@ -1,5 +1,5 @@
 // Step 4: Background selection and feat handling
-import { loadDropdownData } from './common.js';
+import { loadDropdownData, loadLanguages } from './common.js';
 import { initFeatureSelectionHandlers } from './script.js';
 
 let featPathIndex = {};
@@ -139,25 +139,36 @@ document.addEventListener("DOMContentLoaded", () => {
       const p = document.createElement("p");
       p.innerHTML = `<strong>Linguaggi:</strong> ${data.languages.join(", ")}`;
       langDetails.appendChild(p);
+      langDiv.appendChild(langDetails);
+      initFeatureSelectionHandlers(langDiv);
     } else if (data.languages && data.languages.choose) {
       const num = data.languages.choose;
-      const opts = data.languages.options || [];
-      const p = document.createElement("p");
-      p.innerHTML = `<strong>Scegli ${num} linguaggi:</strong>`;
-      langDetails.appendChild(p);
-      for (let i = 0; i < num; i++) {
-        const sel = document.createElement("select");
-        sel.className = "backgroundLanguageChoice";
-        sel.innerHTML = `<option value="">Seleziona</option>` + opts.map(o => `<option value="${o}">${o}</option>`).join("");
-        sel.addEventListener("change", () => {
-          const chosen = Array.from(document.querySelectorAll(".backgroundLanguageChoice")).map(s => s.value).filter(Boolean);
-          backgroundData.languages = chosen;
-        });
-        langDetails.appendChild(sel);
+      const buildSelectors = opts => {
+        const p = document.createElement("p");
+        p.innerHTML = `<strong>Scegli ${num} linguaggi:</strong>`;
+        langDetails.appendChild(p);
+        for (let i = 0; i < num; i++) {
+          const sel = document.createElement("select");
+          sel.className = "backgroundLanguageChoice";
+          sel.innerHTML = `<option value="">Seleziona</option>` + opts.map(o => `<option value="${o}">${o}</option>`).join("");
+          sel.addEventListener("change", () => {
+            const chosen = Array.from(document.querySelectorAll(".backgroundLanguageChoice")).map(s => s.value).filter(Boolean);
+            backgroundData.languages = chosen;
+          });
+          langDetails.appendChild(sel);
+        }
+        langDiv.appendChild(langDetails);
+        initFeatureSelectionHandlers(langDiv);
+      };
+      if (data.languages.any) {
+        loadLanguages(buildSelectors);
+      } else {
+        buildSelectors(data.languages.options || []);
       }
+    } else {
+      langDiv.appendChild(langDetails);
+      initFeatureSelectionHandlers(langDiv);
     }
-    langDiv.appendChild(langDetails);
-    initFeatureSelectionHandlers(langDiv);
 
     const featDiv = document.getElementById("backgroundFeat");
     featDiv.innerHTML = "";

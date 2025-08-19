@@ -30,5 +30,6 @@
         "description": "Gain a powerful ability based on a totem animal of your choice while raging, such as the bear's protection or the eagle's flight."
       }
     ]
-  }
+  },
+  "choices": []
 }

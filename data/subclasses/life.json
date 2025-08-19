@@ -36,5 +36,6 @@
         "description": "When you roll dice to restore hit points, use the highest number possible for each die."
       }
     ]
-  }
+  },
+  "choices": []
 }

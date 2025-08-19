@@ -3,18 +3,37 @@
   "description": "An expert at combining reagents to produce mystical effects.",
   "features_by_level": {
     "3": [
-      { "name": "Tool Proficiency", "description": "You gain proficiency with alchemist's supplies. If you already have it, gain proficiency with another set of artisan's tools of your choice." },
-      { "name": "Alchemist Spells", "description": "You always have certain spells prepared: 3rd—healing word, ray of sickness; 5th—flaming sphere, Melf's acid arrow; 9th—gaseous form, mass healing word; 13th—blight, death ward; 17th—cloudkill, raise dead. These count as artificer spells for you and don't count against spells prepared." },
-      { "name": "Experimental Elixir", "description": "After a long rest, you create a random elixir in an empty flask. Roll on the Experimental Elixir table for its effect (healing, swiftness, resilience, boldness, flight, or transformation). The elixir lasts until drunk or your next long rest. You can create more by expending spell slots and can make additional elixirs at higher levels." }
+      {
+        "name": "Tool Proficiency",
+        "description": "You gain proficiency with alchemist's supplies. If you already have it, gain proficiency with another set of artisan's tools of your choice."
+      },
+      {
+        "name": "Alchemist Spells",
+        "description": "You always have certain spells prepared: 3rd—healing word, ray of sickness; 5th—flaming sphere, Melf's acid arrow; 9th—gaseous form, mass healing word; 13th—blight, death ward; 17th—cloudkill, raise dead. These count as artificer spells for you and don't count against spells prepared."
+      },
+      {
+        "name": "Experimental Elixir",
+        "description": "After a long rest, you create a random elixir in an empty flask. Roll on the Experimental Elixir table for its effect (healing, swiftness, resilience, boldness, flight, or transformation). The elixir lasts until drunk or your next long rest. You can create more by expending spell slots and can make additional elixirs at higher levels."
+      }
     ],
     "5": [
-      { "name": "Alchemical Savant", "description": "When you cast a spell using alchemist's supplies as your focus, add your Intelligence modifier to one roll that restores hit points or deals acid, fire, necrotic, or poison damage." }
+      {
+        "name": "Alchemical Savant",
+        "description": "When you cast a spell using alchemist's supplies as your focus, add your Intelligence modifier to one roll that restores hit points or deals acid, fire, necrotic, or poison damage."
+      }
     ],
     "9": [
-      { "name": "Restorative Reagents", "description": "When a creature drinks your experimental elixir, it gains temporary hit points equal to 2d6 plus your Intelligence modifier. You can also cast lesser restoration without expending a spell slot a number of times equal to your Intelligence modifier per long rest using alchemist's supplies." }
+      {
+        "name": "Restorative Reagents",
+        "description": "When a creature drinks your experimental elixir, it gains temporary hit points equal to 2d6 plus your Intelligence modifier. You can also cast lesser restoration without expending a spell slot a number of times equal to your Intelligence modifier per long rest using alchemist's supplies."
+      }
     ],
     "15": [
-      { "name": "Chemical Mastery", "description": "You gain resistance to acid and poison damage and immunity to the poisoned condition. You can cast greater restoration and heal without expending spell slots or material components once per long rest each when using alchemist's supplies as the focus." }
+      {
+        "name": "Chemical Mastery",
+        "description": "You gain resistance to acid and poison damage and immunity to the poisoned condition. You can cast greater restoration and heal without expending spell slots or material components once per long rest each when using alchemist's supplies as the focus."
+      }
     ]
-  }
+  },
+  "choices": []
 }

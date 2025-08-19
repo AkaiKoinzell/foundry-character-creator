@@ -5,7 +5,7 @@
     "2": [
       {
         "name": "Circle Spells",
-        "description": "Gain extra spells at levels 3,5,7 and 9 based on your chosen terrain; always prepared." 
+        "description": "Gain extra spells at levels 3,5,7 and 9 based on your chosen terrain; always prepared."
       },
       {
         "name": "Natural Recovery",
@@ -19,20 +19,21 @@
     "6": [
       {
         "name": "Land's Stride",
-        "description": "Move through nonmagical difficult terrain and plants without penalty and gain advantage against plants that impede movement." 
+        "description": "Move through nonmagical difficult terrain and plants without penalty and gain advantage against plants that impede movement."
       }
     ],
     "10": [
       {
         "name": "Nature's Ward",
-        "description": "You can't be charmed or frightened by elementals or fey and are immune to poison and disease." 
+        "description": "You can't be charmed or frightened by elementals or fey and are immune to poison and disease."
       }
     ],
     "14": [
       {
         "name": "Nature's Sanctuary",
-        "description": "Beasts and plants must succeed on a Wisdom save to attack you; on a failure they must choose another target." 
+        "description": "Beasts and plants must succeed on a Wisdom save to attack you; on a failure they must choose another target."
       }
     ]
-  }
+  },
+  "choices": []
 }

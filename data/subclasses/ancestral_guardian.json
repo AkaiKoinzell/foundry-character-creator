@@ -26,5 +26,6 @@
         "description": "When you use Spirit Shield, the attacker takes force damage equal to the damage prevented."
       }
     ]
-  }
+  },
+  "choices": []
 }

@@ -46,5 +46,6 @@
         "description": "Description for Rogue feature at level 2."
       }
     ]
-  }
+  },
+  "choices": []
 }

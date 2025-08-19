@@ -46,5 +46,6 @@
         "description": "Description for Paladin feature at level 2."
       }
     ]
-  }
+  },
+  "choices": []
 }

@@ -5,30 +5,31 @@
     "2": [
       {
         "name": "Star Map",
-        "description": "Create a starry focus that grants the guidance cantrip and prepared guiding bolt, plus free uses equal to proficiency bonus." 
+        "description": "Create a starry focus that grants the guidance cantrip and prepared guiding bolt, plus free uses equal to proficiency bonus."
       },
       {
         "name": "Starry Form",
-        "description": "Expend Wild Shape to take on a luminous form, choosing Archer, Chalice or Dragon benefits for 10 minutes." 
+        "description": "Expend Wild Shape to take on a luminous form, choosing Archer, Chalice or Dragon benefits for 10 minutes."
       }
     ],
     "6": [
       {
         "name": "Cosmic Omen",
-        "description": "After a long rest, roll to gain Weal or Woe and use reactions a number of times equal to proficiency bonus to add or subtract a d6." 
+        "description": "After a long rest, roll to gain Weal or Woe and use reactions a number of times equal to proficiency bonus to add or subtract a d6."
       }
     ],
     "10": [
       {
         "name": "Twinkling Constellations",
-        "description": "Starry Form benefits improve; Archer and Chalice deal 2d8 and Dragon grants 20-foot flying and hovering." 
+        "description": "Starry Form benefits improve; Archer and Chalice deal 2d8 and Dragon grants 20-foot flying and hovering."
       }
     ],
     "14": [
       {
         "name": "Full of Stars",
-        "description": "While in Starry Form, you gain resistance to bludgeoning, piercing and slashing damage." 
+        "description": "While in Starry Form, you gain resistance to bludgeoning, piercing and slashing damage."
       }
     ]
-  }
+  },
+  "choices": []
 }

@@ -32,5 +32,6 @@
         "description": "Description for Survivor."
       }
     ]
-  }
+  },
+  "choices": []
 }

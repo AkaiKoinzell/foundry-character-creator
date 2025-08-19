@@ -24,5 +24,6 @@
         "description": "As an action, whisper to one creature within 30 feet, forcing a Wisdom save. On a failure it is charmed for 8 hours, convinced you know its most mortifying secret and obeying your commands."
       }
     ]
-  }
+  },
+  "choices": []
 }

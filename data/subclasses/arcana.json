@@ -32,5 +32,6 @@
         "description": "Choose four wizard spells of 6th to 9th level to add to your domain spells. They are always prepared."
       }
     ]
-  }
+  },
+  "choices": []
 }

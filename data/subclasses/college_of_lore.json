@@ -24,5 +24,6 @@
         "description": "When you make an ability check, expend a Bardic Inspiration die and add it to the roll. You can decide after seeing the d20 but before the DM determines success."
       }
     ]
-  }
+  },
+  "choices": []
 }

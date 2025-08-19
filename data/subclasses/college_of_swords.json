@@ -28,5 +28,6 @@
         "description": "Whenever you use a Blade Flourish option, you can roll a d6 instead of expending a Bardic Inspiration die."
       }
     ]
-  }
+  },
+  "choices": []
 }

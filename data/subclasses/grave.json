@@ -36,5 +36,6 @@
         "description": "When an enemy dies within 60 feet, you or an ally within the same range regains hit points equal to the enemy's Hit Dice. Once per turn."
       }
     ]
-  }
+  },
+  "choices": []
 }

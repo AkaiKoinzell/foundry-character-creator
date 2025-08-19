@@ -28,5 +28,6 @@
         "description": "When a creature succeeds using your Bardic Inspiration die, you can use your reaction to give a Bardic Inspiration die to another creature within 60 feet. Uses equal your Charisma modifier per long rest."
       }
     ]
-  }
+  },
+  "choices": []
 }

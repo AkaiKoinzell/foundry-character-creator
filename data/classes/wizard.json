@@ -96,5 +96,31 @@
         "description": "Description for Wizard feature at level 2."
       }
     ]
-  }
+  },
+  "choices": [
+    {
+      "name": "Cantrips",
+      "count": 3,
+      "selection": [
+        "Acid Splash",
+        "Fire Bolt",
+        "Mage Hand",
+        "Minor Illusion"
+      ],
+      "level": 1
+    },
+    {
+      "name": "Skill Proficiency",
+      "count": 2,
+      "selection": [
+        "Arcana",
+        "History",
+        "Insight",
+        "Investigation",
+        "Medicine",
+        "Religion"
+      ],
+      "level": 1
+    }
+  ]
 }

@@ -5,38 +5,39 @@
     "2": [
       {
         "name": "Defile Ground",
-        "description": "As a bonus action, corrupt a 10-foot radius area for 1 minute, creating difficult terrain that deals extra necrotic damage once per turn." 
+        "description": "As a bonus action, corrupt a 10-foot radius area for 1 minute, creating difficult terrain that deals extra necrotic damage once per turn."
       },
       {
         "name": "Blighted Shape",
-        "description": "Gain Intimidation proficiency and while Wild Shaped your form gains +2 AC and 60-foot darkvision." 
+        "description": "Gain Intimidation proficiency and while Wild Shaped your form gains +2 AC and 60-foot darkvision."
       }
     ],
     "6": [
       {
         "name": "Call of the Shadowseeds",
-        "description": "When a creature takes damage in your defiled ground, summon a blighted sapling that can immediately attack." 
+        "description": "When a creature takes damage in your defiled ground, summon a blighted sapling that can immediately attack."
       }
     ],
     "10": [
       {
         "name": "Defile Ground (10th Level)",
-        "description": "Your defiled area expands to a 20-foot radius and the extra damage increases to 1d6." 
+        "description": "Your defiled area expands to a 20-foot radius and the extra damage increases to 1d6."
       },
       {
         "name": "Foul Conjuration",
-        "description": "Creatures you summon are immune to necrotic and poison damage and explode with necrotic damage when they die." 
+        "description": "Creatures you summon are immune to necrotic and poison damage and explode with necrotic damage when they die."
       }
     ],
     "14": [
       {
         "name": "Defile Ground (14th Level)",
-        "description": "The extra damage from your defiled ground increases to 1d8." 
+        "description": "The extra damage from your defiled ground increases to 1d8."
       },
       {
         "name": "Incarnation of Corruption",
-        "description": "Gain resistance to necrotic damage, +2 AC, and can gain temporary hit points when starting your turn in your defiled ground." 
+        "description": "Gain resistance to necrotic damage, +2 AC, and can gain temporary hit points when starting your turn in your defiled ground."
       }
     ]
-  }
+  },
+  "choices": []
 }

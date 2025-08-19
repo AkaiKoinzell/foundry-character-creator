@@ -36,5 +36,6 @@
         "description": "While creatures are charmed by you, you can use a bonus action to verbally command them on their next turn."
       }
     ]
-  }
+  },
+  "choices": []
 }

@@ -3,19 +3,41 @@
   "description": "You modify armor to function as a magical second skin.",
   "features_by_level": {
     "3": [
-      { "name": "Tools of the Trade", "description": "You gain proficiency with heavy armor and smith's tools. If you already have smith's tools proficiency, gain proficiency with another set of artisan's tools of your choice." },
-      { "name": "Armorer Spells", "description": "You always have certain spells prepared: 3rd—magic missile, thunderwave; 5th—mirror image, shatter; 9th—hypnotic pattern, lightning bolt; 13th—fire shield, greater invisibility; 17th—passwall, wall of force. These count as artificer spells for you and don't count against spells prepared." },
-      { "name": "Arcane Armor", "description": "As an action, turn a suit of armor you're wearing into Arcane Armor. It ignores Strength requirements, can serve as your spellcasting focus, attaches to you and can't be removed, covers your body, and can be donned or doffed as an action." },
-      { "name": "Armor Model", "description": "Choose Guardian or Infiltrator model for your arcane armor. Guardian grants thunder gauntlets (1d8 thunder damage, imposes disadvantage on attacks against others) and a Defensive Field that grants temporary hit points equal to your artificer level as a bonus action, proficiency bonus times per long rest. Infiltrator grants a lightning launcher (90/300 ft, 1d6 lightning plus an extra 1d6 once per turn), Powered Steps (+5 ft speed), and a Dampening Field (advantage on Stealth and negates armor Stealth disadvantage). You can change the model after a short or long rest with smith's tools." }
+      {
+        "name": "Tools of the Trade",
+        "description": "You gain proficiency with heavy armor and smith's tools. If you already have smith's tools proficiency, gain proficiency with another set of artisan's tools of your choice."
+      },
+      {
+        "name": "Armorer Spells",
+        "description": "You always have certain spells prepared: 3rd—magic missile, thunderwave; 5th—mirror image, shatter; 9th—hypnotic pattern, lightning bolt; 13th—fire shield, greater invisibility; 17th—passwall, wall of force. These count as artificer spells for you and don't count against spells prepared."
+      },
+      {
+        "name": "Arcane Armor",
+        "description": "As an action, turn a suit of armor you're wearing into Arcane Armor. It ignores Strength requirements, can serve as your spellcasting focus, attaches to you and can't be removed, covers your body, and can be donned or doffed as an action."
+      },
+      {
+        "name": "Armor Model",
+        "description": "Choose Guardian or Infiltrator model for your arcane armor. Guardian grants thunder gauntlets (1d8 thunder damage, imposes disadvantage on attacks against others) and a Defensive Field that grants temporary hit points equal to your artificer level as a bonus action, proficiency bonus times per long rest. Infiltrator grants a lightning launcher (90/300 ft, 1d6 lightning plus an extra 1d6 once per turn), Powered Steps (+5 ft speed), and a Dampening Field (advantage on Stealth and negates armor Stealth disadvantage). You can change the model after a short or long rest with smith's tools."
+      }
     ],
     "5": [
-      { "name": "Extra Attack", "description": "You can attack twice, instead of once, whenever you take the Attack action on your turn." }
+      {
+        "name": "Extra Attack",
+        "description": "You can attack twice, instead of once, whenever you take the Attack action on your turn."
+      }
     ],
     "9": [
-      { "name": "Armor Modifications", "description": "Your arcane armor counts as separate items—armor, boots, helmet, and special weapon—for infusions. You can infuse two additional items, but they must be part of the armor." }
+      {
+        "name": "Armor Modifications",
+        "description": "Your arcane armor counts as separate items—armor, boots, helmet, and special weapon—for infusions. You can infuse two additional items, but they must be part of the armor."
+      }
     ],
     "15": [
-      { "name": "Perfected Armor", "description": "Guardian: as a reaction when a creature ends its turn within 30 ft, you can pull it up to 25 ft and make a melee attack if it's within 5 ft; uses equal to your proficiency bonus per long rest. Infiltrator: creatures hit by your lightning launcher shed light and have disadvantage on attack rolls against you until your next turn; the next attack roll against the target has advantage and deals an extra 1d6 lightning damage on a hit." }
+      {
+        "name": "Perfected Armor",
+        "description": "Guardian: as a reaction when a creature ends its turn within 30 ft, you can pull it up to 25 ft and make a melee attack if it's within 5 ft; uses equal to your proficiency bonus per long rest. Infiltrator: creatures hit by your lightning launcher shed light and have disadvantage on attack rolls against you until your next turn; the next attack roll against the target has advantage and deals an extra 1d6 lightning damage on a hit."
+      }
     ]
-  }
+  },
+  "choices": []
 }

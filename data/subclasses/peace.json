@@ -36,5 +36,6 @@
         "description": "Your bond and protective bond work within 60 feet, and the creature that takes another's damage has resistance to that damage."
       }
     ]
-  }
+  },
+  "choices": []
 }

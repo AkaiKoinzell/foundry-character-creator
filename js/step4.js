@@ -1,5 +1,6 @@
 // Step 4: Background selection and feat handling
 import { loadDropdownData } from './common.js';
+import { initFeatureSelectionHandlers } from './script.js';
 
 let featPathIndex = {};
 let currentFeatData = null;
@@ -50,14 +51,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const skillDiv = document.getElementById("backgroundSkills");
     skillDiv.innerHTML = "";
+    const skillDetails = document.createElement("details");
+    skillDetails.className = "feature-block";
+    skillDetails.innerHTML = "<summary>Abilità</summary>";
     backgroundData.skills = Array.isArray(data.skills) ? data.skills.slice() : [];
     if (backgroundData.skills.length > 0) {
-      skillDiv.innerHTML = `<p><strong>Abilità:</strong> ${backgroundData.skills.join(", ")}</p>`;
+      const p = document.createElement("p");
+      p.innerHTML = `<strong>Abilità:</strong> ${backgroundData.skills.join(", ")}`;
+      skillDetails.appendChild(p);
     }
     if (data.skillChoices) {
       const num = data.skillChoices.choose || 0;
       const opts = data.skillChoices.options || [];
-      skillDiv.innerHTML += `<p><strong>Scegli ${num} abilità:</strong></p>`;
+      const p = document.createElement("p");
+      p.innerHTML = `<strong>Scegli ${num} abilità:</strong>`;
+      skillDetails.appendChild(p);
       for (let i = 0; i < num; i++) {
         const sel = document.createElement("select");
         sel.className = "backgroundSkillChoice";
@@ -66,20 +74,29 @@ document.addEventListener("DOMContentLoaded", () => {
           const chosen = Array.from(document.querySelectorAll(".backgroundSkillChoice")).map(s => s.value).filter(Boolean);
           backgroundData.skills = (data.skills || []).concat(chosen);
         });
-        skillDiv.appendChild(sel);
+        skillDetails.appendChild(sel);
       }
     }
+    skillDiv.appendChild(skillDetails);
+    initFeatureSelectionHandlers(skillDiv);
 
     const toolDiv = document.getElementById("backgroundTools");
     toolDiv.innerHTML = "";
+    const toolDetails = document.createElement("details");
+    toolDetails.className = "feature-block";
+    toolDetails.innerHTML = "<summary>Strumenti</summary>";
     backgroundData.tools = Array.isArray(data.tools) ? data.tools.slice() : [];
     if (Array.isArray(data.tools) && data.tools.length > 0) {
-      toolDiv.innerHTML = `<p><strong>Strumenti:</strong> ${data.tools.join(", ")}</p>`;
+      const p = document.createElement("p");
+      p.innerHTML = `<strong>Strumenti:</strong> ${data.tools.join(", ")}`;
+      toolDetails.appendChild(p);
     }
     if (data.tools && data.tools.choose) {
       const num = data.tools.choose;
       const opts = data.tools.options || [];
-      toolDiv.innerHTML += `<p><strong>Scegli ${num} strumento:</strong></p>`;
+      const p = document.createElement("p");
+      p.innerHTML = `<strong>Scegli ${num} strumento:</strong>`;
+      toolDetails.appendChild(p);
       for (let i = 0; i < num; i++) {
         const sel = document.createElement("select");
         sel.className = "backgroundToolChoice";
@@ -88,13 +105,15 @@ document.addEventListener("DOMContentLoaded", () => {
           const chosen = Array.from(document.querySelectorAll(".backgroundToolChoice")).map(s => s.value).filter(Boolean);
           backgroundData.tools = chosen;
         });
-        toolDiv.appendChild(sel);
+        toolDetails.appendChild(sel);
       }
     }
     if (data.toolChoices) {
       const num = data.toolChoices.choose || 0;
       const opts = data.toolChoices.options || [];
-      toolDiv.innerHTML += `<p><strong>Scegli ${num} strumento:</strong></p>`;
+      const p = document.createElement("p");
+      p.innerHTML = `<strong>Scegli ${num} strumento:</strong>`;
+      toolDetails.appendChild(p);
       for (let i = 0; i < num; i++) {
         const sel = document.createElement("select");
         sel.className = "backgroundToolChoice";
@@ -104,19 +123,28 @@ document.addEventListener("DOMContentLoaded", () => {
           const base = Array.isArray(data.tools) ? data.tools.slice() : [];
           backgroundData.tools = base.concat(chosen);
         });
-        toolDiv.appendChild(sel);
+        toolDetails.appendChild(sel);
       }
     }
+    toolDiv.appendChild(toolDetails);
+    initFeatureSelectionHandlers(toolDiv);
 
     const langDiv = document.getElementById("backgroundLanguages");
     langDiv.innerHTML = "";
+    const langDetails = document.createElement("details");
+    langDetails.className = "feature-block";
+    langDetails.innerHTML = "<summary>Linguaggi</summary>";
     backgroundData.languages = Array.isArray(data.languages) ? data.languages.slice() : [];
     if (Array.isArray(data.languages) && data.languages.length > 0) {
-      langDiv.innerHTML = `<p><strong>Linguaggi:</strong> ${data.languages.join(", ")}</p>`;
+      const p = document.createElement("p");
+      p.innerHTML = `<strong>Linguaggi:</strong> ${data.languages.join(", ")}`;
+      langDetails.appendChild(p);
     } else if (data.languages && data.languages.choose) {
       const num = data.languages.choose;
       const opts = data.languages.options || [];
-      langDiv.innerHTML = `<p><strong>Scegli ${num} linguaggi:</strong></p>`;
+      const p = document.createElement("p");
+      p.innerHTML = `<strong>Scegli ${num} linguaggi:</strong>`;
+      langDetails.appendChild(p);
       for (let i = 0; i < num; i++) {
         const sel = document.createElement("select");
         sel.className = "backgroundLanguageChoice";
@@ -125,14 +153,19 @@ document.addEventListener("DOMContentLoaded", () => {
           const chosen = Array.from(document.querySelectorAll(".backgroundLanguageChoice")).map(s => s.value).filter(Boolean);
           backgroundData.languages = chosen;
         });
-        langDiv.appendChild(sel);
+        langDetails.appendChild(sel);
       }
     }
+    langDiv.appendChild(langDetails);
+    initFeatureSelectionHandlers(langDiv);
 
     const featDiv = document.getElementById("backgroundFeat");
     featDiv.innerHTML = "";
     backgroundData.feat = "";
     currentFeatData = null;
+    const featDetails = document.createElement("details");
+    featDetails.className = "feature-block";
+    featDetails.innerHTML = "<summary>Talento</summary>";
     if (Array.isArray(data.featOptions) && data.featOptions.length > 0) {
       const label = document.createElement("label");
       label.htmlFor = "backgroundFeatSelect";
@@ -177,10 +210,12 @@ document.addEventListener("DOMContentLoaded", () => {
             applyFeatAbilityChoices();
           });
       });
-      featDiv.appendChild(label);
-      featDiv.appendChild(select);
-      featDiv.appendChild(abilDiv);
+      featDetails.appendChild(label);
+      featDetails.appendChild(select);
+      featDetails.appendChild(abilDiv);
     }
+    featDiv.appendChild(featDetails);
+    initFeatureSelectionHandlers(featDiv);
   });
 });
 

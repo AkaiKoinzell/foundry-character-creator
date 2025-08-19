@@ -23,18 +23,37 @@ nav {
   margin-bottom: 20px;
 }
 
-nav button {
+.btn {
   background-color: #555;
   border: none;
   color: #fff;
-  padding: 10px 20px;
+  padding: 0.5rem 1rem;
   border-radius: 5px;
   cursor: pointer;
   transition: background 0.3s;
+  margin: 0.25rem;
 }
 
-nav button:hover {
+.btn:hover {
   background-color: #777;
+}
+
+.btn:focus {
+  outline: 2px solid #005fcc;
+  outline-offset: 2px;
+}
+
+.btn-primary {
+  background-color: #28a745;
+}
+
+.btn-primary:hover {
+  background-color: #218838;
+}
+
+.btn-primary:focus {
+  outline: 2px solid #005fcc;
+  outline-offset: 2px;
 }
 
 .step {
@@ -55,14 +74,20 @@ label {
   margin-top: 10px;
 }
 
-input,
-select {
-  padding: 8px;
-  margin-top: 5px;
+.form-control {
+  padding: 0.5rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 3px;
   width: 100%;
   max-width: 400px;
+  box-sizing: border-box;
+}
+
+.form-control:focus {
+  outline: 2px solid #005fcc;
+  border-color: #005fcc;
 }
 
 table {
@@ -80,20 +105,6 @@ td {
 
 th {
   background-color: #f2f2f2;
-}
-
-button.primary {
-  background-color: #28a745;
-  border: none;
-  color: #fff;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-button.primary:hover {
-  background-color: #218838;
 }
 
 #bonusRow {

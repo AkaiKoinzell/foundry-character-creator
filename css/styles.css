@@ -29,4 +29,22 @@ body {
   button:hover {
     background-color: #45a049;
   }
+
+  details.feature-block {
+    margin-bottom: 10px;
+  }
+
+  details.needs-selection {
+    border: 2px solid #e74c3c;
+    padding: 0.5em;
+  }
+
+  details.needs-selection summary {
+    color: #e74c3c;
+  }
+
+  details.needs-selection summary::after {
+    content: " *";
+    color: #e74c3c;
+  }
   

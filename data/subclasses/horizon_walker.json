@@ -1,0 +1,38 @@
+{
+  "name": "Horizon Walker",
+  "description": "Horizon Walkers guard the world against extraplanar threats.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Horizon Walker Magic",
+        "description": "Gain additional spells such as protection from evil and good and misty step at higher levels."
+      },
+      {
+        "name": "Detect Portal",
+        "description": "As an action, magically sense the distance and direction to the nearest planar portal within 1 mile."
+      },
+      {
+        "name": "Planar Warrior",
+        "description": "As a bonus action, choose a creature; the next time you hit it this turn, all damage becomes force and deals +1d8 force damage."
+      }
+    ],
+    "7": [
+      {
+        "name": "Ethereal Step",
+        "description": "As a bonus action, cast etherealness without a spell slot, lasting until the end of the current turn, once per rest."
+      }
+    ],
+    "11": [
+      {
+        "name": "Distant Strike",
+        "description": "Teleport up to 10 feet before each attack, and if you attack two different creatures, you can make a third attack."
+      }
+    ],
+    "15": [
+      {
+        "name": "Spectral Defense",
+        "description": "When you take damage, use your reaction to gain resistance to that attack's damage."
+      }
+    ]
+  }
+}

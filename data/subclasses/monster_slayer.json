@@ -1,0 +1,38 @@
+{
+  "name": "Monster Slayer",
+  "description": "Monster Slayers hunt down creatures of supernatural evil.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Monster Slayer Magic",
+        "description": "Gain additional spells such as protection from evil and good and zone of truth at higher levels."
+      },
+      {
+        "name": "Hunter's Sense",
+        "description": "As an action, learn a creature's damage immunities, resistances, and vulnerabilities."
+      },
+      {
+        "name": "Slayer's Prey",
+        "description": "As a bonus action, mark a creature to deal an extra 1d6 damage to it once per turn."
+      }
+    ],
+    "7": [
+      {
+        "name": "Supernatural Defense",
+        "description": "Add 1d6 to saving throws or checks to escape a grapple imposed by your Slayer's Prey target."
+      }
+    ],
+    "11": [
+      {
+        "name": "Magic-User's Nemesis",
+        "description": "As a reaction, force a creature casting a spell or teleporting to make a Wisdom save or have the effect fail."
+      }
+    ],
+    "15": [
+      {
+        "name": "Slayer's Counter",
+        "description": "When your Slayer's Prey forces you to make a saving throw, make a weapon attack; on hit, the save automatically succeeds."
+      }
+    ]
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "name": "The Genie",
+  "description": "You have made a pact with a noble genie.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Genie's Vessel",
+        "description": "Description for Genie's Vessel."
+      }
+    ],
+    "6": [
+      {
+        "name": "Elemental Gift",
+        "description": "Description for Elemental Gift."
+      }
+    ],
+    "10": [
+      {
+        "name": "Sanctuary Vessel",
+        "description": "Description for Sanctuary Vessel."
+      }
+    ],
+    "14": [
+      {
+        "name": "Limited Wish",
+        "description": "Description for Limited Wish."
+      }
+    ]
+  },
+  "choices": [
+    {
+      "level": 1,
+      "name": "The Genie Feature",
+      "description": "Choose an option for the The Genie subclass",
+      "count": 1,
+      "selection": [
+        "The Genie Option 1",
+        "The Genie Option 2"
+      ],
+      "type": "The Genie Feature"
+    }
+  ]
+}

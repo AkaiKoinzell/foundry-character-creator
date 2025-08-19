@@ -1,0 +1,43 @@
+{
+  "name": "The Undying",
+  "description": "Death holds no sway over your patron.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Among the Dead",
+        "description": "Description for Among the Dead."
+      }
+    ],
+    "6": [
+      {
+        "name": "Defy Death",
+        "description": "Description for Defy Death."
+      }
+    ],
+    "10": [
+      {
+        "name": "Undying Nature",
+        "description": "Description for Undying Nature."
+      }
+    ],
+    "14": [
+      {
+        "name": "Indestructible Life",
+        "description": "Description for Indestructible Life."
+      }
+    ]
+  },
+  "choices": [
+    {
+      "level": 1,
+      "name": "The Undying Feature",
+      "description": "Choose an option for the The Undying subclass",
+      "count": 1,
+      "selection": [
+        "The Undying Option 1",
+        "The Undying Option 2"
+      ],
+      "type": "The Undying Feature"
+    }
+  ]
+}

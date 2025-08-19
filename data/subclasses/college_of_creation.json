@@ -1,0 +1,28 @@
+{
+  "name": "College of Creation",
+  "description": "Bards of the College of Creation draw on the Song of Creation to animate art and objects with primordial magic.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Mote of Potential",
+        "description": "Whenever you give a creature a Bardic Inspiration die, you create a Tiny mote that orbits within 5 feet of it and enhances the die with additional effects for ability checks, attack rolls, or saving throws."
+      },
+      {
+        "name": "Performance of Creation",
+        "description": "As an action, create one nonmagical item worth up to 20 times your bard level that lasts a number of hours equal to your proficiency bonus. The item must be Medium or smaller and appears within 10 feet."
+      }
+    ],
+    "6": [
+      {
+        "name": "Animating Performance",
+        "description": "As an action, animate a Large or smaller nonmagical item within 30 feet as a Dancing Item for 1 hour. It obeys your commands and acts on your initiative."
+      }
+    ],
+    "14": [
+      {
+        "name": "Creative Crescendo",
+        "description": "You can create multiple items with Performance of Creation up to a number equal to your Charisma modifier, ignoring gp limits; only one can be of the maximum size."
+      }
+    ]
+  }
+}

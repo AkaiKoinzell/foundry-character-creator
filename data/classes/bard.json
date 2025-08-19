@@ -1,6 +1,185 @@
 {
   "name": "Bard",
+  "description": "An inspiring magician whose power echoes music and performance.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Bardic Inspiration",
+        "description": "As a bonus action, choose one creature other than yourself within 60 feet who can hear you to gain a Bardic Inspiration die, a d6. Within 10 minutes, the creature can add the die to one ability check, attack roll, or saving throw. Uses equal your Charisma modifier (minimum 1) per long rest. Die becomes a d8 at 5th level, d10 at 10th, and d12 at 15th."
+      },
+      {
+        "name": "Spellcasting",
+        "description": "Learn bard cantrips and spells using Charisma as your spellcasting ability. You can cast rituals and use a musical instrument as a focus. You know four 1st-level spells and gain more as you level."
+      }
+    ],
+    "2": [
+      {
+        "name": "Jack of All Trades",
+        "description": "Add half your proficiency bonus, rounded down, to any ability check you make that doesn't already include your proficiency bonus."
+      },
+      {
+        "name": "Song of Rest (d6)",
+        "description": "During a short rest, if you or friendly creatures who can hear your performance regain hit points by spending Hit Dice, each regains an extra 1d6 hit points."
+      },
+      {
+        "name": "Magical Inspiration",
+        "description": "(Optional) A creature with your Bardic Inspiration that casts a spell to restore hit points or deal damage can roll the die and add it to one target's healing or damage."
+      }
+    ],
+    "3": [
+      {
+        "name": "Bard College",
+        "description": "Choose a bard college, which grants features at 3rd, 6th, and 14th levels."
+      },
+      {
+        "name": "Expertise",
+        "description": "Choose two of your skill proficiencies; your proficiency bonus is doubled for ability checks that use either of them."
+      }
+    ],
+    "4": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two ability scores by 1, or take a feat if allowed."
+      },
+      {
+        "name": "Bardic Versatility",
+        "description": "(Optional) When you gain an Ability Score Improvement, you can replace one Expertise skill or swap a bard cantrip."
+      }
+    ],
+    "5": [
+      {
+        "name": "Bardic Inspiration (d8)",
+        "description": "Your Bardic Inspiration die becomes a d8."
+      },
+      {
+        "name": "Font of Inspiration",
+        "description": "Regain all expended uses of Bardic Inspiration when you finish a short or long rest."
+      }
+    ],
+    "6": [
+      {
+        "name": "Countercharm",
+        "description": "As an action, perform to give you and allies within 30 feet advantage on saving throws against being frightened or charmed until the end of your next turn."
+      },
+      {
+        "name": "Bard College feature",
+        "description": "You gain a feature from your chosen Bard College."
+      }
+    ],
+    "8": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two ability scores by 1, or take a feat if allowed."
+      }
+    ],
+    "9": [
+      {
+        "name": "Song of Rest (d8)",
+        "description": "The extra hit points regained from Song of Rest increase to 1d8."
+      }
+    ],
+    "10": [
+      {
+        "name": "Bardic Inspiration (d10)",
+        "description": "Your Bardic Inspiration die becomes a d10."
+      },
+      {
+        "name": "Expertise",
+        "description": "Choose two additional skill proficiencies to gain Expertise in."
+      },
+      {
+        "name": "Magical Secrets",
+        "description": "Learn two spells from any classes. The chosen spells count as bard spells for you and are included in the number of spells you know."
+      }
+    ],
+    "12": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two ability scores by 1, or take a feat if allowed."
+      }
+    ],
+    "13": [
+      {
+        "name": "Song of Rest (d10)",
+        "description": "The extra hit points regained from Song of Rest increase to 1d10."
+      }
+    ],
+    "14": [
+      {
+        "name": "Magical Secrets",
+        "description": "Learn two additional spells from any classes; they count as bard spells for you."
+      },
+      {
+        "name": "Bard College feature",
+        "description": "You gain a feature from your chosen Bard College."
+      }
+    ],
+    "15": [
+      {
+        "name": "Bardic Inspiration (d12)",
+        "description": "Your Bardic Inspiration die becomes a d12."
+      }
+    ],
+    "16": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two ability scores by 1, or take a feat if allowed."
+      }
+    ],
+    "17": [
+      {
+        "name": "Song of Rest (d12)",
+        "description": "The extra hit points regained from Song of Rest increase to 1d12."
+      }
+    ],
+    "18": [
+      {
+        "name": "Magical Secrets",
+        "description": "Learn two additional spells from any classes; they count as bard spells for you."
+      }
+    ],
+    "19": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two ability scores by 1, or take a feat if allowed."
+      }
+    ],
+    "20": [
+      {
+        "name": "Superior Inspiration",
+        "description": "When you roll initiative and have no uses of Bardic Inspiration left, you regain one use."
+      }
+    ]
+  },
   "subclasses": [
+    {
+      "name": "College of Creation",
+      "features": [
+        "Mote of Potential",
+        "Performance of Creation",
+        "Animating Performance",
+        "Creative Crescendo"
+      ]
+    },
+    {
+      "name": "College of Eloquence",
+      "features": [
+        "Silver Tongue",
+        "Unsettling Words",
+        "Unfailing Inspiration",
+        "Universal Speech",
+        "Infectious Inspiration"
+      ]
+    },
+    {
+      "name": "College of Glamour",
+      "features": [
+        "Mantle of Inspiration",
+        "Enthralling Performance",
+        "Mantle of Majesty",
+        "Unbreakable Majesty"
+      ]
+    },
     {
       "name": "College of Lore",
       "features": [
@@ -11,6 +190,26 @@
       ]
     },
     {
+      "name": "College of Spirits",
+      "features": [
+        "Guiding Whispers",
+        "Spiritual Focus",
+        "Tales from Beyond",
+        "Spirit Session",
+        "Mystical Connection"
+      ]
+    },
+    {
+      "name": "College of Swords",
+      "features": [
+        "Bonus Proficiencies",
+        "Fighting Style",
+        "Blade Flourish",
+        "Extra Attack",
+        "Master's Flourish"
+      ]
+    },
+    {
       "name": "College of Valor",
       "features": [
         "Bonus Proficiencies",
@@ -18,21 +217,15 @@
         "Extra Attack",
         "Battle Magic"
       ]
+    },
+    {
+      "name": "College of Whispers",
+      "features": [
+        "Psychic Blades",
+        "Words of Terror",
+        "Mantle of Whispers",
+        "Shadow Lore"
+      ]
     }
-  ],
-  "description": "Description for Bard class.",
-  "features_by_level": {
-    "1": [
-      {
-        "name": "Bard Feature 1",
-        "description": "Description for Bard feature at level 1."
-      }
-    ],
-    "2": [
-      {
-        "name": "Bard Feature 2",
-        "description": "Description for Bard feature at level 2."
-      }
-    ]
-  }
+  ]
 }

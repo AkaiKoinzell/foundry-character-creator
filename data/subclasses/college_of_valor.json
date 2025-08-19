@@ -1,27 +1,27 @@
 {
   "name": "College of Valor",
-  "description": "Bards of the College of Valor are brave warriors who inspire others in battle.",
+  "description": "Valor bards are daring skalds who inspire heroism on the battlefield.",
   "features_by_level": {
     "3": [
       {
         "name": "Bonus Proficiencies",
-        "description": "Description for Bonus Proficiencies."
+        "description": "Gain proficiency with medium armor, shields, and martial weapons."
       },
       {
         "name": "Combat Inspiration",
-        "description": "Description for Combat Inspiration."
+        "description": "A creature with your Bardic Inspiration die can add the number rolled to a weapon damage roll or to its AC against an attack as a reaction."
       }
     ],
     "6": [
       {
         "name": "Extra Attack",
-        "description": "Description for Extra Attack."
+        "description": "You can attack twice, instead of once, whenever you take the Attack action on your turn."
       }
     ],
     "14": [
       {
         "name": "Battle Magic",
-        "description": "Description for Battle Magic."
+        "description": "When you use your action to cast a bard spell, you can make one weapon attack as a bonus action."
       }
     ]
   }

@@ -1,0 +1,32 @@
+{
+  "name": "College of Eloquence",
+  "description": "Adherents of this college master the art of rhetoric, using logic and theatrics to sway hearts and minds.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Silver Tongue",
+        "description": "When you make a Persuasion or Deception check, treat a d20 roll of 9 or lower as a 10."
+      },
+      {
+        "name": "Unsettling Words",
+        "description": "As a bonus action, expend a Bardic Inspiration and choose a creature within 60 feet; subtract the die roll from the next saving throw it makes before the start of your next turn."
+      }
+    ],
+    "6": [
+      {
+        "name": "Unfailing Inspiration",
+        "description": "If a creature adds one of your Bardic Inspiration dice to a roll and it fails, the die isn't lost."
+      },
+      {
+        "name": "Universal Speech",
+        "description": "As an action, choose creatures within 60 feet (up to your Charisma modifier); for 1 hour, the chosen creatures magically understand you, regardless of language."
+      }
+    ],
+    "14": [
+      {
+        "name": "Infectious Inspiration",
+        "description": "When a creature succeeds using your Bardic Inspiration die, you can use your reaction to give a Bardic Inspiration die to another creature within 60 feet. Uses equal your Charisma modifier per long rest."
+      }
+    ]
+  }
+}

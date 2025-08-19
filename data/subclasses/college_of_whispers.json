@@ -1,0 +1,28 @@
+{
+  "name": "College of Whispers",
+  "description": "Bards of this college use their words to sow fear and manipulate, hiding among other entertainers.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Psychic Blades",
+        "description": "When you hit a creature with a weapon attack, expend a Bardic Inspiration to deal an extra 2d6 psychic damage, increasing to 3d6 at 5th level, 5d6 at 10th, and 8d6 at 15th."
+      },
+      {
+        "name": "Words of Terror",
+        "description": "If you speak to a humanoid alone for at least 1 minute, it must make a Wisdom save or be frightened of you or another creature for 1 hour."
+      }
+    ],
+    "6": [
+      {
+        "name": "Mantle of Whispers",
+        "description": "When a humanoid dies within 30 feet, capture its shadow to magically assume its appearance for 1 hour, gaining access to information it would freely share."
+      }
+    ],
+    "14": [
+      {
+        "name": "Shadow Lore",
+        "description": "As an action, whisper to one creature within 30 feet, forcing a Wisdom save. On a failure it is charmed for 8 hours, convinced you know its most mortifying secret and obeying your commands."
+      }
+    ]
+  }
+}

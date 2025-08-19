@@ -1,27 +1,27 @@
 {
   "name": "College of Lore",
-  "description": "Bards of the College of Lore pursue knowledge and weave it into their music and spells.",
+  "description": "Bards of the College of Lore collect knowledge from everywhere, using their tales to reveal truth and expose corruption.",
   "features_by_level": {
     "3": [
       {
         "name": "Bonus Proficiencies",
-        "description": "Description for Bonus Proficiencies."
+        "description": "Gain proficiency with three skills of your choice."
       },
       {
         "name": "Cutting Words",
-        "description": "Description for Cutting Words."
+        "description": "Use your reaction to expend a Bardic Inspiration, rolling the die and subtracting the number from a creature's attack roll, ability check, or damage roll within 60 feet."
       }
     ],
     "6": [
       {
         "name": "Additional Magical Secrets",
-        "description": "Description for Additional Magical Secrets."
+        "description": "Learn two spells from any class. They count as bard spells for you and don't count against the number of bard spells you know."
       }
     ],
     "14": [
       {
         "name": "Peerless Skill",
-        "description": "Description for Peerless Skill."
+        "description": "When you make an ability check, expend a Bardic Inspiration die and add it to the roll. You can decide after seeing the d20 but before the DM determines success."
       }
     ]
   }

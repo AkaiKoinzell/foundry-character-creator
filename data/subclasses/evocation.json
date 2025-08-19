@@ -30,18 +30,5 @@
         "description": "Description for Overchannel."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 2,
-      "name": "Evocation Feature",
-      "description": "Choose an option for the Evocation subclass",
-      "count": 1,
-      "selection": [
-        "Evocation Option 1",
-        "Evocation Option 2"
-      ],
-      "type": "Evocation Feature"
-    }
-  ]
+  }
 }

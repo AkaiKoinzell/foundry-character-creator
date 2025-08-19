@@ -30,18 +30,5 @@
         "description": "While in Starry Form, you gain resistance to bludgeoning, piercing and slashing damage."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 2,
-      "name": "Circle of Stars Feature",
-      "description": "Choose an option for the Circle of Stars subclass",
-      "count": 1,
-      "selection": [
-        "Circle of Stars Option 1",
-        "Circle of Stars Option 2"
-      ],
-      "type": "Circle of Stars Feature"
-    }
-  ]
+  }
 }

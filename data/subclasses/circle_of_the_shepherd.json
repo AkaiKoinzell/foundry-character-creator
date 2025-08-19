@@ -30,18 +30,5 @@
         "description": "If reduced to 0 hit points or incapacitated, automatically cast conjure animals at 9th level to summon protective beasts."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 2,
-      "name": "Circle of the Shepherd Feature",
-      "description": "Choose an option for the Circle of the Shepherd subclass",
-      "count": 1,
-      "selection": [
-        "Circle of the Shepherd Option 1",
-        "Circle of the Shepherd Option 2"
-      ],
-      "type": "Circle of the Shepherd Feature"
-    }
-  ]
+  }
 }

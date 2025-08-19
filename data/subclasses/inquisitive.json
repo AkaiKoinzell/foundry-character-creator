@@ -34,18 +34,5 @@
         "description": "While Insightful Fighting applies, your Sneak Attack against that creature deals an extra 3d6 damage."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Inquisitive Feature",
-      "description": "Choose an option for the Inquisitive subclass",
-      "count": 1,
-      "selection": [
-        "Inquisitive Option 1",
-        "Inquisitive Option 2"
-      ],
-      "type": "Inquisitive Feature"
-    }
-  ]
+  }
 }

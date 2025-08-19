@@ -32,18 +32,5 @@
         "description": "Meditate to receive dreamlike glimpses of past events related to an object you hold or your current surroundings."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 1,
-      "name": "Knowledge Domain Feature",
-      "description": "Choose an option for the Knowledge Domain subclass",
-      "count": 1,
-      "selection": [
-        "Knowledge Domain Option 1",
-        "Knowledge Domain Option 2"
-      ],
-      "type": "Knowledge Domain Feature"
-    }
-  ]
+  }
 }

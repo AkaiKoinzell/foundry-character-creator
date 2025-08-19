@@ -15,7 +15,7 @@
     "7": [
       {
         "name": "Aura of Alacrity",
-        "description": "Your speed increases by 10 feet. Allies who start their turn within 5 feet of you gain a 10‑foot speed bonus until the end of that turn."
+        "description": "Your speed increases by 10 feet. Allies who start their turn within 5 feet of you gain a 10\u2011foot speed bonus until the end of that turn."
       }
     ],
     "15": [
@@ -30,19 +30,5 @@
         "description": "For 1 minute, gain advantage on Charisma checks, turn one missed weapon attack per turn into a hit, and reroll failed saving throws. Once per long rest or by expending a 5th-level spell slot."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Oath of Glory Feature",
-      "description": "Choose an option for the Oath of Glory subclass",
-      "count": 1,
-      "selection": [
-        "Oath of Glory Option 1",
-        "Oath of Glory Option 2"
-      ],
-      "type": "Oath of Glory Feature"
-    }
-  ]
+  }
 }
-

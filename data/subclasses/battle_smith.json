@@ -9,7 +9,7 @@
       },
       {
         "name": "Battle Smith Spells",
-        "description": "You always have certain spells prepared: 3rd—heroism, shield; 5th—branding smite, warding bond; 9th—aura of vitality, conjure barrage; 13th—aura of purity, fire shield; 17th—banishing smite, mass cure wounds. These count as artificer spells for you and don't count against spells prepared."
+        "description": "You always have certain spells prepared: 3rd\u2014heroism, shield; 5th\u2014branding smite, warding bond; 9th\u2014aura of vitality, conjure barrage; 13th\u2014aura of purity, fire shield; 17th\u2014banishing smite, mass cure wounds. These count as artificer spells for you and don't count against spells prepared."
       },
       {
         "name": "Battle Ready",
@@ -38,18 +38,5 @@
         "description": "Arcane Jolt's extra damage or healing becomes 4d6. Your steel defender's AC increases by 2, and its Deflect Attack reaction deals 1d4 + your Intelligence modifier force damage to the attacker."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Battle Smith Feature",
-      "description": "Choose an option for the Battle Smith subclass",
-      "count": 1,
-      "selection": [
-        "Battle Smith Option 1",
-        "Battle Smith Option 2"
-      ],
-      "type": "Battle Smith Feature"
-    }
-  ]
+  }
 }

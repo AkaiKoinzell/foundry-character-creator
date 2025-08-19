@@ -30,18 +30,5 @@
         "description": "If you drop to 0 hit points while the spirit is within 120 feet, it can drop to 0 to restore you to half hit points and stand you up."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 2,
-      "name": "Circle of Wildfire Feature",
-      "description": "Choose an option for the Circle of Wildfire subclass",
-      "count": 1,
-      "selection": [
-        "Circle of Wildfire Option 1",
-        "Circle of Wildfire Option 2"
-      ],
-      "type": "Circle of Wildfire Feature"
-    }
-  ]
+  }
 }

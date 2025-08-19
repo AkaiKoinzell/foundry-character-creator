@@ -34,18 +34,5 @@
         "description": "You can't be blinded, deafened, frightened or poisoned, and critical hits count as normal hits."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 2,
-      "name": "Circle of Spores Feature",
-      "description": "Choose an option for the Circle of Spores subclass",
-      "count": 1,
-      "selection": [
-        "Circle of Spores Option 1",
-        "Circle of Spores Option 2"
-      ],
-      "type": "Circle of Spores Feature"
-    }
-  ]
+  }
 }

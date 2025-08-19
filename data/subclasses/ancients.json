@@ -30,18 +30,5 @@
         "description": "For 1 minute, you regain 10 hit points at the start of each turn, cast paladin spells as bonus actions, and enemies within 10 feet have disadvantage on saves against your paladin spells and Channel Divinity options."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Oath of the Ancients Feature",
-      "description": "Choose an option for the Oath of the Ancients subclass",
-      "count": 1,
-      "selection": [
-        "Oath of the Ancients Option 1",
-        "Oath of the Ancients Option 2"
-      ],
-      "type": "Oath of the Ancients Feature"
-    }
-  ]
+  }
 }

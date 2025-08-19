@@ -24,18 +24,5 @@
         "description": "As an action, whisper to one creature within 30 feet, forcing a Wisdom save. On a failure it is charmed for 8 hours, convinced you know its most mortifying secret and obeying your commands."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "College of Whispers Feature",
-      "description": "Choose an option for the College of Whispers subclass",
-      "count": 1,
-      "selection": [
-        "College of Whispers Option 1",
-        "College of Whispers Option 2"
-      ],
-      "type": "College of Whispers Feature"
-    }
-  ]
+  }
 }

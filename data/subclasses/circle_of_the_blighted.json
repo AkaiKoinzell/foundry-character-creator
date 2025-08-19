@@ -38,18 +38,5 @@
         "description": "Gain resistance to necrotic damage, +2 AC, and can gain temporary hit points when starting your turn in your defiled ground."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 2,
-      "name": "Circle of the Blighted Feature",
-      "description": "Choose an option for the Circle of the Blighted subclass",
-      "count": 1,
-      "selection": [
-        "Circle of the Blighted Option 1",
-        "Circle of the Blighted Option 2"
-      ],
-      "type": "Circle of the Blighted Feature"
-    }
-  ]
+  }
 }

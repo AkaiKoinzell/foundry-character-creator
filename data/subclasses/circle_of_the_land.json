@@ -34,18 +34,5 @@
         "description": "Beasts and plants must succeed on a Wisdom save to attack you; on a failure they must choose another target."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 2,
-      "name": "Circle of the Land Feature",
-      "description": "Choose an option for the Circle of the Land subclass",
-      "count": 1,
-      "selection": [
-        "Circle of the Land Option 1",
-        "Circle of the Land Option 2"
-      ],
-      "type": "Circle of the Land Feature"
-    }
-  ]
+  }
 }

@@ -24,18 +24,5 @@
         "description": "When you use your action to cast a bard spell, you can make one weapon attack as a bonus action."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "College of Valor Feature",
-      "description": "Choose an option for the College of Valor subclass",
-      "count": 1,
-      "selection": [
-        "College of Valor Option 1",
-        "College of Valor Option 2"
-      ],
-      "type": "College of Valor Feature"
-    }
-  ]
+  }
 }

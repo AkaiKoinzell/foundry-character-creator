@@ -30,18 +30,5 @@
         "description": "Description for Spell Thief."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Arcane Trickster Feature",
-      "description": "Choose an option for the Arcane Trickster subclass",
-      "count": 1,
-      "selection": [
-        "Arcane Trickster Option 1",
-        "Arcane Trickster Option 2"
-      ],
-      "type": "Arcane Trickster Feature"
-    }
-  ]
+  }
 }

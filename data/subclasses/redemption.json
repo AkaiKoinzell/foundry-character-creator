@@ -30,19 +30,5 @@
         "description": "You have resistance to all damage from creatures, and whenever a creature hits you it takes radiant damage equal to half the damage you take, unless you harmed it."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Oath of Redemption Feature",
-      "description": "Choose an option for the Oath of Redemption subclass",
-      "count": 1,
-      "selection": [
-        "Oath of Redemption Option 1",
-        "Oath of Redemption Option 2"
-      ],
-      "type": "Oath of Redemption Feature"
-    }
-  ]
+  }
 }
-

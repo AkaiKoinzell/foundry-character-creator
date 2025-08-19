@@ -30,18 +30,5 @@
         "description": "When you deal Sneak Attack damage, force a Wisdom save or the target is stunned for 1 minute. Once per long rest or by expending three Psionic Energy dice."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Soulknife Feature",
-      "description": "Choose an option for the Soulknife subclass",
-      "count": 1,
-      "selection": [
-        "Soulknife Option 1",
-        "Soulknife Option 2"
-      ],
-      "type": "Soulknife Feature"
-    }
-  ]
+  }
 }

@@ -36,18 +36,5 @@
         "description": "When an enemy dies within 60 feet, you or an ally within the same range regains hit points equal to the enemy's Hit Dice. Once per turn."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 1,
-      "name": "Grave Domain Feature",
-      "description": "Choose an option for the Grave Domain subclass",
-      "count": 1,
-      "selection": [
-        "Grave Domain Option 1",
-        "Grave Domain Option 2"
-      ],
-      "type": "Grave Domain Feature"
-    }
-  ]
+  }
 }

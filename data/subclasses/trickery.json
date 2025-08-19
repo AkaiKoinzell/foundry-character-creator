@@ -32,18 +32,5 @@
         "description": "You can create up to four duplicates with Invoke Duplicity and move any number of them up to 30 feet each as a bonus action."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 1,
-      "name": "Trickery Domain Feature",
-      "description": "Choose an option for the Trickery Domain subclass",
-      "count": 1,
-      "selection": [
-        "Trickery Domain Option 1",
-        "Trickery Domain Option 2"
-      ],
-      "type": "Trickery Domain Feature"
-    }
-  ]
+  }
 }

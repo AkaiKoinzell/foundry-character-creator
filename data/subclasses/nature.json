@@ -36,18 +36,5 @@
         "description": "While creatures are charmed by you, you can use a bonus action to verbally command them on their next turn."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 1,
-      "name": "Nature Domain Feature",
-      "description": "Choose an option for the Nature Domain subclass",
-      "count": 1,
-      "selection": [
-        "Nature Domain Option 1",
-        "Nature Domain Option 2"
-      ],
-      "type": "Nature Domain Feature"
-    }
-  ]
+  }
 }

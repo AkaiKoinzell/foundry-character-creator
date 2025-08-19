@@ -15,34 +15,20 @@
     "7": [
       {
         "name": "Aura of Hate",
-        "description": "You and any fiends and undead within 10 feet gain a bonus to melee weapon damage rolls equal to your Charisma modifier." 
+        "description": "You and any fiends and undead within 10 feet gain a bonus to melee weapon damage rolls equal to your Charisma modifier."
       }
     ],
     "15": [
       {
         "name": "Supernatural Resistance",
-        "description": "You gain resistance to bludgeoning, piercing, and slashing damage from nonmagical weapons." 
+        "description": "You gain resistance to bludgeoning, piercing, and slashing damage from nonmagical weapons."
       }
     ],
     "20": [
       {
         "name": "Dread Lord",
-        "description": "As an action, for 1 minute an aura of gloom surrounds you. Frightened enemies in the aura take 4d10 psychic damage at the start of their turns, and you and chosen creatures are shrouded in darkness. You can use a bonus action to make a melee spell attack dealing 3d10 + your Charisma modifier necrotic damage. Once per long rest." 
+        "description": "As an action, for 1 minute an aura of gloom surrounds you. Frightened enemies in the aura take 4d10 psychic damage at the start of their turns, and you and chosen creatures are shrouded in darkness. You can use a bonus action to make a melee spell attack dealing 3d10 + your Charisma modifier necrotic damage. Once per long rest."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Oathbreaker Feature",
-      "description": "Choose an option for the Oathbreaker subclass",
-      "count": 1,
-      "selection": [
-        "Oathbreaker Option 1",
-        "Oathbreaker Option 2"
-      ],
-      "type": "Oathbreaker Feature"
-    }
-  ]
+  }
 }
-

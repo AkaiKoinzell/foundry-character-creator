@@ -9,7 +9,7 @@
       },
       {
         "name": "Armorer Spells",
-        "description": "You always have certain spells prepared: 3rd—magic missile, thunderwave; 5th—mirror image, shatter; 9th—hypnotic pattern, lightning bolt; 13th—fire shield, greater invisibility; 17th—passwall, wall of force. These count as artificer spells for you and don't count against spells prepared."
+        "description": "You always have certain spells prepared: 3rd\u2014magic missile, thunderwave; 5th\u2014mirror image, shatter; 9th\u2014hypnotic pattern, lightning bolt; 13th\u2014fire shield, greater invisibility; 17th\u2014passwall, wall of force. These count as artificer spells for you and don't count against spells prepared."
       },
       {
         "name": "Arcane Armor",
@@ -29,7 +29,7 @@
     "9": [
       {
         "name": "Armor Modifications",
-        "description": "Your arcane armor counts as separate items—armor, boots, helmet, and special weapon—for infusions. You can infuse two additional items, but they must be part of the armor."
+        "description": "Your arcane armor counts as separate items\u2014armor, boots, helmet, and special weapon\u2014for infusions. You can infuse two additional items, but they must be part of the armor."
       }
     ],
     "15": [
@@ -38,18 +38,5 @@
         "description": "Guardian: as a reaction when a creature ends its turn within 30 ft, you can pull it up to 25 ft and make a melee attack if it's within 5 ft; uses equal to your proficiency bonus per long rest. Infiltrator: creatures hit by your lightning launcher shed light and have disadvantage on attack rolls against you until your next turn; the next attack roll against the target has advantage and deals an extra 1d6 lightning damage on a hit."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Armorer Feature",
-      "description": "Choose an option for the Armorer subclass",
-      "count": 1,
-      "selection": [
-        "Armorer Option 1",
-        "Armorer Option 2"
-      ],
-      "type": "Armorer Feature"
-    }
-  ]
+  }
 }

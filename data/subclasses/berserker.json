@@ -1,6 +1,6 @@
 {
   "name": "Berserker",
-  "description": "For some barbarians, rage is a means to an end—the end being violence and chaos on the battlefield.",
+  "description": "For some barbarians, rage is a means to an end\u2014the end being violence and chaos on the battlefield.",
   "features_by_level": {
     "3": [
       {
@@ -26,18 +26,5 @@
         "description": "When you take damage from a creature within 5 feet of you, you can use your reaction to make a melee weapon attack against that creature."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Berserker Feature",
-      "description": "Choose an option for the Berserker subclass",
-      "count": 1,
-      "selection": [
-        "Berserker Option 1",
-        "Berserker Option 2"
-      ],
-      "type": "Berserker Feature"
-    }
-  ]
+  }
 }

@@ -26,18 +26,5 @@
         "description": "Description for Create Thrall."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 1,
-      "name": "The Great Old One Feature",
-      "description": "Choose an option for the The Great Old One subclass",
-      "count": 1,
-      "selection": [
-        "The Great Old One Option 1",
-        "The Great Old One Option 2"
-      ],
-      "type": "The Great Old One Feature"
-    }
-  ]
+  }
 }

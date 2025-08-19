@@ -26,18 +26,5 @@
         "description": "If you miss with a monk weapon attack on your turn, reroll the attack roll once."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Way of the Kensei Feature",
-      "description": "Choose an option for the Way of the Kensei subclass",
-      "count": 1,
-      "selection": [
-        "Way of the Kensei Option 1",
-        "Way of the Kensei Option 2"
-      ],
-      "type": "Way of the Kensei Feature"
-    }
-  ]
+  }
 }

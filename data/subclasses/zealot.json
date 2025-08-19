@@ -30,18 +30,5 @@
         "description": "While raging, having 0 hit points doesn't knock you unconscious. You still make death saves and only die after your rage ends if you still have 0 hit points."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Zealot Feature",
-      "description": "Choose an option for the Zealot subclass",
-      "count": 1,
-      "selection": [
-        "Zealot Option 1",
-        "Zealot Option 2"
-      ],
-      "type": "Zealot Feature"
-    }
-  ]
+  }
 }

@@ -27,21 +27,8 @@
     "20": [
       {
         "name": "Avenging Angel",
-        "description": "As an action, transform for 1 hour, gaining a 60‑foot fly speed and an aura that can frighten enemies within 30 feet."
+        "description": "As an action, transform for 1 hour, gaining a 60\u2011foot fly speed and an aura that can frighten enemies within 30 feet."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Oath of Vengeance Feature",
-      "description": "Choose an option for the Oath of Vengeance subclass",
-      "count": 1,
-      "selection": [
-        "Oath of Vengeance Option 1",
-        "Oath of Vengeance Option 2"
-      ],
-      "type": "Oath of Vengeance Feature"
-    }
-  ]
+  }
 }

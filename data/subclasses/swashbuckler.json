@@ -30,18 +30,5 @@
         "description": "If you miss with an attack, you can reroll it with advantage. Once used, this feature can't be used again until a short or long rest."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Swashbuckler Feature",
-      "description": "Choose an option for the Swashbuckler subclass",
-      "count": 1,
-      "selection": [
-        "Swashbuckler Option 1",
-        "Swashbuckler Option 2"
-      ],
-      "type": "Swashbuckler Feature"
-    }
-  ]
+  }
 }

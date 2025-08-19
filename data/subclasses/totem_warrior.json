@@ -30,18 +30,5 @@
         "description": "Gain a powerful ability based on a totem animal of your choice while raging, such as the bear's protection or the eagle's flight."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Totem Warrior Feature",
-      "description": "Choose an option for the Totem Warrior subclass",
-      "count": 1,
-      "selection": [
-        "Totem Warrior Option 1",
-        "Totem Warrior Option 2"
-      ],
-      "type": "Totem Warrior Feature"
-    }
-  ]
+  }
 }

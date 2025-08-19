@@ -26,18 +26,5 @@
         "description": "After a short rest, cast dream, scrying, or teleportation circle (to your last long-rest location) once per long rest without expending a slot."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 2,
-      "name": "Circle of Dreams Feature",
-      "description": "Choose an option for the Circle of Dreams subclass",
-      "count": 1,
-      "selection": [
-        "Circle of Dreams Option 1",
-        "Circle of Dreams Option 2"
-      ],
-      "type": "Circle of Dreams Feature"
-    }
-  ]
+  }
 }

@@ -30,18 +30,5 @@
         "description": "When you take the Attack action, you can make one additional attack as a bonus action. Each attack can use Sneak Attack, but not against the same target more than once per turn."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Scout Feature",
-      "description": "Choose an option for the Scout subclass",
-      "count": 1,
-      "selection": [
-        "Scout Option 1",
-        "Scout Option 2"
-      ],
-      "type": "Scout Feature"
-    }
-  ]
+  }
 }

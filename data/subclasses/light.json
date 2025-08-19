@@ -36,18 +36,5 @@
         "description": "As an action, emit bright light in a 60-foot radius for 1 minute. Enemies in the light have disadvantage on saving throws against fire or radiant spells."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 1,
-      "name": "Light Domain Feature",
-      "description": "Choose an option for the Light Domain subclass",
-      "count": 1,
-      "selection": [
-        "Light Domain Option 1",
-        "Light Domain Option 2"
-      ],
-      "type": "Light Domain Feature"
-    }
-  ]
+  }
 }

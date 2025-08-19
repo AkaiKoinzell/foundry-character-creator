@@ -30,18 +30,5 @@
         "description": "Description for Master Transmuter."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 2,
-      "name": "Transmutation Feature",
-      "description": "Choose an option for the Transmutation subclass",
-      "count": 1,
-      "selection": [
-        "Transmutation Option 1",
-        "Transmutation Option 2"
-      ],
-      "type": "Transmutation Feature"
-    }
-  ]
+  }
 }

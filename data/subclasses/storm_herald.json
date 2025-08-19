@@ -26,18 +26,5 @@
         "description": "Your aura lashes out at foes with effects based on your environment, such as burning attackers or knocking enemies prone."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Storm Herald Feature",
-      "description": "Choose an option for the Storm Herald subclass",
-      "count": 1,
-      "selection": [
-        "Storm Herald Option 1",
-        "Storm Herald Option 2"
-      ],
-      "type": "Storm Herald Feature"
-    }
-  ]
+  }
 }

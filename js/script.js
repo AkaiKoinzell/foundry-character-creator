@@ -763,7 +763,7 @@ function gatherExtraSelections(data, context, level = 1) {
  * Opens the extra selections popup.
  * Hides the background extra traits container and shows the modal.
  */
-function openRaceExtrasModal(selections, context = "race") {
+function openExtrasModal(selections, context = "race") {
   if (!selections || selections.length === 0) {
     console.warn("⚠️ Nessuna selezione extra disponibile, il pop-up non verrà mostrato.");
     return;
@@ -1130,8 +1130,8 @@ function displayRaceTraits() {
       const tablesHtml = renderTables(raceData.rawEntries);
       traitsHtml += tablesHtml;
 
-      // Spellcasting – handle both standard and extra.
-      handleSpellcasting(raceData, traitsHtml);
+      // Spellcasting – render choices in the dedicated container
+      handleSpellcasting(raceData, "spellSelectionContainer");
 
       // Languages (display fixed languages; extra languages are chosen in the popup)
       let languageHtml = "";
@@ -1140,6 +1140,7 @@ function displayRaceTraits() {
       } else {
         languageHtml = `<p><strong>Lingue Concesse:</strong> Nessuna</p>`;
       }
+      traitsHtml += languageHtml;
 
       if (raceTraitsDiv) {
         raceTraitsDiv.innerHTML = traitsHtml;
@@ -1488,14 +1489,14 @@ document.addEventListener("DOMContentLoaded", () => {
     subclassSelectElem.addEventListener("change", async () => {
       const selections = await renderClassFeatures();
       if (classSelectionConfirmed && selections.length > 0) {
-        openRaceExtrasModal(selections, "class");
+        openExtrasModal(selections, "class");
       }
     });
   if (levelSelectElem)
     levelSelectElem.addEventListener("change", async () => {
       const selections = await renderClassFeatures();
       if (classSelectionConfirmed && selections.length > 0) {
-        openRaceExtrasModal(selections, "class");
+        openExtrasModal(selections, "class");
       }
     });
   document.getElementById("btnStep8").addEventListener("click", () => showStep("step8"));
@@ -1520,7 +1521,7 @@ document.addEventListener("DOMContentLoaded", () => {
     classSelectionConfirmed = true;
     const selections = await renderClassFeatures();
     if (selections.length > 0) {
-      openRaceExtrasModal(selections, "class");
+      openExtrasModal(selections, "class");
     }
     classSelect.disabled = true;
     subclassSelect.disabled = true;
@@ -1546,11 +1547,11 @@ document.addEventListener("DOMContentLoaded", () => {
           const filtered = filterSpells(spellList, raceData.spellcasting.spell_choices.filter).map(spell => spell.name);
           selections.push({ name: "Cantrips", description: "Choose a spell.", selection: filtered, count: 1 });
           sessionStorage.setItem("popupOpened", "true");
-          openRaceExtrasModal(selections);
+          openExtrasModal(selections);
         });
       } else {
         sessionStorage.setItem("popupOpened", "true");
-        openRaceExtrasModal(selections);
+        openExtrasModal(selections);
       }
       document.getElementById("confirmRaceSelection").style.display = "none";
     })

@@ -6,6 +6,7 @@
   <title>Character Creator - Foundry</title>
   <!-- Includi il file script.js unificato -->
   <script src="js/script.js" defer></script>
+  <script src="js/step5.js" defer></script>
   <style>
     /* Stili per un look moderno e una buona UX */
     body {
@@ -112,7 +113,8 @@
     <button id="btnStep2">Step 2: Razza</button>
     <button id="btnStep3">Step 3: Point Buy</button>
     <button id="btnStep4">Step 4: Classe</button>
-    <button id="btnStep5">Step 5: Equipaggiamento</button>
+    <button id="btnStep5">Step 5: Background</button>
+    <button id="btnStep6">Step 6: Equipaggiamento</button>
     <button id="btnStep8">Step 8: Recap & Esportazione</button>
   </nav>
   <!-- Container degli step -->
@@ -345,6 +347,12 @@
           <td id="chaFinalScore">8</td>
         </tr>
       </table>
+      <input type="hidden" id="strBackgroundTalent" value="0">
+      <input type="hidden" id="dexBackgroundTalent" value="0">
+      <input type="hidden" id="conBackgroundTalent" value="0">
+      <input type="hidden" id="intBackgroundTalent" value="0">
+      <input type="hidden" id="wisBackgroundTalent" value="0">
+      <input type="hidden" id="chaBackgroundTalent" value="0">
     </div>
     <!-- Step 4: Tratti Extra -->
     <div id="step4" class="step">
@@ -365,6 +373,22 @@
       <div id="divineDomainSelection"></div>
       <div id="metamagicSelection"></div>
       <div id="abilityImprovementSelection"></div>
+    </div>
+    <!-- Step 5: Background -->
+    <div id="step5" class="step">
+      <h2>Step 5: Background</h2>
+      <label for="backgroundSelect">Background:</label>
+      <select id="backgroundSelect">
+        <option value="">Seleziona un background</option>
+      </select>
+      <div id="backgroundSkills"></div>
+      <div id="backgroundTools"></div>
+      <div id="backgroundLanguages"></div>
+      <div id="backgroundFeat"></div>
+    </div>
+    <!-- Step 6: Equipaggiamento -->
+    <div id="step6" class="step">
+      <h2>Step 6: Equipaggiamento</h2>
     </div>
     <!-- Step 8: Recap & Esportazione -->
     <div id="step8" class="step">
@@ -391,6 +415,7 @@
       document.getElementById("btnStep3").addEventListener("click", () => showStep("step3"));
       document.getElementById("btnStep4").addEventListener("click", () => showStep("step4"));
       document.getElementById("btnStep5").addEventListener("click", () => showStep("step5"));
+      document.getElementById("btnStep6").addEventListener("click", () => showStep("step6"));
       document.getElementById("btnStep8").addEventListener("click", () => showStep("step8"));
       // Inizialmente mostra lo step 1
       showStep("step1");

@@ -1,0 +1,6 @@
+{
+  "backgrounds": {
+    "Acolyte": "data/backgrounds/acolyte.json",
+    "Soldier": "data/backgrounds/soldier.json"
+  }
+}

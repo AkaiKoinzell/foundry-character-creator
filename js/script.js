@@ -116,7 +116,11 @@ function loadFeats(callback) {
     .then(response => response.json())
     .then(data => {
       if (data.feats) {
-        availableFeats = data.feats;
+        if (Array.isArray(data.feats)) {
+          availableFeats = data.feats;
+        } else if (typeof data.feats === "object") {
+          availableFeats = Object.keys(data.feats).map(name => ({ name }));
+        }
         callback(availableFeats);
       } else {
         handleError("Nessun feat trovato nel file JSON.");

@@ -1,6 +1,149 @@
 {
   "name": "Paladin",
+  "description": "A holy warrior bound to a sacred oath.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Divine Sense",
+        "description": "As an action, detect celestials, fiends, undead, or consecrated and desecrated places within 60 feet a number of times equal to 1 + your Charisma modifier per long rest."
+      },
+      {
+        "name": "Lay on Hands",
+        "description": "You have a healing pool equal to five times your paladin level. As an action, restore hit points or cure disease and poison by expending points from the pool."
+      }
+    ],
+    "2": [
+      {
+        "name": "Divine Smite",
+        "description": "When you hit with a melee weapon attack, expend a spell slot to deal extra radiant damage, starting at 2d8 for a 1st-level slot and +1d8 for each higher level (max 5d8, or 6d8 against fiends and undead)."
+      },
+      {
+        "name": "Fighting Style",
+        "description": "Adopt a fighting style to specialize your combat prowess."
+      },
+      {
+        "name": "Spellcasting",
+        "description": "You prepare and cast paladin spells using Charisma as your spellcasting ability and can use a holy symbol as a focus."
+      }
+    ],
+    "3": [
+      {
+        "name": "Divine Health",
+        "description": "You are immune to disease."
+      },
+      {
+        "name": "Sacred Oath",
+        "description": "Choose an oath, granting oath spells and features at 3rd, 7th, 15th, and 20th level."
+      },
+      {
+        "name": "Channel Divinity",
+        "description": "Use divine energy to fuel magical effects granted by your oath. Regain uses after a short or long rest."
+      },
+      {
+        "name": "Channel Divinity: Harness Divine Power",
+        "description": "(Optional) As a bonus action, expend Channel Divinity to regain a spent spell slot of a level up to half your proficiency bonus (rounded up)."
+      }
+    ],
+    "4": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1, or take a feat if allowed."
+      },
+      {
+        "name": "Martial Versatility",
+        "description": "(Optional) Whenever you gain an Ability Score Improvement, you can replace a fighting style you know with another."
+      }
+    ],
+    "5": [
+      {
+        "name": "Extra Attack",
+        "description": "You can attack twice whenever you take the Attack action on your turn."
+      }
+    ],
+    "6": [
+      {
+        "name": "Aura of Protection",
+        "description": "While conscious, you and friendly creatures within 10 feet gain a bonus to saving throws equal to your Charisma modifier."
+      }
+    ],
+    "7": [
+      {
+        "name": "Sacred Oath Feature",
+        "description": "Your chosen oath grants a feature at this level."
+      }
+    ],
+    "8": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "10": [
+      {
+        "name": "Aura of Courage",
+        "description": "You and friendly creatures within 10 feet can't be frightened while you are conscious."
+      }
+    ],
+    "11": [
+      {
+        "name": "Improved Divine Smite",
+        "description": "Your melee weapon attacks deal an extra 1d8 radiant damage."
+      }
+    ],
+    "12": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "14": [
+      {
+        "name": "Cleansing Touch",
+        "description": "As an action, end one spell on yourself or a willing creature you touch. Uses equal to your Charisma modifier per long rest."
+      }
+    ],
+    "15": [
+      {
+        "name": "Sacred Oath Feature",
+        "description": "Your chosen oath grants a feature at this level."
+      }
+    ],
+    "16": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "18": [
+      {
+        "name": "Aura Improvements",
+        "description": "The range of your Aura of Protection and Aura of Courage increases to 30 feet."
+      }
+    ],
+    "19": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "20": [
+      {
+        "name": "Sacred Oath Feature",
+        "description": "Your chosen oath grants its final feature at this level."
+      }
+    ]
+  },
   "subclasses": [
+    {
+      "name": "Oath of Conquest",
+      "features": [
+        "Conquering Presence",
+        "Guided Strike",
+        "Aura of Conquest",
+        "Scornful Rebuke",
+        "Invincible Conqueror"
+      ]
+    },
     {
       "name": "Oath of Devotion",
       "features": [
@@ -9,6 +152,26 @@
         "Aura of Devotion",
         "Purity of Spirit",
         "Holy Nimbus"
+      ]
+    },
+    {
+      "name": "Oath of Glory",
+      "features": [
+        "Peerless Athlete",
+        "Inspiring Smite",
+        "Aura of Alacrity",
+        "Glorious Defense",
+        "Living Legend"
+      ]
+    },
+    {
+      "name": "Oath of Redemption",
+      "features": [
+        "Emissary of Peace",
+        "Rebuke the Violent",
+        "Aura of the Guardian",
+        "Protective Spirit",
+        "Emissary of Redemption"
       ]
     },
     {
@@ -22,6 +185,26 @@
       ]
     },
     {
+      "name": "Oath of the Crown",
+      "features": [
+        "Champion Challenge",
+        "Turn the Tide",
+        "Divine Allegiance",
+        "Unyielding Spirit",
+        "Exalted Champion"
+      ]
+    },
+    {
+      "name": "Oath of the Watchers",
+      "features": [
+        "Watcher's Will",
+        "Abjure the Extraplanar",
+        "Aura of the Sentinel",
+        "Vigilant Rebuke",
+        "Mortal Bulwark"
+      ]
+    },
+    {
       "name": "Oath of Vengeance",
       "features": [
         "Abjure Enemy",
@@ -30,24 +213,34 @@
         "Soul of Vengeance",
         "Avenging Angel"
       ]
+    },
+    {
+      "name": "Oathbreaker",
+      "features": [
+        "Control Undead",
+        "Dreadful Aspect",
+        "Aura of Hate",
+        "Supernatural Resistance",
+        "Dread Lord"
+      ]
     }
   ],
-  "description": "Description for Paladin class.",
-  "features_by_level": {
-    "1": [
-      {
-        "name": "Paladin Feature 1",
-        "description": "Description for Paladin feature at level 1."
-      }
-    ],
-    "2": [
-      {
-        "name": "Paladin Feature 2",
-        "description": "Description for Paladin feature at level 2."
-      }
-    ]
-  },
   "choices": [
+    {
+      "level": 1,
+      "name": "Skill Proficiency",
+      "description": "Choose two skills from the paladin list",
+      "count": 2,
+      "type": "skills",
+      "selection": [
+        "Athletics",
+        "Insight",
+        "Intimidation",
+        "Medicine",
+        "Persuasion",
+        "Religion"
+      ]
+    },
     {
       "level": 2,
       "name": "Fighting Style",
@@ -55,9 +248,12 @@
       "count": 1,
       "type": "fighting style",
       "selection": [
+        "Blessed Warrior",
+        "Blind Fighting",
         "Defense",
         "Dueling",
         "Great Weapon Fighting",
+        "Interception",
         "Protection"
       ]
     },
@@ -123,3 +319,4 @@
     }
   ]
 }
+

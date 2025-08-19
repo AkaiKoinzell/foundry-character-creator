@@ -5,29 +5,29 @@
     "3": [
       {
         "name": "Abjure Enemy",
-        "description": "Description for Abjure Enemy."
+        "description": "Use Channel Divinity to frighten a creature within 60 feet, reducing its speed to 0 on a failed Wisdom save."
       },
       {
         "name": "Vow of Enmity",
-        "description": "Description for Vow of Enmity."
+        "description": "As a bonus action, gain advantage on attack rolls against a creature within 10 feet for 1 minute or until it drops to 0 hit points."
       }
     ],
     "7": [
       {
         "name": "Relentless Avenger",
-        "description": "Description for Relentless Avenger."
+        "description": "When you hit a creature with an opportunity attack, move up to half your speed as part of the same reaction without provoking opportunity attacks."
       }
     ],
     "15": [
       {
         "name": "Soul of Vengeance",
-        "description": "Description for Soul of Vengeance."
+        "description": "When a creature under your Vow of Enmity makes an attack, you can use your reaction to make a melee weapon attack against it."
       }
     ],
     "20": [
       {
         "name": "Avenging Angel",
-        "description": "Description for Avenging Angel."
+        "description": "As an action, transform for 1 hour, gaining a 60‑foot fly speed and an aura that can frighten enemies within 30 feet."
       }
     ]
   },

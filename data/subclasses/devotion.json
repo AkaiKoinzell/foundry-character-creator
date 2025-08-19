@@ -5,29 +5,29 @@
     "3": [
       {
         "name": "Sacred Weapon",
-        "description": "Description for Sacred Weapon."
+        "description": "As an action, imbue a weapon with holy power for 1 minute, adding your Charisma modifier to attack rolls and causing the weapon to emit bright light; it becomes magical if it isn't already."
       },
       {
         "name": "Turn the Unholy",
-        "description": "Description for Turn the Unholy."
+        "description": "Use Channel Divinity to turn fiends and undead for 1 minute."
       }
     ],
     "7": [
       {
         "name": "Aura of Devotion",
-        "description": "Description for Aura of Devotion."
+        "description": "You and friendly creatures within 10 feet can't be charmed while you are conscious."
       }
     ],
     "15": [
       {
         "name": "Purity of Spirit",
-        "description": "Description for Purity of Spirit."
+        "description": "You are always under the effects of a protection from evil and good spell."
       }
     ],
     "20": [
       {
         "name": "Holy Nimbus",
-        "description": "Description for Holy Nimbus."
+        "description": "As an action, emit a 30-foot aura of bright light for 1 minute. Enemies in the bright light take 10 radiant damage at the start of their turn, and you have advantage on saves against spells cast by fiends or undead. Once per long rest."
       }
     ]
   },

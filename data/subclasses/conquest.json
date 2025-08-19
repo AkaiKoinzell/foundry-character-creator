@@ -1,0 +1,48 @@
+{
+  "name": "Oath of Conquest",
+  "description": "Paladins who swear this oath seek glory in battle and the subjugation of their enemies.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Conquering Presence",
+        "description": "Use Channel Divinity to force creatures of your choice within 30 feet to make a Wisdom save or be frightened of you for 1 minute."
+      },
+      {
+        "name": "Guided Strike",
+        "description": "Use Channel Divinity to gain a +10 bonus to an attack roll after seeing the roll." 
+      }
+    ],
+    "7": [
+      {
+        "name": "Aura of Conquest",
+        "description": "Creatures frightened of you that start their turn in your 10-foot aura have their speed reduced to 0 and take psychic damage equal to half your paladin level." 
+      }
+    ],
+    "15": [
+      {
+        "name": "Scornful Rebuke",
+        "description": "When a creature hits you with an attack, it takes psychic damage equal to your Charisma modifier if you're not incapacitated."
+      }
+    ],
+    "20": [
+      {
+        "name": "Invincible Conqueror",
+        "description": "For 1 minute, you have resistance to all damage, make one additional attack when you take the Attack action, and your melee weapon attacks score a critical hit on a 19 or 20. Once per long rest." 
+      }
+    ]
+  },
+  "choices": [
+    {
+      "level": 3,
+      "name": "Oath of Conquest Feature",
+      "description": "Choose an option for the Oath of Conquest subclass",
+      "count": 1,
+      "selection": [
+        "Oath of Conquest Option 1",
+        "Oath of Conquest Option 2"
+      ],
+      "type": "Oath of Conquest Feature"
+    }
+  ]
+}
+

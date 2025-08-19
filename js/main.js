@@ -1,4 +1,4 @@
-import { showStep } from './ui.js';
+import { showStep, loadFormData } from './ui.js';
 import { convertRaceData } from './raceData.js';
 import { loadSpells, filterSpells } from './spellcasting.js';
 import { loadDropdownData, loadLanguages, handleError } from './common.js';
@@ -60,7 +60,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-  showStep('step1');
+  initializeValues();
+  const lastStep = loadFormData();
+  showStep(lastStep || 'step1');
 
   document.getElementById('raceSelect').addEventListener('change', displayRaceTraits);
   document.getElementById('levelSelect').addEventListener('change', () => displayRaceTraits());
@@ -116,5 +118,4 @@ document.addEventListener('DOMContentLoaded', () => {
       .catch(error => handleError('Errore caricando i dati della razza: ' + error));
   });
 
-  initializeValues();
 });

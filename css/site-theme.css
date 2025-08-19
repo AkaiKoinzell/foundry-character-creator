@@ -200,3 +200,18 @@ th {
 .accordion-content.show {
   display: block;
 }
+
+/* Evidenzia le sezioni che richiedono una selezione */
+details.needs-selection {
+  border: 2px solid transparent;
+  padding: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+details.needs-selection.incomplete {
+  border-color: #e74c3c;
+}
+
+details.needs-selection.incomplete > summary {
+  color: #e74c3c;
+}

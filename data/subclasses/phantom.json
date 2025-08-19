@@ -1,0 +1,47 @@
+{
+  "name": "Phantom",
+  "description": "You draw on the power of death to guide and harm.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Whispers of the Dead",
+        "description": "After a short or long rest, gain one skill or tool proficiency you lack, which lasts until you use this feature again."
+      },
+      {
+        "name": "Wails from the Grave",
+        "description": "After dealing Sneak Attack damage, target a second creature within 30 feet to take half the number of Sneak Attack dice as necrotic damage. Uses equal to your proficiency bonus per long rest."
+      }
+    ],
+    "9": [
+      {
+        "name": "Tokens of the Departed",
+        "description": "When a creature dies near you, capture a soul trinket that grants benefits and can be used for Wails from the Grave or to ask the spirit a question."
+      }
+    ],
+    "13": [
+      {
+        "name": "Ghost Walk",
+        "description": "As a bonus action, become spectral for 10 minutes, gaining a 10-foot fly speed and the ability to move through objects; reuse by expending a soul trinket."
+      }
+    ],
+    "17": [
+      {
+        "name": "Death's Friend",
+        "description": "Wails from the Grave damages both the first and second creature, and you gain a soul trinket at the end of a long rest if you have none."
+      }
+    ]
+  },
+  "choices": [
+    {
+      "level": 3,
+      "name": "Phantom Feature",
+      "description": "Choose an option for the Phantom subclass",
+      "count": 1,
+      "selection": [
+        "Phantom Option 1",
+        "Phantom Option 2"
+      ],
+      "type": "Phantom Feature"
+    }
+  ]
+}

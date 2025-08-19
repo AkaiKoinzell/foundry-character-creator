@@ -609,6 +609,7 @@ function renderAbilityOptions(container, index, maxSelections, bonus) {
       selectedData["Ability Score Improvement"][index] = selection || undefined;
       sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
       updateExtraSelectionsView();
+      updateFinalScores();
     });
   });
 }
@@ -639,10 +640,165 @@ function renderFeatSelection(container, index) {
         : undefined;
       sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
       updateExtraSelectionsView();
+      updateFinalScores();
     });
     initFeatureSelectionHandlers(container);
   });
 }
+
+/**
+ * Displays the current extra selection in the popup.
+ * Each dropdown gets a data-category attribute set to the current selection's name.
+ * The "Close" button is shown only when on the last extra selection.
+ */
+function showExtraSelection() {
+  const titleElem = document.getElementById("extraTraitTitle");
+  const descElem = document.getElementById("extraTraitDescription");
+  const selectionElem = document.getElementById("extraTraitSelection");
+
+  if (!extraSelections || extraSelections.length === 0) return;
+
+  const currentSelection = extraSelections[currentSelectionIndex];
+
+  titleElem.innerText = currentSelection.name;
+  const desc = currentSelection.description || extraCategoryDescriptions[currentSelection.name] || "";
+  descElem.innerText = desc;
+  selectionElem.innerHTML = ""; // Pulisce il contenuto precedente
+
+  if (currentSelection.selection) {
+    const categoryKey = extraCategoryAliases[currentSelection.name] || currentSelection.name;
+    const selectedValues = new Set((selectedData[categoryKey] || []).filter(v => v));
+
+    if (categoryKey === "Ability Score Improvement") {
+      let html = "";
+      for (let i = 0; i < currentSelection.count; i++) {
+        html += `<div class="asi-block">
+                    <select class="asi-type" data-index="${i}">
+                      <option value="">Seleziona...</option>
+                      ${currentSelection.selection.map(opt => `<option value="${opt}">${opt}</option>`).join("")}
+                    </select>
+                    <div id="asi-extra-${i}"></div>
+                 </div>`;
+      }
+      selectionElem.innerHTML = html;
+
+      document.querySelectorAll(".asi-type").forEach(select => {
+        select.addEventListener("change", e => {
+          const index = e.target.getAttribute("data-index");
+          const choice = e.target.value;
+          const extraDiv = document.getElementById(`asi-extra-${index}`);
+          if (!selectedData["Ability Score Improvement"]) {
+            selectedData["Ability Score Improvement"] = [];
+          }
+          selectedData["Ability Score Improvement"][index] = undefined;
+          sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
+          updateExtraSelectionsView();
+          updateFinalScores();
+          extraDiv.innerHTML = "";
+          if (choice === "Increase one ability score by 2") {
+            renderAbilityOptions(extraDiv, index, 1, 2);
+          } else if (choice === "Increase two ability scores by 1") {
+            renderAbilityOptions(extraDiv, index, 2, 1);
+          } else if (choice === "Feat") {
+            renderFeatSelection(extraDiv, index);
+          }
+        });
+      });
+    } else {
+      let dropdownHTML = "";
+      for (let i = 0; i < currentSelection.count; i++) {
+        dropdownHTML += `<select class="extra-selection" data-category="${categoryKey}" data-index="${i}">
+                          <option value="">Seleziona...</option>`;
+        currentSelection.selection.forEach(option => {
+          const disabled = selectedValues.has(option) && !selectedData[categoryKey]?.includes(option);
+          dropdownHTML += `<option value="${option}" ${disabled ? "disabled" : ""}>${option}</option>`;
+        });
+        dropdownHTML += `</select><br>`;
+      }
+      selectionElem.innerHTML = dropdownHTML;
+
+      document.querySelectorAll(".extra-selection").forEach(select => {
+        select.addEventListener("change", (event) => {
+          const rawCategory = event.target.getAttribute("data-category");
+          const category = extraCategoryAliases[rawCategory] || rawCategory;
+          const index = event.target.getAttribute("data-index");
+
+          if (!selectedData[category]) {
+            selectedData[category] = [];
+          }
+
+          selectedData[category][index] = event.target.value;
+
+          console.log(`📝 Salvato: ${category} -> ${selectedData[category]}`);
+
+          sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
+          updateExtraSelectionsView();
+        });
+      });
+    }
+  }
+
+  document.getElementById("prevTrait").disabled = (currentSelectionIndex === 0);
+  document.getElementById("nextTrait").disabled = (currentSelectionIndex === extraSelections.length - 1);
+  document.getElementById("closeModal").style.display = (currentSelectionIndex === extraSelections.length - 1) ? "inline-block" : "none";
+}
+
+  // Enable/disable navigation buttons and manage the Close button visibility.
+  const prevBtn = document.getElementById("prevTrait");
+  const nextBtn = document.getElementById("nextTrait");
+  // Mostra il pulsante "Chiudi" solo dopo l'ultimo step e se tutte le selezioni sono fatte
+  const closeBtn = document.getElementById("closeModal");
+  const allChoicesFilled = extraSelections.every(sel =>
+    selectedData[sel.name] && selectedData[sel.name].filter(v => v).length === sel.count
+  );
+
+  if (currentSelectionIndex === extraSelections.length - 1 && allChoicesFilled) {
+    closeBtn.style.display = "inline-block";
+  } else {
+    closeBtn.style.display = "none";
+  }
+
+// Navigation buttons for the popup
+document.getElementById("prevTrait").addEventListener("click", () => {
+  if (currentSelectionIndex > 0) {
+    currentSelectionIndex--;
+    showExtraSelection();
+  }
+});
+
+document.getElementById("nextTrait").addEventListener("click", () => {
+  if (currentSelectionIndex < extraSelections.length - 1) {
+    currentSelectionIndex++;
+    showExtraSelection();
+  }
+});
+  // Gather selections from each dropdown, grouped by data-category.
+document.getElementById("closeModal").addEventListener("click", () => {
+  console.log("🔄 Chiusura pop-up e aggiornamento UI...");
+  document.getElementById("raceExtrasModal").style.display = "none";
+  sessionStorage.removeItem("popupOpened");
+
+  // ✅ Salviamo le selezioni extra PRIMA di eventuali refresh
+  sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
+  console.log("📝 Selezioni salvate prima dell'update:", selectedData);
+
+  if (extraModalContext === "race") {
+    showStep("step3");
+
+    setTimeout(() => {
+      console.log("🛠 Eseguo displayRaceTraits()...");
+      displayRaceTraits();
+
+      // 🔥 **Aspettiamo che `displayRaceTraits()` finisca e poi forziamo le selezioni extra**
+      setTimeout(() => {
+        console.log("✅ Forzando updateExtraSelectionsView()...");
+        updateExtraSelectionsView();
+      }, 500); // 🔥 Ritardo di 500ms per essere sicuri che il rendering sia completato
+    }, 300);
+  } else if (extraModalContext === "class") {
+    renderClassFeatures();
+  }
+});
 
 updateExtraSelectionsView();
 
@@ -1133,14 +1289,40 @@ function adjustPoints(ability, action) {
   updateFinalScores();
 }
 
+function getAsiBonuses() {
+  const bonuses = { str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0 };
+  const asiSelections = selectedData && selectedData["Ability Score Improvement"];
+  if (!asiSelections) return bonuses;
+  asiSelections.forEach(entry => {
+    if (!entry) return;
+    entry.split(',').forEach(part => {
+      const match = part.trim().match(/^([A-Z]{3}) \+(\d+)/);
+      if (match) {
+        const key = match[1].toLowerCase();
+        bonuses[key] += parseInt(match[2], 10);
+      }
+    });
+  });
+  return bonuses;
+}
+
 function updateFinalScores() {
+  const level = parseInt(document.getElementById("levelSelect")?.value) || 1;
+  const asiBonuses = getAsiBonuses();
   ["str", "dex", "con", "int", "wis", "cha"].forEach(ability => {
     const base = parseInt(document.getElementById(`${ability}Points`).textContent);
     const raceMod = parseInt(document.getElementById(`${ability}RaceModifier`).textContent);
-    const finalScore = base + raceMod;
+    const bgEl = document.getElementById(`${ability}BackgroundTalent`);
+    const bgBonus = bgEl ? parseInt(bgEl.value) || 0 : 0;
+    const finalScore = base + raceMod + bgBonus + (asiBonuses[ability] || 0);
     const finalScoreElement = document.getElementById(`${ability}FinalScore`);
-    finalScoreElement.textContent = finalScore;
-    finalScoreElement.style.color = finalScore > 18 ? "red" : "";
+    if (level === 1 && finalScore > 17) {
+      finalScoreElement.textContent = "Errore";
+      finalScoreElement.style.color = "red";
+    } else {
+      finalScoreElement.textContent = finalScore;
+      finalScoreElement.style.color = "";
+    }
   });
   console.log("🔄 Punteggi Finali aggiornati!");
 }
@@ -1150,6 +1332,8 @@ function initializeValues() {
   abilities.forEach(ability => {
     const raceModEl = document.getElementById(ability + "RaceModifier");
     if (raceModEl) raceModEl.textContent = "0";
+    const bgEl = document.getElementById(ability + "BackgroundTalent");
+    if (bgEl) bgEl.value = "0";
   });
   updateFinalScores();
 }

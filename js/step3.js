@@ -32,17 +32,41 @@ function adjustPoints(ability, action) {
   updateFinalScores();
 }
 
+function getAsiBonuses() {
+  const bonuses = { str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0 };
+  const asiSelections = window.selectedData && window.selectedData["Ability Score Improvement"];
+  if (!asiSelections) return bonuses;
+  asiSelections.forEach(entry => {
+    if (!entry) return;
+    entry.split(',').forEach(part => {
+      const match = part.trim().match(/^([A-Z]{3}) \+(\d+)/);
+      if (match) {
+        const key = match[1].toLowerCase();
+        bonuses[key] += parseInt(match[2], 10);
+      }
+    });
+  });
+  return bonuses;
+}
+
 // Funzione per aggiornare i punteggi finali delle caratteristiche
 function updateFinalScores() {
   const abilities = ["str", "dex", "con", "int", "wis", "cha"];
+  const level = parseInt(document.getElementById("levelSelect")?.value) || 1;
+  const asiBonuses = getAsiBonuses();
   abilities.forEach(ability => {
     const basePoints = parseInt(document.getElementById(ability + "Points").textContent);
     const raceModifier = parseInt(document.getElementById(ability + "RaceModifier").textContent);
     const backgroundTalent = parseInt(document.getElementById(ability + "BackgroundTalent").value) || 0;
-    const finalScore = basePoints + raceModifier + backgroundTalent;
+    const finalScore = basePoints + raceModifier + backgroundTalent + (asiBonuses[ability] || 0);
     const finalScoreElement = document.getElementById(ability + "FinalScore");
-    finalScoreElement.textContent = finalScore;
-    finalScoreElement.style.color = finalScore > 18 ? "red" : "";
+    if (level === 1 && finalScore > 17) {
+      finalScoreElement.textContent = "Errore";
+      finalScoreElement.style.color = "red";
+    } else {
+      finalScoreElement.textContent = finalScore;
+      finalScoreElement.style.color = "";
+    }
   });
   console.log("🔄 Punteggi Finali aggiornati!");
 }

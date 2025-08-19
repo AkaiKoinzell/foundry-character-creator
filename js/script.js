@@ -394,6 +394,41 @@ function gatherExtraSelections(data, context, level = 1) {
 }
 
 /**
+ * Generic handler to track selections inside feature <select> elements
+ * and visually highlight incomplete features.
+ * @param {HTMLElement} container - Parent element containing feature details.
+ * @param {Function} [saveCallback] - Optional callback to persist selections.
+ */
+function initFeatureSelectionHandlers(container, saveCallback) {
+  if (!container) return;
+  const detailsBlocks = container.querySelectorAll('details');
+  detailsBlocks.forEach(det => {
+    const selects = det.querySelectorAll('select');
+    if (selects.length === 0) return;
+    const mark = () => {
+      const unfilled = Array.from(selects).some(s => !s.value);
+      det.classList.toggle('needs-selection', unfilled);
+    };
+    mark();
+    selects.forEach(sel => {
+      sel.addEventListener('change', () => {
+        if (saveCallback) saveCallback(sel);
+        mark();
+      });
+    });
+  });
+}
+
+function saveFeatureSelection(select) {
+  const feature = select.dataset.feature;
+  const index = select.dataset.index || 0;
+  if (!feature) return;
+  if (!selectedData[feature]) selectedData[feature] = [];
+  selectedData[feature][index] = select.value || undefined;
+  sessionStorage.setItem('selectedData', JSON.stringify(selectedData));
+}
+
+/**
  * Opens the extra selections popup.
  * Hides the background extra traits container and shows the modal.
  */
@@ -519,8 +554,9 @@ function renderFeatSelection(container, index) {
       )
       .map(f => `<option value="${f.name}">${f.name}</option>`)
       .join("");
-    container.innerHTML = `<select class="asi-feat" data-index="${index}"><option value="">Seleziona...</option>${options}</select>`;
-    container.querySelector(".asi-feat").addEventListener("change", e => {
+    container.innerHTML = `<details class="feature-block"><summary>Feat</summary><select class="asi-feat" data-index="${index}"><option value="">Seleziona...</option>${options}</select></details>`;
+    const featSel = container.querySelector(".asi-feat");
+    featSel.addEventListener("change", e => {
       if (!selectedData["Ability Score Improvement"]) {
         selectedData["Ability Score Improvement"] = [];
       }
@@ -531,6 +567,7 @@ function renderFeatSelection(container, index) {
       sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
       updateExtraSelectionsView();
     });
+    initFeatureSelectionHandlers(container);
   });
 }
 
@@ -752,6 +789,25 @@ function displayRaceTraits() {
         raceData.traits.forEach(trait => {
           const traitId = `trait-${trait.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
           traitsHtml += `<details class="race-trait" id="${traitId}"><summary>${trait.name}</summary><p>${trait.description || ""}</p></details>`;
+        traitsHtml += `<h4>Tratti:</h4>`;
+        raceData.traits.forEach((trait, tIdx) => {
+          const featureKey = trait.name.replace(/"/g, '&quot;');
+          let block = `<details class="feature-block" id="race-trait-${tIdx}"><summary>${trait.name}</summary>`;
+          block += `<div class="feature-desc">${trait.description || ''}</div>`;
+          const choices = trait.choices || trait.variant_feature_choices;
+          if (choices) {
+            choices.forEach((choice, cIdx) => {
+              const options = choice.options || choice.selection || [];
+              const saved = selectedData[featureKey]?.[cIdx] || '';
+              const label = choice.name || 'Scegli';
+              const optsHtml = options
+                .map(opt => `<option value="${opt}" ${saved === opt ? 'selected' : ''}>${opt}</option>`)
+                .join('');
+              block += `<label>${label}: <select data-feature="${featureKey}" data-index="${cIdx}"><option value="">Seleziona...</option>${optsHtml}</select></label>`;
+            });
+          }
+          block += `</details>`;
+          traitsHtml += block;
         });
       }
 
@@ -790,6 +846,7 @@ function displayRaceTraits() {
       if (raceTraitsDiv) {
         raceTraitsDiv.innerHTML = traitsHtml;
         raceTraitsDiv.style.display = "block";
+        initFeatureSelectionHandlers(raceTraitsDiv, saveFeatureSelection);
         console.log("✅ Tratti della razza aggiornati con successo!");
       } else {
         console.error("❌ ERRORE: Il div dei tratti della razza non è stato trovato!");
@@ -1016,16 +1073,32 @@ async function renderClassFeatures() {
   const levels = Object.keys(mergedFeatures).sort((a, b) => a - b);
   levels.forEach(lvl => {
     if (parseInt(lvl) <= charLevel) {
-      html += `<h4>Livello ${lvl}</h4><ul>`;
-      mergedFeatures[lvl].forEach(f => {
-        if (typeof f === "string") {
-          html += `<li>${f}</li>`;
+      html += `<h4>Livello ${lvl}</h4>`;
+      mergedFeatures[lvl].forEach((f, idx) => {
+        if (typeof f === 'string') {
+          html += `<details class="feature-block"><summary>${f}</summary></details>`;
         } else {
-          const desc = f.description ? `: ${f.description}` : "";
-          html += `<li><strong>${f.name}</strong>${desc}</li>`;
+          const featureKey = f.name.replace(/"/g, '&quot;');
+          let block = `<details class="feature-block" id="class-feature-${lvl}-${idx}"><summary>${f.name}</summary>`;
+          if (f.description) {
+            block += `<div class="feature-desc">${f.description}</div>`;
+          }
+          const choices = f.choices || f.variant_feature_choices;
+          if (choices) {
+            choices.forEach((choice, cIdx) => {
+              const options = choice.options || choice.selection || [];
+              const saved = selectedData[featureKey]?.[cIdx] || '';
+              const label = choice.name || 'Scegli';
+              const optsHtml = options
+                .map(opt => `<option value="${opt}" ${saved === opt ? 'selected' : ''}>${opt}</option>`)
+                .join('');
+              block += `<label>${label}: <select data-feature="${featureKey}" data-index="${cIdx}"><option value="">Seleziona...</option>${optsHtml}</select></label>`;
+            });
+          }
+          block += `</details>`;
+          html += block;
         }
       });
-      html += `</ul>`;
     }
   });
 
@@ -1036,6 +1109,7 @@ async function renderClassFeatures() {
     html += `<p>Seleziona una sottoclasse per vedere i tratti.</p>`;
   }
   featuresDiv.innerHTML = html;
+  initFeatureSelectionHandlers(featuresDiv, saveFeatureSelection);
   return selections;
 }
 
@@ -1228,6 +1302,7 @@ export {
   handleExtraAncestry,
   gatherExtraSelections,
   gatherRaceTraitSelections,
+  initFeatureSelectionHandlers,
   updateSubclasses,
   renderClassFeatures,
   openExtrasModal,

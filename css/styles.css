@@ -30,7 +30,6 @@ body {
     background-color: #45a049;
   }
 
-  /* Evidenzia i tratti che richiedono scelte aggiuntive */
   details.needs-selection {
     border: 2px solid transparent;
     padding: 0.5em;

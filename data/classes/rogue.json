@@ -53,6 +53,7 @@
       "name": "Expertise",
       "description": "Choose two skills to gain expertise in",
       "count": 2,
+      "type": "skills",
       "selection": [
         "Acrobatics",
         "Athletics",

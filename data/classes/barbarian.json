@@ -240,6 +240,7 @@
       "name": "Primal Knowledge",
       "description": "Gain proficiency in one skill from the barbarian list",
       "count": 1,
+      "type": "skills",
       "selection": [
         "Animal Handling",
         "Athletics",

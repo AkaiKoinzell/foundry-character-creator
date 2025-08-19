@@ -177,6 +177,7 @@
       "name": "Infusion",
       "description": "Choose two infusions to learn",
       "count": 2,
+      "type": "infusion",
       "selection": [
         "Enhanced Defense",
         "Enhanced Weapon",

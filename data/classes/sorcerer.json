@@ -43,6 +43,7 @@
       "name": "Metamagic",
       "description": "Choose two Metamagic options",
       "count": 2,
+      "type": "metamagic",
       "selection": [
         "Careful Spell",
         "Distant Spell",

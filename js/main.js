@@ -14,6 +14,7 @@ import {
 } from './script.js';
 import './step4.js';
 import './step5.js';
+import './step7.js';
 
 let classSelectionConfirmed = false;
 

@@ -386,15 +386,16 @@ function updateExtraSelectionsView() {
 
   function updateContainer(id, title, dataKey) {
     const container = document.getElementById(id);
-    if (container) {
-      const values = (selectedData[dataKey] || []).filter(v => v);
-      if (values.length > 0) {
-        container.innerHTML = `<p><strong>${title}:</strong> ${values.join(", ")}</p>`;
-        container.style.display = "block";
-      } else {
-        container.innerHTML = `<p><strong>${title}:</strong> Nessuna selezione.</p>`;
-        container.style.display = "block";
-      }
+    if (!container) return;
+
+    const values = (selectedData[dataKey] || []).filter(v => v);
+
+    if (values.length > 0) {
+      container.innerHTML = `<p><strong>${title}:</strong> ${values.join(", ")}</p>`;
+      container.style.display = "block";
+    } else {
+      container.innerHTML = "";
+      container.style.display = "none";
     }
   }
 
@@ -410,7 +411,12 @@ function updateExtraSelectionsView() {
     "Ability Score Improvement": ["abilityImprovementSelection", "Ability Score Improvement"]
   };
   Object.entries(summaryMap).forEach(([key, [id, title]]) => {
-    updateContainer(id, title, key);
+    if (selectedData[key] !== undefined) {
+      updateContainer(id, title, key);
+    } else {
+      const container = document.getElementById(id);
+      if (container) container.style.display = "none";
+    }
   });
 
   console.log("✅ Extra selections aggiornate:", selectedData);

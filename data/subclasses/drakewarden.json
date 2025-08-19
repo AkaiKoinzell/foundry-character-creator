@@ -1,0 +1,34 @@
+{
+  "name": "Drakewarden",
+  "description": "Your bond with a draconic spirit manifests as a loyal drake companion.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Draconic Gift",
+        "description": "Learn the thaumaturgy cantrip and speak, read, and write Draconic or another language of your choice."
+      },
+      {
+        "name": "Drake Companion",
+        "description": "As an action, summon a drake spirit that fights alongside you and can be commanded with a bonus action."
+      }
+    ],
+    "7": [
+      {
+        "name": "Bond of Fang and Scale",
+        "description": "Your drake grows wings and grants you resistance to its damage type; its Bite deals extra damage and it can serve as a mount."
+      }
+    ],
+    "11": [
+      {
+        "name": "Drake's Breath",
+        "description": "As an action, you or your drake exhale a 30-foot cone dealing 8d6 damage of a chosen type, once per long rest or by expending a spell slot."
+      }
+    ],
+    "15": [
+      {
+        "name": "Perfected Bond",
+        "description": "Your drake grows to Large, its Bite gains extra damage, and you can react to grant resistance to damage to you or the drake."
+      }
+    ]
+  }
+}

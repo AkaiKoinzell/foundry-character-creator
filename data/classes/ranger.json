@@ -1,6 +1,268 @@
 {
   "name": "Ranger",
+  "description": "A warrior of the wilderness who uses martial prowess and nature magic to hunt foes.",
+  "hit_die": "d10",
+  "hp_at_1st_level": "10 + your Constitution modifier",
+  "hp_at_higher_levels": "1d10 (or 6) + your Constitution modifier per Ranger level after 1st",
+  "saving_throws": ["Strength", "Dexterity"],
+  "skill_proficiencies": {
+    "choose": 3,
+    "options": [
+      "Animal Handling",
+      "Athletics",
+      "Insight",
+      "Investigation",
+      "Nature",
+      "Perception",
+      "Stealth",
+      "Survival"
+    ]
+  },
+  "weapon_proficiencies": ["simple weapons", "martial weapons"],
+  "armor_proficiencies": ["light armor", "medium armor", "shields"],
+  "starting_equipment": {
+    "choices": [
+      ["Scale mail", "Leather armor"],
+      ["Two shortswords", "Two simple melee weapons"],
+      ["Dungeoneer's pack", "Explorer's pack"]
+    ],
+    "fixed": ["Longbow", "Quiver of 20 arrows"],
+    "gold_alternative": "5d4 × 10 gp"
+  },
+  "multiclassing": {
+    "prerequisites": {"Dexterity": 13, "Wisdom": 13},
+    "proficiencies": {
+      "skills": {
+        "choose": 1,
+        "options": [
+          "Animal Handling",
+          "Athletics",
+          "Insight",
+          "Investigation",
+          "Nature",
+          "Perception",
+          "Stealth",
+          "Survival"
+        ]
+      },
+      "weapons": ["simple weapons", "martial weapons"],
+      "armor": ["light armor", "medium armor", "shields"]
+    }
+  },
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Favored Enemy",
+        "description": "Choose a type of enemy to study; gain advantage on tracking and recalling information about it and learn a language it speaks."
+      },
+      {
+        "name": "Favored Foe",
+        "description": "(Optional) Mark a target you hit to deal an extra 1d4 damage once per turn for up to 1 minute, a number of times equal to your proficiency bonus."
+      },
+      {
+        "name": "Natural Explorer",
+        "description": "Choose a favored terrain; you and your group gain bonuses while traveling and for related checks there."
+      },
+      {
+        "name": "Deft Explorer",
+        "description": "(Optional) Gain the Canny benefit: expertise in one skill and two extra languages, with more benefits at higher levels."
+      }
+    ],
+    "2": [
+      {
+        "name": "Fighting Style",
+        "description": "Adopt a particular style of fighting such as Archery or Two-Weapon Fighting."
+      },
+      {
+        "name": "Spellcasting",
+        "description": "Use Wisdom to cast ranger spells; you know two 1st-level spells and gain more as you level."
+      },
+      {
+        "name": "Spellcasting Focus",
+        "description": "(Optional) You can use a druidic focus as a spellcasting focus for your ranger spells."
+      }
+    ],
+    "3": [
+      {
+        "name": "Ranger Archetype",
+        "description": "Choose a ranger archetype that grants features at 3rd, 7th, 11th, and 15th levels."
+      },
+      {
+        "name": "Primeval Awareness",
+        "description": "Expend a spell slot to sense if certain creature types are nearby for 1 minute per slot level."
+      },
+      {
+        "name": "Primal Awareness",
+        "description": "(Optional) Learn themed spells like speak with animals and cast each once per long rest without using a slot."
+      }
+    ],
+    "4": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1, or take a feat if allowed."
+      },
+      {
+        "name": "Martial Versatility",
+        "description": "(Optional) Whenever you gain an Ability Score Improvement, you can replace a fighting style you know."
+      }
+    ],
+    "5": [
+      {
+        "name": "Extra Attack",
+        "description": "You can attack twice, instead of once, whenever you take the Attack action on your turn."
+      }
+    ],
+    "6": [
+      {
+        "name": "Favored Enemy and Natural Explorer Improvement",
+        "description": "Choose an additional favored enemy and favored terrain, gaining the associated benefits."
+      },
+      {
+        "name": "Deft Explorer: Roving",
+        "description": "(Optional) Your speed increases by 5 feet, and you gain climbing and swimming speeds equal to your walking speed."
+      }
+    ],
+    "7": [
+      {
+        "name": "Ranger Archetype Feature",
+        "description": "Gain a feature from your chosen ranger archetype."
+      }
+    ],
+    "8": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1, or take a feat if allowed."
+      },
+      {
+        "name": "Land's Stride",
+        "description": "Move through nonmagical difficult terrain without extra movement and gain advantages against plants that impede movement."
+      }
+    ],
+    "10": [
+      {
+        "name": "Hide in Plain Sight",
+        "description": "Spend 1 minute crafting camouflage to gain +10 to Stealth while motionless and not taking actions."
+      },
+      {
+        "name": "Nature's Veil",
+        "description": "(Optional) As a bonus action, become invisible until the start of your next turn, usable PB times per long rest."
+      },
+      {
+        "name": "Natural Explorer Improvement",
+        "description": "Choose another favored terrain type."
+      },
+      {
+        "name": "Deft Explorer: Tireless",
+        "description": "(Optional) As an action, gain temporary hit points and reduce exhaustion by 1 after a short rest."
+      }
+    ],
+    "11": [
+      {
+        "name": "Ranger Archetype Feature",
+        "description": "Gain a feature from your chosen ranger archetype."
+      }
+    ],
+    "12": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "14": [
+      {
+        "name": "Vanish",
+        "description": "Use the Hide action as a bonus action, and you can't be tracked by nonmagical means."
+      },
+      {
+        "name": "Favored Enemy Improvement",
+        "description": "Choose one additional favored enemy and learn its language."
+      }
+    ],
+    "15": [
+      {
+        "name": "Ranger Archetype Feature",
+        "description": "Gain a feature from your chosen ranger archetype."
+      }
+    ],
+    "16": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "18": [
+      {
+        "name": "Feral Senses",
+        "description": "You are aware of the location of any invisible creature within 30 feet of you, and you don't suffer disadvantage when attacking unseen creatures."
+      }
+    ],
+    "19": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "20": [
+      {
+        "name": "Foe Slayer",
+        "description": "Once on each of your turns, add your Wisdom modifier to the attack or damage roll against a favored enemy."
+      }
+    ]
+  },
   "subclasses": [
+    {
+      "name": "Beast Master",
+      "features": [
+        "Ranger's Companion",
+        "Primal Companion",
+        "Exceptional Training",
+        "Bestial Fury",
+        "Share Spells"
+      ]
+    },
+    {
+      "name": "Drakewarden",
+      "features": [
+        "Draconic Gift",
+        "Drake Companion",
+        "Bond of Fang and Scale",
+        "Drake's Breath",
+        "Perfected Bond"
+      ]
+    },
+    {
+      "name": "Fey Wanderer",
+      "features": [
+        "Dreadful Strikes",
+        "Fey Wanderer Magic",
+        "Otherworldly Glamour",
+        "Beguiling Twist",
+        "Fey Reinforcements",
+        "Misty Wanderer"
+      ]
+    },
+    {
+      "name": "Gloom Stalker",
+      "features": [
+        "Gloom Stalker Magic",
+        "Dread Ambusher",
+        "Umbral Sight",
+        "Iron Mind",
+        "Stalker's Flurry",
+        "Shadowy Dodge"
+      ]
+    },
+    {
+      "name": "Horizon Walker",
+      "features": [
+        "Horizon Walker Magic",
+        "Detect Portal",
+        "Planar Warrior",
+        "Ethereal Step",
+        "Distant Strike",
+        "Spectral Defense"
+      ]
+    },
     {
       "name": "Hunter",
       "features": [
@@ -11,31 +273,45 @@
       ]
     },
     {
-      "name": "Beast Master",
+      "name": "Monster Slayer",
       "features": [
-        "Ranger's Companion",
-        "Exceptional Training",
-        "Bestial Fury",
-        "Share Spells"
+        "Monster Slayer Magic",
+        "Hunter's Sense",
+        "Slayer's Prey",
+        "Supernatural Defense",
+        "Magic-User's Nemesis",
+        "Slayer's Counter"
+      ]
+    },
+    {
+      "name": "Swarmkeeper",
+      "features": [
+        "Gathered Swarm",
+        "Swarmkeeper Magic",
+        "Writhing Tide",
+        "Mighty Swarm",
+        "Swarming Dispersal"
       ]
     }
   ],
-  "description": "Description for Ranger class.",
-  "features_by_level": {
-    "1": [
-      {
-        "name": "Ranger Feature 1",
-        "description": "Description for Ranger feature at level 1."
-      }
-    ],
-    "2": [
-      {
-        "name": "Ranger Feature 2",
-        "description": "Description for Ranger feature at level 2."
-      }
-    ]
-  },
   "choices": [
+    {
+      "level": 1,
+      "name": "Skill Proficiency",
+      "description": "Choose three skills from the ranger list",
+      "count": 3,
+      "type": "skills",
+      "selection": [
+        "Animal Handling",
+        "Athletics",
+        "Insight",
+        "Investigation",
+        "Nature",
+        "Perception",
+        "Stealth",
+        "Survival"
+      ]
+    },
     {
       "level": 1,
       "name": "Favored Enemy",
@@ -45,9 +321,18 @@
       "selection": [
         "Aberrations",
         "Beasts",
+        "Celestials",
+        "Constructs",
         "Dragons",
+        "Elementals",
+        "Fey",
+        "Fiends",
+        "Giants",
         "Monstrosities",
-        "Undead"
+        "Oozes",
+        "Plants",
+        "Undead",
+        "Two Humanoid Races"
       ]
     },
     {
@@ -65,6 +350,22 @@
         "Mountain",
         "Swamp",
         "Underdark"
+      ]
+    },
+    {
+      "level": 2,
+      "name": "Fighting Style",
+      "description": "Choose a fighting style",
+      "count": 1,
+      "type": "fighting style",
+      "selection": [
+        "Archery",
+        "Blind Fighting",
+        "Defense",
+        "Druidic Warrior",
+        "Dueling",
+        "Thrown Weapon Fighting",
+        "Two-Weapon Fighting"
       ]
     },
     {

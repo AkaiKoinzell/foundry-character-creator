@@ -1,43 +1,34 @@
 {
   "name": "Beast Master",
-  "description": "Beast Masters bond with an animal companion to fight alongside them.",
+  "description": "Beast Masters bond with a beast companion that fights alongside them.",
   "features_by_level": {
     "3": [
       {
         "name": "Ranger's Companion",
-        "description": "Description for Ranger's Companion."
+        "description": "Gain a beast companion that obeys your commands and acts on your initiative."
+      },
+      {
+        "name": "Primal Companion",
+        "description": "(Optional) Summon a primal beast spirit and command it using a bonus action; it can be resummoned after a long rest."
       }
     ],
     "7": [
       {
         "name": "Exceptional Training",
-        "description": "Description for Exceptional Training."
+        "description": "When the beast doesn't attack, you can command it as a bonus action to Dash, Disengage, or Help, and its attacks count as magical."
       }
     ],
     "11": [
       {
         "name": "Bestial Fury",
-        "description": "Description for Bestial Fury."
+        "description": "When you command the beast to Attack, it can make two attacks or use its Multiattack."
       }
     ],
     "15": [
       {
         "name": "Share Spells",
-        "description": "Description for Share Spells."
+        "description": "When you cast a spell targeting yourself, it also affects your beast companion within 30 feet."
       }
     ]
-  },
-  "choices": [
-    {
-      "level": 3,
-      "name": "Beast Master Feature",
-      "description": "Choose an option for the Beast Master subclass",
-      "count": 1,
-      "selection": [
-        "Beast Master Option 1",
-        "Beast Master Option 2"
-      ],
-      "type": "Beast Master Feature"
-    }
-  ]
+  }
 }

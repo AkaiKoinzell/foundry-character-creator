@@ -1,0 +1,34 @@
+{
+  "name": "Swarmkeeper",
+  "description": "Swarmkeepers host a swarm of nature spirits that can aid them in battle.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Gathered Swarm",
+        "description": "Once per turn after you hit, your swarm can deal 1d6 piercing damage, move the target, or move you 5 feet."
+      },
+      {
+        "name": "Swarmkeeper Magic",
+        "description": "Gain mage hand and additional spells like faerie fire and web at higher levels."
+      }
+    ],
+    "7": [
+      {
+        "name": "Writhing Tide",
+        "description": "As a bonus action, gain a flying speed of 10 feet and hover for 1 minute, a number of times per long rest equal to your proficiency bonus."
+      }
+    ],
+    "11": [
+      {
+        "name": "Mighty Swarm",
+        "description": "Your swarm's damage increases to 1d8, can knock prone on failed save, and grants half cover when moving you."
+      }
+    ],
+    "15": [
+      {
+        "name": "Swarming Dispersal",
+        "description": "As a reaction when you take damage, gain resistance and teleport up to 30 feet, a number of times per long rest equal to your proficiency bonus."
+      }
+    ]
+  }
+}

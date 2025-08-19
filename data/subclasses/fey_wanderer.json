@@ -1,0 +1,48 @@
+{
+  "name": "Fey Wanderer",
+  "description": "Blessed by fey magic, you stride between the mortal world and the Feywild.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Dreadful Strikes",
+        "description": "Once per turn, deal an extra 1d4 psychic damage when you hit with a weapon."
+      },
+      {
+        "name": "Fey Wanderer Magic",
+        "description": "Gain additional spells such as charm person, misty step, and more at higher levels."
+      },
+      {
+        "name": "Otherworldly Glamour",
+        "description": "Add your Wisdom modifier to Charisma checks and gain proficiency in Deception, Performance, or Persuasion."
+      }
+    ],
+    "7": [
+      {
+        "name": "Beguiling Twist",
+        "description": "When you or an ally succeeds on a save against being charmed or frightened, you can force another creature to make a Wisdom save or be charmed or frightened."
+      }
+    ],
+    "11": [
+      {
+        "name": "Fey Reinforcements",
+        "description": "You can cast summon fey without material components and once per long rest without expending a spell slot, optionally without concentration."
+      }
+    ],
+    "15": [
+      {
+        "name": "Misty Wanderer",
+        "description": "Cast misty step a number of times equal to your Wisdom modifier each long rest and bring a willing creature with you."
+      }
+    ]
+  },
+  "choices": [
+    {
+      "level": 3,
+      "name": "Otherworldly Glamour Skill",
+      "description": "Gain proficiency in one skill",
+      "count": 1,
+      "type": "skills",
+      "selection": ["Deception", "Performance", "Persuasion"]
+    }
+  ]
+}

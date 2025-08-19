@@ -1,43 +1,64 @@
 {
   "name": "Hunter",
-  "description": "Hunters seek to master any combat style that nature provides.",
+  "description": "Hunters adapt their tactics to fight the threats of the wilds.",
   "features_by_level": {
     "3": [
       {
         "name": "Hunter's Prey",
-        "description": "Description for Hunter's Prey."
+        "description": "Choose a tactic to focus your attacks against certain foes."
       }
     ],
     "7": [
       {
         "name": "Defensive Tactics",
-        "description": "Description for Defensive Tactics."
+        "description": "Select a defensive technique to hinder enemy assaults."
       }
     ],
     "11": [
       {
         "name": "Multiattack",
-        "description": "Description for Multiattack."
+        "description": "Choose how you engage multiple foes at once."
       }
     ],
     "15": [
       {
         "name": "Superior Hunter's Defense",
-        "description": "Description for Superior Hunter's Defense."
+        "description": "Select a powerful defensive ability to protect yourself."
       }
     ]
   },
   "choices": [
     {
       "level": 3,
-      "name": "Hunter Feature",
-      "description": "Choose an option for the Hunter subclass",
+      "name": "Hunter's Prey",
+      "description": "Choose a Hunter's Prey option",
       "count": 1,
-      "selection": [
-        "Hunter Option 1",
-        "Hunter Option 2"
-      ],
-      "type": "Hunter Feature"
+      "type": "Hunter's Prey",
+      "selection": ["Colossus Slayer", "Giant Killer", "Horde Breaker"]
+    },
+    {
+      "level": 7,
+      "name": "Defensive Tactics",
+      "description": "Choose a Defensive Tactics option",
+      "count": 1,
+      "type": "Defensive Tactics",
+      "selection": ["Escape the Horde", "Multiattack Defense", "Steel Will"]
+    },
+    {
+      "level": 11,
+      "name": "Multiattack",
+      "description": "Choose a Multiattack option",
+      "count": 1,
+      "type": "Multiattack",
+      "selection": ["Volley", "Whirlwind Attack"]
+    },
+    {
+      "level": 15,
+      "name": "Superior Hunter's Defense",
+      "description": "Choose a Superior Hunter's Defense option",
+      "count": 1,
+      "type": "Superior Hunter's Defense",
+      "selection": ["Evasion", "Stand Against the Tide", "Uncanny Dodge"]
     }
   ]
 }

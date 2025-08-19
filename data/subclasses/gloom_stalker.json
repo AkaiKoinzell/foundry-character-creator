@@ -1,0 +1,38 @@
+{
+  "name": "Gloom Stalker",
+  "description": "Masters of the dark, Gloom Stalkers ambush foes from the shadows.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Gloom Stalker Magic",
+        "description": "Gain additional spells such as disguise self and rope trick at higher levels."
+      },
+      {
+        "name": "Dread Ambusher",
+        "description": "Gain bonus to initiative, extra speed on the first turn, and an extra attack that deals +1d8 damage."
+      },
+      {
+        "name": "Umbral Sight",
+        "description": "Gain darkvision or extend it and become invisible to creatures relying on darkvision while in darkness."
+      }
+    ],
+    "7": [
+      {
+        "name": "Iron Mind",
+        "description": "Gain proficiency in Wisdom saving throws, or in Intelligence or Charisma if already proficient."
+      }
+    ],
+    "11": [
+      {
+        "name": "Stalker's Flurry",
+        "description": "Once per turn when you miss a weapon attack, make another attack."
+      }
+    ],
+    "15": [
+      {
+        "name": "Shadowy Dodge",
+        "description": "Use your reaction to impose disadvantage on an attack against you if the attacker doesn't have advantage."
+      }
+    ]
+  }
+}

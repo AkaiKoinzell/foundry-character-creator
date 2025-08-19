@@ -80,10 +80,29 @@
       ]
     },
     {
+      "level": 6,
+      "name": "Expertise",
+      "description": "Choose two additional skills to gain expertise in",
+      "count": 4,
+      "type": "skills",
+      "selection": [
+        "Acrobatics",
+        "Athletics",
+        "Deception",
+        "Insight",
+        "Intimidation",
+        "Investigation",
+        "Perception",
+        "Performance",
+        "Persuasion",
+        "Stealth"
+      ]
+    },
+    {
       "level": 8,
       "name": "Ability Score Improvement",
       "description": "Increase one ability score by 2, two ability scores by 1, or take a feat if allowed.",
-      "count": 1,
+      "count": 2,
       "type": "Ability Score Improvement",
       "selection": [
         "Increase one ability score by 2",
@@ -95,7 +114,7 @@
       "level": 10,
       "name": "Ability Score Improvement",
       "description": "Increase one ability score by 2, two ability scores by 1, or take a feat if allowed.",
-      "count": 1,
+      "count": 3,
       "type": "Ability Score Improvement",
       "selection": [
         "Increase one ability score by 2",
@@ -107,7 +126,7 @@
       "level": 12,
       "name": "Ability Score Improvement",
       "description": "Increase one ability score by 2, two ability scores by 1, or take a feat if allowed.",
-      "count": 1,
+      "count": 4,
       "type": "Ability Score Improvement",
       "selection": [
         "Increase one ability score by 2",
@@ -119,7 +138,7 @@
       "level": 16,
       "name": "Ability Score Improvement",
       "description": "Increase one ability score by 2, two ability scores by 1, or take a feat if allowed.",
-      "count": 1,
+      "count": 5,
       "type": "Ability Score Improvement",
       "selection": [
         "Increase one ability score by 2",
@@ -131,7 +150,7 @@
       "level": 19,
       "name": "Ability Score Improvement",
       "description": "Increase one ability score by 2, two ability scores by 1, or take a feat if allowed.",
-      "count": 1,
+      "count": 6,
       "type": "Ability Score Improvement",
       "selection": [
         "Increase one ability score by 2",

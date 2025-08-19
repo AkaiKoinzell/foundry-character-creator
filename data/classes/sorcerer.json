@@ -71,7 +71,7 @@
       "level": 8,
       "name": "Ability Score Improvement",
       "description": "Increase one ability score by 2, two ability scores by 1, or take a feat if allowed.",
-      "count": 1,
+      "count": 2,
       "type": "Ability Score Improvement",
       "selection": [
         "Increase one ability score by 2",
@@ -80,10 +80,27 @@
       ]
     },
     {
+      "level": 10,
+      "name": "Metamagic",
+      "description": "Choose an additional Metamagic option",
+      "count": 3,
+      "type": "metamagic",
+      "selection": [
+        "Careful Spell",
+        "Distant Spell",
+        "Empowered Spell",
+        "Extended Spell",
+        "Heightened Spell",
+        "Quickened Spell",
+        "Subtle Spell",
+        "Twinned Spell"
+      ]
+    },
+    {
       "level": 12,
       "name": "Ability Score Improvement",
       "description": "Increase one ability score by 2, two ability scores by 1, or take a feat if allowed.",
-      "count": 1,
+      "count": 3,
       "type": "Ability Score Improvement",
       "selection": [
         "Increase one ability score by 2",
@@ -95,7 +112,7 @@
       "level": 16,
       "name": "Ability Score Improvement",
       "description": "Increase one ability score by 2, two ability scores by 1, or take a feat if allowed.",
-      "count": 1,
+      "count": 4,
       "type": "Ability Score Improvement",
       "selection": [
         "Increase one ability score by 2",
@@ -104,10 +121,27 @@
       ]
     },
     {
+      "level": 17,
+      "name": "Metamagic",
+      "description": "Choose an additional Metamagic option",
+      "count": 4,
+      "type": "metamagic",
+      "selection": [
+        "Careful Spell",
+        "Distant Spell",
+        "Empowered Spell",
+        "Extended Spell",
+        "Heightened Spell",
+        "Quickened Spell",
+        "Subtle Spell",
+        "Twinned Spell"
+      ]
+    },
+    {
       "level": 19,
       "name": "Ability Score Improvement",
       "description": "Increase one ability score by 2, two ability scores by 1, or take a feat if allowed.",
-      "count": 1,
+      "count": 5,
       "type": "Ability Score Improvement",
       "selection": [
         "Increase one ability score by 2",

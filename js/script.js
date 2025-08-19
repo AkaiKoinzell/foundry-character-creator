@@ -536,6 +536,7 @@ function renderAbilityOptions(container, index, maxSelections, bonus) {
       selectedData["Ability Score Improvement"][index] = selection || undefined;
       sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
       updateExtraSelectionsView();
+      updateFinalScores();
     });
   });
 }
@@ -566,6 +567,7 @@ function renderFeatSelection(container, index) {
         : undefined;
       sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
       updateExtraSelectionsView();
+      updateFinalScores();
     });
     initFeatureSelectionHandlers(container);
   });
@@ -618,6 +620,7 @@ function showExtraSelection() {
           selectedData["Ability Score Improvement"][index] = undefined;
           sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
           updateExtraSelectionsView();
+          updateFinalScores();
           extraDiv.innerHTML = "";
           if (choice === "Increase one ability score by 2") {
             renderAbilityOptions(extraDiv, index, 1, 2);
@@ -1213,14 +1216,40 @@ function adjustPoints(ability, action) {
   updateFinalScores();
 }
 
+function getAsiBonuses() {
+  const bonuses = { str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0 };
+  const asiSelections = selectedData && selectedData["Ability Score Improvement"];
+  if (!asiSelections) return bonuses;
+  asiSelections.forEach(entry => {
+    if (!entry) return;
+    entry.split(',').forEach(part => {
+      const match = part.trim().match(/^([A-Z]{3}) \+(\d+)/);
+      if (match) {
+        const key = match[1].toLowerCase();
+        bonuses[key] += parseInt(match[2], 10);
+      }
+    });
+  });
+  return bonuses;
+}
+
 function updateFinalScores() {
+  const level = parseInt(document.getElementById("levelSelect")?.value) || 1;
+  const asiBonuses = getAsiBonuses();
   ["str", "dex", "con", "int", "wis", "cha"].forEach(ability => {
     const base = parseInt(document.getElementById(`${ability}Points`).textContent);
     const raceMod = parseInt(document.getElementById(`${ability}RaceModifier`).textContent);
-    const finalScore = base + raceMod;
+    const bgEl = document.getElementById(`${ability}BackgroundTalent`);
+    const bgBonus = bgEl ? parseInt(bgEl.value) || 0 : 0;
+    const finalScore = base + raceMod + bgBonus + (asiBonuses[ability] || 0);
     const finalScoreElement = document.getElementById(`${ability}FinalScore`);
-    finalScoreElement.textContent = finalScore;
-    finalScoreElement.style.color = finalScore > 18 ? "red" : "";
+    if (level === 1 && finalScore > 17) {
+      finalScoreElement.textContent = "Errore";
+      finalScoreElement.style.color = "red";
+    } else {
+      finalScoreElement.textContent = finalScore;
+      finalScoreElement.style.color = "";
+    }
   });
   console.log("🔄 Punteggi Finali aggiornati!");
 }
@@ -1230,6 +1259,8 @@ function initializeValues() {
   abilities.forEach(ability => {
     const raceModEl = document.getElementById(ability + "RaceModifier");
     if (raceModEl) raceModEl.textContent = "0";
+    const bgEl = document.getElementById(ability + "BackgroundTalent");
+    if (bgEl) bgEl.value = "0";
   });
   updateFinalScores();
 }

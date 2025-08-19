@@ -1,0 +1,28 @@
+{
+  "name": "College of Glamour",
+  "description": "Bards trained in the Feywild weave music and magic to captivate and beguile those around them.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Mantle of Inspiration",
+        "description": "As a bonus action, expend a Bardic Inspiration to grant temporary hit points to creatures within 60 feet and allow them to move without provoking opportunity attacks."
+      },
+      {
+        "name": "Enthralling Performance",
+        "description": "If you perform for at least 1 minute, choose humanoids within 60 feet who watched; they must succeed on a Wisdom save or be charmed for 1 hour, idolizing you and hindering opponents."
+      }
+    ],
+    "6": [
+      {
+        "name": "Mantle of Majesty",
+        "description": "As a bonus action, cast command without a spell slot and take on a fey appearance for 1 minute, allowing you to cast command as a bonus action each turn."
+      }
+    ],
+    "14": [
+      {
+        "name": "Unbreakable Majesty",
+        "description": "As a bonus action, assume a majestic presence for 1 minute. Creatures that try to attack you must make a Charisma save or choose another target; on a success they have disadvantage on saves against your spells on your next turn."
+      }
+    ]
+  }
+}

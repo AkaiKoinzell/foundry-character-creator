@@ -1,0 +1,32 @@
+{
+  "name": "College of Swords",
+  "description": "Blades are bards who combine martial prowess with bardic magic, dazzling audiences and foes alike.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Bonus Proficiencies",
+        "description": "You gain proficiency with medium armor and the scimitar, and you can use a simple or martial melee weapon as a spellcasting focus."
+      },
+      {
+        "name": "Fighting Style",
+        "description": "Choose a Fighting Style: Dueling or Two-Weapon Fighting."
+      },
+      {
+        "name": "Blade Flourish",
+        "description": "When you take the Attack action, your speed increases by 10 feet, and you can expend a Bardic Inspiration to use Defensive, Mobile, or Slashing Flourish."
+      }
+    ],
+    "6": [
+      {
+        "name": "Extra Attack",
+        "description": "You can attack twice instead of once whenever you take the Attack action on your turn."
+      }
+    ],
+    "14": [
+      {
+        "name": "Master's Flourish",
+        "description": "Whenever you use a Blade Flourish option, you can roll a d6 instead of expending a Bardic Inspiration die."
+      }
+    ]
+  }
+}

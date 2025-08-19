@@ -1,0 +1,32 @@
+{
+  "name": "College of Spirits",
+  "description": "These bards channel tales and spirits, bringing stories to life with occult trappings.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Guiding Whispers",
+        "description": "You learn the guidance cantrip, and its range for you is 60 feet."
+      },
+      {
+        "name": "Spiritual Focus",
+        "description": "You can use items like a candle, crystal ball, skull, spirit board, or tarokka deck as a spellcasting focus; starting at 6th level, roll a d6 to add to one damage or healing roll when using it."
+      },
+      {
+        "name": "Tales from Beyond",
+        "description": "While holding your focus, as a bonus action expend a Bardic Inspiration to roll on the Spirit Tales table, retaining the tale to bestow its effect later."
+      }
+    ],
+    "6": [
+      {
+        "name": "Spirit Session",
+        "description": "Conduct a 1-hour ritual with willing creatures to temporarily learn one divination or necromancy spell from any class, with level up to the number of participants."
+      }
+    ],
+    "14": [
+      {
+        "name": "Mystical Connection",
+        "description": "When rolling on the Spirit Tales table, roll twice and choose which effect to use; if you roll the same number, choose any tale."
+      }
+    ]
+  }
+}

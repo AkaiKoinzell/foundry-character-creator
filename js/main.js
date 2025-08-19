@@ -82,11 +82,15 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('confirmClassSelection').addEventListener('click', async () => {
     const classSelect = document.getElementById('classSelect');
     const subclassSelect = document.getElementById('subclassSelect');
+    const level = parseInt(document.getElementById('levelSelect')?.value) || 1;
     if (!classSelect.value) {
       alert('⚠️ Seleziona una classe prima di procedere!');
       return;
     }
-    if (subclassSelect.style.display !== 'none' && !subclassSelect.value) {
+    const className = classSelect.selectedOptions[0]?.text || '';
+    const subclassLevels = { Cleric: 1, Warlock: 1, Sorcerer: 1 };
+    const requiredLevel = subclassLevels[className] || 3;
+    if (subclassSelect.style.display !== 'none' && level >= requiredLevel && !subclassSelect.value) {
       alert('⚠️ Seleziona una sottoclasse prima di procedere!');
       return;
     }

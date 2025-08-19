@@ -1,0 +1,34 @@
+{
+  "name": "Circle of Wildfire",
+  "description": "Druids bonded to a primal wildfire spirit that balances destruction and renewal.",
+  "features_by_level": {
+    "2": [
+      {
+        "name": "Circle Spells",
+        "description": "Gain additional spells at levels 2,3,5,7 and 9, including burning hands and cure wounds, always prepared." 
+      },
+      {
+        "name": "Summon Wildfire Spirit",
+        "description": "Expend Wild Shape to summon a fiery spirit that deals fire damage when it appears and obeys your commands for 1 hour." 
+      }
+    ],
+    "6": [
+      {
+        "name": "Enhanced Bond",
+        "description": "While your wildfire spirit is summoned, add a d8 to one damage or healing roll of spells that deal fire or restore hit points, and spells can originate from the spirit." 
+      }
+    ],
+    "10": [
+      {
+        "name": "Cauterizing Flames",
+        "description": "When a creature dies near you or the spirit, create a spectral flame you can use to heal or deal fire damage (2d10 + Wisdom modifier)." 
+      }
+    ],
+    "14": [
+      {
+        "name": "Blazing Revival",
+        "description": "If you drop to 0 hit points while the spirit is within 120 feet, it can drop to 0 to restore you to half hit points and stand you up." 
+      }
+    ]
+  }
+}

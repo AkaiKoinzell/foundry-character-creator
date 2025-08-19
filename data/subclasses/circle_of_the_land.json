@@ -1,33 +1,37 @@
 {
   "name": "Circle of the Land",
-  "description": "Druids of the Circle of the Land are mystics and sages who safeguard ancient knowledge.",
+  "description": "Mystics who draw power from the land where they were initiated.",
   "features_by_level": {
     "2": [
       {
         "name": "Circle Spells",
-        "description": "Description for Circle Spells."
+        "description": "Gain extra spells at levels 3,5,7 and 9 based on your chosen terrain; always prepared." 
       },
       {
         "name": "Natural Recovery",
-        "description": "Description for Natural Recovery."
+        "description": "During a short rest, recover spell slots with a combined level up to half your druid level (rounded up)."
+      },
+      {
+        "name": "Bonus Cantrip",
+        "description": "Learn one additional druid cantrip."
       }
     ],
     "6": [
       {
         "name": "Land's Stride",
-        "description": "Description for Land's Stride."
+        "description": "Move through nonmagical difficult terrain and plants without penalty and gain advantage against plants that impede movement." 
       }
     ],
     "10": [
       {
         "name": "Nature's Ward",
-        "description": "Description for Nature's Ward."
+        "description": "You can't be charmed or frightened by elementals or fey and are immune to poison and disease." 
       }
     ],
     "14": [
       {
         "name": "Nature's Sanctuary",
-        "description": "Description for Nature's Sanctuary."
+        "description": "Beasts and plants must succeed on a Wisdom save to attack you; on a failure they must choose another target." 
       }
     ]
   }

@@ -1,11 +1,157 @@
 {
   "name": "Druid",
+  "description": "A wielder of nature's magic who can cast spells and shapeshift into beasts.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Druidic",
+        "description": "You know Druidic, a secret language used to leave hidden messages that require a DC 15 Perception check to spot."
+      },
+      {
+        "name": "Spellcasting",
+        "description": "Use Wisdom to cast druid spells. You know cantrips, prepare spells after a long rest, can cast rituals and use a druidic focus."
+      }
+    ],
+    "2": [
+      {
+        "name": "Wild Shape",
+        "description": "As an action, transform into a beast you've seen twice per rest, with CR limits based on level and restrictions on flying and swimming."
+      },
+      {
+        "name": "Wild Companion",
+        "description": "Expend a use of Wild Shape to cast find familiar, summoning a fey spirit that lasts for hours equal to half your druid level."
+      },
+      {
+        "name": "Druid Circle",
+        "description": "Choose a druid circle, gaining additional features at levels 2, 6, 10 and 14."
+      }
+    ],
+    "4": [
+      {
+        "name": "Wild Shape Improvement",
+        "description": "Your Wild Shape form options improve according to the Beast Shapes table."
+      },
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2, two scores by 1, or take a feat if allowed."
+      },
+      {
+        "name": "Cantrip Versatility",
+        "description": "Whenever you gain an Ability Score Improvement, you can replace a druid cantrip you know."
+      }
+    ],
+    "6": [
+      {
+        "name": "Druid Circle feature",
+        "description": "You gain a feature from your chosen druid circle."
+      }
+    ],
+    "8": [
+      {
+        "name": "Wild Shape Improvement",
+        "description": "Your Wild Shape form options improve according to the Beast Shapes table."
+      },
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2, two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "10": [
+      {
+        "name": "Druid Circle feature",
+        "description": "You gain a feature from your chosen druid circle."
+      }
+    ],
+    "12": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2, two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "14": [
+      {
+        "name": "Druid Circle feature",
+        "description": "You gain a feature from your chosen druid circle."
+      }
+    ],
+    "16": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2, two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "18": [
+      {
+        "name": "Timeless Body",
+        "description": "For every 10 years that pass, your body ages only 1 year."
+      },
+      {
+        "name": "Beast Spells",
+        "description": "You can cast many druid spells while in beast form without providing somatic or verbal components."
+      }
+    ],
+    "19": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2, two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "20": [
+      {
+        "name": "Archdruid",
+        "description": "Use Wild Shape an unlimited number of times and ignore the verbal and somatic components of druid spells."
+      }
+    ]
+  },
   "subclasses": [
+    {
+      "name": "Circle of Dreams",
+      "features": [
+        "Balm of the Summer Court",
+        "Hearth of Moonlight and Shadow",
+        "Hidden Paths",
+        "Walker in Dreams"
+      ]
+    },
+    {
+      "name": "Circle of Spores",
+      "features": [
+        "Circle Spells",
+        "Halo of Spores",
+        "Symbiotic Entity",
+        "Fungal Infestation",
+        "Spreading Spores",
+        "Fungal Body"
+      ]
+    },
+    {
+      "name": "Circle of Stars",
+      "features": [
+        "Star Map",
+        "Starry Form",
+        "Cosmic Omen",
+        "Twinkling Constellations",
+        "Full of Stars"
+      ]
+    },
+    {
+      "name": "Circle of the Blighted",
+      "features": [
+        "Defile Ground",
+        "Blighted Shape",
+        "Call of the Shadowseeds",
+        "Defile Ground (10th Level)",
+        "Foul Conjuration",
+        "Defile Ground (14th Level)",
+        "Incarnation of Corruption"
+      ]
+    },
     {
       "name": "Circle of the Land",
       "features": [
-        "Circle Spells",
+        "Bonus Cantrip",
         "Natural Recovery",
+        "Circle Spells",
         "Land's Stride",
         "Nature's Ward",
         "Nature's Sanctuary"
@@ -20,21 +166,26 @@
         "Elemental Wild Shape",
         "Thousand Forms"
       ]
+    },
+    {
+      "name": "Circle of the Shepherd",
+      "features": [
+        "Speech of the Woods",
+        "Spirit Totem",
+        "Mighty Summoner",
+        "Guardian Spirit",
+        "Faithful Summons"
+      ]
+    },
+    {
+      "name": "Circle of Wildfire",
+      "features": [
+        "Circle Spells",
+        "Summon Wildfire Spirit",
+        "Enhanced Bond",
+        "Cauterizing Flames",
+        "Blazing Revival"
+      ]
     }
-  ],
-  "description": "Description for Druid class.",
-  "features_by_level": {
-    "1": [
-      {
-        "name": "Druid Feature 1",
-        "description": "Description for Druid feature at level 1."
-      }
-    ],
-    "2": [
-      {
-        "name": "Druid Feature 2",
-        "description": "Description for Druid feature at level 2."
-      }
-    ]
-  }
+  ]
 }

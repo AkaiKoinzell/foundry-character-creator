@@ -1,39 +1,39 @@
 {
   "name": "Nature Domain",
-  "description": "Clerics of the Nature Domain are champions of the natural world.",
+  "description": "Nature domain clerics champion the natural world and its creatures.",
   "features_by_level": {
     "1": [
       {
         "name": "Acolyte of Nature",
-        "description": "Description for Acolyte of Nature."
+        "description": "Learn one druid cantrip and gain proficiency in Animal Handling, Nature, or Survival."
       },
       {
         "name": "Bonus Proficiency",
-        "description": "Description for Bonus Proficiency."
+        "description": "Gain proficiency with heavy armor."
       }
     ],
     "2": [
       {
         "name": "Channel Divinity: Charm Animals and Plants",
-        "description": "Description for Channel Divinity: Charm Animals and Plants."
+        "description": "Use Channel Divinity to charm beasts and plant creatures within 30 feet for 1 minute."
       }
     ],
     "6": [
       {
         "name": "Dampen Elements",
-        "description": "Description for Dampen Elements."
+        "description": "As a reaction, grant yourself or a creature within 30 feet resistance to acid, cold, fire, lightning, or thunder damage."
       }
     ],
     "8": [
       {
         "name": "Divine Strike",
-        "description": "Description for Divine Strike."
+        "description": "Once on each of your turns, deal an extra 1d8 cold, fire, or lightning damage on a weapon attack (2d8 at 14th level)."
       }
     ],
     "17": [
       {
         "name": "Master of Nature",
-        "description": "Description for Master of Nature."
+        "description": "While creatures are charmed by you, you can use a bonus action to verbally command them on their next turn."
       }
     ]
   }

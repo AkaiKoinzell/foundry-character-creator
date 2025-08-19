@@ -1,0 +1,40 @@
+{
+  "name": "Death Domain",
+  "description": "Clerics of the Death domain wield negative energy and command the forces of decay.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Bonus Proficiency",
+        "description": "Gain proficiency with martial weapons."
+      },
+      {
+        "name": "Reaper",
+        "description": "Learn one necromancy cantrip. When you cast a necromancy cantrip that targets one creature, you can instead target two creatures within 5 feet of each other."
+      }
+    ],
+    "2": [
+      {
+        "name": "Channel Divinity: Touch of Death",
+        "description": "When you hit with a melee attack, use Channel Divinity to deal extra necrotic damage equal to 5 + twice your cleric level."
+      }
+    ],
+    "6": [
+      {
+        "name": "Inescapable Destruction",
+        "description": "Necrotic damage you deal with cleric spells and Channel Divinity ignores resistance."
+      }
+    ],
+    "8": [
+      {
+        "name": "Divine Strike",
+        "description": "Once on each of your turns, deal an extra 1d8 necrotic damage on a weapon attack (2d8 at 14th level)."
+      }
+    ],
+    "17": [
+      {
+        "name": "Improved Reaper",
+        "description": "When you cast a necromancy spell of 1st through 5th level that targets only one creature, you can target two creatures within 5 feet of each other instead."
+      }
+    ]
+  }
+}

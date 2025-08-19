@@ -1,39 +1,39 @@
 {
   "name": "War Domain",
-  "description": "Clerics of the War Domain excel in battle and inspire allies to fight harder.",
+  "description": "War domain clerics excel in battle and inspire allies to fight.",
   "features_by_level": {
     "1": [
       {
         "name": "Bonus Proficiencies",
-        "description": "Description for Bonus Proficiencies."
+        "description": "Gain proficiency with martial weapons and heavy armor."
       },
       {
         "name": "War Priest",
-        "description": "Description for War Priest."
+        "description": "When you use the Attack action, you can make one weapon attack as a bonus action. Uses equal to your Wisdom modifier per long rest."
       }
     ],
     "2": [
       {
         "name": "Channel Divinity: Guided Strike",
-        "description": "Description for Channel Divinity: Guided Strike."
+        "description": "Use Channel Divinity to gain a +10 bonus to an attack roll after seeing the roll but before knowing the result."
       }
     ],
     "6": [
       {
         "name": "War God's Blessing",
-        "description": "Description for War God's Blessing."
+        "description": "When a creature within 30 feet makes an attack roll, use your reaction to grant a +10 bonus to the roll."
       }
     ],
     "8": [
       {
         "name": "Divine Strike",
-        "description": "Description for Divine Strike."
+        "description": "Once on each of your turns, deal an extra 1d8 weapon damage on a weapon attack (2d8 at 14th level)."
       }
     ],
     "17": [
       {
         "name": "Avatar of Battle",
-        "description": "Description for Avatar of Battle."
+        "description": "You gain resistance to bludgeoning, piercing, and slashing damage from nonmagical attacks."
       }
     ]
   }

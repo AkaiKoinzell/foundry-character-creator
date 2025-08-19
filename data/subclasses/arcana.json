@@ -1,0 +1,36 @@
+{
+  "name": "Arcana Domain",
+  "description": "Gods of the Arcana domain oversee magic and its secrets.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Arcane Initiate",
+        "description": "Gain proficiency in Arcana and two wizard cantrips, which count as cleric cantrips for you."
+      }
+    ],
+    "2": [
+      {
+        "name": "Channel Divinity: Arcane Abjuration",
+        "description": "Use Channel Divinity to turn celestials, elementals, fey, or fiends; higher levels can banish them."
+      }
+    ],
+    "6": [
+      {
+        "name": "Spell Breaker",
+        "description": "When you heal with a spell of 1st level or higher, you can end one spell of equal or lower level on the target."
+      }
+    ],
+    "8": [
+      {
+        "name": "Potent Spellcasting",
+        "description": "Add your Wisdom modifier to the damage you deal with cleric cantrips."
+      }
+    ],
+    "17": [
+      {
+        "name": "Arcane Mastery",
+        "description": "Choose four wizard spells of 6th to 9th level to add to your domain spells. They are always prepared."
+      }
+    ]
+  }
+}

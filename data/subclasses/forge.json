@@ -1,0 +1,40 @@
+{
+  "name": "Forge Domain",
+  "description": "Forge domain clerics venerate deities of crafting and creation.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Bonus Proficiency",
+        "description": "Gain proficiency with heavy armor and smith's tools."
+      },
+      {
+        "name": "Blessing of the Forge",
+        "description": "At the end of a long rest, imbue a nonmagical weapon or armor with a +1 bonus until your next long rest."
+      }
+    ],
+    "2": [
+      {
+        "name": "Channel Divinity: Artisan's Blessing",
+        "description": "Create a simple or martial weapon, armor, or other metal object worth up to 100 gp after a 1-hour ritual."
+      }
+    ],
+    "6": [
+      {
+        "name": "Soul of the Forge",
+        "description": "Gain resistance to fire damage and a +1 AC bonus while wearing heavy armor."
+      }
+    ],
+    "8": [
+      {
+        "name": "Divine Strike",
+        "description": "Once on each turn, deal an extra 1d8 fire damage on a weapon attack (2d8 at 14th level)."
+      }
+    ],
+    "17": [
+      {
+        "name": "Saint of Forge and Fire",
+        "description": "You are immune to fire damage and have resistance to nonmagical bludgeoning, piercing, and slashing damage while wearing heavy armor."
+      }
+    ]
+  }
+}

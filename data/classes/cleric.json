@@ -1,6 +1,182 @@
 {
   "name": "Cleric",
+  "description": "A priestly champion who wields divine magic in service of a higher power.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Spellcasting",
+        "description": "You can cast cleric spells using Wisdom. You know three cleric cantrips and prepare a number of cleric spells equal to your Wisdom modifier plus your cleric level. You can cast rituals and use a holy symbol as a focus."
+      },
+      {
+        "name": "Divine Domain",
+        "description": "Choose a domain related to your deity, which grants domain spells and features at 1st, 2nd, 6th, 8th, and 17th levels."
+      }
+    ],
+    "2": [
+      {
+        "name": "Channel Divinity",
+        "description": "Draw on divine power to fuel special effects. You start with one use per rest."
+      },
+      {
+        "name": "Channel Divinity: Turn Undead",
+        "description": "Present your holy symbol to make undead within 30 feet flee. Turned undead spend their turns moving away and can't take reactions."
+      },
+      {
+        "name": "Channel Divinity: Harness Divine Power",
+        "description": "(Optional) As a bonus action, expend Channel Divinity to regain a spent spell slot of a level up to half your proficiency bonus."
+      },
+      {
+        "name": "Divine Domain Feature",
+        "description": "Your chosen domain grants a feature at this level."
+      }
+    ],
+    "4": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1. You may instead take a feat if allowed."
+      },
+      {
+        "name": "Cantrip Versatility",
+        "description": "(Optional) Whenever you gain an Ability Score Improvement, you can replace one cleric cantrip you know with another."
+      }
+    ],
+    "5": [
+      {
+        "name": "Destroy Undead (CR 1/2)",
+        "description": "When an undead of challenge rating 1/2 or lower fails its save against your Turn Undead, it is destroyed."
+      }
+    ],
+    "6": [
+      {
+        "name": "Channel Divinity (2/rest)",
+        "description": "You can use Channel Divinity twice between rests."
+      },
+      {
+        "name": "Divine Domain Feature",
+        "description": "Your chosen domain grants a feature at this level."
+      }
+    ],
+    "8": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1. You may instead take a feat if allowed."
+      },
+      {
+        "name": "Destroy Undead (CR 1)",
+        "description": "Undead of challenge rating 1 or lower are destroyed when they fail their save against your Turn Undead."
+      },
+      {
+        "name": "Divine Domain Feature",
+        "description": "Your chosen domain grants a feature at this level."
+      }
+    ],
+    "10": [
+      {
+        "name": "Divine Intervention",
+        "description": "Call on your deity for aid. If the percentile roll is equal to or lower than your cleric level, the deity intervenes. After a success, you must wait 7 days to use this feature again."
+      }
+    ],
+    "11": [
+      {
+        "name": "Destroy Undead (CR 2)",
+        "description": "Undead of challenge rating 2 or lower are destroyed when they fail their save against your Turn Undead."
+      }
+    ],
+    "12": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1. You may instead take a feat if allowed."
+      }
+    ],
+    "14": [
+      {
+        "name": "Destroy Undead (CR 3)",
+        "description": "Undead of challenge rating 3 or lower are destroyed when they fail their save against your Turn Undead."
+      },
+      {
+        "name": "Subclass Feature",
+        "description": "Some domains grant additional features at this level."
+      }
+    ],
+    "16": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1. You may instead take a feat if allowed."
+      }
+    ],
+    "17": [
+      {
+        "name": "Destroy Undead (CR 4)",
+        "description": "Undead of challenge rating 4 or lower are destroyed when they fail their save against your Turn Undead."
+      },
+      {
+        "name": "Divine Domain Feature",
+        "description": "Your chosen domain grants a feature at this level."
+      }
+    ],
+    "18": [
+      {
+        "name": "Channel Divinity (3/rest)",
+        "description": "You can use Channel Divinity three times between rests."
+      }
+    ],
+    "19": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1. You may instead take a feat if allowed."
+      }
+    ],
+    "20": [
+      {
+        "name": "Divine Intervention Improvement",
+        "description": "Your Divine Intervention automatically succeeds, no roll required."
+      }
+    ]
+  },
   "subclasses": [
+    {
+      "name": "Arcana Domain",
+      "features": [
+        "Arcane Initiate",
+        "Channel Divinity: Arcane Abjuration",
+        "Spell Breaker",
+        "Potent Spellcasting",
+        "Arcane Mastery"
+      ]
+    },
+    {
+      "name": "Death Domain",
+      "features": [
+        "Bonus Proficiency",
+        "Reaper",
+        "Channel Divinity: Touch of Death",
+        "Inescapable Destruction",
+        "Divine Strike",
+        "Improved Reaper"
+      ]
+    },
+    {
+      "name": "Forge Domain",
+      "features": [
+        "Bonus Proficiency",
+        "Blessing of the Forge",
+        "Channel Divinity: Artisan's Blessing",
+        "Soul of the Forge",
+        "Divine Strike",
+        "Saint of Forge and Fire"
+      ]
+    },
+    {
+      "name": "Grave Domain",
+      "features": [
+        "Circle of Mortality",
+        "Eyes of the Grave",
+        "Channel Divinity: Path to the Grave",
+        "Sentinel at Death's Door",
+        "Potent Spellcasting",
+        "Keeper of Souls"
+      ]
+    },
     {
       "name": "Knowledge Domain",
       "features": [
@@ -45,6 +221,28 @@
       ]
     },
     {
+      "name": "Order Domain",
+      "features": [
+        "Bonus Proficiencies",
+        "Voice of Authority",
+        "Channel Divinity: Order's Demand",
+        "Embodiment of the Law",
+        "Divine Strike",
+        "Order's Wrath"
+      ]
+    },
+    {
+      "name": "Peace Domain",
+      "features": [
+        "Implement of Peace",
+        "Emboldening Bond",
+        "Channel Divinity: Balm of Peace",
+        "Protective Bond",
+        "Potent Spellcasting",
+        "Expansive Bond"
+      ]
+    },
+    {
       "name": "Tempest Domain",
       "features": [
         "Bonus Proficiencies",
@@ -66,6 +264,18 @@
       ]
     },
     {
+      "name": "Twilight Domain",
+      "features": [
+        "Bonus Proficiencies",
+        "Eyes of Night",
+        "Vigilant Blessing",
+        "Channel Divinity: Twilight Sanctuary",
+        "Steps of Night",
+        "Divine Strike",
+        "Twilight Shroud"
+      ]
+    },
+    {
       "name": "War Domain",
       "features": [
         "Bonus Proficiencies",
@@ -76,20 +286,5 @@
         "Avatar of Battle"
       ]
     }
-  ],
-  "description": "Description for Cleric class.",
-  "features_by_level": {
-    "1": [
-      {
-        "name": "Cleric Feature 1",
-        "description": "Description for Cleric feature at level 1."
-      }
-    ],
-    "2": [
-      {
-        "name": "Cleric Feature 2",
-        "description": "Description for Cleric feature at level 2."
-      }
-    ]
-  }
+  ]
 }

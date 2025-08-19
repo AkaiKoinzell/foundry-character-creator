@@ -1,35 +1,35 @@
 {
   "name": "Knowledge Domain",
-  "description": "Clerics of the Knowledge Domain value learning and truth above all.",
+  "description": "Clerics of knowledge value learning and truth above all.",
   "features_by_level": {
     "1": [
       {
         "name": "Blessings of Knowledge",
-        "description": "Description for Blessings of Knowledge."
+        "description": "Learn two languages and gain proficiency in two skills of your choice from Arcana, History, Nature, or Religion. Your proficiency bonus is doubled for checks with those skills."
       }
     ],
     "2": [
       {
         "name": "Channel Divinity: Knowledge of the Ages",
-        "description": "Description for Channel Divinity: Knowledge of the Ages."
+        "description": "Use Channel Divinity to gain proficiency in any skill or tool for 10 minutes."
       }
     ],
     "6": [
       {
         "name": "Channel Divinity: Read Thoughts",
-        "description": "Description for Channel Divinity: Read Thoughts."
+        "description": "Read the surface thoughts of a creature within 60 feet. You can end the effect to cast suggestion without a spell slot and the target automatically fails its save."
       }
     ],
     "8": [
       {
         "name": "Potent Spellcasting",
-        "description": "Description for Potent Spellcasting."
+        "description": "Add your Wisdom modifier to the damage you deal with cleric cantrips."
       }
     ],
     "17": [
       {
         "name": "Visions of the Past",
-        "description": "Description for Visions of the Past."
+        "description": "Meditate to receive dreamlike glimpses of past events related to an object you hold or your current surroundings."
       }
     ]
   }

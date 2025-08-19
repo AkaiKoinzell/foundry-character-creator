@@ -1,0 +1,51 @@
+{
+  "name": "Way of Mercy",
+  "description": "Monks of the Way of Mercy manipulate life energy to heal the suffering or bring swift ends.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Implements of Mercy",
+        "description": "Gain proficiency in Insight, Medicine, and the herbalism kit, and don a special mask reflecting your role."
+      },
+      {
+        "name": "Hand of Healing",
+        "description": "As an action, spend 1 ki point to heal a creature you touch for your Martial Arts die + Wisdom modifier. One Flurry of Blows attack can be replaced with this without spending ki."
+      },
+      {
+        "name": "Hand of Harm",
+        "description": "When you hit with an unarmed strike, spend 1 ki point to deal extra necrotic damage equal to your Martial Arts die + Wisdom modifier once per turn."
+      }
+    ],
+    "6": [
+      {
+        "name": "Physician's Touch",
+        "description": "Hand of Healing can also cure disease or end certain conditions; Hand of Harm can also poison the target until the end of your next turn."
+      }
+    ],
+    "11": [
+      {
+        "name": "Flurry of Healing and Harm",
+        "description": "When you use Flurry of Blows, you can replace each strike with Hand of Healing without spending ki, and you can use Hand of Harm once without ki."
+      }
+    ],
+    "17": [
+      {
+        "name": "Hand of Ultimate Mercy",
+        "description": "As an action, spend 5 ki points to revive a creature that died within the last 24 hours, restoring hit points and removing certain conditions."
+      }
+    ]
+  },
+  "choices": [
+    {
+      "level": 3,
+      "name": "Way of Mercy Feature",
+      "description": "Choose an option for the Way of Mercy subclass",
+      "count": 1,
+      "selection": [
+        "Way of Mercy Option 1",
+        "Way of Mercy Option 2"
+      ],
+      "type": "Way of Mercy Feature"
+    }
+  ]
+}

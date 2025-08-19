@@ -1,13 +1,211 @@
 {
   "name": "Monk",
+  "description": "A master of martial arts who uses the power of ki to channel unarmed combat and agility.",
+  "hit_die": "d8",
+  "hp_at_1st_level": "8 + your Constitution modifier",
+  "hp_at_higher_levels": "1d8 (or 5) + your Constitution modifier per Monk level after 1st",
+  "saving_throws": ["Strength", "Dexterity"],
+  "skill_proficiencies": {
+    "choose": 2,
+    "options": [
+      "Acrobatics",
+      "Athletics",
+      "History",
+      "Insight",
+      "Religion",
+      "Stealth"
+    ]
+  },
+  "weapon_proficiencies": ["simple weapons", "shortswords"],
+  "tool_proficiencies": ["one type of artisan's tools or one musical instrument"],
+  "starting_equipment": {
+    "choices": [
+      ["Shortsword", "Any simple weapon"],
+      ["Dungeoneer's pack", "Explorer's pack"]
+    ],
+    "fixed": ["10 darts"],
+    "gold_alternative": "5d4 gp"
+  },
+  "multiclassing": {
+    "prerequisites": {"Dexterity": 13, "Wisdom": 13},
+    "proficiencies": {"weapons": ["simple weapons", "shortswords"]}
+  },
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Unarmored Defense",
+        "description": "While not wearing armor or wielding a shield, your AC equals 10 + your Dexterity modifier + your Wisdom modifier."
+      },
+      {
+        "name": "Martial Arts",
+        "description": "Use Dexterity for unarmed and monk weapon attacks, deal a d4 in place of normal damage (scales with level), and make an extra unarmed strike as a bonus action after attacking with an unarmed strike or monk weapon."
+      }
+    ],
+    "2": [
+      {
+        "name": "Ki",
+        "description": "Harness ki points to fuel features such as Flurry of Blows, Patient Defense, and Step of the Wind. Ki points recover after a short or long rest and use Wisdom for save DCs."
+      },
+      {
+        "name": "Dedicated Weapon",
+        "description": "After a rest, designate a simple or martial weapon you're proficient with (without heavy or special properties) as a monk weapon until you use this feature again."
+      },
+      {
+        "name": "Unarmored Movement",
+        "description": "Your speed increases by 10 feet while not wearing armor or wielding a shield; this bonus improves at higher levels and lets you run along walls and across water at 9th level."
+      }
+    ],
+    "3": [
+      {
+        "name": "Deflect Missiles",
+        "description": "Use your reaction to reduce the damage from a ranged weapon attack by 1d10 + Dexterity modifier + monk level, potentially catching and throwing it."
+      },
+      {
+        "name": "Monastic Tradition",
+        "description": "Choose a monastic tradition that grants features at 3rd, 6th, 11th, and 17th level."
+      },
+      {
+        "name": "Ki-Fueled Attack",
+        "description": "If you spend 1 or more ki points as part of your action on your turn, make one weapon or unarmed strike as a bonus action."
+      }
+    ],
+    "4": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1, or take a feat if allowed."
+      },
+      {
+        "name": "Slow Fall",
+        "description": "Use your reaction when falling to reduce falling damage by five times your monk level."
+      },
+      {
+        "name": "Quickened Healing",
+        "description": "As an action, spend 2 ki points and roll your Martial Arts die to regain hit points equal to the roll + your proficiency bonus."
+      }
+    ],
+    "5": [
+      {
+        "name": "Extra Attack",
+        "description": "Attack twice, instead of once, whenever you take the Attack action on your turn."
+      },
+      {
+        "name": "Stunning Strike",
+        "description": "When you hit with a melee weapon attack, spend 1 ki point to force the target to succeed on a Constitution save or be stunned until the end of your next turn."
+      },
+      {
+        "name": "Focused Aim",
+        "description": "When you miss with an attack roll, spend up to 3 ki points to increase the roll by 2 per point, potentially turning the miss into a hit."
+      }
+    ],
+    "6": [
+      {
+        "name": "Ki-Empowered Strikes",
+        "description": "Your unarmed strikes count as magical for overcoming resistance and immunity to nonmagical attacks and damage."
+      },
+      {
+        "name": "Monastic Tradition Feature",
+        "description": "You gain a feature from your chosen Monastic Tradition."
+      }
+    ],
+    "7": [
+      {
+        "name": "Evasion",
+        "description": "When subjected to an effect that allows a Dexterity saving throw for half damage, take no damage on a success and half on a failure."
+      },
+      {
+        "name": "Stillness of Mind",
+        "description": "Use your action to end one effect on yourself causing you to be charmed or frightened."
+      }
+    ],
+    "8": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "9": [
+      {
+        "name": "Unarmored Movement Improvement",
+        "description": "You can move along vertical surfaces and across liquids without falling during the move."
+      }
+    ],
+    "10": [
+      {
+        "name": "Purity of Body",
+        "description": "You are immune to disease and poison."
+      }
+    ],
+    "11": [
+      {
+        "name": "Monastic Tradition Feature",
+        "description": "You gain a feature from your chosen Monastic Tradition."
+      }
+    ],
+    "12": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "13": [
+      {
+        "name": "Tongue of the Sun and Moon",
+        "description": "You understand all spoken languages, and any creature that knows a language can understand you."
+      }
+    ],
+    "14": [
+      {
+        "name": "Diamond Soul",
+        "description": "You gain proficiency in all saving throws. When you fail a saving throw, spend 1 ki point to reroll it."
+      }
+    ],
+    "15": [
+      {
+        "name": "Timeless Body",
+        "description": "You suffer none of the frailty of old age, can't be aged magically, and no longer need food or water."
+      }
+    ],
+    "16": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "17": [
+      {
+        "name": "Monastic Tradition Feature",
+        "description": "You gain a feature from your chosen Monastic Tradition."
+      }
+    ],
+    "18": [
+      {
+        "name": "Empty Body",
+        "description": "Spend 4 ki points as an action to become invisible for 1 minute and gain resistance to all damage but force; spend 8 ki points to cast astral projection without material components."
+      }
+    ],
+    "19": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1, or take a feat if allowed."
+      }
+    ],
+    "20": [
+      {
+        "name": "Perfect Self",
+        "description": "When you roll initiative and have no ki points remaining, you regain 4 ki points."
+      }
+    ]
+  },
   "subclasses": [
     {
-      "name": "Way of the Open Hand",
+      "name": "Way of Mercy",
       "features": [
-        "Open Hand Technique",
-        "Wholeness of Body",
-        "Tranquility",
-        "Quivering Palm"
+        "Implements of Mercy",
+        "Hand of Healing",
+        "Hand of Harm",
+        "Physician's Touch",
+        "Flurry of Healing and Harm",
+        "Hand of Ultimate Mercy"
       ]
     },
     {
@@ -20,43 +218,92 @@
       ]
     },
     {
+      "name": "Way of the Ascendant Dragon",
+      "features": [
+        "Draconic Disciple",
+        "Breath of the Dragon",
+        "Wings Unfurled",
+        "Aspect of the Wyrm",
+        "Ascendant Aspect"
+      ]
+    },
+    {
+      "name": "Way of the Astral Self",
+      "features": [
+        "Arms of the Astral Self",
+        "Visage of the Astral Self",
+        "Body of the Astral Self",
+        "Awakened Astral Self"
+      ]
+    },
+    {
+      "name": "Way of the Cobalt Soul",
+      "features": [
+        "Extract Aspects",
+        "Extort Truth",
+        "Mystical Erudition",
+        "Mind of Mercury",
+        "Debilitating Barrage"
+      ]
+    },
+    {
+      "name": "Way of the Drunken Master",
+      "features": [
+        "Bonus Proficiencies",
+        "Drunken Technique",
+        "Tipsy Sway",
+        "Drunkard's Luck",
+        "Intoxicated Frenzy"
+      ]
+    },
+    {
       "name": "Way of the Four Elements",
       "features": [
         "Disciple of the Elements",
         "Elemental Disciplines",
-        "Elemental Mastery",
-        "Elemental Body"
+        "Extra Elemental Discipline (6th)",
+        "Extra Elemental Discipline (11th)",
+        "Extra Elemental Discipline (17th)"
+      ]
+    },
+    {
+      "name": "Way of the Kensei",
+      "features": [
+        "Path of the Kensei",
+        "One with the Blade",
+        "Sharpen the Blade",
+        "Unerring Accuracy"
+      ]
+    },
+    {
+      "name": "Way of the Long Death",
+      "features": [
+        "Touch of Death",
+        "Hour of Reaping",
+        "Mastery of Death",
+        "Touch of the Long Death"
+      ]
+    },
+    {
+      "name": "Way of the Open Hand",
+      "features": [
+        "Open Hand Technique",
+        "Wholeness of Body",
+        "Tranquility",
+        "Quivering Palm"
+      ]
+    },
+    {
+      "name": "Way of the Sun Soul",
+      "features": [
+        "Radiant Sun Bolt",
+        "Searing Arc Strike",
+        "Searing Sunburst",
+        "Sun Shield"
       ]
     }
   ],
-  "description": "Description for Monk class.",
-  "features_by_level": {
-    "1": [
-      {
-        "name": "Monk Feature 1",
-        "description": "Description for Monk feature at level 1."
-      }
-    ],
-    "2": [
-      {
-        "name": "Monk Feature 2",
-        "description": "Description for Monk feature at level 2."
-      }
-    ]
-  },
   "choices": [
-    {
-      "level": 1,
-      "name": "Monk Weapon",
-      "description": "Choose a monk weapon to focus on",
-      "count": 1,
-      "type": "weapon",
-      "selection": [
-        "Shortsword",
-        "Quarterstaff",
-        "Spear"
-      ]
-    },
     {
       "level": 4,
       "name": "Ability Score Improvement",

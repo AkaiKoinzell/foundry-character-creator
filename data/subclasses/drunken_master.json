@@ -1,0 +1,47 @@
+{
+  "name": "Way of the Drunken Master",
+  "description": "Monks who emulate the unpredictable sway of a drunkard to bewilder foes.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Bonus Proficiencies",
+        "description": "Gain proficiency in Performance and brewer's supplies if you don't already have them."
+      },
+      {
+        "name": "Drunken Technique",
+        "description": "When you use Flurry of Blows, you gain the benefit of the Disengage action and your walking speed increases by 10 feet for the current turn."
+      }
+    ],
+    "6": [
+      {
+        "name": "Tipsy Sway",
+        "description": "Stand up from prone using only 5 feet of movement and spend 1 ki point as a reaction to redirect a missed melee attack to another creature within 5 feet of you."
+      }
+    ],
+    "11": [
+      {
+        "name": "Drunkard's Luck",
+        "description": "Spend 2 ki points to cancel disadvantage on an ability check, attack roll, or saving throw."
+      }
+    ],
+    "17": [
+      {
+        "name": "Intoxicated Frenzy",
+        "description": "When you use Flurry of Blows, make up to three additional attacks provided each targets a different creature."
+      }
+    ]
+  },
+  "choices": [
+    {
+      "level": 3,
+      "name": "Way of the Drunken Master Feature",
+      "description": "Choose an option for the Way of the Drunken Master subclass",
+      "count": 1,
+      "selection": [
+        "Way of the Drunken Master Option 1",
+        "Way of the Drunken Master Option 2"
+      ],
+      "type": "Way of the Drunken Master Feature"
+    }
+  ]
+}

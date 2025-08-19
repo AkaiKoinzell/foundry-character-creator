@@ -1,0 +1,55 @@
+{
+  "name": "Way of the Cobalt Soul",
+  "description": "Scholarly monks dedicated to unveiling secrets and exploiting foes' weaknesses.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Extract Aspects",
+        "description": "When you hit with Flurry of Blows, analyze a creature to learn its resistances, vulnerabilities, and immunities, and make reaction attacks when it misses you."
+      }
+    ],
+    "6": [
+      {
+        "name": "Extort Truth",
+        "description": "Spend 1 ki point to prevent a struck creature from lying for up to 10 minutes, granting advantage on Charisma checks against it."
+      },
+      {
+        "name": "Mystical Erudition",
+        "description": "Gain one language and proficiency with Arcana, History, Investigation, Nature, or Religion, or double proficiency if already proficient."
+      }
+    ],
+    "11": [
+      {
+        "name": "Mind of Mercury",
+        "description": "Once per turn, spend 1 ki point to take an additional reaction. Only one reaction per triggering effect."
+      },
+      {
+        "name": "Mystical Erudition (11th Level)",
+        "description": "Gain another language and another skill proficiency or double proficiency from the same list."
+      }
+    ],
+    "17": [
+      {
+        "name": "Debilitating Barrage",
+        "description": "Spend 3 ki points on a hit to give a creature vulnerability to a damage type for 1 minute (or suppress resistance)."
+      },
+      {
+        "name": "Mystical Erudition (17th Level)",
+        "description": "Gain a third language and skill proficiency or doubled proficiency from the list."
+      }
+    ]
+  },
+  "choices": [
+    {
+      "level": 3,
+      "name": "Way of the Cobalt Soul Feature",
+      "description": "Choose an option for the Way of the Cobalt Soul subclass",
+      "count": 1,
+      "selection": [
+        "Way of the Cobalt Soul Option 1",
+        "Way of the Cobalt Soul Option 2"
+      ],
+      "type": "Way of the Cobalt Soul Feature"
+    }
+  ]
+}

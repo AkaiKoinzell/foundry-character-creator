@@ -1,29 +1,33 @@
 {
   "name": "Way of the Four Elements",
-  "description": "Monks of the Way of the Four Elements harness the powers of the elements in their martial arts.",
+  "description": "Monks who bend the elements to their will through ki-fueled disciplines.",
   "features_by_level": {
     "3": [
       {
         "name": "Disciple of the Elements",
-        "description": "Description for Disciple of the Elements."
+        "description": "You learn magical disciplines that manipulate the elements, spending ki points to cast elemental spells and effects."
+      },
+      {
+        "name": "Elemental Disciplines",
+        "description": "Know Elemental Attunement and one other elemental discipline of your choice, gaining more at higher levels."
       }
     ],
     "6": [
       {
-        "name": "Elemental Disciplines",
-        "description": "Description for Elemental Disciplines."
+        "name": "Extra Elemental Discipline (6th)",
+        "description": "Learn one additional elemental discipline, and you may replace one you know when you gain a new one."
       }
     ],
     "11": [
       {
-        "name": "Elemental Mastery",
-        "description": "Description for Elemental Mastery."
+        "name": "Extra Elemental Discipline (11th)",
+        "description": "Learn another elemental discipline, with the option to replace one you know."
       }
     ],
     "17": [
       {
-        "name": "Elemental Body",
-        "description": "Description for Elemental Body."
+        "name": "Extra Elemental Discipline (17th)",
+        "description": "Learn a final elemental discipline, and you may replace one you know."
       }
     ]
   },

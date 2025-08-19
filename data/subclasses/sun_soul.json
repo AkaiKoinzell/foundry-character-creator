@@ -1,0 +1,43 @@
+{
+  "name": "Way of the Sun Soul",
+  "description": "Monks who channel their inner light into radiant blasts of energy.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Radiant Sun Bolt",
+        "description": "Gain a ranged spell attack dealing radiant damage with a 30-foot range and a d4 damage die, and spend 1 ki point to make two additional attacks as a bonus action after using it."
+      }
+    ],
+    "6": [
+      {
+        "name": "Searing Arc Strike",
+        "description": "Immediately after taking the Attack action, spend 2 ki points to cast burning hands as a bonus action, with additional ki increasing the spell level."
+      }
+    ],
+    "11": [
+      {
+        "name": "Searing Sunburst",
+        "description": "Create a 20-foot-radius sphere of radiant energy at a point within 150 feet; creatures failing a Constitution save take 2d6 radiant damage plus 2d6 per ki point spent (up to 3)."
+      }
+    ],
+    "17": [
+      {
+        "name": "Sun Shield",
+        "description": "You shed bright light in a 30-foot radius and can use your reaction to deal radiant damage equal to 5 + Wisdom modifier to creatures that hit you in melee."
+      }
+    ]
+  },
+  "choices": [
+    {
+      "level": 3,
+      "name": "Way of the Sun Soul Feature",
+      "description": "Choose an option for the Way of the Sun Soul subclass",
+      "count": 1,
+      "selection": [
+        "Way of the Sun Soul Option 1",
+        "Way of the Sun Soul Option 2"
+      ],
+      "type": "Way of the Sun Soul Feature"
+    }
+  ]
+}

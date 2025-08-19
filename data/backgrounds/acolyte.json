@@ -1,0 +1,10 @@
+{
+  "name": "Acolyte",
+  "skills": ["Insight", "Religion"],
+  "tools": ["Calligrapher's supplies"],
+  "languages": {
+    "choose": 1,
+    "options": ["Celestial", "Draconic", "Dwarvish"]
+  },
+  "featOptions": ["Chef", "Durable"]
+}

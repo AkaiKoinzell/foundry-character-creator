@@ -1,0 +1,10 @@
+{
+  "name": "Soldier",
+  "skills": ["Athletics", "Intimidation"],
+  "tools": {
+    "choose": 1,
+    "options": ["Smith's tools", "Vehicles (land)"]
+  },
+  "languages": [],
+  "featOptions": ["Athlete"]
+}

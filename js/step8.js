@@ -14,7 +14,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const character = {
       name: document.getElementById("characterName") ? document.getElementById("characterName").value : "",
       level: document.getElementById("levelSelect") ? document.getElementById("levelSelect").value : "",
-      // Aggiungi qui gli altri campi raccolti dagli step precedenti
+      background: window.backgroundData ? window.backgroundData.name : "",
+      background_proficiencies: window.backgroundData ? {
+        skills: window.backgroundData.skills || [],
+        tools: window.backgroundData.tools || [],
+        languages: window.backgroundData.languages || []
+      } : { skills: [], tools: [], languages: [] },
+      background_feat: window.backgroundData ? window.backgroundData.feat || "" : ""
     };
     downloadJsonFile(character.name.replace(/[^a-z0-9]/gi, '_').toLowerCase() + "_character.json", character);
     document.getElementById("finalRecap").innerHTML = `<pre>${JSON.stringify(character, null, 2)}</pre>`;

@@ -1319,6 +1319,7 @@ function generateFinalJson() {
     race: document.getElementById("raceSelect").selectedOptions[0]?.text || "Nessuna",
     class: document.getElementById("classSelect").selectedOptions[0]?.text || "Nessuna",
     subclass: document.getElementById("subclassSelect").selectedOptions[0]?.text || "Nessuna",
+    background: window.backgroundData ? window.backgroundData.name : "Nessuno",
     stats: {
       strength: document.getElementById("strFinalScore").textContent,
       dexterity: document.getElementById("dexFinalScore").textContent,
@@ -1335,6 +1336,12 @@ function generateFinalJson() {
       wisdom: document.getElementById("wisRaceModifier").textContent,
       charisma: document.getElementById("chaRaceModifier").textContent
     },
+    background_proficiencies: window.backgroundData ? {
+      skills: window.backgroundData.skills || [],
+      tools: window.backgroundData.tools || [],
+      languages: window.backgroundData.languages || []
+    } : { skills: [], tools: [], languages: [] },
+    background_feat: window.backgroundData ? window.backgroundData.feat || "" : "",
     languages: {
       selected: selectedData["Languages"] || []
     },
@@ -1480,6 +1487,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnStep3").addEventListener("click", () => showStep("step3"));
   document.getElementById("btnStep4").addEventListener("click", () => showStep("step4"));
   document.getElementById("btnStep5").addEventListener("click", () => showStep("step5"));
+  document.getElementById("btnStep6").addEventListener("click", () => showStep("step6"));
 
   const classSelectElem = document.getElementById("classSelect");
   const subclassSelectElem = document.getElementById("subclassSelect");

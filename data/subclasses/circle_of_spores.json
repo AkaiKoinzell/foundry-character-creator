@@ -44,7 +44,8 @@
       "selection": [
         "Circle of Spores Option 1",
         "Circle of Spores Option 2"
-      ]
+      ],
+      "type": "Circle of Spores Feature"
     }
   ]
 }

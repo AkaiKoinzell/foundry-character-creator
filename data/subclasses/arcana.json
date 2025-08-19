@@ -42,7 +42,8 @@
       "selection": [
         "Arcana Domain Option 1",
         "Arcana Domain Option 2"
-      ]
+      ],
+      "type": "Arcana Domain Feature"
     }
   ]
 }

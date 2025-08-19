@@ -48,7 +48,8 @@
       "selection": [
         "Battle Smith Option 1",
         "Battle Smith Option 2"
-      ]
+      ],
+      "type": "Battle Smith Feature"
     }
   ]
 }

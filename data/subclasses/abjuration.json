@@ -40,7 +40,8 @@
       "selection": [
         "Abjuration Option 1",
         "Abjuration Option 2"
-      ]
+      ],
+      "type": "Abjuration Feature"
     }
   ]
 }

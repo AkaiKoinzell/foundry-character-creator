@@ -649,7 +649,8 @@ const extraCategoryAliases = {
   "Fighting Style": "Fighting Style",
   "Additional Fighting Style": "Fighting Style",
   "Divine Domain": "Divine Domain",
-  "Metamagic": "Metamagic"
+  "Metamagic": "Metamagic",
+  "Ability Score Improvement": "Ability Score Improvement"
 };
 
 const extraCategoryDescriptions = {
@@ -658,7 +659,8 @@ const extraCategoryDescriptions = {
   "Tool Proficiency": "Seleziona le competenze negli strumenti.",
   "Fighting Style": "Scegli il tuo stile di combattimento.",
   "Divine Domain": "Seleziona il tuo dominio divino.",
-  "Metamagic": "Scegli le opzioni di Metamagia."
+  "Metamagic": "Scegli le opzioni di Metamagia.",
+  "Ability Score Improvement": "Aumenta i punteggi di caratteristica o scegli un talento."
 };
 
 /**

@@ -40,7 +40,8 @@
       "selection": [
         "Zealot Option 1",
         "Zealot Option 2"
-      ]
+      ],
+      "type": "Zealot Feature"
     }
   ]
 }

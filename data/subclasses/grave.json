@@ -46,7 +46,8 @@
       "selection": [
         "Grave Domain Option 1",
         "Grave Domain Option 2"
-      ]
+      ],
+      "type": "Grave Domain Feature"
     }
   ]
 }

@@ -40,7 +40,8 @@
       "selection": [
         "Divination Option 1",
         "Divination Option 2"
-      ]
+      ],
+      "type": "Divination Feature"
     }
   ]
 }

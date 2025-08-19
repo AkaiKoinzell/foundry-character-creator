@@ -46,7 +46,8 @@
       "selection": [
         "Light Domain Option 1",
         "Light Domain Option 2"
-      ]
+      ],
+      "type": "Light Domain Feature"
     }
   ]
 }

@@ -34,7 +34,8 @@
       "selection": [
         "College of Lore Option 1",
         "College of Lore Option 2"
-      ]
+      ],
+      "type": "College of Lore Feature"
     }
   ]
 }

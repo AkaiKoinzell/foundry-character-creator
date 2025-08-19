@@ -40,7 +40,8 @@
       "selection": [
         "Oath of Devotion Option 1",
         "Oath of Devotion Option 2"
-      ]
+      ],
+      "type": "Oath of Devotion Feature"
     }
   ]
 }

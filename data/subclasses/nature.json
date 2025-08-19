@@ -46,7 +46,8 @@
       "selection": [
         "Nature Domain Option 1",
         "Nature Domain Option 2"
-      ]
+      ],
+      "type": "Nature Domain Feature"
     }
   ]
 }

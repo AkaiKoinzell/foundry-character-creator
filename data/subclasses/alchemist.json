@@ -44,7 +44,8 @@
       "selection": [
         "Alchemist Option 1",
         "Alchemist Option 2"
-      ]
+      ],
+      "type": "Alchemist Feature"
     }
   ]
 }

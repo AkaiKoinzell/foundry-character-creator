@@ -46,7 +46,8 @@
       "selection": [
         "Order Domain Option 1",
         "Order Domain Option 2"
-      ]
+      ],
+      "type": "Order Domain Feature"
     }
   ]
 }

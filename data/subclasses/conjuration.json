@@ -40,7 +40,8 @@
       "selection": [
         "Conjuration Option 1",
         "Conjuration Option 2"
-      ]
+      ],
+      "type": "Conjuration Feature"
     }
   ]
 }

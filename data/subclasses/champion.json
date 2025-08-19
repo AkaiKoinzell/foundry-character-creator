@@ -42,7 +42,8 @@
       "selection": [
         "Champion Option 1",
         "Champion Option 2"
-      ]
+      ],
+      "type": "Champion Feature"
     }
   ]
 }

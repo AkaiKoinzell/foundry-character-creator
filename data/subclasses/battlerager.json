@@ -40,7 +40,8 @@
       "selection": [
         "Battlerager Option 1",
         "Battlerager Option 2"
-      ]
+      ],
+      "type": "Battlerager Feature"
     }
   ]
 }

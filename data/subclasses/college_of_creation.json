@@ -34,7 +34,8 @@
       "selection": [
         "College of Creation Option 1",
         "College of Creation Option 2"
-      ]
+      ],
+      "type": "College of Creation Feature"
     }
   ]
 }

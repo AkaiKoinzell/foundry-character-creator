@@ -42,7 +42,8 @@
       "selection": [
         "Knowledge Domain Option 1",
         "Knowledge Domain Option 2"
-      ]
+      ],
+      "type": "Knowledge Domain Feature"
     }
   ]
 }

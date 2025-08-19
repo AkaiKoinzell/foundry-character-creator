@@ -40,7 +40,8 @@
       "selection": [
         "Giant Option 1",
         "Giant Option 2"
-      ]
+      ],
+      "type": "Giant Feature"
     }
   ]
 }

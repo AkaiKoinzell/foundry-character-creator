@@ -40,7 +40,8 @@
       "selection": [
         "Transmutation Option 1",
         "Transmutation Option 2"
-      ]
+      ],
+      "type": "Transmutation Feature"
     }
   ]
 }

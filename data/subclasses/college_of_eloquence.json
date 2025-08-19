@@ -38,7 +38,8 @@
       "selection": [
         "College of Eloquence Option 1",
         "College of Eloquence Option 2"
-      ]
+      ],
+      "type": "College of Eloquence Feature"
     }
   ]
 }

@@ -46,7 +46,8 @@
       "selection": [
         "Death Domain Option 1",
         "Death Domain Option 2"
-      ]
+      ],
+      "type": "Death Domain Feature"
     }
   ]
 }

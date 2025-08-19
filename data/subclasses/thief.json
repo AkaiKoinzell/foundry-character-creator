@@ -40,7 +40,8 @@
       "selection": [
         "Thief Option 1",
         "Thief Option 2"
-      ]
+      ],
+      "type": "Thief Feature"
     }
   ]
 }

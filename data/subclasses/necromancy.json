@@ -40,7 +40,8 @@
       "selection": [
         "Necromancy Option 1",
         "Necromancy Option 2"
-      ]
+      ],
+      "type": "Necromancy Feature"
     }
   ]
 }

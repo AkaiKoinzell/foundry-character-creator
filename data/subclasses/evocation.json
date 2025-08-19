@@ -40,7 +40,8 @@
       "selection": [
         "Evocation Option 1",
         "Evocation Option 2"
-      ]
+      ],
+      "type": "Evocation Feature"
     }
   ]
 }

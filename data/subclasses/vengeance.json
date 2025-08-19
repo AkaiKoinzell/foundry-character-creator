@@ -40,7 +40,8 @@
       "selection": [
         "Oath of Vengeance Option 1",
         "Oath of Vengeance Option 2"
-      ]
+      ],
+      "type": "Oath of Vengeance Feature"
     }
   ]
 }

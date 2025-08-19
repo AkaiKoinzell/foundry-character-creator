@@ -36,7 +36,8 @@
       "selection": [
         "Berserker Option 1",
         "Berserker Option 2"
-      ]
+      ],
+      "type": "Berserker Feature"
     }
   ]
 }

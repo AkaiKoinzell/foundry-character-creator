@@ -46,7 +46,8 @@
       "selection": [
         "Eldritch Knight Option 1",
         "Eldritch Knight Option 2"
-      ]
+      ],
+      "type": "Eldritch Knight Feature"
     }
   ]
 }

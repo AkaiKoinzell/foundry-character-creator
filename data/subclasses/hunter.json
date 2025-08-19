@@ -36,7 +36,8 @@
       "selection": [
         "Hunter Option 1",
         "Hunter Option 2"
-      ]
+      ],
+      "type": "Hunter Feature"
     }
   ]
 }

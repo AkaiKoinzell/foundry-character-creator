@@ -46,7 +46,8 @@
       "selection": [
         "Forge Domain Option 1",
         "Forge Domain Option 2"
-      ]
+      ],
+      "type": "Forge Domain Feature"
     }
   ]
 }

@@ -34,7 +34,8 @@
       "selection": [
         "College of Valor Option 1",
         "College of Valor Option 2"
-      ]
+      ],
+      "type": "College of Valor Feature"
     }
   ]
 }

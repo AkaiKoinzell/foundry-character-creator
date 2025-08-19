@@ -5,29 +5,29 @@
     "3": [
       {
         "name": "Nature's Wrath",
-        "description": "Description for Nature's Wrath."
+        "description": "As an action, spectral vines restrain a creature within 10 feet on a failed Strength or Dexterity save."
       },
       {
         "name": "Turn the Faithless",
-        "description": "Description for Turn the Faithless."
+        "description": "Use Channel Divinity to turn fey and fiends for 1 minute."
       }
     ],
     "7": [
       {
         "name": "Aura of Warding",
-        "description": "Description for Aura of Warding."
+        "description": "You and friendly creatures within 10 feet have resistance to damage from spells."
       }
     ],
     "15": [
       {
         "name": "Undying Sentinel",
-        "description": "Description for Undying Sentinel."
+        "description": "When reduced to 0 hit points and not killed outright, drop to 1 hit point instead once per long rest, and you suffer none of the drawbacks of old age."
       }
     ],
     "20": [
       {
         "name": "Elder Champion",
-        "description": "Description for Elder Champion."
+        "description": "For 1 minute, you regain 10 hit points at the start of each turn, cast paladin spells as bonus actions, and enemies within 10 feet have disadvantage on saves against your paladin spells and Channel Divinity options."
       }
     ]
   },

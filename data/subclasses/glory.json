@@ -1,0 +1,48 @@
+{
+  "name": "Oath of Glory",
+  "description": "These paladins are driven to achieve mighty deeds and to inspire others to greatness.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Peerless Athlete",
+        "description": "As a bonus action, gain advantage on Athletics and Acrobatics checks, double carry capacity, and increase jump distance by 10 feet for 10 minutes."
+      },
+      {
+        "name": "Inspiring Smite",
+        "description": "Immediately after dealing damage with Divine Smite, as a bonus action distribute temporary hit points equal to 2d8 + your paladin level among creatures within 30 feet."
+      }
+    ],
+    "7": [
+      {
+        "name": "Aura of Alacrity",
+        "description": "Your speed increases by 10 feet. Allies who start their turn within 5 feet of you gain a 10‑foot speed bonus until the end of that turn."
+      }
+    ],
+    "15": [
+      {
+        "name": "Glorious Defense",
+        "description": "When you or an ally within 10 feet is hit by an attack, use your reaction to add your Charisma modifier to the target's AC, potentially causing the attack to miss; if it misses, you can make one weapon attack against the attacker."
+      }
+    ],
+    "20": [
+      {
+        "name": "Living Legend",
+        "description": "For 1 minute, gain advantage on Charisma checks, turn one missed weapon attack per turn into a hit, and reroll failed saving throws. Once per long rest or by expending a 5th-level spell slot."
+      }
+    ]
+  },
+  "choices": [
+    {
+      "level": 3,
+      "name": "Oath of Glory Feature",
+      "description": "Choose an option for the Oath of Glory subclass",
+      "count": 1,
+      "selection": [
+        "Oath of Glory Option 1",
+        "Oath of Glory Option 2"
+      ],
+      "type": "Oath of Glory Feature"
+    }
+  ]
+}
+

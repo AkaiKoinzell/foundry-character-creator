@@ -1,0 +1,48 @@
+{
+  "name": "Oath of the Watchers",
+  "description": "Watchers stand guard against extraplanar threats that would harm the mortal realms.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Watcher's Will",
+        "description": "As an action, choose creatures within 30 feet; for 1 minute, you and the chosen creatures have advantage on Intelligence, Wisdom, and Charisma saving throws."
+      },
+      {
+        "name": "Abjure the Extraplanar",
+        "description": "Use Channel Divinity to turn aberrations, celestials, elementals, fey, and fiends within 30 feet for 1 minute." 
+      }
+    ],
+    "7": [
+      {
+        "name": "Aura of the Sentinel",
+        "description": "You and creatures of your choice within 10 feet gain a bonus to initiative rolls equal to your proficiency bonus." 
+      }
+    ],
+    "15": [
+      {
+        "name": "Vigilant Rebuke",
+        "description": "When you or a creature within 30 feet succeeds on an Intelligence, Wisdom, or Charisma saving throw, use your reaction to deal 2d8 + your Charisma modifier force damage to the source." 
+      }
+    ],
+    "20": [
+      {
+        "name": "Mortal Bulwark",
+        "description": "For 1 minute, you gain 120‑foot truesight, advantage on attacks against aberrations, celestials, elementals, fey, and fiends, and can attempt to banish them on a failed Charisma save. Once per long rest or by expending a 5th-level spell slot." 
+      }
+    ]
+  },
+  "choices": [
+    {
+      "level": 3,
+      "name": "Oath of the Watchers Feature",
+      "description": "Choose an option for the Oath of the Watchers subclass",
+      "count": 1,
+      "selection": [
+        "Oath of the Watchers Option 1",
+        "Oath of the Watchers Option 2"
+      ],
+      "type": "Oath of the Watchers Feature"
+    }
+  ]
+}
+

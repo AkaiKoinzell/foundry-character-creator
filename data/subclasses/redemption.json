@@ -1,0 +1,48 @@
+{
+  "name": "Oath of Redemption",
+  "description": "Paladins on this path use violence only as a last resort, striving to bring peace and redemption to their foes.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Emissary of Peace",
+        "description": "As a bonus action, gain a +5 bonus to Persuasion checks for 10 minutes."
+      },
+      {
+        "name": "Rebuke the Violent",
+        "description": "When an attacker within 30 feet deals damage, use your reaction to force a Wisdom save; on a failure the attacker takes radiant damage equal to the damage it dealt, half on success."
+      }
+    ],
+    "7": [
+      {
+        "name": "Aura of the Guardian",
+        "description": "When a creature within 10 feet takes damage, you can use your reaction to take that damage instead."
+      }
+    ],
+    "15": [
+      {
+        "name": "Protective Spirit",
+        "description": "If you end your turn in combat with fewer than half your hit points, you regain 1d6 + half your paladin level hit points."
+      }
+    ],
+    "20": [
+      {
+        "name": "Emissary of Redemption",
+        "description": "You have resistance to all damage from creatures, and whenever a creature hits you it takes radiant damage equal to half the damage you take, unless you harmed it."
+      }
+    ]
+  },
+  "choices": [
+    {
+      "level": 3,
+      "name": "Oath of Redemption Feature",
+      "description": "Choose an option for the Oath of Redemption subclass",
+      "count": 1,
+      "selection": [
+        "Oath of Redemption Option 1",
+        "Oath of Redemption Option 2"
+      ],
+      "type": "Oath of Redemption Feature"
+    }
+  ]
+}
+

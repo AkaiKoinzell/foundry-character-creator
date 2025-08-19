@@ -1,0 +1,17 @@
+{
+  "name": "Charlatan",
+  "skills": [
+    "Deception",
+    "Sleight of Hand"
+  ],
+  "tools": [
+    "Disguise Kit",
+    "Forgery Kit"
+  ],
+  "languages": [],
+  "featOptions": [
+    "Actor",
+    "Persuasive",
+    "Skill Expert"
+  ]
+}

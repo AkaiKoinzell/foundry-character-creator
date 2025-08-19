@@ -1,0 +1,17 @@
+{
+  "name": "Urchin",
+  "skills": [
+    "Sleight of Hand",
+    "Stealth"
+  ],
+  "tools": [
+    "Disguise Kit",
+    "Thieves' Tools"
+  ],
+  "languages": [],
+  "featOptions": [
+    "Agile",
+    "Die Hard",
+    "Tavern Brawler"
+  ]
+}

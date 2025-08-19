@@ -1,9 +1,17 @@
 {
-  "name": "Acolyte",
+  "name": "Sage",
   "skills": [
-    "Insight",
-    "Religion"
+    "History"
   ],
+  "skillChoices": {
+    "choose": 1,
+    "options": [
+      "Arcana",
+      "Nature",
+      "Medicine",
+      "Religion"
+    ]
+  },
   "tools": [],
   "languages": {
     "choose": 2,
@@ -27,8 +35,8 @@
     ]
   },
   "featOptions": [
-    "Magic Initiate",
-    "Eldritch Adept",
+    "Apothecary",
+    "Erudite",
     "Ritual Caster"
   ]
 }

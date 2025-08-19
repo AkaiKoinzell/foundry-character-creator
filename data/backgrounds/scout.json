@@ -1,0 +1,17 @@
+{
+  "name": "Scout",
+  "skills": [
+    "Perception",
+    "Survival"
+  ],
+  "tools": [
+    "Cartographer's Tools",
+    "Navigator's Tools"
+  ],
+  "languages": [],
+  "featOptions": [
+    "Alert",
+    "Keen Mind",
+    "Mobile"
+  ]
+}

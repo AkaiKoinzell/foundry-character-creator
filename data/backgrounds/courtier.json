@@ -1,8 +1,8 @@
 {
-  "name": "Acolyte",
+  "name": "Courtier",
   "skills": [
     "Insight",
-    "Religion"
+    "Persuasion"
   ],
   "tools": [],
   "languages": {
@@ -27,8 +27,8 @@
     ]
   },
   "featOptions": [
-    "Magic Initiate",
-    "Eldritch Adept",
-    "Ritual Caster"
+    "Keen Mind",
+    "Linguist",
+    "Persuasive"
   ]
 }

@@ -1,12 +1,14 @@
 {
-  "name": "Acolyte",
+  "name": "Noble",
   "skills": [
-    "Insight",
-    "Religion"
+    "History",
+    "Persuasion"
   ],
-  "tools": [],
+  "tools": [
+    "Gaming Set"
+  ],
   "languages": {
-    "choose": 2,
+    "choose": 1,
     "options": [
       "Common",
       "Dwarvish",
@@ -27,8 +29,8 @@
     ]
   },
   "featOptions": [
-    "Magic Initiate",
-    "Eldritch Adept",
-    "Ritual Caster"
+    "Defensive Duelist",
+    "Inspiring Leader",
+    "Persuasive"
   ]
 }

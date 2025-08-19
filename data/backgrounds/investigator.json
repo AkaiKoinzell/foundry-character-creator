@@ -1,0 +1,22 @@
+{
+  "name": "Investigator",
+  "skills": [],
+  "skillChoices": {
+    "choose": 2,
+    "options": [
+      "Insight",
+      "Investigation",
+      "Perception"
+    ]
+  },
+  "tools": [
+    "Disguise Kit",
+    "Thieves' Tools"
+  ],
+  "languages": [],
+  "featOptions": [
+    "Observant",
+    "Keen Mind",
+    "Skill Expert"
+  ]
+}

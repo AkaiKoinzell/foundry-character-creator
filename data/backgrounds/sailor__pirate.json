@@ -1,0 +1,17 @@
+{
+  "name": "Sailor / Pirate",
+  "skills": [
+    "Athletics",
+    "Perception"
+  ],
+  "tools": [
+    "Navigator's Tools",
+    "Vehicles (Water)"
+  ],
+  "languages": [],
+  "featOptions": [
+    "Athlete",
+    "Defensive Duelist",
+    "Tavern Brawler"
+  ]
+}

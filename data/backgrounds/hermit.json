@@ -1,12 +1,20 @@
 {
-  "name": "Acolyte",
+  "name": "Hermit",
   "skills": [
-    "Insight",
-    "Religion"
+    "Medicine"
   ],
-  "tools": [],
+  "skillChoices": {
+    "choose": 1,
+    "options": [
+      "Nature",
+      "Religion"
+    ]
+  },
+  "tools": [
+    "Herbalism Kit"
+  ],
   "languages": {
-    "choose": 2,
+    "choose": 1,
     "options": [
       "Common",
       "Dwarvish",
@@ -27,8 +35,8 @@
     ]
   },
   "featOptions": [
-    "Magic Initiate",
-    "Eldritch Adept",
-    "Ritual Caster"
+    "Alert",
+    "Erudite",
+    "Keen Mind"
   ]
 }

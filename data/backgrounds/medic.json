@@ -1,0 +1,17 @@
+{
+  "name": "Medic",
+  "skills": [
+    "Medicine",
+    "Sleight of Hand"
+  ],
+  "tools": [
+    "Alchemist's Supplies",
+    "Herbalism Kit"
+  ],
+  "languages": [],
+  "featOptions": [
+    "Apothecary",
+    "Healer",
+    "Slasher"
+  ]
+}

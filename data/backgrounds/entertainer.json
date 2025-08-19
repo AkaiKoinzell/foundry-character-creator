@@ -1,0 +1,31 @@
+{
+  "name": "Entertainer",
+  "skills": [
+    "Acrobatics",
+    "Performance"
+  ],
+  "tools": [
+    "Disguise Kit"
+  ],
+  "toolChoices": {
+    "choose": 1,
+    "options": [
+      "Bagpipes",
+      "Drum",
+      "Dulcimer",
+      "Flute",
+      "Lute",
+      "Lyre",
+      "Horn",
+      "Pan Flute",
+      "Shawm",
+      "Viol"
+    ]
+  },
+  "languages": [],
+  "featOptions": [
+    "Actor",
+    "Agile",
+    "Inspiring Leader"
+  ]
+}

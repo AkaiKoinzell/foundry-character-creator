@@ -155,3 +155,48 @@ th {
 .text-center {
   text-align: center;
 }
+
+/* Accordion styles */
+.accordion {
+  margin-top: 15px;
+  display: none;
+}
+
+.accordion-item {
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.accordion-header {
+  background-color: var(--primary-color);
+  color: #fff;
+  cursor: pointer;
+  padding: 10px;
+  width: 100%;
+  text-align: left;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.accordion-header::after {
+  content: '\25BA';
+  transition: transform 0.3s ease;
+}
+
+.accordion-header.active::after {
+  transform: rotate(90deg);
+}
+
+.accordion-content {
+  display: none;
+  padding: 10px;
+  background: #fff;
+}
+
+.accordion-content.show {
+  display: block;
+}

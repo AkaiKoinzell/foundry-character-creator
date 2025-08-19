@@ -49,6 +49,28 @@
           ]
         }
       ]
+    },
+    "Druid": {
+      "fixed": ["Armatura di cuoio", "Pacchetto da esploratore", "Focus druidico"],
+      "choices": [
+        {
+          "label": "Scudo o Arma",
+          "type": "radio",
+          "options": [
+            { "value": "Scudo di legno", "label": "Scudo di legno" },
+            { "value": "Arma semplice", "label": "Arma semplice" }
+          ]
+        },
+        {
+          "label": "Arma secondaria",
+          "type": "radio",
+          "options": [
+            { "value": "Scimitarra", "label": "Scimitarra" },
+            { "value": "Arma semplice da mischia", "label": "Arma semplice da mischia" }
+          ]
+        }
+      ],
+      "goldAlternative": "2d4 × 10 gp"
     }
   },
   "upgrades": {

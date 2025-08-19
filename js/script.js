@@ -813,6 +813,52 @@ async function renderClassFeatures() {
     html += `<p>${data.description}</p>`;
   }
 
+  if (data.hit_die) {
+    html += `<p><strong>Hit Die:</strong> ${data.hit_die}</p>`;
+  }
+  if (data.hp_at_1st_level) {
+    html += `<p><strong>Hit Points at 1st Level:</strong> ${data.hp_at_1st_level}</p>`;
+  }
+  if (data.hp_at_higher_levels) {
+    html += `<p><strong>Hit Points at Higher Levels:</strong> ${data.hp_at_higher_levels}</p>`;
+  }
+  if (data.saving_throws) {
+    html += `<p><strong>Saving Throw Proficiencies:</strong> ${data.saving_throws.join(", ")}</p>`;
+  }
+  if (data.weapon_proficiencies) {
+    html += `<p><strong>Weapon Proficiencies:</strong> ${data.weapon_proficiencies.join(", ")}</p>`;
+  }
+  if (data.tool_proficiencies) {
+    html += `<p><strong>Tool Proficiencies:</strong> ${data.tool_proficiencies.join(", ")}</p>`;
+  }
+  if (data.armor_proficiencies) {
+    html += `<p><strong>Armor Training:</strong> ${data.armor_proficiencies.join(", ")}</p>`;
+  }
+  if (data.skill_proficiencies && data.skill_proficiencies.choose) {
+    html += `<p><strong>Skill Proficiencies:</strong> Choose ${data.skill_proficiencies.choose} from ${data.skill_proficiencies.options.join(", ")}</p>`;
+  }
+  if (data.starting_equipment) {
+    let equipText = "";
+    if (Array.isArray(data.starting_equipment.fixed) && data.starting_equipment.fixed.length > 0) {
+      equipText += data.starting_equipment.fixed.join(", ");
+    }
+    if (Array.isArray(data.starting_equipment.choices)) {
+      data.starting_equipment.choices.forEach(choice => {
+        equipText += `; ${choice[0]} or ${choice[1]}`;
+      });
+    }
+    if (data.starting_equipment.gold_alternative) {
+      equipText += `; or ${data.starting_equipment.gold_alternative} to buy equipment`;
+    }
+    html += `<p><strong>Starting Equipment:</strong> ${equipText.replace(/^; /, "")}</p>`;
+  }
+  if (data.multiclassing && data.multiclassing.prerequisites) {
+    const prereqs = Object.entries(data.multiclassing.prerequisites)
+      .map(([ability, score]) => `${ability} ${score}`)
+      .join(", ");
+    html += `<p><strong>Multiclassing Prerequisite:</strong> ${prereqs}</p>`;
+  }
+
   // Fetch subclass data first if one is selected
   let subData = null;
   if (subclassName) {

@@ -10,7 +10,8 @@ import {
   displayRaceTraits,
   generateFinalJson,
   initializeValues,
-  setAvailableLanguages
+  setAvailableLanguages,
+  renderFinalRecap
 } from './script.js';
 import './step4.js';
 import './step5.js';
@@ -29,7 +30,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   ['step1','step2','step3','step4','step5','step6','step7'].forEach((stepId, idx) => {
     const btn = document.getElementById(`btnStep${idx + 1}`);
-    if (btn) btn.addEventListener('click', () => showStep(stepId));
+    if (btn) btn.addEventListener('click', () => {
+      showStep(stepId);
+      if (stepId === 'step7') renderFinalRecap();
+    });
   });
 
   const classSelectElem = document.getElementById('classSelect');
@@ -74,6 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   const normalizedStep = stepMap[lastStep] || lastStep;
   showStep(normalizedStep || 'step1');
+  if ((normalizedStep || 'step1') === 'step7') renderFinalRecap();
 
   document.getElementById('raceSelect').addEventListener('change', displayRaceTraits);
   document.getElementById('levelSelect').addEventListener('change', () => displayRaceTraits());

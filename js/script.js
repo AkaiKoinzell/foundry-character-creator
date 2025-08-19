@@ -121,28 +121,6 @@ function handleVariantFeatureChoices(data) {
 }
 
 // ==================== EXTRAS: LANGUAGES, SKILLS, TOOLS, ANCESTRY ====================
-function loadFeats(callback) {
-  if (availableFeats.length > 0) {
-    callback(availableFeats);
-    return;
-  }
-  fetch("data/feats.json")
-    .then(response => response.json())
-    .then(data => {
-      if (data.feats) {
-        if (Array.isArray(data.feats)) {
-          availableFeats = data.feats;
-        } else if (typeof data.feats === "object") {
-          availableFeats = Object.keys(data.feats).map(name => ({ name }));
-        }
-        callback(availableFeats);
-      } else {
-        handleError("Nessun feat trovato nel file JSON.");
-      }
-    })
-    .catch(error => handleError(`Errore caricando i feats: ${error}`));
-}
-
 function handleExtraLanguages(data, containerId) {
   if (data.languages && data.languages.choice > 0) {
     loadLanguages(langs => {
@@ -302,8 +280,6 @@ let availableLanguages = [];
 export function setAvailableLanguages(langs) {
   availableLanguages = langs;
 }
-// Cached list of feats loaded from JSON
-let availableFeats = [];
 // Flag to track confirmation of class selection
 
 // Mapping and descriptions for extra selection categories
@@ -315,8 +291,7 @@ const extraCategoryAliases = {
   "Fighting Style": "Fighting Style",
   "Additional Fighting Style": "Fighting Style",
   "Divine Domain": "Divine Domain",
-  "Metamagic": "Metamagic",
-  "Ability Score Improvement": "Ability Score Improvement"
+  "Metamagic": "Metamagic"
 };
 
 const extraCategoryDescriptions = {
@@ -325,8 +300,7 @@ const extraCategoryDescriptions = {
   "Tool Proficiency": "Seleziona le competenze negli strumenti.",
   "Fighting Style": "Scegli il tuo stile di combattimento.",
   "Divine Domain": "Seleziona il tuo dominio divino.",
-  "Metamagic": "Scegli le opzioni di Metamagia.",
-  "Ability Score Improvement": "Aumenta i punteggi di caratteristica o scegli un talento."
+  "Metamagic": "Scegli le opzioni di Metamagia."
 };
 
 /**
@@ -494,61 +468,25 @@ function openExtrasModal(selections, context = "race") {
     const content = document.createElement('div');
     content.classList.add('accordion-content');
 
-    if (categoryKey === "Ability Score Improvement") {
-      for (let i = 0; i < selection.count; i++) {
-        const block = document.createElement('div');
-        const sel = document.createElement('select');
-        sel.classList.add('asi-type');
-        sel.dataset.index = i;
-        sel.innerHTML = `<option value="">Seleziona...</option>` +
-          selection.selection.map(opt => `<option value="${opt}">${opt}</option>`).join("");
-        block.appendChild(sel);
-        const extraDiv = document.createElement('div');
-        extraDiv.id = `asi-extra-${selIdx}-${i}`;
-        block.appendChild(extraDiv);
-        content.appendChild(block);
+    for (let i = 0; i < selection.count; i++) {
+      const sel = document.createElement('select');
+      sel.classList.add('extra-selection');
+      sel.dataset.category = categoryKey;
+      sel.dataset.index = i;
+      sel.innerHTML = `<option value="">Seleziona...</option>` +
+        selection.selection.map(opt => `<option value="${opt}">${opt}</option>`).join("");
+      content.appendChild(sel);
 
-        sel.addEventListener('change', e => {
-          const index = i;
-          const choice = e.target.value;
-          const targetDiv = document.getElementById(`asi-extra-${selIdx}-${i}`);
-          if (!selectedData["Ability Score Improvement"]) {
-            selectedData["Ability Score Improvement"] = [];
-          }
-          selectedData["Ability Score Improvement"][index] = undefined;
-          sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
-          updateExtraSelectionsView();
-          targetDiv.innerHTML = "";
-          if (choice === "Increase one ability score by 2") {
-            renderAbilityOptions(targetDiv, index, 1, 2);
-          } else if (choice === "Increase two ability scores by 1") {
-            renderAbilityOptions(targetDiv, index, 2, 1);
-          } else if (choice === "Feat") {
-            renderFeatSelection(targetDiv, index);
-          }
-        });
-      }
-    } else {
-      for (let i = 0; i < selection.count; i++) {
-        const sel = document.createElement('select');
-        sel.classList.add('extra-selection');
-        sel.dataset.category = categoryKey;
-        sel.dataset.index = i;
-        sel.innerHTML = `<option value="">Seleziona...</option>` +
-          selection.selection.map(opt => `<option value="${opt}">${opt}</option>`).join("");
-        content.appendChild(sel);
-
-        sel.addEventListener('change', e => {
-          const category = e.target.dataset.category;
-          const index = e.target.dataset.index;
-          if (!selectedData[category]) {
-            selectedData[category] = [];
-          }
-          selectedData[category][index] = e.target.value;
-          sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
-          updateExtraSelectionsView();
-        });
-      }
+      sel.addEventListener('change', e => {
+        const category = e.target.dataset.category;
+        const index = e.target.dataset.index;
+        if (!selectedData[category]) {
+          selectedData[category] = [];
+        }
+        selectedData[category][index] = e.target.value;
+        sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
+        updateExtraSelectionsView();
+      });
     }
 
     item.appendChild(content);
@@ -583,16 +521,12 @@ function updateExtraSelectionsView() {
     }
   }
 
-  const summaryMap = {
+  const summaryMap = extraModalContext === "class" ? {} : {
     "Languages": ["languageSelection", "Lingue Extra"],
     "Skill Proficiency": ["skillSelectionContainer", "Skill Proficiency"],
     "Tool Proficiency": ["toolSelectionContainer", "Tool Proficiency"],
     "Spellcasting": ["spellSelectionContainer", "Spellcasting"],
-    "Cantrips": ["spellSelectionContainer", "Cantrips"],
-    "Fighting Style": ["fightingStyleSelection", "Fighting Style"],
-    "Divine Domain": ["divineDomainSelection", "Divine Domain"],
-    "Metamagic": ["metamagicSelection", "Metamagic"],
-    "Ability Score Improvement": ["abilityImprovementSelection", "Ability Score Improvement"]
+    "Cantrips": ["spellSelectionContainer", "Cantrips"]
   };
   Object.entries(summaryMap).forEach(([key, [id, title]]) => {
     if (selectedData[key] !== undefined) {
@@ -604,68 +538,6 @@ function updateExtraSelectionsView() {
   });
 
   console.log("✅ Extra selections aggiornate:", selectedData);
-}
-
-function renderAbilityOptions(container, index, maxSelections, bonus) {
-  const abilities = ["STR", "DEX", "CON", "INT", "WIS", "CHA"];
-  container.innerHTML = abilities
-    .map(
-      ability =>
-        `<label><input type="checkbox" class="asi-ability" data-index="${index}" value="${ability}">${ability}</label>`
-    )
-    .join(" ");
-
-  container.querySelectorAll(".asi-ability").forEach(cb => {
-    cb.addEventListener("change", e => {
-      const checked = [...container.querySelectorAll(".asi-ability:checked")];
-      if (checked.length > maxSelections) {
-        e.target.checked = false;
-        return;
-      }
-      const selection = checked
-        .map(c => `${c.value} +${bonus}`)
-        .join(", ");
-      if (!selectedData["Ability Score Improvement"]) {
-        selectedData["Ability Score Improvement"] = [];
-      }
-      selectedData["Ability Score Improvement"][index] = selection || undefined;
-      sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
-      updateExtraSelectionsView();
-      updateFinalScores();
-    });
-  });
-}
-
-function renderFeatSelection(container, index) {
-  loadFeats(feats => {
-    const selectedRace =
-      document.getElementById("raceSelect")?.selectedOptions[0]?.text || "";
-    const options = feats
-      .filter(
-        f =>
-          !f.races ||
-          f.races.some(r =>
-            selectedRace.toLowerCase().includes(r.toLowerCase())
-          )
-      )
-      .map(f => `<option value="${f.name}">${f.name}</option>`)
-      .join("");
-    container.innerHTML = `<details class="feature-block"><summary>Feat</summary><select class="asi-feat" data-index="${index}"><option value="">Seleziona...</option>${options}</select></details>`;
-    const featSel = container.querySelector(".asi-feat");
-    featSel.addEventListener("change", e => {
-      if (!selectedData["Ability Score Improvement"]) {
-        selectedData["Ability Score Improvement"] = [];
-      }
-      const chosen = feats.find(f => f.name === e.target.value);
-      selectedData["Ability Score Improvement"][index] = chosen
-        ? `Feat: ${chosen.name}`
-        : undefined;
-      sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
-      updateExtraSelectionsView();
-      updateFinalScores();
-    });
-    initFeatureSelectionHandlers(container);
-  });
 }
 
 /**
@@ -691,73 +563,36 @@ function showExtraSelection() {
     const categoryKey = extraCategoryAliases[currentSelection.name] || currentSelection.name;
     const selectedValues = new Set((selectedData[categoryKey] || []).filter(v => v));
 
-    if (categoryKey === "Ability Score Improvement") {
-      let html = "";
-      for (let i = 0; i < currentSelection.count; i++) {
-        html += `<div class="asi-block">
-                    <select class="asi-type" data-index="${i}">
-                      <option value="">Seleziona...</option>
-                      ${currentSelection.selection.map(opt => `<option value="${opt}">${opt}</option>`).join("")}
-                    </select>
-                    <div id="asi-extra-${i}"></div>
-                 </div>`;
-      }
-      selectionElem.innerHTML = html;
-
-      document.querySelectorAll(".asi-type").forEach(select => {
-        select.addEventListener("change", e => {
-          const index = e.target.getAttribute("data-index");
-          const choice = e.target.value;
-          const extraDiv = document.getElementById(`asi-extra-${index}`);
-          if (!selectedData["Ability Score Improvement"]) {
-            selectedData["Ability Score Improvement"] = [];
-          }
-          selectedData["Ability Score Improvement"][index] = undefined;
-          sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
-          updateExtraSelectionsView();
-          updateFinalScores();
-          extraDiv.innerHTML = "";
-          if (choice === "Increase one ability score by 2") {
-            renderAbilityOptions(extraDiv, index, 1, 2);
-          } else if (choice === "Increase two ability scores by 1") {
-            renderAbilityOptions(extraDiv, index, 2, 1);
-          } else if (choice === "Feat") {
-            renderFeatSelection(extraDiv, index);
-          }
-        });
+    let dropdownHTML = "";
+    for (let i = 0; i < currentSelection.count; i++) {
+      dropdownHTML += `<select class="extra-selection" data-category="${categoryKey}" data-index="${i}">
+                        <option value="">Seleziona...</option>`;
+      currentSelection.selection.forEach(option => {
+        const disabled = selectedValues.has(option) && !selectedData[categoryKey]?.includes(option);
+        dropdownHTML += `<option value="${option}" ${disabled ? "disabled" : ""}>${option}</option>`;
       });
-    } else {
-      let dropdownHTML = "";
-      for (let i = 0; i < currentSelection.count; i++) {
-        dropdownHTML += `<select class="extra-selection" data-category="${categoryKey}" data-index="${i}">
-                          <option value="">Seleziona...</option>`;
-        currentSelection.selection.forEach(option => {
-          const disabled = selectedValues.has(option) && !selectedData[categoryKey]?.includes(option);
-          dropdownHTML += `<option value="${option}" ${disabled ? "disabled" : ""}>${option}</option>`;
-        });
-        dropdownHTML += `</select><br>`;
-      }
-      selectionElem.innerHTML = dropdownHTML;
-
-      document.querySelectorAll(".extra-selection").forEach(select => {
-        select.addEventListener("change", (event) => {
-          const rawCategory = event.target.getAttribute("data-category");
-          const category = extraCategoryAliases[rawCategory] || rawCategory;
-          const index = event.target.getAttribute("data-index");
-
-          if (!selectedData[category]) {
-            selectedData[category] = [];
-          }
-
-          selectedData[category][index] = event.target.value;
-
-          console.log(`📝 Salvato: ${category} -> ${selectedData[category]}`);
-
-          sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
-          updateExtraSelectionsView();
-        });
-      });
+      dropdownHTML += `</select><br>`;
     }
+    selectionElem.innerHTML = dropdownHTML;
+
+    document.querySelectorAll(".extra-selection").forEach(select => {
+      select.addEventListener("change", (event) => {
+        const rawCategory = event.target.getAttribute("data-category");
+        const category = extraCategoryAliases[rawCategory] || rawCategory;
+        const index = event.target.getAttribute("data-index");
+
+        if (!selectedData[category]) {
+          selectedData[category] = [];
+        }
+
+        selectedData[category][index] = event.target.value;
+
+        console.log(`📝 Salvato: ${category} -> ${selectedData[category]}`);
+
+        sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
+        updateExtraSelectionsView();
+      });
+    });
   }
 
   if (prevTraitEl && nextTraitEl && closeModalEl) {
@@ -1204,6 +1039,51 @@ async function renderClassFeatures() {
   return selections;
 }
 
+function renderFinalRecap() {
+  const recapDiv = document.getElementById("finalRecap");
+  if (!recapDiv) return;
+
+  selectedData = sessionStorage.getItem("selectedData")
+    ? JSON.parse(sessionStorage.getItem("selectedData"))
+    : selectedData;
+
+  const className = document.getElementById("classSelect").selectedOptions[0]?.text || "";
+  const subclassName = document.getElementById("subclassSelect").selectedOptions[0]?.text || "";
+  const raceName = document.getElementById("raceSelect").selectedOptions[0]?.text || "";
+  const backgroundName = window.backgroundData ? window.backgroundData.name : "";
+
+  let html = "";
+  html += `<p><strong>Class:</strong> ${className}${subclassName ? ` (${subclassName})` : ""}</p>`;
+  html += `<p><strong>Race:</strong> ${raceName}</p>`;
+  if (backgroundName) html += `<p><strong>Background:</strong> ${backgroundName}</p>`;
+
+  const entries = Object.entries(selectedData).filter(([k, v]) => k !== "equipment" && v && v.length);
+  if (entries.length) {
+    html += `<h4>Selections</h4>`;
+    entries.forEach(([k, v]) => {
+      const vals = Array.isArray(v) ? v.filter(Boolean).join(", ") : v;
+      html += `<p><strong>${k}:</strong> ${vals}</p>`;
+    });
+  }
+
+  const equipment = selectedData.equipment || {};
+  const eqParts = [];
+  if (equipment.standard && equipment.standard.length) {
+    eqParts.push(`<p><strong>Standard:</strong> ${equipment.standard.join(", ")}</p>`);
+  }
+  if (equipment.class && equipment.class.length) {
+    eqParts.push(`<p><strong>Class:</strong> ${equipment.class.join(", ")}</p>`);
+  }
+  if (equipment.upgrades && equipment.upgrades.length) {
+    eqParts.push(`<p><strong>Upgrades:</strong> ${equipment.upgrades.join(", ")}</p>`);
+  }
+  if (eqParts.length) {
+    html += `<h4>Equipment</h4>` + eqParts.join("");
+  }
+
+  recapDiv.innerHTML = html;
+}
+
 // ==================== GENERAZIONE DEL JSON FINALE (STEP 8) ====================
 function generateFinalJson() {
   let chromaticAncestry = null;
@@ -1306,32 +1186,14 @@ function adjustPoints(ability, action) {
   updateFinalScores();
 }
 
-function getAsiBonuses() {
-  const bonuses = { str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0 };
-  const asiSelections = selectedData && selectedData["Ability Score Improvement"];
-  if (!asiSelections) return bonuses;
-  asiSelections.forEach(entry => {
-    if (!entry) return;
-    entry.split(',').forEach(part => {
-      const match = part.trim().match(/^([A-Z]{3}) \+(\d+)/);
-      if (match) {
-        const key = match[1].toLowerCase();
-        bonuses[key] += parseInt(match[2], 10);
-      }
-    });
-  });
-  return bonuses;
-}
-
 function updateFinalScores() {
   const level = parseInt(document.getElementById("levelSelect")?.value) || 1;
-  const asiBonuses = getAsiBonuses();
   ["str", "dex", "con", "int", "wis", "cha"].forEach(ability => {
     const base = parseInt(document.getElementById(`${ability}Points`).textContent);
     const raceMod = parseInt(document.getElementById(`${ability}RaceModifier`).textContent);
     const bgEl = document.getElementById(`${ability}BackgroundTalent`);
     const bgBonus = bgEl ? parseInt(bgEl.value) || 0 : 0;
-    const finalScore = base + raceMod + bgBonus + (asiBonuses[ability] || 0);
+    const finalScore = base + raceMod + bgBonus;
     const finalScoreElement = document.getElementById(`${ability}FinalScore`);
     if (level === 1 && finalScore > 17) {
       finalScoreElement.textContent = "Errore";
@@ -1414,7 +1276,6 @@ export {
   updateVariantSkillOptions,
   handleVariantExtraSelections,
   handleVariantFeatureChoices,
-  loadFeats,
   handleExtraLanguages,
   handleExtraSkills,
   handleExtraTools,
@@ -1427,6 +1288,7 @@ export {
   openExtrasModal,
   displayRaceTraits,
   generateFinalJson,
-  initializeValues
+  initializeValues,
+  renderFinalRecap
 };
 

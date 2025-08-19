@@ -140,10 +140,7 @@ th {
 #skillSelectionContainer,
 #toolSelectionContainer,
 #variantFeatureSelectionContainer,
-#variantExtraContainer,
-#fightingStyleSelection,
-#divineDomainSelection,
-#metamagicSelection {
+#variantExtraContainer {
   margin-top: 15px;
 }
 

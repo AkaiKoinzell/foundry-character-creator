@@ -1,33 +1,33 @@
 {
   "name": "Totem Warrior",
-  "description": "A warrior who channels animal spirits to guide and protect.",
+  "description": "A spiritual warrior who channels the might of animal totems to fuel a supernatural rage.",
   "features_by_level": {
     "3": [
       {
         "name": "Spirit Seeker",
-        "description": "Description for Spirit Seeker."
+        "description": "You can cast the beast sense and speak with animals spells, but only as rituals."
       },
       {
         "name": "Totem Spirit",
-        "description": "Description for Totem Spirit."
+        "description": "You choose a totem spirit and gain its feature while raging, such as the bear's resilience or the eagle's mobility. You must make or acquire a totem representing your spirit."
       }
     ],
     "6": [
       {
         "name": "Aspect of the Beast",
-        "description": "Description for Aspect of the Beast."
+        "description": "Gain a magical benefit based on your totem animal, such as the bear's strength or the wolf's tracking prowess."
       }
     ],
     "10": [
       {
         "name": "Spirit Walker",
-        "description": "Description for Spirit Walker."
+        "description": "You can cast commune with nature as a ritual, calling upon your totem spirit for guidance."
       }
     ],
     "14": [
       {
         "name": "Totemic Attunement",
-        "description": "Description for Totemic Attunement."
+        "description": "Gain a powerful ability based on a totem animal of your choice while raging, such as the bear's protection or the eagle's flight."
       }
     ]
   }

@@ -1,0 +1,34 @@
+{
+  "name": "Giant",
+  "description": "Barbarians who channel the primal might of giants, growing in size and elemental power as they rage.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Giant Power",
+        "description": "Learn to speak, read, and write Giant or another language if you already know it, and learn the druidcraft or thaumaturgy cantrip."
+      },
+      {
+        "name": "Giant's Havoc",
+        "description": "While raging, add your Rage Damage to thrown weapon attacks and increase your reach by 5 feet, becoming Large if space allows."
+      }
+    ],
+    "6": [
+      {
+        "name": "Elemental Cleaver",
+        "description": "When you rage, infuse a weapon with acid, cold, fire, thunder, or lightning damage; it deals an extra 1d6 of that type and gains the thrown property. You can change the damage type as a bonus action."
+      }
+    ],
+    "10": [
+      {
+        "name": "Mighty Impel",
+        "description": "As a bonus action while raging, move a Medium or smaller creature within reach to an empty space within 30 feet. An unwilling creature resists with a Strength save."
+      }
+    ],
+    "14": [
+      {
+        "name": "Demiurgic Colossus",
+        "description": "When you rage, your reach increases by 10 feet, your size can become Large or Huge, and Elemental Cleaver's extra damage becomes 2d6. Mighty Impel can move Large or smaller creatures."
+      }
+    ]
+  }
+}

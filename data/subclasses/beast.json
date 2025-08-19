@@ -1,0 +1,30 @@
+{
+  "name": "Beast",
+  "description": "Barbarians whose rage releases a feral transformation guided by a primal spirit.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Form of the Beast",
+        "description": "When you rage, manifest natural weapons—bite, claws, or tail—each granting unique benefits and counting as simple melee weapons."
+      }
+    ],
+    "6": [
+      {
+        "name": "Bestial Soul",
+        "description": "Your natural weapons count as magical. After a rest choose a benefit: swim and breathe underwater, climb difficult surfaces, or extend jumps."
+      }
+    ],
+    "10": [
+      {
+        "name": "Infectious Fury",
+        "description": "When you hit with a natural weapon while raging, force a Wisdom save or have the target attack another creature or take 2d12 psychic damage. Uses equal to your proficiency bonus per long rest."
+      }
+    ],
+    "14": [
+      {
+        "name": "Call the Hunt",
+        "description": "When you rage, choose creatures equal to your Constitution modifier to gain 5 temporary hit points. Until the rage ends, they can add 1d6 damage once per turn. Uses equal to your proficiency bonus per long rest."
+      }
+    ]
+  }
+}

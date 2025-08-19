@@ -994,7 +994,11 @@ function getSubclassFilename(name) {
       lower = lower.slice(0, -" domain".length);
     }
   }
-  return lower.replace(/ /g, "_") + ".json";
+  let file = lower.replace(/ /g, "_") + ".json";
+  if (file === "wild_magic.json" && window.currentClassData?.name === "Barbarian") {
+    file = "barbarian_wild_magic.json";
+  }
+  return file;
 }
 
 async function renderClassFeatures() {

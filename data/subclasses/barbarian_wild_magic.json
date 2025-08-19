@@ -1,0 +1,34 @@
+{
+  "name": "Wild Magic",
+  "description": "Barbarians whose rage is suffused with unpredictable magic, producing chaotic effects.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Magic Awareness",
+        "description": "As an action, sense the location of spells or magic items within 60 feet until the end of your next turn. Uses equal to your proficiency bonus per long rest."
+      },
+      {
+        "name": "Wild Surge",
+        "description": "When you enter your rage, roll on the Wild Magic table to determine a magical effect."
+      }
+    ],
+    "6": [
+      {
+        "name": "Bolstering Magic",
+        "description": "As an action, touch a creature to add a d3 to its attack rolls and ability checks for 10 minutes or restore a spell slot of level d3 or lower. Uses equal to your proficiency bonus per long rest."
+      }
+    ],
+    "10": [
+      {
+        "name": "Unstable Backlash",
+        "description": "When you take damage or fail a saving throw while raging, use your reaction to roll on the Wild Magic table again, replacing the current effect."
+      }
+    ],
+    "14": [
+      {
+        "name": "Controlled Surge",
+        "description": "Whenever you roll on the Wild Magic table, you can roll twice and choose either result; if both are the same, choose any effect on the table."
+      }
+    ]
+  }
+}

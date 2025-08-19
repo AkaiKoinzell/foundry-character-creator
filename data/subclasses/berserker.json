@@ -1,29 +1,29 @@
 {
   "name": "Berserker",
-  "description": "The Berserker is a path of untrammeled fury, slick with blood...",
+  "description": "For some barbarians, rage is a means to an end—the end being violence and chaos on the battlefield.",
   "features_by_level": {
     "3": [
       {
         "name": "Frenzy",
-        "description": "Description for Frenzy."
+        "description": "While raging, you can enter a frenzy. For the duration of the rage you can make one melee weapon attack as a bonus action on each turn after this one. When the rage ends, you suffer one level of exhaustion."
       }
     ],
     "6": [
       {
         "name": "Mindless Rage",
-        "description": "Description for Mindless Rage."
+        "description": "You can't be charmed or frightened while raging. If you are charmed or frightened when you enter your rage, the effect is suspended for the duration of the rage."
       }
     ],
     "10": [
       {
         "name": "Intimidating Presence",
-        "description": "Description for Intimidating Presence."
+        "description": "You can use your action to frighten one creature within 30 feet that can see or hear you. The target must succeed on a Wisdom save or be frightened until the end of your next turn. You can use your action on subsequent turns to extend the effect."
       }
     ],
     "14": [
       {
         "name": "Retaliation",
-        "description": "Description for Retaliation."
+        "description": "When you take damage from a creature within 5 feet of you, you can use your reaction to make a melee weapon attack against that creature."
       }
     ]
   }

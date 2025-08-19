@@ -219,6 +219,24 @@ function loadLanguages(callback) {
     .catch(error => handleError(`Errore caricando le lingue: ${error}`));
 }
 
+function loadFeats(callback) {
+  if (availableFeats.length > 0) {
+    callback(availableFeats);
+    return;
+  }
+  fetch("data/feats.json")
+    .then(response => response.json())
+    .then(data => {
+      if (data.feats) {
+        availableFeats = data.feats;
+        callback(availableFeats);
+      } else {
+        handleError("Nessun feat trovato nel file JSON.");
+      }
+    })
+    .catch(error => handleError(`Errore caricando i feats: ${error}`));
+}
+
 function handleExtraLanguages(data, containerId) {
   if (data.languages && data.languages.choice > 0) {
     loadLanguages(langs => {
@@ -635,6 +653,8 @@ let extraSelections = [];
 let currentSelectionIndex = 0;
 // Cached list of all languages loaded from JSON
 let availableLanguages = [];
+// Cached list of feats loaded from JSON
+let availableFeats = [];
 // Context for the extras modal ("race" or "class")
 let extraModalContext = "race";
 // Flag to track confirmation of class selection
@@ -729,7 +749,7 @@ function gatherExtraSelections(data, context, level = 1) {
     allChoices.forEach(choice => {
       if (!choice.level || parseInt(choice.level) <= level) {
         const key = extraCategoryAliases[choice.name] || choice.name;
-        const selected = selectedData[key] || [];
+        const selected = (selectedData[key] || []).filter(v => v);
         if (selected.length < (choice.count || 1)) {
           selections.push(choice);
         }
@@ -787,12 +807,13 @@ function updateExtraSelectionsView() {
   function updateContainer(id, title, dataKey) {
     const container = document.getElementById(id);
     if (container) {
-      if (selectedData[dataKey] && selectedData[dataKey].length > 0) {
-        container.innerHTML = `<p><strong>${title}:</strong> ${selectedData[dataKey].join(", ")}</p>`;
-        container.style.display = "block";  
+      const values = (selectedData[dataKey] || []).filter(v => v);
+      if (values.length > 0) {
+        container.innerHTML = `<p><strong>${title}:</strong> ${values.join(", ")}</p>`;
+        container.style.display = "block";
       } else {
         container.innerHTML = `<p><strong>${title}:</strong> Nessuna selezione.</p>`;
-        container.style.display = "block";  
+        container.style.display = "block";
       }
     }
   }
@@ -805,13 +826,62 @@ function updateExtraSelectionsView() {
     "Cantrips": ["spellSelectionContainer", "Cantrips"],
     "Fighting Style": ["fightingStyleSelection", "Fighting Style"],
     "Divine Domain": ["divineDomainSelection", "Divine Domain"],
-    "Metamagic": ["metamagicSelection", "Metamagic"]
+    "Metamagic": ["metamagicSelection", "Metamagic"],
+    "Ability Score Improvement": ["abilityImprovementSelection", "Ability Score Improvement"]
   };
   Object.entries(summaryMap).forEach(([key, [id, title]]) => {
     updateContainer(id, title, key);
   });
 
   console.log("✅ Extra selections aggiornate:", selectedData);
+}
+
+function renderAbilityOptions(container, index, maxSelections, bonus) {
+  const abilities = ["STR", "DEX", "CON", "INT", "WIS", "CHA"];
+  container.innerHTML = abilities
+    .map(
+      ability =>
+        `<label><input type="checkbox" class="asi-ability" data-index="${index}" value="${ability}">${ability}</label>`
+    )
+    .join(" ");
+
+  container.querySelectorAll(".asi-ability").forEach(cb => {
+    cb.addEventListener("change", e => {
+      const checked = [...container.querySelectorAll(".asi-ability:checked")];
+      if (checked.length > maxSelections) {
+        e.target.checked = false;
+        return;
+      }
+      const selection = checked
+        .map(c => `${c.value} +${bonus}`)
+        .join(", ");
+      if (!selectedData["Ability Score Improvement"]) {
+        selectedData["Ability Score Improvement"] = [];
+      }
+      selectedData["Ability Score Improvement"][index] = selection || undefined;
+      sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
+      updateExtraSelectionsView();
+    });
+  });
+}
+
+function renderFeatSelection(container, index) {
+  loadFeats(feats => {
+    const options = feats
+      .map(f => `<option value="${f}">${f}</option>`)
+      .join("");
+    container.innerHTML = `<select class="asi-feat" data-index="${index}"><option value="">Seleziona...</option>${options}</select>`;
+    container.querySelector(".asi-feat").addEventListener("change", e => {
+      if (!selectedData["Ability Score Improvement"]) {
+        selectedData["Ability Score Improvement"] = [];
+      }
+      selectedData["Ability Score Improvement"][index] = e.target.value
+        ? `Feat: ${e.target.value}`
+        : undefined;
+      sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
+      updateExtraSelectionsView();
+    });
+  });
 }
 
 /**
@@ -835,41 +905,74 @@ function showExtraSelection() {
 
   if (currentSelection.selection) {
     const categoryKey = extraCategoryAliases[currentSelection.name] || currentSelection.name;
-    const selectedValues = new Set(selectedData[categoryKey] || []);
-    let dropdownHTML = "";
+    const selectedValues = new Set((selectedData[categoryKey] || []).filter(v => v));
 
-    for (let i = 0; i < currentSelection.count; i++) {
-      dropdownHTML += `<select class="extra-selection" data-category="${categoryKey}" data-index="${i}">
+    if (categoryKey === "Ability Score Improvement") {
+      let html = "";
+      for (let i = 0; i < currentSelection.count; i++) {
+        html += `<div class="asi-block">
+                    <select class="asi-type" data-index="${i}">
+                      <option value="">Seleziona...</option>
+                      ${currentSelection.selection.map(opt => `<option value="${opt}">${opt}</option>`).join("")}
+                    </select>
+                    <div id="asi-extra-${i}"></div>
+                 </div>`;
+      }
+      selectionElem.innerHTML = html;
+
+      document.querySelectorAll(".asi-type").forEach(select => {
+        select.addEventListener("change", e => {
+          const index = e.target.getAttribute("data-index");
+          const choice = e.target.value;
+          const extraDiv = document.getElementById(`asi-extra-${index}`);
+          if (!selectedData["Ability Score Improvement"]) {
+            selectedData["Ability Score Improvement"] = [];
+          }
+          selectedData["Ability Score Improvement"][index] = undefined;
+          sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
+          updateExtraSelectionsView();
+          extraDiv.innerHTML = "";
+          if (choice === "Increase one ability score by 2") {
+            renderAbilityOptions(extraDiv, index, 1, 2);
+          } else if (choice === "Increase two ability scores by 1") {
+            renderAbilityOptions(extraDiv, index, 2, 1);
+          } else if (choice === "Feat") {
+            renderFeatSelection(extraDiv, index);
+          }
+        });
+      });
+    } else {
+      let dropdownHTML = "";
+      for (let i = 0; i < currentSelection.count; i++) {
+        dropdownHTML += `<select class="extra-selection" data-category="${categoryKey}" data-index="${i}">
                           <option value="">Seleziona...</option>`;
-      currentSelection.selection.forEach(option => {
-        const disabled = selectedValues.has(option) && !selectedData[categoryKey]?.includes(option);
-        dropdownHTML += `<option value="${option}" ${disabled ? "disabled" : ""}>${option}</option>`;
+        currentSelection.selection.forEach(option => {
+          const disabled = selectedValues.has(option) && !selectedData[categoryKey]?.includes(option);
+          dropdownHTML += `<option value="${option}" ${disabled ? "disabled" : ""}>${option}</option>`;
+        });
+        dropdownHTML += `</select><br>`;
+      }
+      selectionElem.innerHTML = dropdownHTML;
+
+      document.querySelectorAll(".extra-selection").forEach(select => {
+        select.addEventListener("change", (event) => {
+          const rawCategory = event.target.getAttribute("data-category");
+          const category = extraCategoryAliases[rawCategory] || rawCategory;
+          const index = event.target.getAttribute("data-index");
+
+          if (!selectedData[category]) {
+            selectedData[category] = [];
+          }
+
+          selectedData[category][index] = event.target.value;
+
+          console.log(`📝 Salvato: ${category} -> ${selectedData[category]}`);
+
+          sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
+          updateExtraSelectionsView();
+        });
       });
-      dropdownHTML += `</select><br>`;
     }
-
-    selectionElem.innerHTML = dropdownHTML;
-
-    document.querySelectorAll(".extra-selection").forEach(select => {
-      select.addEventListener("change", (event) => {
-        const rawCategory = event.target.getAttribute("data-category");
-        const category = extraCategoryAliases[rawCategory] || rawCategory;
-        const index = event.target.getAttribute("data-index");
-
-        if (!selectedData[category]) {
-          selectedData[category] = [];
-        }
-
-        selectedData[category][index] = event.target.value;
-
-        // 🔥 Rimuove elementi vuoti
-        selectedData[category] = selectedData[category].filter(value => value);
-
-        console.log(`📝 Salvato: ${category} -> ${selectedData[category]}`);
-
-        updateExtraSelectionsView();
-      });
-    });
   }
 
   document.getElementById("prevTrait").disabled = (currentSelectionIndex === 0);
@@ -882,8 +985,8 @@ function showExtraSelection() {
   const nextBtn = document.getElementById("nextTrait");
   // Mostra il pulsante "Chiudi" solo dopo l'ultimo step e se tutte le selezioni sono fatte
   const closeBtn = document.getElementById("closeModal");
-  const allChoicesFilled = extraSelections.every(sel => 
-    selectedData[sel.name] && selectedData[sel.name].length === sel.count
+  const allChoicesFilled = extraSelections.every(sel =>
+    selectedData[sel.name] && selectedData[sel.name].filter(v => v).length === sel.count
   );
 
   if (currentSelectionIndex === extraSelections.length - 1 && allChoicesFilled) {

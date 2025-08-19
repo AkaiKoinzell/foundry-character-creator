@@ -40,7 +40,8 @@
       "selection": [
         "Circle of Wildfire Option 1",
         "Circle of Wildfire Option 2"
-      ]
+      ],
+      "type": "Circle of Wildfire Feature"
     }
   ]
 }

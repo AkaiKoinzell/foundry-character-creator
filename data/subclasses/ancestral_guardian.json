@@ -36,7 +36,8 @@
       "selection": [
         "Ancestral Guardian Option 1",
         "Ancestral Guardian Option 2"
-      ]
+      ],
+      "type": "Ancestral Guardian Feature"
     }
   ]
 }

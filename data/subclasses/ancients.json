@@ -40,7 +40,8 @@
       "selection": [
         "Oath of the Ancients Option 1",
         "Oath of the Ancients Option 2"
-      ]
+      ],
+      "type": "Oath of the Ancients Feature"
     }
   ]
 }

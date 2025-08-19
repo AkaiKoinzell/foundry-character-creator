@@ -40,7 +40,8 @@
       "selection": [
         "Assassin Option 1",
         "Assassin Option 2"
-      ]
+      ],
+      "type": "Assassin Feature"
     }
   ]
 }

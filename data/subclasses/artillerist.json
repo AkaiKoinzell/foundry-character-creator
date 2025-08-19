@@ -44,7 +44,8 @@
       "selection": [
         "Artillerist Option 1",
         "Artillerist Option 2"
-      ]
+      ],
+      "type": "Artillerist Feature"
     }
   ]
 }

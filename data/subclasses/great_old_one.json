@@ -36,7 +36,8 @@
       "selection": [
         "The Great Old One Option 1",
         "The Great Old One Option 2"
-      ]
+      ],
+      "type": "The Great Old One Feature"
     }
   ]
 }

@@ -40,7 +40,8 @@
       "selection": [
         "Enchantment Option 1",
         "Enchantment Option 2"
-      ]
+      ],
+      "type": "Enchantment Feature"
     }
   ]
 }

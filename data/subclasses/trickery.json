@@ -42,7 +42,8 @@
       "selection": [
         "Trickery Domain Option 1",
         "Trickery Domain Option 2"
-      ]
+      ],
+      "type": "Trickery Domain Feature"
     }
   ]
 }

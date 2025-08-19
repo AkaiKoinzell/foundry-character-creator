@@ -38,7 +38,8 @@
       "selection": [
         "College of Swords Option 1",
         "College of Swords Option 2"
-      ]
+      ],
+      "type": "College of Swords Feature"
     }
   ]
 }

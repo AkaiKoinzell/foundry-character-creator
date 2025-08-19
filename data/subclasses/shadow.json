@@ -36,7 +36,8 @@
       "selection": [
         "Way of Shadow Option 1",
         "Way of Shadow Option 2"
-      ]
+      ],
+      "type": "Way of Shadow Feature"
     }
   ]
 }

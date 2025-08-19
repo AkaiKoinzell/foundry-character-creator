@@ -48,7 +48,8 @@
       "selection": [
         "Circle of the Blighted Option 1",
         "Circle of the Blighted Option 2"
-      ]
+      ],
+      "type": "Circle of the Blighted Feature"
     }
   ]
 }

@@ -36,7 +36,8 @@
       "selection": [
         "Beast Option 1",
         "Beast Option 2"
-      ]
+      ],
+      "type": "Beast Feature"
     }
   ]
 }

@@ -36,7 +36,8 @@
       "selection": [
         "Storm Herald Option 1",
         "Storm Herald Option 2"
-      ]
+      ],
+      "type": "Storm Herald Feature"
     }
   ]
 }

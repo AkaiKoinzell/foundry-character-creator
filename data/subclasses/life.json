@@ -46,7 +46,8 @@
       "selection": [
         "Life Domain Option 1",
         "Life Domain Option 2"
-      ]
+      ],
+      "type": "Life Domain Feature"
     }
   ]
 }

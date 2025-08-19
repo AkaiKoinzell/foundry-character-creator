@@ -40,7 +40,8 @@
       "selection": [
         "Battle Master Option 1",
         "Battle Master Option 2"
-      ]
+      ],
+      "type": "Battle Master Feature"
     }
   ]
 }

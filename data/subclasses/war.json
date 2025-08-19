@@ -46,7 +46,8 @@
       "selection": [
         "War Domain Option 1",
         "War Domain Option 2"
-      ]
+      ],
+      "type": "War Domain Feature"
     }
   ]
 }

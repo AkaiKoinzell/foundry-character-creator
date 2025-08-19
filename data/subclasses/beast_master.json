@@ -36,7 +36,8 @@
       "selection": [
         "Beast Master Option 1",
         "Beast Master Option 2"
-      ]
+      ],
+      "type": "Beast Master Feature"
     }
   ]
 }

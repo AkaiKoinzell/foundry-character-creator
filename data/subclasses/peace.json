@@ -46,7 +46,8 @@
       "selection": [
         "Peace Domain Option 1",
         "Peace Domain Option 2"
-      ]
+      ],
+      "type": "Peace Domain Feature"
     }
   ]
 }

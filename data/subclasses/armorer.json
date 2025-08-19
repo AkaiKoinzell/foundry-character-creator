@@ -48,7 +48,8 @@
       "selection": [
         "Armorer Option 1",
         "Armorer Option 2"
-      ]
+      ],
+      "type": "Armorer Feature"
     }
   ]
 }

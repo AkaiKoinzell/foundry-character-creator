@@ -46,7 +46,8 @@
       "selection": [
         "Tempest Domain Option 1",
         "Tempest Domain Option 2"
-      ]
+      ],
+      "type": "Tempest Domain Feature"
     }
   ]
 }

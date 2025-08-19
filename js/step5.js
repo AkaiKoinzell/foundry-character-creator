@@ -1,4 +1,5 @@
 // Step 5: Background selection and feat handling
+import { loadDropdownData } from './common.js';
 
 let featPathIndex = {};
 let currentFeatData = null;

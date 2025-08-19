@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Character Creator - Foundry</title>
-  <!-- Includi il file script.js unificato -->
-  <script src="js/script.js" defer></script>
-  <script src="js/step5.js" defer></script>
+  <script type="module" src="js/main.js"></script>
   <style>
     /* Stili per un look moderno e una buona UX */
     body {
@@ -397,29 +395,5 @@
       <button id="generateJson" class="primary">Genera JSON</button>
     </div>
   </div>
-  <!-- Script per la navigazione fra gli step -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const steps = document.querySelectorAll(".step");
-      function showStep(stepId) {
-        steps.forEach(step => {
-          if (step.id === stepId) {
-            step.classList.add("active");
-          } else {
-            step.classList.remove("active");
-          }
-        });
-      }
-      document.getElementById("btnStep1").addEventListener("click", () => showStep("step1"));
-      document.getElementById("btnStep2").addEventListener("click", () => showStep("step2"));
-      document.getElementById("btnStep3").addEventListener("click", () => showStep("step3"));
-      document.getElementById("btnStep4").addEventListener("click", () => showStep("step4"));
-      document.getElementById("btnStep5").addEventListener("click", () => showStep("step5"));
-      document.getElementById("btnStep6").addEventListener("click", () => showStep("step6"));
-      document.getElementById("btnStep8").addEventListener("click", () => showStep("step8"));
-      // Inizialmente mostra lo step 1
-      showStep("step1");
-    });
-  </script>
 </body>
 </html>

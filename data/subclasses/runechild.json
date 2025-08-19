@@ -1,0 +1,52 @@
+{
+  "name": "Runechild",
+  "description": "Your body manifests natural runes that channel arcane power in luminous sigils.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Essence Runes",
+        "description": "Gain essence runes that charge when you spend sorcery points; charged runes power your subclass features."
+      },
+      {
+        "name": "Runic Magic",
+        "description": "Gain additional abjuration and transmutation spells at certain levels that don't count against spells known."
+      },
+      {
+        "name": "Glyph of Aegis",
+        "description": "When you take damage, expend charged runes as a reaction to reduce the damage by 1d6 per rune."
+      }
+    ],
+    "6": [
+      {
+        "name": "Glyph of Aegis (Transfer)",
+        "description": "As an action, transfer up to three charged runes to protect another creature, reducing the next damage it takes by 1d6 per rune."
+      },
+      {
+        "name": "Sigilic Augmentation",
+        "description": "Expend a charged rune to gain advantage on a Strength, Dexterity, or Constitution check or saving throw (the saving throw option usable once per long rest)."
+      },
+      {
+        "name": "Manifest Inscriptions",
+        "description": "Expend a charged rune to reveal hidden magical glyphs, traps, or wards within 60 feet for 1 minute."
+      }
+    ],
+    "14": [
+      {
+        "name": "Glyph of Aegis (d8)",
+        "description": "The die used for your Glyph of Aegis becomes a d8."
+      },
+      {
+        "name": "Runic Torrent",
+        "description": "Expend two charged runes to convert a spell's damage to force and knock targets prone or push them up to 15 feet; once per rest."
+      }
+    ],
+    "18": [
+      {
+        "name": "Arcane Exemplar",
+        "description": "Spend a charged rune to become pure magical energy, gaining flight, resistance to spell damage, healing when casting spells, and imposing disadvantage on saves against your spells."
+      }
+    ]
+  },
+  "choices": []
+}
+

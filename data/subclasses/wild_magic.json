@@ -1,47 +1,36 @@
 {
   "name": "Wild Magic",
-  "description": "Your innate magic comes from the wild forces of chaos.",
+  "description": "Your innate magic is suffused with unpredictable energy that erupts in random effects.",
   "features_by_level": {
     "1": [
       {
         "name": "Wild Magic Surge",
-        "description": "Description for Wild Magic Surge."
+        "description": "After casting a sorcerer spell, the DM may have you roll on the Wild Magic Surge table to create a random magical effect."
       },
       {
         "name": "Tides of Chaos",
-        "description": "Description for Tides of Chaos."
+        "description": "Gain advantage on one attack roll, ability check, or saving throw; the DM can later force a Wild Magic Surge to restore this feature."
       }
     ],
     "6": [
       {
         "name": "Bend Luck",
-        "description": "Description for Bend Luck."
+        "description": "As a reaction, spend 2 sorcery points to add or subtract 1d4 from another creature's roll."
       }
     ],
     "14": [
       {
         "name": "Controlled Chaos",
-        "description": "Description for Controlled Chaos."
+        "description": "Whenever you roll on the Wild Magic Surge table, roll twice and choose either result."
       }
     ],
     "18": [
       {
         "name": "Spell Bombardment",
-        "description": "Description for Spell Bombardment."
+        "description": "When you roll the highest number on a damage die for a spell, roll that die again and add it to the damage once per turn."
       }
     ]
   },
-  "choices": [
-    {
-      "level": 1,
-      "name": "Wild Magic Feature",
-      "description": "Choose an option for the Wild Magic subclass",
-      "count": 1,
-      "selection": [
-        "Wild Magic Option 1",
-        "Wild Magic Option 2"
-      ],
-      "type": "Wild Magic Feature"
-    }
-  ]
+  "choices": []
 }
+

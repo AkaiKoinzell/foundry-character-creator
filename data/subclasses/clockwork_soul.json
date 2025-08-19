@@ -1,0 +1,36 @@
+{
+  "name": "Clockwork Soul",
+  "description": "The cosmic force of order infuses your magic, tying you to Mechanus and its precise calculations.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Clockwork Magic",
+        "description": "Gain extra spells that don't count against spells known; they can be replaced with abjuration or transmutation spells."
+      },
+      {
+        "name": "Restore Balance",
+        "description": "As a reaction, cancel advantage or disadvantage on a roll within 60 feet a number of times equal to your proficiency bonus per long rest."
+      }
+    ],
+    "6": [
+      {
+        "name": "Bastion of Law",
+        "description": "As an action, spend 1-5 sorcery points to create a ward of d8s around a creature that reduces incoming damage."
+      }
+    ],
+    "14": [
+      {
+        "name": "Trance of Order",
+        "description": "Bonus action to enter a state for 1 minute where attack rolls against you can't gain advantage and rolls of 9 or lower on your d20 count as 10."
+      }
+    ],
+    "18": [
+      {
+        "name": "Clockwork Cavalcade",
+        "description": "Summon spirits of order to heal, repair, and end spells in a 30-foot cube once per long rest or by spending 7 sorcery points."
+      }
+    ]
+  },
+  "choices": []
+}
+

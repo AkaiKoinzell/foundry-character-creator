@@ -1,0 +1,36 @@
+{
+  "name": "Shadow Magic",
+  "description": "Your innate magic draws from the Shadowfell, blurring the line between life and death.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Eyes of the Dark",
+        "description": "You have darkvision out to 120 feet and at 3rd level can cast darkness with sorcery points and see through it."
+      },
+      {
+        "name": "Strength of the Grave",
+        "description": "When damage would reduce you to 0 hit points, make a Charisma save to drop to 1 hit point instead, once per long rest unless radiant or critical."
+      }
+    ],
+    "6": [
+      {
+        "name": "Hound of Ill Omen",
+        "description": "Spend 3 sorcery points to summon a spectral hound that relentlessly pursues a target, imposing disadvantage on its saves against your spells."
+      }
+    ],
+    "14": [
+      {
+        "name": "Shadow Walk",
+        "description": "While in dim light or darkness, teleport up to 120 feet to another dim light or dark area as a bonus action."
+      }
+    ],
+    "18": [
+      {
+        "name": "Umbral Form",
+        "description": "Spend 6 sorcery points to become shadowy for 1 minute, gaining resistance to all but force and radiant damage and the ability to move through creatures and objects."
+      }
+    ]
+  },
+  "choices": []
+}
+

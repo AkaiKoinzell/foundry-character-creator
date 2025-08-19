@@ -1,0 +1,40 @@
+{
+  "name": "Storm Sorcery",
+  "description": "Your innate magic is tied to elemental air, letting you ride the winds and command the storm.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Wind Speaker",
+        "description": "You can speak, read, and write Primordial and its dialects."
+      },
+      {
+        "name": "Tempestuous Magic",
+        "description": "Immediately before or after casting a spell of 1st level or higher, use a bonus action to fly up to 10 feet without provoking opportunity attacks."
+      }
+    ],
+    "6": [
+      {
+        "name": "Heart of the Storm",
+        "description": "Gain resistance to lightning and thunder damage; when casting such spells, deal extra damage to creatures within 10 feet equal to half your sorcerer level."
+      },
+      {
+        "name": "Storm Guide",
+        "description": "You can calm rain in a small area or change the direction of the wind around you."
+      }
+    ],
+    "14": [
+      {
+        "name": "Storm's Fury",
+        "description": "When a creature hits you with a melee attack, use your reaction to deal lightning damage equal to your sorcerer level and possibly push it away."
+      }
+    ],
+    "18": [
+      {
+        "name": "Wind Soul",
+        "description": "Gain immunity to lightning and thunder damage and a 60-foot flying speed; you can share a 30-foot flying speed with others for 1 hour."
+      }
+    ]
+  },
+  "choices": []
+}
+

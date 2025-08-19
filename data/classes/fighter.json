@@ -54,6 +54,7 @@
       "name": "Fighting Style",
       "description": "Choose a fighting style",
       "count": 1,
+      "type": "fighting style",
       "selection": [
         "Archery",
         "Defense",

@@ -103,6 +103,7 @@
       "name": "Cantrip",
       "description": "Choose two wizard cantrips to learn",
       "count": 2,
+      "type": "cantrips",
       "selection": [
         "Mage Hand",
         "Prestidigitation",

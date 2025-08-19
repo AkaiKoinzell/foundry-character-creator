@@ -50,6 +50,7 @@
       "name": "Pact Boon",
       "description": "Choose a pact boon",
       "count": 1,
+      "type": "pact boon",
       "selection": [
         "Pact of the Chain",
         "Pact of the Blade",

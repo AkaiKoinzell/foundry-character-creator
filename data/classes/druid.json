@@ -194,6 +194,7 @@
       "name": "Cantrip",
       "description": "Choose two druid cantrips to learn",
       "count": 2,
+      "type": "cantrips",
       "selection": [
         "Guidance",
         "Produce Flame",

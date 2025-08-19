@@ -655,6 +655,82 @@ const extraCategoryDescriptions = {
 };
 
 /**
+ * Builds a unified list of extra selections for races or classes.
+ * @param {Object} data - Source data containing choice information.
+ * @param {string} context - "race" or "class" to determine parsing logic.
+ * @param {number} [level=1] - Character level for filtering class choices.
+ * @returns {Array} List of selection objects.
+ */
+function gatherExtraSelections(data, context, level = 1) {
+  const selections = [];
+  if (context === "race") {
+    if (data.languages && data.languages.choice > 0) {
+      const availableLangs = availableLanguages.filter(
+        lang => !data.languages.fixed.includes(lang)
+      );
+      selections.push({
+        name: "Languages",
+        description: "Choose an additional language.",
+        selection: availableLangs,
+        count: data.languages.choice
+      });
+    }
+    if (data.skill_choices) {
+      selections.push({
+        name: "Skill Proficiency",
+        description: "Choose skill proficiencies.",
+        selection: data.skill_choices.options,
+        count: data.skill_choices.number
+      });
+    }
+    if (data.tool_choices) {
+      selections.push({
+        name: "Tool Proficiency",
+        description: "Choose a tool proficiency.",
+        selection: data.tool_choices.options,
+        count: 1
+      });
+    }
+    if (data.spellcasting) {
+      if (
+        data.spellcasting.ability_choices &&
+        data.spellcasting.ability_choices.length > 1
+      ) {
+        selections.push({
+          name: "Spellcasting",
+          description: "Choose a casting ability.",
+          selection: data.spellcasting.ability_choices,
+          count: 1
+        });
+      }
+      if (
+        data.spellcasting.spell_choices &&
+        data.spellcasting.spell_choices.type === "fixed_list"
+      ) {
+        selections.push({
+          name: "Cantrips",
+          description: "Choose a spell.",
+          selection: data.spellcasting.spell_choices.options,
+          count: 1
+        });
+      }
+    }
+  } else if (context === "class") {
+    const allChoices = data.choices || [];
+    allChoices.forEach(choice => {
+      if (!choice.level || parseInt(choice.level) <= level) {
+        const key = extraCategoryAliases[choice.name] || choice.name;
+        const selected = selectedData[key] || [];
+        if (selected.length < (choice.count || 1)) {
+          selections.push(choice);
+        }
+      }
+    });
+  }
+  return selections;
+}
+
+/**
  * Opens the extra selections popup.
  * Hides the background extra traits container and shows the modal.
  */
@@ -1076,36 +1152,8 @@ async function renderClassFeatures() {
     }
   });
 
-  const mergedChoices = {};
-  if (data.choices) {
-    data.choices.forEach(choice => {
-      const lvl = choice.level || 1;
-      if (!mergedChoices[lvl]) mergedChoices[lvl] = [];
-      mergedChoices[lvl].push(choice);
-    });
-  }
-  if (subData?.choices) {
-    subData.choices.forEach(choice => {
-      const lvl = choice.level || 1;
-      if (!mergedChoices[lvl]) mergedChoices[lvl] = [];
-      mergedChoices[lvl].push(choice);
-    });
-  }
-
-  let selections = [];
-  Object.keys(mergedChoices)
-    .sort((a, b) => a - b)
-    .forEach(lvl => {
-      if (parseInt(lvl) <= charLevel) {
-        mergedChoices[lvl].forEach(choice => {
-          const key = extraCategoryAliases[choice.name] || choice.name;
-          const selected = selectedData[key] || [];
-          if (selected.length < choice.count) {
-            selections.push(choice);
-          }
-        });
-      }
-    });
+  const allChoices = [...(data.choices || []), ...(subData?.choices || [])];
+  const selections = gatherExtraSelections({ choices: allChoices }, "class", charLevel);
 
   if (!subclassName) {
     html += `<p>Seleziona una sottoclasse per vedere i tratti.</p>`;
@@ -1144,6 +1192,7 @@ function generateFinalJson() {
     level: document.getElementById("levelSelect").value || "1",
     race: document.getElementById("raceSelect").selectedOptions[0]?.text || "Nessuna",
     class: document.getElementById("classSelect").selectedOptions[0]?.text || "Nessuna",
+    subclass: document.getElementById("subclassSelect").selectedOptions[0]?.text || "Nessuna",
     stats: {
       strength: document.getElementById("strFinalScore").textContent,
       dexterity: document.getElementById("dexFinalScore").textContent,
@@ -1163,6 +1212,7 @@ function generateFinalJson() {
     languages: {
       selected: selectedData["Languages"] || []
     },
+    selections: selectedData,
     chromatic_ancestry: chromaticAncestry,
     tool_proficiency: toolProficiency,
     variant_feature: variantFeature,
@@ -1363,90 +1413,23 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch(selectedRace)
       .then(response => response.json())
       .then(data => {
-        const raceData = convertRaceData(data);
-        const selections = [];
-        document.getElementById("raceTraits").style.display = "none";
-
-        if (raceData.languages && raceData.languages.choice > 0) {
-          const availableLangs = availableLanguages.filter(
-            lang => !raceData.languages.fixed.includes(lang)
-          );
-          selections.push({
-            name: "Languages",
-            description: "Choose an additional language.",
-            selection: availableLangs,
-            count: raceData.languages.choice
-          });
-        }
-        if (raceData.skill_choices) {
-          selections.push({
-            name: "Skill Proficiency",
-            description: "Choose skill proficiencies.",
-            selection: raceData.skill_choices.options,
-            count: raceData.skill_choices.number
-          });
-        }
-        if (raceData.tool_choices) {
-          selections.push({
-            name: "Tool Proficiency",
-            description: "Choose a tool proficiency.",
-            selection: raceData.tool_choices.options,
-            count: 1
-          });
-        }
-
-        // ✅ **Aggiungere Spellcasting alle scelte nel Pop-up**
-        if (raceData.spellcasting) {
-          if (raceData.spellcasting.ability_choices && raceData.spellcasting.ability_choices.length > 1) {
-              selections.push({
-                  name: "Spellcasting Ability",
-                  description: "Choose a spellcasting ability.",
-                  selection: raceData.spellcasting.ability_choices,
-                  count: 1
-              });
-          }
-
-          if (raceData.spellcasting.spell_choices) {
-            if (raceData.spellcasting.spell_choices.type === "fixed_list") {
-              selections.push({
-                name: "Spellcasting",
-                description: "Choose a spell.",
-                selection: raceData.spellcasting.spell_choices.options,
-                count: 1
-              });
-            } else if (raceData.spellcasting.spell_choices.type === "filter") {
-              const spellLevel = 0; // Normalmente i Cantrip
-              const spellClassParts = raceData.spellcasting.spell_choices.filter.split("|");
-              const spellClass = spellClassParts.length > 1 ? spellClassParts[1].split("=")[1] : null;
-
-              if (spellClass) {
-                loadSpells(spellList => {
-                  const filteredSpells = spellList
-                    .filter(spell => parseInt(spell.level) === spellLevel && spell.spell_list.includes(spellClass))
-                    .map(spell => spell.name);
-
-                  if (filteredSpells.length > 0) {
-                    selections.push({
-                      name: "Spellcasting",
-                      description: `Choose a cantrip from ${spellClass}.`,
-                      selection: filteredSpells,
-                      count: 1
-                    });
-                  }
-
-                  sessionStorage.setItem("popupOpened", "true");
-                  openRaceExtrasModal(selections);
-                });
-              }
-            }
-          }
-        }
-
+      const raceData = convertRaceData(data);
+      document.getElementById("raceTraits").style.display = "none";
+      const selections = gatherExtraSelections(raceData, "race");
+      if (raceData.spellcasting && raceData.spellcasting.spell_choices && raceData.spellcasting.spell_choices.type === "filter") {
+        loadSpells(spellList => {
+          const filtered = filterSpells(spellList, raceData.spellcasting.spell_choices.filter).map(spell => spell.name);
+          selections.push({ name: "Cantrips", description: "Choose a spell.", selection: filtered, count: 1 });
+          sessionStorage.setItem("popupOpened", "true");
+          openRaceExtrasModal(selections);
+        });
+      } else {
         sessionStorage.setItem("popupOpened", "true");
         openRaceExtrasModal(selections);
-        document.getElementById("confirmRaceSelection").style.display = "none";
-      }) // ✅ **CHIUSURA DEL `.then()` CORRETTA!**
-      .catch(error => handleError(`Errore caricando i dati della razza: ${error}`));
-    });
-    initializeValues();
-}); 
+      }
+      document.getElementById("confirmRaceSelection").style.display = "none";
+    })
+      .catch(error => handleError("Errore caricando i dati della razza: " + error));
+  });
+  initializeValues();
+});

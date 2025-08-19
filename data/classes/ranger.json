@@ -41,6 +41,7 @@
       "name": "Favored Enemy",
       "description": "Choose a type of favored enemy",
       "count": 1,
+      "type": "favored enemy",
       "selection": [
         "Aberrations",
         "Beasts",
@@ -54,6 +55,7 @@
       "name": "Natural Explorer",
       "description": "Choose one type of favored terrain",
       "count": 1,
+      "type": "favored terrain",
       "selection": [
         "Arctic",
         "Coast",

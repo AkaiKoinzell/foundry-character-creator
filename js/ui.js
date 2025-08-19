@@ -51,3 +51,26 @@ export function loadFormData() {
   });
   return localStorage.getItem('currentStep');
 }
+
+export function resetForm() {
+  if (!confirm('Reset all character data?')) return;
+  localStorage.clear();
+  const fields = document.querySelectorAll('input, select, textarea');
+  fields.forEach(field => {
+    if (field.type === 'checkbox' || field.type === 'radio') {
+      field.checked = false;
+    } else if (field.tagName.toLowerCase() === 'select') {
+      field.selectedIndex = 0;
+    } else {
+      field.value = '';
+    }
+  });
+  const steps = document.querySelectorAll('.step');
+  steps.forEach((step, index) => {
+    step.classList.toggle('active', index === 0);
+  });
+  const progressBar = document.getElementById('progressBar');
+  if (progressBar) progressBar.style.width = '0%';
+}
+
+window.resetForm = resetForm;

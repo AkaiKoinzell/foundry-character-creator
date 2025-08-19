@@ -1,11 +1,11 @@
 {
   "standard": [
-    "Zaino",
-    "Torce (10)",
-    "Razioni (10 giorni)",
-    "Corda (50 piedi)",
-    "Borraccia",
-    "Acciarino e pietra focaia"
+    "Backpack",
+    "Torches (10)",
+    "Rations (10 days)",
+    "Rope (50 feet)",
+    "Waterskin",
+    "Tinderbox"
   ],
   "classes": {
     "Artificer": {
@@ -100,9 +100,31 @@
       "fixed": ["Scudo", "Simbolo sacro"],
       "choices": [
         {
-          "label": "Arma",
+          "label": "Weapon",
           "type": "radio",
           "options": [
+            {
+              "value": "Quarterstaff",
+              "label": "Quarterstaff"
+            },
+            {
+              "value": "Dagger",
+              "label": "Dagger"
+            }
+          ]
+        },
+        {
+          "label": "Arcane focus",
+          "type": "radio",
+          "options": [
+            {
+              "value": "Component pouch",
+              "label": "Component pouch"
+            },
+            {
+              "value": "Arcane focus",
+              "label": "Arcane focus"
+            }
             { "value": "Mazza", "label": "Mazza" },
             { "value": "Martello da guerra", "label": "Martello da guerra" }
           ]
@@ -130,27 +152,44 @@
           "options": [
             { "value": "Pacchetto da sacerdote", "label": "Pacchetto da sacerdote" },
             { "value": "Pacchetto da esploratore", "label": "Pacchetto da esploratore" }
+
           ]
         }
       ]
     },
     "Druid": {
-      "fixed": ["Armatura di cuoio", "Pacchetto da esploratore", "Focus druidico"],
+      "fixed": [
+        "Leather armor",
+        "Explorer's Pack",
+        "Druidic focus"
+      ],
       "choices": [
         {
-          "label": "Scudo o Arma",
+          "label": "Shield or Weapon",
           "type": "radio",
           "options": [
-            { "value": "Scudo di legno", "label": "Scudo di legno" },
-            { "value": "Arma semplice", "label": "Arma semplice" }
+            {
+              "value": "Wooden shield",
+              "label": "Wooden shield"
+            },
+            {
+              "value": "Simple weapon",
+              "label": "Simple weapon"
+            }
           ]
         },
         {
-          "label": "Arma secondaria",
+          "label": "Secondary weapon",
           "type": "radio",
           "options": [
-            { "value": "Scimitarra", "label": "Scimitarra" },
-            { "value": "Arma semplice da mischia", "label": "Arma semplice da mischia" }
+            {
+              "value": "Scimitar",
+              "label": "Scimitar"
+            },
+            {
+              "value": "Simple melee weapon",
+              "label": "Simple melee weapon"
+            }
           ]
         }
       ],
@@ -368,7 +407,10 @@
   },
   "upgrades": {
     "minLevel": 11,
-    "armor": ["Mezza armatura di piastre", "Armatura a piastre"],
-    "weapon": "Arma incantata"
+    "armor": [
+      "Half plate armor",
+      "Plate armor"
+    ],
+    "weapon": "Enchanted weapon"
   }
 }

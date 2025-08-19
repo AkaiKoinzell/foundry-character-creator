@@ -292,6 +292,11 @@ let extraSelections = [];
 let currentSelectionIndex = 0;
 let extraModalContext = "";
 
+// Elements used to navigate and close the extra selections modal
+const prevTraitEl = document.getElementById("prevTrait");
+const nextTraitEl = document.getElementById("nextTrait");
+const closeModalEl = document.getElementById("closeModal");
+
 // Cached list of all languages loaded from JSON
 let availableLanguages = [];
 export function setAvailableLanguages(langs) {
@@ -755,9 +760,6 @@ function showExtraSelection() {
     }
   }
 
-  const prevTraitEl = document.getElementById("prevTrait");
-  const nextTraitEl = document.getElementById("nextTrait");
-  const closeModalEl = document.getElementById("closeModal");
   if (prevTraitEl && nextTraitEl && closeModalEl) {
     prevTraitEl.disabled = (currentSelectionIndex === 0);
     nextTraitEl.disabled = (currentSelectionIndex === extraSelections.length - 1);

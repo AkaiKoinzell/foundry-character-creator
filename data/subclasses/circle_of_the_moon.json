@@ -1,10 +1,34 @@
 {
-    "name": "Circle of the Moon",
-    "description": "Druids of the Circle of the Moon are fierce guardians of the wilds.",
-    "features_by_level": {
-        "2": ["Combat Wild Shape", "Circle Forms"],
-        "6": ["Primal Strike"],
-        "10": ["Elemental Wild Shape"],
-        "14": ["Thousand Forms"]
-    }
+  "name": "Circle of the Moon",
+  "description": "Druids of the Circle of the Moon are fierce guardians of the wilds.",
+  "features_by_level": {
+    "2": [
+      {
+        "name": "Combat Wild Shape",
+        "description": "Description for Combat Wild Shape."
+      },
+      {
+        "name": "Circle Forms",
+        "description": "Description for Circle Forms."
+      }
+    ],
+    "6": [
+      {
+        "name": "Primal Strike",
+        "description": "Description for Primal Strike."
+      }
+    ],
+    "10": [
+      {
+        "name": "Elemental Wild Shape",
+        "description": "Description for Elemental Wild Shape."
+      }
+    ],
+    "14": [
+      {
+        "name": "Thousand Forms",
+        "description": "Description for Thousand Forms."
+      }
+    ]
+  }
 }

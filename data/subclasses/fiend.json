@@ -1,10 +1,30 @@
 {
-    "name": "The Fiend",
-    "description": "You have made a pact with a fiend from the lower planes of existence.",
-    "features_by_level": {
-        "1": ["Dark One's Blessing"],
-        "6": ["Dark One's Own Luck"],
-        "10": ["Fiendish Resilience"],
-        "14": ["Hurl Through Hell"]
-    }
+  "name": "The Fiend",
+  "description": "You have made a pact with a fiend from the lower planes of existence.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Dark One's Blessing",
+        "description": "Description for Dark One's Blessing."
+      }
+    ],
+    "6": [
+      {
+        "name": "Dark One's Own Luck",
+        "description": "Description for Dark One's Own Luck."
+      }
+    ],
+    "10": [
+      {
+        "name": "Fiendish Resilience",
+        "description": "Description for Fiendish Resilience."
+      }
+    ],
+    "14": [
+      {
+        "name": "Hurl Through Hell",
+        "description": "Description for Hurl Through Hell."
+      }
+    ]
+  }
 }

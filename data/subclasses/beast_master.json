@@ -1,10 +1,30 @@
 {
-    "name": "Beast Master",
-    "description": "Beast Masters bond with an animal companion to fight alongside them.",
-    "features_by_level": {
-        "3": ["Ranger's Companion"],
-        "7": ["Exceptional Training"],
-        "11": ["Bestial Fury"],
-        "15": ["Share Spells"]
-    }
+  "name": "Beast Master",
+  "description": "Beast Masters bond with an animal companion to fight alongside them.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Ranger's Companion",
+        "description": "Description for Ranger's Companion."
+      }
+    ],
+    "7": [
+      {
+        "name": "Exceptional Training",
+        "description": "Description for Exceptional Training."
+      }
+    ],
+    "11": [
+      {
+        "name": "Bestial Fury",
+        "description": "Description for Bestial Fury."
+      }
+    ],
+    "15": [
+      {
+        "name": "Share Spells",
+        "description": "Description for Share Spells."
+      }
+    ]
+  }
 }

@@ -1,13 +1,38 @@
 {
-    "name": "Bard",
-    "subclasses": [
-        {
-            "name": "College of Lore",
-            "features": ["Bonus Proficiencies", "Cutting Words", "Additional Magical Secrets", "Peerless Skill"]
-        },
-        {
-            "name": "College of Valor",
-            "features": ["Bonus Proficiencies", "Combat Inspiration", "Extra Attack", "Battle Magic"]
-        }
+  "name": "Bard",
+  "subclasses": [
+    {
+      "name": "College of Lore",
+      "features": [
+        "Bonus Proficiencies",
+        "Cutting Words",
+        "Additional Magical Secrets",
+        "Peerless Skill"
+      ]
+    },
+    {
+      "name": "College of Valor",
+      "features": [
+        "Bonus Proficiencies",
+        "Combat Inspiration",
+        "Extra Attack",
+        "Battle Magic"
+      ]
+    }
+  ],
+  "description": "Description for Bard class.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Bard Feature 1",
+        "description": "Description for Bard feature at level 1."
+      }
+    ],
+    "2": [
+      {
+        "name": "Bard Feature 2",
+        "description": "Description for Bard feature at level 2."
+      }
     ]
+  }
 }

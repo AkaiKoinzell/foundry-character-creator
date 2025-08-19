@@ -1,11 +1,40 @@
 {
-    "name": "Light Domain",
-    "description": "Clerics of the Light Domain are enlightened souls infused with radiance.",
-    "features_by_level": {
-        "1": ["Bonus Cantrip", "Warding Flare"],
-        "2": ["Channel Divinity: Radiance of the Dawn"],
-        "6": ["Improved Flare"],
-        "8": ["Potent Spellcasting"],
-        "17": ["Corona of Light"]
-    }
+  "name": "Light Domain",
+  "description": "Clerics of the Light Domain are enlightened souls infused with radiance.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Bonus Cantrip",
+        "description": "Description for Bonus Cantrip."
+      },
+      {
+        "name": "Warding Flare",
+        "description": "Description for Warding Flare."
+      }
+    ],
+    "2": [
+      {
+        "name": "Channel Divinity: Radiance of the Dawn",
+        "description": "Description for Channel Divinity: Radiance of the Dawn."
+      }
+    ],
+    "6": [
+      {
+        "name": "Improved Flare",
+        "description": "Description for Improved Flare."
+      }
+    ],
+    "8": [
+      {
+        "name": "Potent Spellcasting",
+        "description": "Description for Potent Spellcasting."
+      }
+    ],
+    "17": [
+      {
+        "name": "Corona of Light",
+        "description": "Description for Corona of Light."
+      }
+    ]
+  }
 }

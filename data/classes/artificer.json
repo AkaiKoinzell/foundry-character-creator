@@ -3,61 +3,124 @@
   "description": "Masters of invention, artificers use ingenuity to channel arcane power into wondrous items.",
   "features_by_level": {
     "1": [
-      { "name": "Optional Rule: Firearm Proficiency", "description": "If your campaign uses firearms and you have been trained with them, you are proficient with firearms." },
-      { "name": "Magical Tinkering", "description": "Using thieves' or artisan's tools, you can invest a Tiny nonmagical object with a magical property such as light, a recorded message, an odor or sound, or a static visual effect. You can affect a number of objects up to your Intelligence modifier, replacing older effects when you exceed this limit." },
-      { "name": "Spellcasting", "description": "You know two artificer cantrips. You prepare a number of artificer spells equal to your Intelligence modifier plus half your artificer level (minimum one). You cast artificer spells using Intelligence and must have thieves' tools or artisan's tools in hand as a spellcasting focus. You can cast prepared artificer spells as rituals if they have the ritual tag." }
+      {
+        "name": "Optional Rule: Firearm Proficiency",
+        "description": "If your campaign uses firearms and you have been trained with them, you are proficient with firearms."
+      },
+      {
+        "name": "Magical Tinkering",
+        "description": "Using thieves' or artisan's tools, you can invest a Tiny nonmagical object with a magical property such as light, a recorded message, an odor or sound, or a static visual effect. You can affect a number of objects up to your Intelligence modifier, replacing older effects when you exceed this limit."
+      },
+      {
+        "name": "Spellcasting",
+        "description": "You know two artificer cantrips. You prepare a number of artificer spells equal to your Intelligence modifier plus half your artificer level (minimum one). You cast artificer spells using Intelligence and must have thieves' tools or artisan's tools in hand as a spellcasting focus. You can cast prepared artificer spells as rituals if they have the ritual tag."
+      }
     ],
     "2": [
-      { "name": "Infuse Item", "description": "You learn how to imbue mundane items with infusions. You learn four artificer infusions and can infuse items at the end of a long rest, up to the number shown in the Infused Items column. An infusion can exist in only one object at a time and ends if you exceed your limit or replace it." }
+      {
+        "name": "Infuse Item",
+        "description": "You learn how to imbue mundane items with infusions. You learn four artificer infusions and can infuse items at the end of a long rest, up to the number shown in the Infused Items column. An infusion can exist in only one object at a time and ends if you exceed your limit or replace it."
+      }
     ],
     "3": [
-      { "name": "Artificer Specialist", "description": "You choose a specialization such as Alchemist, Armorer, Artillerist, or Battle Smith, gaining its features at 3rd, 5th, 9th, and 15th levels." },
-      { "name": "The Right Tool for the Job", "description": "With one hour of work using thieves' or artisan's tools, you can create one set of artisan's tools. The tools are nonmagical and disappear when you create another set." }
+      {
+        "name": "Artificer Specialist",
+        "description": "You choose a specialization such as Alchemist, Armorer, Artillerist, or Battle Smith, gaining its features at 3rd, 5th, 9th, and 15th levels."
+      },
+      {
+        "name": "The Right Tool for the Job",
+        "description": "With one hour of work using thieves' or artisan's tools, you can create one set of artisan's tools. The tools are nonmagical and disappear when you create another set."
+      }
     ],
     "4": [
-      { "name": "Ability Score Improvement", "description": "Increase one ability score by 2 or two scores by 1. You may instead take a feat if your campaign uses them." }
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1. You may instead take a feat if your campaign uses them."
+      }
     ],
     "5": [
-      { "name": "Artificer Specialist Feature", "description": "You gain a feature from your chosen Artificer Specialist." }
+      {
+        "name": "Artificer Specialist Feature",
+        "description": "You gain a feature from your chosen Artificer Specialist."
+      }
     ],
     "6": [
-      { "name": "Tool Expertise", "description": "Your proficiency bonus is doubled for any ability check that uses a tool with which you are proficient." }
+      {
+        "name": "Tool Expertise",
+        "description": "Your proficiency bonus is doubled for any ability check that uses a tool with which you are proficient."
+      }
     ],
     "7": [
-      { "name": "Flash of Genius", "description": "When you or a creature within 30 feet makes an ability check or saving throw, you can use your reaction to add your Intelligence modifier to the roll. Uses equal to your Intelligence modifier per long rest." }
+      {
+        "name": "Flash of Genius",
+        "description": "When you or a creature within 30 feet makes an ability check or saving throw, you can use your reaction to add your Intelligence modifier to the roll. Uses equal to your Intelligence modifier per long rest."
+      }
     ],
     "8": [
-      { "name": "Ability Score Improvement", "description": "Increase one ability score by 2 or two scores by 1. You may instead take a feat if allowed." }
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1. You may instead take a feat if allowed."
+      }
     ],
     "9": [
-      { "name": "Artificer Specialist Feature", "description": "You gain a feature from your chosen Artificer Specialist." }
+      {
+        "name": "Artificer Specialist Feature",
+        "description": "You gain a feature from your chosen Artificer Specialist."
+      }
     ],
     "10": [
-      { "name": "Magic Item Adept", "description": "You can attune up to four magic items at once. Crafting a common or uncommon magic item takes a quarter of the normal time and half the cost." }
+      {
+        "name": "Magic Item Adept",
+        "description": "You can attune up to four magic items at once. Crafting a common or uncommon magic item takes a quarter of the normal time and half the cost."
+      }
     ],
     "11": [
-      { "name": "Spell-Storing Item", "description": "You can store a 1st- or 2nd-level artificer spell that takes one action to cast in a weapon or focus. A creature holding the item can use an action to produce the spell, up to twice your Intelligence modifier uses." }
+      {
+        "name": "Spell-Storing Item",
+        "description": "You can store a 1st- or 2nd-level artificer spell that takes one action to cast in a weapon or focus. A creature holding the item can use an action to produce the spell, up to twice your Intelligence modifier uses."
+      }
     ],
     "12": [
-      { "name": "Ability Score Improvement", "description": "Increase one ability score by 2 or two scores by 1. You may instead take a feat if allowed." }
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1. You may instead take a feat if allowed."
+      }
     ],
     "14": [
-      { "name": "Magic Item Savant", "description": "You can attune to up to five magic items and ignore class, race, spell, and level requirements on attuning to or using magic items." }
+      {
+        "name": "Magic Item Savant",
+        "description": "You can attune to up to five magic items and ignore class, race, spell, and level requirements on attuning to or using magic items."
+      }
     ],
     "15": [
-      { "name": "Artificer Specialist Feature", "description": "You gain a feature from your chosen Artificer Specialist." }
+      {
+        "name": "Artificer Specialist Feature",
+        "description": "You gain a feature from your chosen Artificer Specialist."
+      }
     ],
     "16": [
-      { "name": "Ability Score Improvement", "description": "Increase one ability score by 2 or two scores by 1. You may instead take a feat if allowed." }
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1. You may instead take a feat if allowed."
+      }
     ],
     "18": [
-      { "name": "Magic Item Master", "description": "You can attune to up to six magic items at once." }
+      {
+        "name": "Magic Item Master",
+        "description": "You can attune to up to six magic items at once."
+      }
     ],
     "19": [
-      { "name": "Ability Score Improvement", "description": "Increase one ability score by 2 or two scores by 1. You may instead take a feat if allowed." }
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1. You may instead take a feat if allowed."
+      }
     ],
     "20": [
-      { "name": "Soul of Artifice", "description": "You gain a +1 bonus to all saving throws for each magic item you are attuned to. If you would be reduced to 0 hit points, you can use your reaction to end one of your infusions, dropping to 1 hit point instead." }
+      {
+        "name": "Soul of Artifice",
+        "description": "You gain a +1 bonus to all saving throws for each magic item you are attuned to. If you would be reduced to 0 hit points, you can use your reaction to end one of your infusions, dropping to 1 hit point instead."
+      }
     ]
   },
   "subclasses": [

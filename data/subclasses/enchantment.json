@@ -1,10 +1,34 @@
 {
-    "name": "Enchantment",
-    "description": "You bend and twist the minds of others with your magic.",
-    "features_by_level": {
-        "2": ["Enchantment Savant", "Hypnotic Gaze"],
-        "6": ["Instinctive Charm"],
-        "10": ["Split Enchantment"],
-        "14": ["Alter Memories"]
-    }
+  "name": "Enchantment",
+  "description": "You bend and twist the minds of others with your magic.",
+  "features_by_level": {
+    "2": [
+      {
+        "name": "Enchantment Savant",
+        "description": "Description for Enchantment Savant."
+      },
+      {
+        "name": "Hypnotic Gaze",
+        "description": "Description for Hypnotic Gaze."
+      }
+    ],
+    "6": [
+      {
+        "name": "Instinctive Charm",
+        "description": "Description for Instinctive Charm."
+      }
+    ],
+    "10": [
+      {
+        "name": "Split Enchantment",
+        "description": "Description for Split Enchantment."
+      }
+    ],
+    "14": [
+      {
+        "name": "Alter Memories",
+        "description": "Description for Alter Memories."
+      }
+    ]
+  }
 }

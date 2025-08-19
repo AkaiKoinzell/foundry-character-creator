@@ -1,9 +1,28 @@
 {
-    "name": "College of Valor",
-    "description": "Bards of the College of Valor are brave warriors who inspire others in battle.",
-    "features_by_level": {
-        "3": ["Bonus Proficiencies", "Combat Inspiration"],
-        "6": ["Extra Attack"],
-        "14": ["Battle Magic"]
-    }
+  "name": "College of Valor",
+  "description": "Bards of the College of Valor are brave warriors who inspire others in battle.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Bonus Proficiencies",
+        "description": "Description for Bonus Proficiencies."
+      },
+      {
+        "name": "Combat Inspiration",
+        "description": "Description for Combat Inspiration."
+      }
+    ],
+    "6": [
+      {
+        "name": "Extra Attack",
+        "description": "Description for Extra Attack."
+      }
+    ],
+    "14": [
+      {
+        "name": "Battle Magic",
+        "description": "Description for Battle Magic."
+      }
+    ]
+  }
 }

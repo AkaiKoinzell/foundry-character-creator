@@ -1,13 +1,38 @@
 {
-    "name": "Barbarian",
-    "subclasses": [
-        {
-            "name": "Path of the Berserker",
-            "features": ["Frenzy", "Mindless Rage", "Intimidating Presence", "Retaliation"]
-        },
-        {
-            "name": "Path of the Totem Warrior",
-            "features": ["Spirit Seeker", "Totem Spirit", "Aspect of the Beast", "Totemic Attunement"]
-        }
+  "name": "Barbarian",
+  "subclasses": [
+    {
+      "name": "Path of the Berserker",
+      "features": [
+        "Frenzy",
+        "Mindless Rage",
+        "Intimidating Presence",
+        "Retaliation"
+      ]
+    },
+    {
+      "name": "Path of the Totem Warrior",
+      "features": [
+        "Spirit Seeker",
+        "Totem Spirit",
+        "Aspect of the Beast",
+        "Totemic Attunement"
+      ]
+    }
+  ],
+  "description": "Description for Barbarian class.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Barbarian Feature 1",
+        "description": "Description for Barbarian feature at level 1."
+      }
+    ],
+    "2": [
+      {
+        "name": "Barbarian Feature 2",
+        "description": "Description for Barbarian feature at level 2."
+      }
     ]
+  }
 }

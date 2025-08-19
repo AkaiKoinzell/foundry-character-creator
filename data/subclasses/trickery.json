@@ -1,11 +1,36 @@
 {
-    "name": "Trickery Domain",
-    "description": "Clerics of the Trickery Domain are mischief-makers and illusions specialists.",
-    "features_by_level": {
-        "1": ["Blessing of the Trickster"],
-        "2": ["Channel Divinity: Invoke Duplicity"],
-        "6": ["Channel Divinity: Cloak of Shadows"],
-        "8": ["Divine Strike"],
-        "17": ["Improved Duplicity"]
-    }
+  "name": "Trickery Domain",
+  "description": "Clerics of the Trickery Domain are mischief-makers and illusions specialists.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Blessing of the Trickster",
+        "description": "Description for Blessing of the Trickster."
+      }
+    ],
+    "2": [
+      {
+        "name": "Channel Divinity: Invoke Duplicity",
+        "description": "Description for Channel Divinity: Invoke Duplicity."
+      }
+    ],
+    "6": [
+      {
+        "name": "Channel Divinity: Cloak of Shadows",
+        "description": "Description for Channel Divinity: Cloak of Shadows."
+      }
+    ],
+    "8": [
+      {
+        "name": "Divine Strike",
+        "description": "Description for Divine Strike."
+      }
+    ],
+    "17": [
+      {
+        "name": "Improved Duplicity",
+        "description": "Description for Improved Duplicity."
+      }
+    ]
+  }
 }

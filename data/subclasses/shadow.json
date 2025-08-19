@@ -1,10 +1,30 @@
 {
-    "name": "Way of Shadow",
-    "description": "Monks of the Way of Shadow follow a tradition that values stealth and subterfuge.",
-    "features_by_level": {
-        "3": ["Shadow Arts"],
-        "6": ["Shadow Step"],
-        "11": ["Cloak of Shadows"],
-        "17": ["Opportunist"]
-    }
+  "name": "Way of Shadow",
+  "description": "Monks of the Way of Shadow follow a tradition that values stealth and subterfuge.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Shadow Arts",
+        "description": "Description for Shadow Arts."
+      }
+    ],
+    "6": [
+      {
+        "name": "Shadow Step",
+        "description": "Description for Shadow Step."
+      }
+    ],
+    "11": [
+      {
+        "name": "Cloak of Shadows",
+        "description": "Description for Cloak of Shadows."
+      }
+    ],
+    "17": [
+      {
+        "name": "Opportunist",
+        "description": "Description for Opportunist."
+      }
+    ]
+  }
 }

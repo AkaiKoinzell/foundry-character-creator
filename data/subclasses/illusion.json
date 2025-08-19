@@ -1,10 +1,34 @@
 {
-    "name": "Illusion",
-    "description": "You dedicate yourself to perfecting the art of tricking the senses.",
-    "features_by_level": {
-        "2": ["Illusion Savant", "Improved Minor Illusion"],
-        "6": ["Malleable Illusions"],
-        "10": ["Illusory Self"],
-        "14": ["Illusory Reality"]
-    }
+  "name": "Illusion",
+  "description": "You dedicate yourself to perfecting the art of tricking the senses.",
+  "features_by_level": {
+    "2": [
+      {
+        "name": "Illusion Savant",
+        "description": "Description for Illusion Savant."
+      },
+      {
+        "name": "Improved Minor Illusion",
+        "description": "Description for Improved Minor Illusion."
+      }
+    ],
+    "6": [
+      {
+        "name": "Malleable Illusions",
+        "description": "Description for Malleable Illusions."
+      }
+    ],
+    "10": [
+      {
+        "name": "Illusory Self",
+        "description": "Description for Illusory Self."
+      }
+    ],
+    "14": [
+      {
+        "name": "Illusory Reality",
+        "description": "Description for Illusory Reality."
+      }
+    ]
+  }
 }

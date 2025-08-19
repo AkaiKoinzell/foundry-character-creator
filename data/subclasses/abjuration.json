@@ -1,10 +1,34 @@
 {
-    "name": "Abjuration",
-    "description": "You focus on protective magic and warding energy.",
-    "features_by_level": {
-        "2": ["Abjuration Savant", "Arcane Ward"],
-        "6": ["Projected Ward"],
-        "10": ["Improved Abjuration"],
-        "14": ["Spell Resistance"]
-    }
+  "name": "Abjuration",
+  "description": "You focus on protective magic and warding energy.",
+  "features_by_level": {
+    "2": [
+      {
+        "name": "Abjuration Savant",
+        "description": "Description for Abjuration Savant."
+      },
+      {
+        "name": "Arcane Ward",
+        "description": "Description for Arcane Ward."
+      }
+    ],
+    "6": [
+      {
+        "name": "Projected Ward",
+        "description": "Description for Projected Ward."
+      }
+    ],
+    "10": [
+      {
+        "name": "Improved Abjuration",
+        "description": "Description for Improved Abjuration."
+      }
+    ],
+    "14": [
+      {
+        "name": "Spell Resistance",
+        "description": "Description for Spell Resistance."
+      }
+    ]
+  }
 }

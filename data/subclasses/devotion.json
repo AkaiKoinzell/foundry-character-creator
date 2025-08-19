@@ -1,10 +1,34 @@
 {
-    "name": "Oath of Devotion",
-    "description": "Paladins who swear the Oath of Devotion are committed to justice, virtue, and order.",
-    "features_by_level": {
-        "3": ["Sacred Weapon", "Turn the Unholy"],
-        "7": ["Aura of Devotion"],
-        "15": ["Purity of Spirit"],
-        "20": ["Holy Nimbus"]
-    }
+  "name": "Oath of Devotion",
+  "description": "Paladins who swear the Oath of Devotion are committed to justice, virtue, and order.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Sacred Weapon",
+        "description": "Description for Sacred Weapon."
+      },
+      {
+        "name": "Turn the Unholy",
+        "description": "Description for Turn the Unholy."
+      }
+    ],
+    "7": [
+      {
+        "name": "Aura of Devotion",
+        "description": "Description for Aura of Devotion."
+      }
+    ],
+    "15": [
+      {
+        "name": "Purity of Spirit",
+        "description": "Description for Purity of Spirit."
+      }
+    ],
+    "20": [
+      {
+        "name": "Holy Nimbus",
+        "description": "Description for Holy Nimbus."
+      }
+    ]
+  }
 }

@@ -1,11 +1,40 @@
 {
-    "name": "Nature Domain",
-    "description": "Clerics of the Nature Domain are champions of the natural world.",
-    "features_by_level": {
-        "1": ["Acolyte of Nature", "Bonus Proficiency"],
-        "2": ["Channel Divinity: Charm Animals and Plants"],
-        "6": ["Dampen Elements"],
-        "8": ["Divine Strike"],
-        "17": ["Master of Nature"]
-    }
+  "name": "Nature Domain",
+  "description": "Clerics of the Nature Domain are champions of the natural world.",
+  "features_by_level": {
+    "1": [
+      {
+        "name": "Acolyte of Nature",
+        "description": "Description for Acolyte of Nature."
+      },
+      {
+        "name": "Bonus Proficiency",
+        "description": "Description for Bonus Proficiency."
+      }
+    ],
+    "2": [
+      {
+        "name": "Channel Divinity: Charm Animals and Plants",
+        "description": "Description for Channel Divinity: Charm Animals and Plants."
+      }
+    ],
+    "6": [
+      {
+        "name": "Dampen Elements",
+        "description": "Description for Dampen Elements."
+      }
+    ],
+    "8": [
+      {
+        "name": "Divine Strike",
+        "description": "Description for Divine Strike."
+      }
+    ],
+    "17": [
+      {
+        "name": "Master of Nature",
+        "description": "Description for Master of Nature."
+      }
+    ]
+  }
 }

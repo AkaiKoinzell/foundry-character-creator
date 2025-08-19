@@ -1,10 +1,34 @@
 {
-    "name": "Oath of Vengeance",
-    "description": "Paladins who swear this oath punish those who commit grievous sins.",
-    "features_by_level": {
-        "3": ["Abjure Enemy", "Vow of Enmity"],
-        "7": ["Relentless Avenger"],
-        "15": ["Soul of Vengeance"],
-        "20": ["Avenging Angel"]
-    }
+  "name": "Oath of Vengeance",
+  "description": "Paladins who swear this oath punish those who commit grievous sins.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Abjure Enemy",
+        "description": "Description for Abjure Enemy."
+      },
+      {
+        "name": "Vow of Enmity",
+        "description": "Description for Vow of Enmity."
+      }
+    ],
+    "7": [
+      {
+        "name": "Relentless Avenger",
+        "description": "Description for Relentless Avenger."
+      }
+    ],
+    "15": [
+      {
+        "name": "Soul of Vengeance",
+        "description": "Description for Soul of Vengeance."
+      }
+    ],
+    "20": [
+      {
+        "name": "Avenging Angel",
+        "description": "Description for Avenging Angel."
+      }
+    ]
+  }
 }

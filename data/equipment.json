@@ -8,45 +8,96 @@
     "Tinderbox"
   ],
   "classes": {
-    "Fighter": {
-      "fixed": [
-        "Shield"
-      ],
+    "Artificer": {
+      "fixed": ["Due pugnali"],
       "choices": [
         {
-          "label": "Armor",
+          "label": "Arma",
           "type": "radio",
           "options": [
-            {
-              "value": "Chain Mail",
-              "label": "Chain Mail"
-            },
-            {
-              "value": "Studded leather armor and longbow",
-              "label": "Studded leather armor and longbow"
-            }
+            { "value": "Balestra leggera e 20 quadrelli", "label": "Balestra leggera e 20 quadrelli" },
+            { "value": "Arma semplice", "label": "Arma semplice" }
           ]
         },
         {
-          "label": "Weapon",
+          "label": "Armatura",
           "type": "radio",
           "options": [
-            {
-              "value": "Martial weapon and shield",
-              "label": "Martial weapon and shield"
-            },
-            {
-              "value": "Two martial weapons",
-              "label": "Two martial weapons"
-            }
+            { "value": "Armatura di cuoio borchiato", "label": "Armatura di cuoio borchiato" },
+            { "value": "Armatura a scaglie", "label": "Armatura a scaglie" }
+          ]
+        },
+        {
+          "label": "Strumenti",
+          "type": "radio",
+          "options": [
+            { "value": "Strumenti da scasso", "label": "Strumenti da scasso" },
+            { "value": "Utensili da artigiano", "label": "Utensili da artigiano" }
+          ]
+        },
+        {
+          "label": "Pacchetto",
+          "type": "radio",
+          "options": [
+            { "value": "Pacchetto da avventuriero", "label": "Pacchetto da avventuriero" },
+            { "value": "Pacchetto da esploratore", "label": "Pacchetto da esploratore" }
           ]
         }
       ]
     },
-    "Wizard": {
-      "fixed": [
-        "Spellbook"
-      ],
+    "Barbarian": {
+      "fixed": ["Pacchetto da esploratore", "Giavellotti (4)"],
+      "choices": [
+        {
+          "label": "Arma principale",
+          "type": "radio",
+          "options": [
+            { "value": "Ascia bipenne", "label": "Ascia bipenne" },
+            { "value": "Arma marziale da mischia", "label": "Arma marziale da mischia" }
+          ]
+        },
+        {
+          "label": "Arma secondaria",
+          "type": "radio",
+          "options": [
+            { "value": "Due asce da mano", "label": "Due asce da mano" },
+            { "value": "Arma semplice", "label": "Arma semplice" }
+          ]
+        }
+      ]
+    },
+    "Bard": {
+      "fixed": ["Armatura di cuoio", "Pugnale"],
+      "choices": [
+        {
+          "label": "Arma",
+          "type": "radio",
+          "options": [
+            { "value": "Stocco", "label": "Stocco" },
+            { "value": "Spada lunga", "label": "Spada lunga" },
+            { "value": "Arma semplice", "label": "Arma semplice" }
+          ]
+        },
+        {
+          "label": "Pacchetto",
+          "type": "radio",
+          "options": [
+            { "value": "Pacchetto da diplomatico", "label": "Pacchetto da diplomatico" },
+            { "value": "Pacchetto da intrattenitore", "label": "Pacchetto da intrattenitore" }
+          ]
+        },
+        {
+          "label": "Strumento musicale",
+          "type": "radio",
+          "options": [
+            { "value": "Liuto", "label": "Liuto" },
+            { "value": "Altro strumento musicale", "label": "Altro strumento musicale" }
+          ]
+        }
+      ]
+    },
+    "Cleric": {
+      "fixed": ["Scudo", "Simbolo sacro"],
       "choices": [
         {
           "label": "Weapon",
@@ -74,6 +125,34 @@
               "value": "Arcane focus",
               "label": "Arcane focus"
             }
+            { "value": "Mazza", "label": "Mazza" },
+            { "value": "Martello da guerra", "label": "Martello da guerra" }
+          ]
+        },
+        {
+          "label": "Armatura",
+          "type": "radio",
+          "options": [
+            { "value": "Armatura a scaglie", "label": "Armatura a scaglie" },
+            { "value": "Armatura di cuoio", "label": "Armatura di cuoio" },
+            { "value": "Cotta di maglia", "label": "Cotta di maglia" }
+          ]
+        },
+        {
+          "label": "Arma secondaria",
+          "type": "radio",
+          "options": [
+            { "value": "Balestra leggera e 20 quadrelli", "label": "Balestra leggera e 20 quadrelli" },
+            { "value": "Arma semplice", "label": "Arma semplice" }
+          ]
+        },
+        {
+          "label": "Pacchetto",
+          "type": "radio",
+          "options": [
+            { "value": "Pacchetto da sacerdote", "label": "Pacchetto da sacerdote" },
+            { "value": "Pacchetto da esploratore", "label": "Pacchetto da esploratore" }
+
           ]
         }
       ]
@@ -114,7 +193,216 @@
           ]
         }
       ],
-      "goldAlternative": "2d4 \u00d7 10 gp"
+      "goldAlternative": "2d4 × 10 gp"
+    },
+    "Fighter": {
+      "fixed": ["Scudo"],
+      "choices": [
+        {
+          "label": "Armatura",
+          "type": "radio",
+          "options": [
+            { "value": "Cotta di maglia", "label": "Cotta di maglia" },
+            { "value": "Armatura di cuoio borchiato e arco lungo", "label": "Armatura di cuoio borchiato e arco lungo" }
+          ]
+        },
+        {
+          "label": "Arma",
+          "type": "radio",
+          "options": [
+            { "value": "Arma marziale e scudo", "label": "Arma marziale e scudo" },
+            { "value": "Due armi marziali", "label": "Due armi marziali" }
+          ]
+        }
+      ]
+    },
+    "Monk": {
+      "fixed": ["Dardi (10)"],
+      "choices": [
+        {
+          "label": "Arma",
+          "type": "radio",
+          "options": [
+            { "value": "Spada corta", "label": "Spada corta" },
+            { "value": "Arma semplice", "label": "Arma semplice" }
+          ]
+        },
+        {
+          "label": "Pacchetto",
+          "type": "radio",
+          "options": [
+            { "value": "Pacchetto da avventuriero", "label": "Pacchetto da avventuriero" },
+            { "value": "Pacchetto da esploratore", "label": "Pacchetto da esploratore" }
+          ]
+        }
+      ]
+    },
+    "Paladin": {
+      "fixed": ["Cotta di maglia", "Simbolo sacro"],
+      "choices": [
+        {
+          "label": "Arma",
+          "type": "radio",
+          "options": [
+            { "value": "Arma marziale e scudo", "label": "Arma marziale e scudo" },
+            { "value": "Due armi marziali", "label": "Due armi marziali" }
+          ]
+        },
+        {
+          "label": "Arma secondaria",
+          "type": "radio",
+          "options": [
+            { "value": "Giavellotti (5)", "label": "Giavellotti (5)" },
+            { "value": "Arma semplice da mischia", "label": "Arma semplice da mischia" }
+          ]
+        },
+        {
+          "label": "Pacchetto",
+          "type": "radio",
+          "options": [
+            { "value": "Pacchetto da sacerdote", "label": "Pacchetto da sacerdote" },
+            { "value": "Pacchetto da esploratore", "label": "Pacchetto da esploratore" }
+          ]
+        }
+      ]
+    },
+    "Ranger": {
+      "fixed": ["Arco lungo e faretra (20 frecce)"],
+      "choices": [
+        {
+          "label": "Armatura",
+          "type": "radio",
+          "options": [
+            { "value": "Armatura a scaglie", "label": "Armatura a scaglie" },
+            { "value": "Armatura di cuoio", "label": "Armatura di cuoio" }
+          ]
+        },
+        {
+          "label": "Armi",
+          "type": "radio",
+          "options": [
+            { "value": "Due spade corte", "label": "Due spade corte" },
+            { "value": "Due armi semplici da mischia", "label": "Due armi semplici da mischia" }
+          ]
+        },
+        {
+          "label": "Pacchetto",
+          "type": "radio",
+          "options": [
+            { "value": "Pacchetto da avventuriero", "label": "Pacchetto da avventuriero" },
+            { "value": "Pacchetto da esploratore", "label": "Pacchetto da esploratore" }
+          ]
+        }
+      ]
+    },
+    "Rogue": {
+      "fixed": ["Armatura di cuoio", "Due pugnali", "Strumenti da scasso"],
+      "choices": [
+        {
+          "label": "Arma principale",
+          "type": "radio",
+          "options": [
+            { "value": "Stocco", "label": "Stocco" },
+            { "value": "Spada corta", "label": "Spada corta" }
+          ]
+        },
+        {
+          "label": "Arma secondaria",
+          "type": "radio",
+          "options": [
+            { "value": "Arco corto e faretra (20 frecce)", "label": "Arco corto e faretra (20 frecce)" },
+            { "value": "Spada corta", "label": "Spada corta" }
+          ]
+        },
+        {
+          "label": "Pacchetto",
+          "type": "radio",
+          "options": [
+            { "value": "Pacchetto da scassinatore", "label": "Pacchetto da scassinatore" },
+            { "value": "Pacchetto da avventuriero", "label": "Pacchetto da avventuriero" },
+            { "value": "Pacchetto da esploratore", "label": "Pacchetto da esploratore" }
+          ]
+        }
+      ]
+    },
+    "Sorcerer": {
+      "fixed": ["Due pugnali"],
+      "choices": [
+        {
+          "label": "Arma",
+          "type": "radio",
+          "options": [
+            { "value": "Balestra leggera e 20 quadrelli", "label": "Balestra leggera e 20 quadrelli" },
+            { "value": "Arma semplice", "label": "Arma semplice" }
+          ]
+        },
+        {
+          "label": "Focus arcano",
+          "type": "radio",
+          "options": [
+            { "value": "Borsa delle componenti", "label": "Borsa delle componenti" },
+            { "value": "Focus arcano", "label": "Focus arcano" }
+          ]
+        },
+        {
+          "label": "Pacchetto",
+          "type": "radio",
+          "options": [
+            { "value": "Pacchetto da avventuriero", "label": "Pacchetto da avventuriero" },
+            { "value": "Pacchetto da esploratore", "label": "Pacchetto da esploratore" }
+          ]
+        }
+      ]
+    },
+    "Warlock": {
+      "fixed": ["Armatura di cuoio", "Arma semplice", "Due pugnali"],
+      "choices": [
+        {
+          "label": "Arma aggiuntiva",
+          "type": "radio",
+          "options": [
+            { "value": "Balestra leggera e 20 quadrelli", "label": "Balestra leggera e 20 quadrelli" },
+            { "value": "Arma semplice", "label": "Arma semplice" }
+          ]
+        },
+        {
+          "label": "Focus arcano",
+          "type": "radio",
+          "options": [
+            { "value": "Borsa delle componenti", "label": "Borsa delle componenti" },
+            { "value": "Focus arcano", "label": "Focus arcano" }
+          ]
+        },
+        {
+          "label": "Pacchetto",
+          "type": "radio",
+          "options": [
+            { "value": "Pacchetto da studioso", "label": "Pacchetto da studioso" },
+            { "value": "Pacchetto da avventuriero", "label": "Pacchetto da avventuriero" }
+          ]
+        }
+      ]
+    },
+    "Wizard": {
+      "fixed": ["Libro degli incantesimi"],
+      "choices": [
+        {
+          "label": "Arma",
+          "type": "radio",
+          "options": [
+            { "value": "Bastone ferrato", "label": "Bastone ferrato" },
+            { "value": "Pugnale", "label": "Pugnale" }
+          ]
+        },
+        {
+          "label": "Focus arcano",
+          "type": "radio",
+          "options": [
+            { "value": "Borsa delle componenti", "label": "Borsa delle componenti" },
+            { "value": "Focus arcano", "label": "Focus arcano" }
+          ]
+        }
+      ]
     }
   },
   "upgrades": {

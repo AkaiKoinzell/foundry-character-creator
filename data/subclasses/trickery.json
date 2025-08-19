@@ -32,5 +32,6 @@
         "description": "You can create up to four duplicates with Invoke Duplicity and move any number of them up to 30 feet each as a bonus action."
       }
     ]
-  }
+  },
+  "choices": []
 }

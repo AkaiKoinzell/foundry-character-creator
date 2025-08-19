@@ -26,5 +26,6 @@
         "description": "When you take damage from a creature within 5 feet of you, you can use your reaction to make a melee weapon attack against that creature."
       }
     ]
-  }
+  },
+  "choices": []
 }

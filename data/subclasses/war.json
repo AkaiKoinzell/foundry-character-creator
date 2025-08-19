@@ -36,5 +36,6 @@
         "description": "You gain resistance to bludgeoning, piercing, and slashing damage from nonmagical attacks."
       }
     ]
-  }
+  },
+  "choices": []
 }

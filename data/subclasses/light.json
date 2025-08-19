@@ -36,5 +36,6 @@
         "description": "As an action, emit bright light in a 60-foot radius for 1 minute. Enemies in the light have disadvantage on saving throws against fire or radiant spells."
       }
     ]
-  }
+  },
+  "choices": []
 }

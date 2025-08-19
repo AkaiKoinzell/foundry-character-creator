@@ -30,5 +30,6 @@
         "description": "When you rage, your reach increases by 10 feet, your size can become Large or Huge, and Elemental Cleaver's extra damage becomes 2d6. Mighty Impel can move Large or smaller creatures."
       }
     ]
-  }
+  },
+  "choices": []
 }

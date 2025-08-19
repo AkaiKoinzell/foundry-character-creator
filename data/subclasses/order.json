@@ -36,5 +36,6 @@
         "description": "When you deal Divine Strike damage to a creature, you can curse it. The next ally to hit it deals an extra 2d8 psychic damage and the curse ends."
       }
     ]
-  }
+  },
+  "choices": []
 }

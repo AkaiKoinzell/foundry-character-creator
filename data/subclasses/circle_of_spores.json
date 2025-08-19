@@ -5,34 +5,35 @@
     "2": [
       {
         "name": "Circle Spells",
-        "description": "Learn chill touch and gain additional spells at levels 3,5,7 and 9 that are always prepared." 
+        "description": "Learn chill touch and gain additional spells at levels 3,5,7 and 9 that are always prepared."
       },
       {
         "name": "Halo of Spores",
-        "description": "Use a reaction to deal necrotic damage to creatures within 10 feet that fail a Constitution save." 
+        "description": "Use a reaction to deal necrotic damage to creatures within 10 feet that fail a Constitution save."
       },
       {
         "name": "Symbiotic Entity",
-        "description": "Expend Wild Shape to awaken spores, gaining temporary hit points and bonus necrotic damage for 10 minutes." 
+        "description": "Expend Wild Shape to awaken spores, gaining temporary hit points and bonus necrotic damage for 10 minutes."
       }
     ],
     "6": [
       {
         "name": "Fungal Infestation",
-        "description": "When a Small or Medium beast or humanoid dies near you, animate it as a 1 hp zombie for 1 hour." 
+        "description": "When a Small or Medium beast or humanoid dies near you, animate it as a 1 hp zombie for 1 hour."
       }
     ],
     "10": [
       {
         "name": "Spreading Spores",
-        "description": "While Symbiotic Entity is active, hurl spores to create a 10-foot cube that damages creatures moving through it." 
+        "description": "While Symbiotic Entity is active, hurl spores to create a 10-foot cube that damages creatures moving through it."
       }
     ],
     "14": [
       {
         "name": "Fungal Body",
-        "description": "You can't be blinded, deafened, frightened or poisoned, and critical hits count as normal hits." 
+        "description": "You can't be blinded, deafened, frightened or poisoned, and critical hits count as normal hits."
       }
     ]
-  }
+  },
+  "choices": []
 }

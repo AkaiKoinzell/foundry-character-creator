@@ -36,5 +36,6 @@
         "description": "You have a flying speed equal to your walking speed whenever you are not underground or indoors."
       }
     ]
-  }
+  },
+  "choices": []
 }

@@ -30,5 +30,6 @@
         "description": "Description for Spell Thief."
       }
     ]
-  }
+  },
+  "choices": []
 }

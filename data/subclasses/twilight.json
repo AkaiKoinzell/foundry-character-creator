@@ -40,5 +40,6 @@
         "description": "Creatures in your Twilight Sanctuary have half cover."
       }
     ]
-  }
+  },
+  "choices": []
 }

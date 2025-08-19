@@ -638,6 +638,20 @@ let availableLanguages = [];
 // Context for the extras modal ("race" or "class")
 let extraModalContext = "race";
 
+// Mapping and descriptions for extra selection categories
+const extraCategoryAliases = {
+  "Cantrip": "Cantrips",
+  "Cantrips": "Cantrips",
+  "Skill Proficiency": "Skill Proficiency",
+  "Tool Proficiency": "Tool Proficiency"
+};
+
+const extraCategoryDescriptions = {
+  "Cantrips": "Scegli i tuoi cantrip.",
+  "Skill Proficiency": "Seleziona le competenze nelle abilità.",
+  "Tool Proficiency": "Seleziona le competenze negli strumenti."
+};
+
 /**
  * Opens the extra selections popup.
  * Hides the background extra traits container and shows the modal.
@@ -658,8 +672,9 @@ function openRaceExtrasModal(selections, context = "race") {
 
   // Inizializza le categorie in selectedData se non esistono già
   selections.forEach(selection => {
-    if (!selectedData[selection.name]) {
-      selectedData[selection.name] = [];
+    const key = extraCategoryAliases[selection.name] || selection.name;
+    if (!selectedData[key]) {
+      selectedData[key] = [];
     }
   });
 
@@ -695,10 +710,16 @@ function updateExtraSelectionsView() {
     }
   }
 
-  updateContainer("languageSelection", "Lingue Extra", "Languages");
-  updateContainer("skillSelectionContainer", "Skill Proficiency", "Skill Proficiency");
-  updateContainer("toolSelectionContainer", "Tool Proficiency", "Tool Proficiency");
-  updateContainer("spellSelectionContainer", "Spellcasting", "Spellcasting");
+  const summaryMap = {
+    "Languages": ["languageSelection", "Lingue Extra"],
+    "Skill Proficiency": ["skillSelectionContainer", "Skill Proficiency"],
+    "Tool Proficiency": ["toolSelectionContainer", "Tool Proficiency"],
+    "Spellcasting": ["spellSelectionContainer", "Spellcasting"],
+    "Cantrips": ["spellSelectionContainer", "Cantrips"]
+  };
+  Object.entries(summaryMap).forEach(([key, [id, title]]) => {
+    updateContainer(id, title, key);
+  });
 
   console.log("✅ Extra selections aggiornate:", selectedData);
 }
@@ -718,18 +739,20 @@ function showExtraSelection() {
   const currentSelection = extraSelections[currentSelectionIndex];
 
   titleElem.innerText = currentSelection.name;
-  descElem.innerText = currentSelection.description;
+  const desc = currentSelection.description || extraCategoryDescriptions[currentSelection.name] || "";
+  descElem.innerText = desc;
   selectionElem.innerHTML = ""; // Pulisce il contenuto precedente
 
   if (currentSelection.selection) {
-    const selectedValues = new Set(selectedData[currentSelection.name] || []);
+    const categoryKey = extraCategoryAliases[currentSelection.name] || currentSelection.name;
+    const selectedValues = new Set(selectedData[categoryKey] || []);
     let dropdownHTML = "";
 
     for (let i = 0; i < currentSelection.count; i++) {
-      dropdownHTML += `<select class="extra-selection" data-category="${currentSelection.name}" data-index="${i}">
+      dropdownHTML += `<select class="extra-selection" data-category="${categoryKey}" data-index="${i}">
                           <option value="">Seleziona...</option>`;
       currentSelection.selection.forEach(option => {
-        const disabled = selectedValues.has(option) && !selectedData[currentSelection.name]?.includes(option);
+        const disabled = selectedValues.has(option) && !selectedData[categoryKey]?.includes(option);
         dropdownHTML += `<option value="${option}" ${disabled ? "disabled" : ""}>${option}</option>`;
       });
       dropdownHTML += `</select><br>`;
@@ -739,20 +762,21 @@ function showExtraSelection() {
 
     document.querySelectorAll(".extra-selection").forEach(select => {
       select.addEventListener("change", (event) => {
-        const category = event.target.getAttribute("data-category");
+        const rawCategory = event.target.getAttribute("data-category");
+        const category = extraCategoryAliases[rawCategory] || rawCategory;
         const index = event.target.getAttribute("data-index");
-    
+
         if (!selectedData[category]) {
           selectedData[category] = [];
         }
-    
+
         selectedData[category][index] = event.target.value;
-    
+
         // 🔥 Rimuove elementi vuoti
         selectedData[category] = selectedData[category].filter(value => value);
-    
+
         console.log(`📝 Salvato: ${category} -> ${selectedData[category]}`);
-    
+
         updateExtraSelectionsView();
       });
     });
@@ -820,19 +844,7 @@ document.getElementById("closeModal").addEventListener("click", () => {
   }
 });
 
-  // Aggiorna l'interfaccia con le scelte fatte
-  if (selectedData["Languages"]) {
-    document.getElementById("languageSelection").innerHTML = `<p><strong>Lingue Extra:</strong> ${selectedData["Languages"].join(", ")}</p>`;
-  }
-  if (selectedData["Skill Proficiency"]) {
-    document.getElementById("skillSelectionContainer").innerHTML = `<p><strong>Skill Proficiency:</strong> ${selectedData["Skill Proficiency"].join(", ")}</p>`;
-  }
-  if (selectedData["Tool Proficiency"]) {
-    document.getElementById("toolSelectionContainer").innerHTML = `<p><strong>Tool Proficiency:</strong> ${selectedData["Tool Proficiency"].join(", ")}</p>`;
-  }
-  if (selectedData["Spellcasting"]) {
-    document.getElementById("spellSelectionContainer").innerHTML = `<p><strong>Spellcasting:</strong> ${selectedData["Spellcasting"].join(", ")}</p>`;
-  }
+updateExtraSelectionsView();
 
 document.getElementById("raceSelect").addEventListener("change", () => {
   console.log("🔄 Razza cambiata, reset delle selezioni extra...");
@@ -1062,25 +1074,36 @@ async function renderClassFeatures() {
     }
   });
 
-  let selections = [];
+  const mergedChoices = {};
   if (data.choices) {
     data.choices.forEach(choice => {
-      const choiceLevel = choice.level || 1;
-      const selected = selectedData[choice.name] || [];
-      if (choiceLevel <= charLevel && selected.length < choice.count) {
-        selections.push(choice);
-      }
+      const lvl = choice.level || 1;
+      if (!mergedChoices[lvl]) mergedChoices[lvl] = [];
+      mergedChoices[lvl].push(choice);
     });
   }
   if (subData?.choices) {
     subData.choices.forEach(choice => {
-      const choiceLevel = choice.level || 1;
-      const selected = selectedData[choice.name] || [];
-      if (choiceLevel <= charLevel && selected.length < choice.count) {
-        selections.push(choice);
-      }
+      const lvl = choice.level || 1;
+      if (!mergedChoices[lvl]) mergedChoices[lvl] = [];
+      mergedChoices[lvl].push(choice);
     });
   }
+
+  let selections = [];
+  Object.keys(mergedChoices)
+    .sort((a, b) => a - b)
+    .forEach(lvl => {
+      if (parseInt(lvl) <= charLevel) {
+        mergedChoices[lvl].forEach(choice => {
+          const key = extraCategoryAliases[choice.name] || choice.name;
+          const selected = selectedData[key] || [];
+          if (selected.length < choice.count) {
+            selections.push(choice);
+          }
+        });
+      }
+    });
 
   if (!subclassName) {
     html += `<p>Seleziona una sottoclasse per vedere i tratti.</p>`;

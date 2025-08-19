@@ -24,5 +24,6 @@
         "description": "You can create multiple items with Performance of Creation up to a number equal to your Charisma modifier, ignoring gp limits; only one can be of the maximum size."
       }
     ]
-  }
+  },
+  "choices": []
 }

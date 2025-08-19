@@ -36,5 +36,6 @@
         "description": "You are immune to fire damage and have resistance to nonmagical bludgeoning, piercing, and slashing damage while wearing heavy armor."
       }
     ]
-  }
+  },
+  "choices": []
 }

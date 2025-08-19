@@ -3,19 +3,41 @@
   "description": "A combination of protector and medic who uses magic to bolster allies and constructs.",
   "features_by_level": {
     "3": [
-      { "name": "Tool Proficiency", "description": "You gain proficiency with smith's tools. If you already have it, gain proficiency with another set of artisan's tools of your choice." },
-      { "name": "Battle Smith Spells", "description": "You always have certain spells prepared: 3rd—heroism, shield; 5th—branding smite, warding bond; 9th—aura of vitality, conjure barrage; 13th—aura of purity, fire shield; 17th—banishing smite, mass cure wounds. These count as artificer spells for you and don't count against spells prepared." },
-      { "name": "Battle Ready", "description": "You gain proficiency with martial weapons, and you can use Intelligence instead of Strength or Dexterity for the attack and damage rolls of magic weapons." },
-      { "name": "Steel Defender", "description": "You create a steel defender companion that acts on your initiative. It can move and use its reaction on its own, but it takes the Dodge action unless you command it with a bonus action. It has its own stat block using your proficiency bonus, can be healed by mending, and can be revived with a spell slot. You can build a new one after a long rest." }
+      {
+        "name": "Tool Proficiency",
+        "description": "You gain proficiency with smith's tools. If you already have it, gain proficiency with another set of artisan's tools of your choice."
+      },
+      {
+        "name": "Battle Smith Spells",
+        "description": "You always have certain spells prepared: 3rd—heroism, shield; 5th—branding smite, warding bond; 9th—aura of vitality, conjure barrage; 13th—aura of purity, fire shield; 17th—banishing smite, mass cure wounds. These count as artificer spells for you and don't count against spells prepared."
+      },
+      {
+        "name": "Battle Ready",
+        "description": "You gain proficiency with martial weapons, and you can use Intelligence instead of Strength or Dexterity for the attack and damage rolls of magic weapons."
+      },
+      {
+        "name": "Steel Defender",
+        "description": "You create a steel defender companion that acts on your initiative. It can move and use its reaction on its own, but it takes the Dodge action unless you command it with a bonus action. It has its own stat block using your proficiency bonus, can be healed by mending, and can be revived with a spell slot. You can build a new one after a long rest."
+      }
     ],
     "5": [
-      { "name": "Extra Attack", "description": "You can attack twice, instead of once, whenever you take the Attack action on your turn." }
+      {
+        "name": "Extra Attack",
+        "description": "You can attack twice, instead of once, whenever you take the Attack action on your turn."
+      }
     ],
     "9": [
-      { "name": "Arcane Jolt", "description": "When you or your steel defender hits with a magic weapon attack, you can deal an extra 2d6 force damage to the target or restore 2d6 hit points to a creature or object within 30 ft of the target. Uses equal to your Intelligence modifier per long rest, once per turn." }
+      {
+        "name": "Arcane Jolt",
+        "description": "When you or your steel defender hits with a magic weapon attack, you can deal an extra 2d6 force damage to the target or restore 2d6 hit points to a creature or object within 30 ft of the target. Uses equal to your Intelligence modifier per long rest, once per turn."
+      }
     ],
     "15": [
-      { "name": "Improved Defender", "description": "Arcane Jolt's extra damage or healing becomes 4d6. Your steel defender's AC increases by 2, and its Deflect Attack reaction deals 1d4 + your Intelligence modifier force damage to the attacker." }
+      {
+        "name": "Improved Defender",
+        "description": "Arcane Jolt's extra damage or healing becomes 4d6. Your steel defender's AC increases by 2, and its Deflect Attack reaction deals 1d4 + your Intelligence modifier force damage to the attacker."
+      }
     ]
-  }
+  },
+  "choices": []
 }

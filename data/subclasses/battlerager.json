@@ -30,5 +30,6 @@
         "description": "While raging in spiked armor, a creature that hits you with a melee attack takes 3 piercing damage if it is within 5 feet of you."
       }
     ]
-  }
+  },
+  "choices": []
 }

@@ -28,5 +28,6 @@
         "description": "When rolling on the Spirit Tales table, roll twice and choose which effect to use; if you roll the same number, choose any tale."
       }
     ]
-  }
+  },
+  "choices": []
 }

@@ -30,5 +30,6 @@
         "description": "Whenever you roll on the Wild Magic table, you can roll twice and choose either result; if both are the same, choose any effect on the table."
       }
     ]
-  }
+  },
+  "choices": []
 }

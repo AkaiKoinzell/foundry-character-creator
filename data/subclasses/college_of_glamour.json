@@ -24,5 +24,6 @@
         "description": "As a bonus action, assume a majestic presence for 1 minute. Creatures that try to attack you must make a Charisma save or choose another target; on a success they have disadvantage on saves against your spells on your next turn."
       }
     ]
-  }
+  },
+  "choices": []
 }

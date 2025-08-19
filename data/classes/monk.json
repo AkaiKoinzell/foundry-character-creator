@@ -43,5 +43,6 @@
         "description": "Description for Monk feature at level 2."
       }
     ]
-  }
+  },
+  "choices": []
 }

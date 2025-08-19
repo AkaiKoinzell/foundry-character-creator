@@ -30,5 +30,17 @@
         "description": "Description for Spell Resistance."
       }
     ]
-  }
+  },
+  "choices": [
+    {
+      "name": "Tool Proficiency",
+      "count": 1,
+      "selection": [
+        "Alchemist's supplies",
+        "Calligrapher's supplies",
+        "Glassblower's tools"
+      ],
+      "level": 2
+    }
+  ]
 }

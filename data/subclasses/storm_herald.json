@@ -26,5 +26,6 @@
         "description": "Your aura lashes out at foes with effects based on your environment, such as burning attackers or knocking enemies prone."
       }
     ]
-  }
+  },
+  "choices": []
 }

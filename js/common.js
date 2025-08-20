@@ -37,6 +37,34 @@ export function populateDropdown(selectId, options) {
 }
 
 // -------------------------
+// Funzione generica per il rendering di liste di entità
+// -------------------------
+export async function renderEntityList(jsonPath, key, containerId, modalFn) {
+  try {
+    const res = await fetch(jsonPath);
+    const data = await res.json();
+    if (!data[key]) {
+      handleError(`Chiave ${key} non trovata in ${jsonPath}`);
+      return;
+    }
+    const list = document.getElementById(containerId);
+    if (!list) {
+      handleError(`Elemento #${containerId} non trovato!`);
+      return;
+    }
+    Object.entries(data[key]).forEach(([name, path]) => {
+      const btn = document.createElement("button");
+      btn.className = "btn btn-primary";
+      btn.textContent = name;
+      btn.addEventListener("click", () => modalFn(name, path));
+      list.appendChild(btn);
+    });
+  } catch (err) {
+    handleError(`Errore caricando ${jsonPath}: ${err}`);
+  }
+}
+
+// -------------------------
 // Funzione per caricare le lingue da un file JSON
 // -------------------------
 export function loadLanguages(callback) {

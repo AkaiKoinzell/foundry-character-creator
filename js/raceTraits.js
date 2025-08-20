@@ -13,9 +13,11 @@ import {
   initFeatureSelectionHandlers,
   saveFeatureSelection,
   refreshSelectedData,
-  resetRacialBonuses
+  resetRacialBonuses,
+  getTakenProficiencies
 } from './script.js';
 import { convertDetailsToAccordion, initializeAccordion } from './ui/accordion.js';
+import { ALL_LANGUAGES, ALL_TOOLS, ALL_SKILLS } from './data/proficiencies.js';
 
 export async function displayRaceTraits() {
   console.log('🛠 Esecuzione displayRaceTraits()...');
@@ -40,6 +42,7 @@ export async function displayRaceTraits() {
     const data = await response.json();
     console.log('📜 Dati razza caricati:', data);
     const raceData = convertRaceData(data);
+    window.currentRaceData = raceData;
     raceTraitsDiv.textContent = '';
     raceTraitsDiv.appendChild(createHeader(`Tratti di ${raceData.name}`, 3));
 
@@ -165,6 +168,66 @@ export async function displayRaceTraits() {
       }
     });
 
+    const addSubstitutionSelectors = (type, fixedList, allOptions, featureKey, matcher) => {
+      if (!fixedList || fixedList.length === 0) return;
+      const { taken, conflicts } = getTakenProficiencies(type, fixedList);
+      if (!conflicts.length) return;
+      let detail = Array.from(raceTraitsDiv.querySelectorAll('details'))
+        .find(det => matcher.test(det.querySelector('summary')?.textContent || ''));
+      if (!detail) {
+        detail = document.createElement('details');
+        detail.className = 'race-trait feature-block';
+        const summary = document.createElement('summary');
+        summary.textContent = featureKey;
+        detail.appendChild(summary);
+        raceTraitsDiv.appendChild(detail);
+      }
+      const startIndex = detail.querySelectorAll(`select[data-feature="${featureKey}"]`).length;
+      const opts = allOptions.filter(o => !taken.has(o.toLowerCase()));
+      const selects = [];
+      const p = document.createElement('p');
+      const labels = { Languages: 'Linguaggi', 'Skill Proficiency': 'Abilità', 'Tool Proficiency': 'Strumenti' };
+      p.innerHTML = `<strong>${labels[featureKey]} duplicate, scegli sostituti:</strong>`;
+      detail.appendChild(p);
+      conflicts.forEach((conflict, i) => {
+        const label = document.createElement('label');
+        label.textContent = `${conflict}: `;
+        const select = document.createElement('select');
+        select.dataset.feature = featureKey;
+        select.dataset.index = startIndex + i;
+        const def = document.createElement('option');
+        def.value = '';
+        def.textContent = 'Seleziona...';
+        select.appendChild(def);
+        opts.forEach(o => {
+          const option = document.createElement('option');
+          option.value = o;
+          option.textContent = o;
+          select.appendChild(option);
+        });
+        const saved = selectedData[featureKey]?.[startIndex + i] || '';
+        if (saved) select.value = saved;
+        label.appendChild(select);
+        detail.appendChild(label);
+        selects.push(select);
+      });
+      const update = () => {
+        const chosen = new Set(selects.map(s => s.value).filter(Boolean));
+        selects.forEach(sel => {
+          const curr = sel.value;
+          sel.innerHTML = '<option value="">Seleziona...</option>' +
+            opts.map(o => `<option value="${o}" ${chosen.has(o) && o !== curr ? 'disabled' : ''}>${o}</option>`).join('');
+          sel.value = curr;
+        });
+      };
+      selects.forEach(sel => sel.addEventListener('change', update));
+      update();
+    };
+
+    addSubstitutionSelectors('languages', raceData.languages?.fixed, ALL_LANGUAGES, 'Languages', /language/i);
+    addSubstitutionSelectors('skills', raceData.skill_choices?.fixed, ALL_SKILLS, 'Skill Proficiency', /skill/i);
+    addSubstitutionSelectors('tools', raceData.tool_choices?.fixed, ALL_TOOLS, 'Tool Proficiency', /tool/i);
+
     // Variant feature choices
     if (raceData.variant_feature_choices) {
       const details = document.createElement('details');
@@ -242,7 +305,6 @@ export async function displayRaceTraits() {
     }
 
     resetRacialBonuses();
-    window.currentRaceData = raceData;
   } catch (error) {
     handleError(`Errore caricando i tratti della razza: ${error}`);
   }

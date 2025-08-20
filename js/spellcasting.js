@@ -1,4 +1,4 @@
-import { getSelectedData } from './state.js';
+import { getTakenSelections } from './script.js';
 
 export async function loadSpells(callback) {
   try {
@@ -84,12 +84,12 @@ export function handleSpellcasting(data, container) {
 
         if (spellLevel && spellClass) {
           loadSpells(spellList => {
-            const existingCantrips = (getSelectedData()["Cantrips"] || []).map(c => c.toLowerCase());
+            const existingCantrips = getTakenSelections('cantrips');
             const filteredSpells = spellList
               .filter(spell =>
                 parseInt(spell.level) === parseInt(spellLevel) &&
                 spell.spell_list.includes(spellClass) &&
-                !existingCantrips.includes(spell.name.toLowerCase())
+                !existingCantrips.has(spell.name.toLowerCase())
               )
               .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
               .join('');

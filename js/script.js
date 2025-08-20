@@ -28,17 +28,24 @@ export function checkTraitCompletion(detailId) {
   detail.classList.toggle("incomplete", incomplete);
 }
 
+/** Normalize spell names by stripping tags such as "#c" and lowering the case. */
+function normalizeSpellName(name) {
+  if (!name) return '';
+  return name.replace(/#.*$/, '').toLowerCase();
+}
+
 /**
- * Returns a merged list of proficiencies already taken via
- * previous selections or background grants.
- * @param {string} type - One of 'skills', 'tools', or 'languages'.
- * @returns {Set<string>} Set of taken proficiencies of the given type (lowercase).
+ * Returns a merged list of selections already taken via previous choices or
+ * fixed grants (background, class, or race).
+ * @param {string} type - One of 'skills', 'tools', 'languages', or 'cantrips'.
+ * @returns {Set<string>} Set of taken selections of the given type (lowercase).
  */
-function getTakenProficiencies(type) {
+function getTakenSelections(type) {
   const selectedMap = {
-    skills: "Skill Proficiency",
-    tools: "Tool Proficiency",
-    languages: "Languages",
+    skills: 'Skill Proficiency',
+    tools: 'Tool Proficiency',
+    languages: 'Languages',
+    cantrips: 'Cantrips',
   };
 
   const taken = new Set();
@@ -48,11 +55,21 @@ function getTakenProficiencies(type) {
     .forEach(v => taken.add(v.toLowerCase()));
 
   if (window.backgroundData) {
-    const bgMap = { skills: "skills", tools: "tools", languages: "languages" };
-    (window.backgroundData[bgMap[type]] || []).forEach(v => taken.add(v.toLowerCase()));
+    const bgMap = {
+      skills: 'skills',
+      tools: 'tools',
+      languages: 'languages',
+      cantrips: 'cantrips',
+    };
+    const bgVals = window.backgroundData[bgMap[type]];
+    if (Array.isArray(bgVals)) bgVals.forEach(v => taken.add(v.toLowerCase()));
+    else if (typeof bgVals === 'string') taken.add(bgVals.toLowerCase());
+    if (type === 'cantrips' && window.backgroundData.spellcasting && window.backgroundData.spellcasting.fixed_spell) {
+      taken.add(normalizeSpellName(window.backgroundData.spellcasting.fixed_spell));
+    }
   }
 
-  // Include fixed proficiencies granted by the currently selected class
+  // Include fixed selections granted by the currently selected class
   if (window.currentClassData) {
     if (type === 'tools') {
       const tp = window.currentClassData.tool_proficiencies;
@@ -76,10 +93,20 @@ function getTakenProficiencies(type) {
       if (lp && Array.isArray(lp.fixed)) {
         lp.fixed.forEach(l => taken.add(l.toLowerCase()));
       }
+    } else if (type === 'cantrips') {
+      const sc = window.currentClassData.spellcasting;
+      if (sc) {
+        if (Array.isArray(sc.fixed_cantrips)) {
+          sc.fixed_cantrips.forEach(c => taken.add(normalizeSpellName(c)));
+        }
+        if (sc.fixed_spell) {
+          taken.add(normalizeSpellName(sc.fixed_spell));
+        }
+      }
     }
   }
 
-  // Include fixed proficiencies granted by the currently selected race
+  // Include fixed selections granted by the currently selected race
   if (window.currentRaceData) {
     if (type === 'languages') {
       const langs = window.currentRaceData.languages;
@@ -96,10 +123,25 @@ function getTakenProficiencies(type) {
       if (tc && Array.isArray(tc.fixed)) {
         tc.fixed.forEach(t => taken.add(t.toLowerCase()));
       }
+    } else if (type === 'cantrips') {
+      const sc = window.currentRaceData.spellcasting;
+      if (sc) {
+        if (Array.isArray(sc.fixed_cantrips)) {
+          sc.fixed_cantrips.forEach(c => taken.add(normalizeSpellName(c)));
+        }
+        if (sc.fixed_spell) {
+          taken.add(normalizeSpellName(sc.fixed_spell));
+        }
+      }
     }
   }
 
   return taken;
+}
+
+// Backwards compatibility for existing imports
+function getTakenProficiencies(type) {
+  return getTakenSelections(type);
 }
 
 /**
@@ -470,6 +512,7 @@ export {
   updateExtraSelectionsView,
   showExtraSelection,
   displayRaceTraits,
+  getTakenSelections,
   getTakenProficiencies,
   generateFinalJson,
   initializeValues,

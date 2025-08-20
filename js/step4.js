@@ -98,45 +98,77 @@ document.addEventListener("DOMContentLoaded", async () => {
       const data = await res.json();
       backgroundData.name = data.name;
 
-    const skillDiv = document.getElementById("backgroundSkills");
-    skillDiv.innerHTML = "";
-    const skillDetails = document.createElement("details");
-    skillDetails.className = "feature-block";
-    skillDetails.innerHTML = "<summary>Abilità</summary>";
-    backgroundData.skills = Array.isArray(data.skills) ? data.skills.slice() : [];
-    if (backgroundData.skills.length > 0) {
-      const p = document.createElement("p");
-      p.innerHTML = `<strong>Abilità:</strong> ${backgroundData.skills.join(", ")}`;
-      skillDetails.appendChild(p);
-    }
-    if (data.skillChoices) {
-      const num = data.skillChoices.choose || 0;
-      const taken = new Set(getTakenProficiencies('skills'));
-      let opts = (data.skillChoices.options || []).filter(o => !taken.has(o));
-      let note = '';
-      if (opts.length === 0) {
-        opts = ALL_SKILLS.filter(o => !taken.has(o));
-        note = ' (tutte le abilità disponibili)';
-      }
-      const p = document.createElement("p");
-      p.innerHTML = `<strong>Scegli ${num} abilità${note}:</strong>`;
-      skillDetails.appendChild(p);
-      buildChoiceSelectors(
-        skillDetails,
-        num,
-        opts,
-        "backgroundSkillChoice",
-        () => {
-          const chosen = Array.from(document.querySelectorAll(".backgroundSkillChoice"))
+      const skillDiv = document.getElementById("backgroundSkills");
+      skillDiv.innerHTML = "";
+      const skillDetails = document.createElement("details");
+      skillDetails.className = "feature-block";
+      skillDetails.innerHTML = "<summary>Abilità</summary>";
+      backgroundData.skills = Array.isArray(data.skills) ? data.skills.slice() : [];
+
+      const renderDuplicateSkillSelectors = () => {
+        const existing = skillDetails.querySelector('.duplicate-skill-choices');
+        if (existing) existing.remove();
+        const taken = new Set(getTakenProficiencies('skills'));
+        const duplicates = backgroundData.skills.filter(s => taken.has(s));
+        if (duplicates.length === 0) {
+          skillDetails.classList.remove('needs-selection', 'incomplete');
+          initFeatureSelectionHandlers(skillDiv);
+          return;
+        }
+        const base = backgroundData.skills.filter(s => !taken.has(s));
+        const opts = ALL_SKILLS.filter(o => !taken.has(o) && !base.includes(o));
+        const dupDiv = document.createElement('div');
+        dupDiv.className = 'duplicate-skill-choices';
+        const p = document.createElement('p');
+        p.innerHTML = '<strong>Abilità duplicate, scegli sostituti:</strong>';
+        dupDiv.appendChild(p);
+        const update = () => {
+          const chosen = Array.from(dupDiv.querySelectorAll('.duplicateSkillChoice'))
             .map(s => s.value)
             .filter(Boolean);
-          backgroundData.skills = (data.skills || []).concat(chosen);
+          backgroundData.skills = base.concat(chosen);
+          skillDetails.classList.toggle('incomplete', chosen.length < duplicates.length);
+        };
+        buildChoiceSelectors(dupDiv, duplicates.length, opts, 'duplicateSkillChoice', update);
+        skillDetails.appendChild(dupDiv);
+        skillDetails.classList.add('needs-selection', 'incomplete');
+        initFeatureSelectionHandlers(skillDiv);
+      };
+
+      if (backgroundData.skills.length > 0) {
+        const p = document.createElement("p");
+        p.innerHTML = `<strong>Abilità:</strong> ${backgroundData.skills.join(", ")}`;
+        skillDetails.appendChild(p);
+      }
+      if (data.skillChoices) {
+        const num = data.skillChoices.choose || 0;
+        const taken = new Set(getTakenProficiencies('skills'));
+        let opts = (data.skillChoices.options || []).filter(o => !taken.has(o));
+        let note = '';
+        if (opts.length === 0) {
+          opts = ALL_SKILLS.filter(o => !taken.has(o));
+          note = ' (tutte le abilità disponibili)';
         }
-      );
-    }
-      skillDiv.appendChild(skillDetails);
-      initFeatureSelectionHandlers(skillDiv);
-      makeAccordion(skillDiv);
+        const p = document.createElement("p");
+        p.innerHTML = `<strong>Scegli ${num} abilità${note}:</strong>`;
+        skillDetails.appendChild(p);
+        buildChoiceSelectors(
+          skillDetails,
+          num,
+          opts,
+          "backgroundSkillChoice",
+          () => {
+            const chosen = Array.from(document.querySelectorAll(".backgroundSkillChoice"))
+              .map(s => s.value)
+              .filter(Boolean);
+            backgroundData.skills = (data.skills || []).concat(chosen);
+            renderDuplicateSkillSelectors();
+          }
+        );
+      }
+        skillDiv.appendChild(skillDetails);
+        renderDuplicateSkillSelectors();
+        makeAccordion(skillDiv);
 
       const toolDiv = document.getElementById("backgroundTools");
       toolDiv.innerHTML = "";

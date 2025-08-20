@@ -46,6 +46,45 @@ function applyFeatAbilityChoices() {
   updateFinalScores();
 }
 
+function renderDuplicateSelectors(type, detailsEl, baseList, allOptions) {
+  const existing = detailsEl.querySelector(`.duplicate-${type}-choices`);
+  if (existing) existing.remove();
+  const taken = getTakenProficiencies(type);
+  const duplicates = baseList.filter(s => taken.has(s.toLowerCase()));
+  if (duplicates.length === 0) {
+    detailsEl.classList.remove('needs-selection', 'incomplete');
+    initFeatureSelectionHandlers(detailsEl.parentElement);
+    backgroundData[type] = baseList.slice();
+    return;
+  }
+  const base = baseList.filter(s => !taken.has(s.toLowerCase()));
+  const opts = allOptions.filter(
+    o => !taken.has(o.toLowerCase()) && !base.includes(o)
+  );
+  const dupDiv = document.createElement('div');
+  dupDiv.className = `duplicate-${type}-choices`;
+  const typeMap = {
+    skills: { label: 'Abilità', choiceClass: 'duplicateSkillChoice' },
+    tools: { label: 'Strumenti', choiceClass: 'duplicateToolChoice' },
+    languages: { label: 'Linguaggi', choiceClass: 'duplicateLanguageChoice' },
+  };
+  const { label, choiceClass } = typeMap[type];
+  const p = document.createElement('p');
+  p.innerHTML = `<strong>${label} duplicate, scegli sostituti:</strong>`;
+  dupDiv.appendChild(p);
+  const update = () => {
+    const chosen = Array.from(dupDiv.querySelectorAll(`.${choiceClass}`))
+      .map(s => s.value)
+      .filter(Boolean);
+    backgroundData[type] = base.concat(chosen);
+    detailsEl.classList.toggle('incomplete', chosen.length < duplicates.length);
+  };
+  buildChoiceSelectors(dupDiv, duplicates.length, opts, choiceClass, update);
+  detailsEl.appendChild(dupDiv);
+  detailsEl.classList.add('needs-selection', 'incomplete');
+  initFeatureSelectionHandlers(detailsEl.parentElement);
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   const step = document.getElementById("step4");
   if (!step) return;
@@ -78,36 +117,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       skillDetails.innerHTML = "<summary>Abilità</summary>";
       backgroundData.skills = Array.isArray(data.skills) ? data.skills.slice() : [];
 
-      const renderDuplicateSkillSelectors = () => {
-        const existing = skillDetails.querySelector('.duplicate-skill-choices');
-        if (existing) existing.remove();
-        const taken = getTakenProficiencies('skills');
-        const duplicates = backgroundData.skills.filter(s => taken.has(s.toLowerCase()));
-        if (duplicates.length === 0) {
-          skillDetails.classList.remove('needs-selection', 'incomplete');
-          initFeatureSelectionHandlers(skillDiv);
-          return;
-        }
-        const base = backgroundData.skills.filter(s => !taken.has(s.toLowerCase()));
-        const opts = ALL_SKILLS.filter(o => !taken.has(o.toLowerCase()) && !base.includes(o));
-        const dupDiv = document.createElement('div');
-        dupDiv.className = 'duplicate-skill-choices';
-        const p = document.createElement('p');
-        p.innerHTML = '<strong>Abilità duplicate, scegli sostituti:</strong>';
-        dupDiv.appendChild(p);
-        const update = () => {
-          const chosen = Array.from(dupDiv.querySelectorAll('.duplicateSkillChoice'))
-            .map(s => s.value)
-            .filter(Boolean);
-          backgroundData.skills = base.concat(chosen);
-          skillDetails.classList.toggle('incomplete', chosen.length < duplicates.length);
-        };
-        buildChoiceSelectors(dupDiv, duplicates.length, opts, 'duplicateSkillChoice', update);
-        skillDetails.appendChild(dupDiv);
-        skillDetails.classList.add('needs-selection', 'incomplete');
-        initFeatureSelectionHandlers(skillDiv);
-      };
-
       if (backgroundData.skills.length > 0) {
         const p = document.createElement("p");
         p.innerHTML = `<strong>Abilità:</strong> ${backgroundData.skills.join(", ")}`;
@@ -130,17 +139,17 @@ document.addEventListener("DOMContentLoaded", async () => {
           num,
           opts,
           "backgroundSkillChoice",
-          () => {
-            const chosen = Array.from(document.querySelectorAll(".backgroundSkillChoice"))
-              .map(s => s.value)
-              .filter(Boolean);
-            backgroundData.skills = (data.skills || []).concat(chosen);
-            renderDuplicateSkillSelectors();
-          }
-        );
-      }
+            () => {
+              const chosen = Array.from(document.querySelectorAll(".backgroundSkillChoice"))
+                .map(s => s.value)
+                .filter(Boolean);
+              backgroundData.skills = (data.skills || []).concat(chosen);
+              renderDuplicateSelectors('skills', skillDetails, backgroundData.skills, ALL_SKILLS);
+            }
+          );
+        }
         skillDiv.appendChild(skillDetails);
-        renderDuplicateSkillSelectors();
+        renderDuplicateSelectors('skills', skillDetails, backgroundData.skills, ALL_SKILLS);
         makeAccordion(skillDiv);
 
       const toolDiv = document.getElementById("backgroundTools");
@@ -154,13 +163,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         p.innerHTML = `<strong>Strumenti:</strong> ${data.tools.join(", ")}`;
         toolDetails.appendChild(p);
       }
-      const toolChangeHandler = () => {
-        const chosen = Array.from(document.querySelectorAll(".backgroundToolChoice"))
-          .map(s => s.value)
-          .filter(Boolean);
-        const base = Array.isArray(data.tools) ? data.tools.slice() : [];
-        backgroundData.tools = base.concat(chosen);
-      };
+        const toolChangeHandler = () => {
+          const chosen = Array.from(document.querySelectorAll(".backgroundToolChoice"))
+            .map(s => s.value)
+            .filter(Boolean);
+          const base = Array.isArray(data.tools) ? data.tools.slice() : [];
+          backgroundData.tools = base.concat(chosen);
+          renderDuplicateSelectors('tools', toolDetails, backgroundData.tools, ALL_TOOLS);
+        };
       const takenTools = getTakenProficiencies('tools');
       if (data.tools && data.tools.choose) {
         const num = data.tools.choose;
@@ -188,9 +198,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         toolDetails.appendChild(p);
         buildChoiceSelectors(toolDetails, num, opts, "backgroundToolChoice", toolChangeHandler);
       }
-      toolDiv.appendChild(toolDetails);
-      initFeatureSelectionHandlers(toolDiv);
-      makeAccordion(toolDiv);
+        toolDiv.appendChild(toolDetails);
+        renderDuplicateSelectors('tools', toolDetails, backgroundData.tools, ALL_TOOLS);
+        makeAccordion(toolDiv);
 
       const langDiv = document.getElementById("backgroundLanguages");
       langDiv.innerHTML = "";
@@ -198,14 +208,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       langDetails.className = "feature-block";
       langDetails.innerHTML = "<summary>Linguaggi</summary>";
       backgroundData.languages = Array.isArray(data.languages) ? data.languages.slice() : [];
-      if (Array.isArray(data.languages) && data.languages.length > 0) {
-        const p = document.createElement("p");
-        p.innerHTML = `<strong>Linguaggi:</strong> ${data.languages.join(", ")}`;
-        langDetails.appendChild(p);
-        langDiv.appendChild(langDetails);
-        initFeatureSelectionHandlers(langDiv);
-        makeAccordion(langDiv);
-      } else if (data.languages && data.languages.choose) {
+        if (Array.isArray(data.languages) && data.languages.length > 0) {
+          const p = document.createElement("p");
+          p.innerHTML = `<strong>Linguaggi:</strong> ${data.languages.join(", ")}`;
+          langDetails.appendChild(p);
+          langDiv.appendChild(langDetails);
+          renderDuplicateSelectors('languages', langDetails, backgroundData.languages, ALL_LANGUAGES);
+          makeAccordion(langDiv);
+        } else if (data.languages && data.languages.choose) {
         const num = data.languages.choose;
         const buildSelectors = opts => {
           const takenLangs = getTakenProficiencies('languages');
@@ -218,34 +228,35 @@ document.addEventListener("DOMContentLoaded", async () => {
           const p = document.createElement("p");
           p.innerHTML = `<strong>Scegli ${num} linguaggi${note}:</strong>`;
           langDetails.appendChild(p);
-          buildChoiceSelectors(
-            langDetails,
-            num,
-            filtered,
-            "backgroundLanguageChoice",
-            () => {
-              const chosen = Array.from(
-                document.querySelectorAll(".backgroundLanguageChoice")
-              )
-                .map(s => s.value)
-                .filter(Boolean);
-              backgroundData.languages = chosen;
-            }
-          );
-          langDiv.appendChild(langDetails);
-          initFeatureSelectionHandlers(langDiv);
-          makeAccordion(langDiv);
-        };
+            buildChoiceSelectors(
+              langDetails,
+              num,
+              filtered,
+              "backgroundLanguageChoice",
+              () => {
+                const chosen = Array.from(
+                  document.querySelectorAll(".backgroundLanguageChoice")
+                )
+                  .map(s => s.value)
+                  .filter(Boolean);
+                backgroundData.languages = chosen;
+                renderDuplicateSelectors('languages', langDetails, backgroundData.languages, ALL_LANGUAGES);
+              }
+            );
+            langDiv.appendChild(langDetails);
+            renderDuplicateSelectors('languages', langDetails, backgroundData.languages, ALL_LANGUAGES);
+            makeAccordion(langDiv);
+          };
         if (data.languages.any) {
           buildSelectors(ALL_LANGUAGES);
         } else {
           buildSelectors(data.languages.options || []);
         }
-      } else {
-        langDiv.appendChild(langDetails);
-        initFeatureSelectionHandlers(langDiv);
-        makeAccordion(langDiv);
-      }
+        } else {
+          langDiv.appendChild(langDetails);
+          renderDuplicateSelectors('languages', langDetails, backgroundData.languages, ALL_LANGUAGES);
+          makeAccordion(langDiv);
+        }
 
       const featDiv = document.getElementById("backgroundFeat");
       featDiv.innerHTML = "";

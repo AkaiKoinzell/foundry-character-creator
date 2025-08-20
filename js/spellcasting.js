@@ -1,11 +1,13 @@
-export function loadSpells(callback) {
-  fetch('data/spells.json')
-    .then(response => response.json())
-    .then(data => {
-      console.log('📖 Spells loaded:', data);
-      callback(data);
-    })
-    .catch(error => console.error('❌ Error loading spells:', error));
+export async function loadSpells(callback) {
+  try {
+    const response = await fetch('data/spells.json');
+    if (!response.ok) throw new Error('Failed to load spells');
+    const data = await response.json();
+    console.log('📖 Spells loaded:', data);
+    callback(data);
+  } catch (error) {
+    console.error('❌ Error loading spells:', error);
+  }
 }
 
 export function filterSpells(spells, filterString) {

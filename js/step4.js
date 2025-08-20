@@ -49,21 +49,30 @@ function applyFeatAbilityChoices() {
   updateFinalScores();
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const step = document.getElementById("step4");
   if (!step) return;
 
   window.backgroundData = { name: "", skills: [], tools: [], languages: [], feat: "" };
 
   loadDropdownData("data/backgrounds.json", "backgroundSelect", "backgrounds");
-  fetch("data/feats.json").then(r => r.json()).then(d => { featPathIndex = d.feats || {}; });
+  try {
+    const resp = await fetch("data/feats.json");
+    if (!resp.ok) throw new Error('Failed to load feats');
+    const d = await resp.json();
+    featPathIndex = d.feats || {};
+  } catch (err) {
+    console.error("Errore caricando i talenti:", err);
+  }
 
   document.getElementById("backgroundSelect").addEventListener("change", async e => {
     const val = e.target.value;
     if (!val) return;
-    const res = await fetch(val);
-    const data = await res.json();
-    backgroundData.name = data.name;
+    try {
+      const res = await fetch(val);
+      if (!res.ok) throw new Error('Network response was not ok');
+      const data = await res.json();
+      backgroundData.name = data.name;
 
     const skillDiv = document.getElementById("backgroundSkills");
     skillDiv.innerHTML = "";
@@ -95,127 +104,128 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       );
     }
-    skillDiv.appendChild(skillDetails);
-    initFeatureSelectionHandlers(skillDiv);
-    makeAccordion(skillDiv);
+      skillDiv.appendChild(skillDetails);
+      initFeatureSelectionHandlers(skillDiv);
+      makeAccordion(skillDiv);
 
-    const toolDiv = document.getElementById("backgroundTools");
-    toolDiv.innerHTML = "";
-    const toolDetails = document.createElement("details");
-    toolDetails.className = "feature-block";
-    toolDetails.innerHTML = "<summary>Strumenti</summary>";
-    backgroundData.tools = Array.isArray(data.tools) ? data.tools.slice() : [];
-    if (Array.isArray(data.tools) && data.tools.length > 0) {
-      const p = document.createElement("p");
-      p.innerHTML = `<strong>Strumenti:</strong> ${data.tools.join(", ")}`;
-      toolDetails.appendChild(p);
-    }
-    const toolChangeHandler = () => {
-      const chosen = Array.from(document.querySelectorAll(".backgroundToolChoice"))
-        .map(s => s.value)
-        .filter(Boolean);
-      const base = Array.isArray(data.tools) ? data.tools.slice() : [];
-      backgroundData.tools = base.concat(chosen);
-    };
-    if (data.tools && data.tools.choose) {
-      const num = data.tools.choose;
-      const opts = data.tools.options || [];
-      const p = document.createElement("p");
-      p.innerHTML = `<strong>Scegli ${num} strumento:</strong>`;
-      toolDetails.appendChild(p);
-      buildChoiceSelectors(toolDetails, num, opts, "backgroundToolChoice", toolChangeHandler);
-    }
-    if (data.toolChoices) {
-      const num = data.toolChoices.choose || 0;
-      const opts = data.toolChoices.options || [];
-      const p = document.createElement("p");
-      p.innerHTML = `<strong>Scegli ${num} strumento:</strong>`;
-      toolDetails.appendChild(p);
-      buildChoiceSelectors(toolDetails, num, opts, "backgroundToolChoice", toolChangeHandler);
-    }
-    toolDiv.appendChild(toolDetails);
-    initFeatureSelectionHandlers(toolDiv);
-    makeAccordion(toolDiv);
-
-    const langDiv = document.getElementById("backgroundLanguages");
-    langDiv.innerHTML = "";
-    const langDetails = document.createElement("details");
-    langDetails.className = "feature-block";
-    langDetails.innerHTML = "<summary>Linguaggi</summary>";
-    backgroundData.languages = Array.isArray(data.languages) ? data.languages.slice() : [];
-    if (Array.isArray(data.languages) && data.languages.length > 0) {
-      const p = document.createElement("p");
-      p.innerHTML = `<strong>Linguaggi:</strong> ${data.languages.join(", ")}`;
-      langDetails.appendChild(p);
-      langDiv.appendChild(langDetails);
-      initFeatureSelectionHandlers(langDiv);
-      makeAccordion(langDiv);
-    } else if (data.languages && data.languages.choose) {
-      const num = data.languages.choose;
-      const buildSelectors = opts => {
+      const toolDiv = document.getElementById("backgroundTools");
+      toolDiv.innerHTML = "";
+      const toolDetails = document.createElement("details");
+      toolDetails.className = "feature-block";
+      toolDetails.innerHTML = "<summary>Strumenti</summary>";
+      backgroundData.tools = Array.isArray(data.tools) ? data.tools.slice() : [];
+      if (Array.isArray(data.tools) && data.tools.length > 0) {
         const p = document.createElement("p");
-        p.innerHTML = `<strong>Scegli ${num} linguaggi:</strong>`;
+        p.innerHTML = `<strong>Strumenti:</strong> ${data.tools.join(", ")}`;
+        toolDetails.appendChild(p);
+      }
+      const toolChangeHandler = () => {
+        const chosen = Array.from(document.querySelectorAll(".backgroundToolChoice"))
+          .map(s => s.value)
+          .filter(Boolean);
+        const base = Array.isArray(data.tools) ? data.tools.slice() : [];
+        backgroundData.tools = base.concat(chosen);
+      };
+      if (data.tools && data.tools.choose) {
+        const num = data.tools.choose;
+        const opts = data.tools.options || [];
+        const p = document.createElement("p");
+        p.innerHTML = `<strong>Scegli ${num} strumento:</strong>`;
+        toolDetails.appendChild(p);
+        buildChoiceSelectors(toolDetails, num, opts, "backgroundToolChoice", toolChangeHandler);
+      }
+      if (data.toolChoices) {
+        const num = data.toolChoices.choose || 0;
+        const opts = data.toolChoices.options || [];
+        const p = document.createElement("p");
+        p.innerHTML = `<strong>Scegli ${num} strumento:</strong>`;
+        toolDetails.appendChild(p);
+        buildChoiceSelectors(toolDetails, num, opts, "backgroundToolChoice", toolChangeHandler);
+      }
+      toolDiv.appendChild(toolDetails);
+      initFeatureSelectionHandlers(toolDiv);
+      makeAccordion(toolDiv);
+
+      const langDiv = document.getElementById("backgroundLanguages");
+      langDiv.innerHTML = "";
+      const langDetails = document.createElement("details");
+      langDetails.className = "feature-block";
+      langDetails.innerHTML = "<summary>Linguaggi</summary>";
+      backgroundData.languages = Array.isArray(data.languages) ? data.languages.slice() : [];
+      if (Array.isArray(data.languages) && data.languages.length > 0) {
+        const p = document.createElement("p");
+        p.innerHTML = `<strong>Linguaggi:</strong> ${data.languages.join(", ")}`;
         langDetails.appendChild(p);
-        buildChoiceSelectors(
-          langDetails,
-          num,
-          opts,
-          "backgroundLanguageChoice",
-          () => {
-            const chosen = Array.from(
-              document.querySelectorAll(".backgroundLanguageChoice")
-            )
-              .map(s => s.value)
-              .filter(Boolean);
-            backgroundData.languages = chosen;
-          }
-        );
         langDiv.appendChild(langDetails);
         initFeatureSelectionHandlers(langDiv);
         makeAccordion(langDiv);
-      };
-      if (data.languages.any) {
-        loadLanguages(buildSelectors);
-      } else {
-        buildSelectors(data.languages.options || []);
-      }
-    } else {
-      langDiv.appendChild(langDetails);
-      initFeatureSelectionHandlers(langDiv);
-      makeAccordion(langDiv);
-    }
-
-    const featDiv = document.getElementById("backgroundFeat");
-    featDiv.innerHTML = "";
-    backgroundData.feat = "";
-    currentFeatData = null;
-    const featDetails = document.createElement("details");
-    featDetails.className = "feature-block";
-    featDetails.innerHTML = "<summary>Talento</summary>";
-    if (Array.isArray(data.featOptions) && data.featOptions.length > 0) {
-      const label = document.createElement("label");
-      label.htmlFor = "backgroundFeatSelect";
-      label.textContent = "Feat:";
-      const select = document.createElement("select");
-      select.id = "backgroundFeatSelect";
-      select.innerHTML = `<option value="">Seleziona un talento</option>` +
-        data.featOptions
-          .map(name => `<option value="${name}">${name}</option>`)
-          .join("");
-      const abilDiv = document.createElement("div");
-      abilDiv.id = "featAbilityChoices";
-      select.addEventListener("change", () => {
-        currentFeatData = null;
-        abilDiv.innerHTML = "";
-        backgroundData.feat = select.value || "";
-        resetBackgroundTalentFields();
-        if (!select.value || !featPathIndex[select.value]) {
-          updateFinalScores();
-          return;
+      } else if (data.languages && data.languages.choose) {
+        const num = data.languages.choose;
+        const buildSelectors = opts => {
+          const p = document.createElement("p");
+          p.innerHTML = `<strong>Scegli ${num} linguaggi:</strong>`;
+          langDetails.appendChild(p);
+          buildChoiceSelectors(
+            langDetails,
+            num,
+            opts,
+            "backgroundLanguageChoice",
+            () => {
+              const chosen = Array.from(
+                document.querySelectorAll(".backgroundLanguageChoice")
+              )
+                .map(s => s.value)
+                .filter(Boolean);
+              backgroundData.languages = chosen;
+            }
+          );
+          langDiv.appendChild(langDetails);
+          initFeatureSelectionHandlers(langDiv);
+          makeAccordion(langDiv);
+        };
+        if (data.languages.any) {
+          loadLanguages(buildSelectors);
+        } else {
+          buildSelectors(data.languages.options || []);
         }
-        fetch(featPathIndex[select.value])
-          .then(r => r.json())
-          .then(feat => {
+      } else {
+        langDiv.appendChild(langDetails);
+        initFeatureSelectionHandlers(langDiv);
+        makeAccordion(langDiv);
+      }
+
+      const featDiv = document.getElementById("backgroundFeat");
+      featDiv.innerHTML = "";
+      backgroundData.feat = "";
+      currentFeatData = null;
+      const featDetails = document.createElement("details");
+      featDetails.className = "feature-block";
+      featDetails.innerHTML = "<summary>Talento</summary>";
+      if (Array.isArray(data.featOptions) && data.featOptions.length > 0) {
+        const label = document.createElement("label");
+        label.htmlFor = "backgroundFeatSelect";
+        label.textContent = "Feat:";
+        const select = document.createElement("select");
+        select.id = "backgroundFeatSelect";
+        select.innerHTML = `<option value="">Seleziona un talento</option>` +
+          data.featOptions
+            .map(name => `<option value="${name}">${name}</option>`)
+            .join("");
+        const abilDiv = document.createElement("div");
+        abilDiv.id = "featAbilityChoices";
+        select.addEventListener("change", async () => {
+          currentFeatData = null;
+          abilDiv.innerHTML = "";
+          backgroundData.feat = select.value || "";
+          resetBackgroundTalentFields();
+          if (!select.value || !featPathIndex[select.value]) {
+            updateFinalScores();
+            return;
+          }
+          try {
+            const resp = await fetch(featPathIndex[select.value]);
+            if (!resp.ok) throw new Error('Failed to load feat');
+            const feat = await resp.json();
             const fixed = [];
             if (feat.ability) {
               feat.ability.forEach(ab => {
@@ -234,15 +244,20 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             currentFeatData = { fixedAbilities: fixed };
             applyFeatAbilityChoices();
-          });
-      });
-      featDetails.appendChild(label);
-      featDetails.appendChild(select);
-      featDetails.appendChild(abilDiv);
+          } catch (err) {
+            console.error("Errore caricando il talento:", err);
+          }
+        });
+        featDetails.appendChild(label);
+        featDetails.appendChild(select);
+        featDetails.appendChild(abilDiv);
+      }
+      featDiv.appendChild(featDetails);
+      initFeatureSelectionHandlers(featDiv);
+      makeAccordion(featDiv);
+    } catch (err) {
+      handleError(`Errore caricando il background: ${err}`);
     }
-    featDiv.appendChild(featDetails);
-    initFeatureSelectionHandlers(featDiv);
-    makeAccordion(featDiv);
   });
 });
 

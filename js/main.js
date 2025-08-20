@@ -35,6 +35,7 @@ async function showRaceModal(name, path) {
   if (!modal || !details) return;
   try {
     const res = await fetch(path);
+    if (!res.ok) throw new Error('Network response was not ok');
     const data = await res.json();
     details.textContent = '';
     details.appendChild(createHeader(data.name, 3));
@@ -60,6 +61,7 @@ async function showBackgroundModal(name, path) {
   if (!modal || !details) return;
   try {
     const res = await fetch(path);
+    if (!res.ok) throw new Error('Network response was not ok');
     const data = await res.json();
     details.textContent = '';
     details.appendChild(createHeader(data.name, 3));
@@ -97,6 +99,7 @@ async function showClassModal(name, path) {
   if (!modal || !details) return;
   try {
     const res = await fetch(path);
+    if (!res.ok) throw new Error('Network response was not ok');
     const data = await res.json();
     details.textContent = '';
     details.appendChild(createHeader(data.name, 3));

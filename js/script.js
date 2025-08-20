@@ -738,7 +738,7 @@ document.getElementById("raceSelect").addEventListener("change", () => {
 
 
 // ==================== DISPLAY DEI TRATTI DELLA RAZZA ====================
-function displayRaceTraits() {
+async function displayRaceTraits() {
   console.log("🛠 Esecuzione displayRaceTraits()...");
   const racePath = document.getElementById("raceSelect").value;
   const raceTraitsDiv = document.getElementById("raceTraits");
@@ -754,13 +754,14 @@ function displayRaceTraits() {
   }
 
   console.log(`📜 Caricamento tratti per ${racePath}...`);
-  fetch(racePath)
-    .then(response => response.json())
-    .then(data => {
-      console.log("📜 Dati razza caricati:", data);
-      const raceData = convertRaceData(data);
-      raceTraitsDiv.textContent = '';
-      raceTraitsDiv.appendChild(createHeader(`Tratti di ${raceData.name}`, 3));
+  try {
+    const response = await fetch(racePath);
+    if (!response.ok) throw new Error('Network response was not ok');
+    const data = await response.json();
+    console.log("📜 Dati razza caricati:", data);
+    const raceData = convertRaceData(data);
+    raceTraitsDiv.textContent = '';
+    raceTraitsDiv.appendChild(createHeader(`Tratti di ${raceData.name}`, 3));
 
       // Speed
       let speedText = 'Velocità: Non disponibile';
@@ -949,12 +950,13 @@ function displayRaceTraits() {
 
       resetRacialBonuses();
       window.currentRaceData = raceData;
-    })
-    .catch(error => handleError(`Errore caricando i tratti della razza: ${error}`));
+  } catch (error) {
+    handleError(`Errore caricando i tratti della razza: ${error}`);
+  }
 }
 
 // ==================== UPDATE SUBCLASSES (STEP 5) ====================
-function updateSubclasses() {
+async function updateSubclasses() {
   const classPath = document.getElementById("classSelect").value;
   const featuresDiv = document.getElementById("classFeatures");
   if (!classPath) {
@@ -965,13 +967,15 @@ function updateSubclasses() {
     }
     return;
   }
-  fetch(classPath)
-    .then(response => response.json())
-    .then(data => {
-      window.currentClassData = data;
-      renderClassFeatures();
-    })
-    .catch(error => handleError(`Errore caricando le sottoclasse: ${error}`));
+  try {
+    const response = await fetch(classPath);
+    if (!response.ok) throw new Error('Network response was not ok');
+    const data = await response.json();
+    window.currentClassData = data;
+    renderClassFeatures();
+  } catch (error) {
+    handleError(`Errore caricando le sottoclasse: ${error}`);
+  }
 }
 
 function getSubclassFilename(name) {
@@ -1122,6 +1126,7 @@ async function renderClassFeatures() {
     try {
       const file = getSubclassFilename(subclassName);
       const resp = await fetch(`data/subclasses/${file}`);
+      if (!resp.ok) throw new Error('Network response was not ok');
       subData = await resp.json();
       if (subData.description) {
         featuresDiv.appendChild(createParagraph(subData.description));

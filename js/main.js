@@ -15,96 +15,44 @@ import './step5.js';
 import './step7.js';
 
 let classSelectionConfirmed = false;
-let pendingClassPath = '';
-let pendingRacePath = '';
-let pendingBackgroundPath = '';
 
-function renderClassList() {
-  renderEntityList('data/classes.json', 'classList', showClassModal);
-}
+function renderEntitySection(jsonPath, containerId, modalIds, detailRenderer) {
+  let pendingPath = '';
+  const { modalId, detailsId, closeId } = modalIds;
 
-function renderRaceList() {
-  renderEntityList('data/races.json', 'raceList', showRaceModal);
-}
-
-async function showRaceModal(name, path) {
-  pendingRacePath = path;
-  const modal = document.getElementById('raceModal');
-  const details = document.getElementById('raceModalDetails');
-  if (!modal || !details) return;
-  try {
-    const res = await fetch(path);
-    if (!res.ok) throw new Error('Network response was not ok');
-    const data = await res.json();
+  async function openModal(name, path) {
+    pendingPath = path;
+    const modal = document.getElementById(modalId);
+    const details = document.getElementById(detailsId);
+    if (!modal || !details) return;
     details.textContent = '';
-    details.appendChild(createHeader(data.name, 3));
-  } catch (e) {
-    details.textContent = 'Errore caricando i dettagli della razza.';
-  }
-  modal.classList.remove('hidden');
-}
-
-function closeRaceModal() {
-  const modal = document.getElementById('raceModal');
-  if (modal) modal.classList.add('hidden');
-}
-
-function renderBackgroundList() {
-  renderEntityList('data/backgrounds.json', 'backgroundList', showBackgroundModal);
-}
-
-async function showBackgroundModal(name, path) {
-  pendingBackgroundPath = path;
-  const modal = document.getElementById('backgroundModal');
-  const details = document.getElementById('backgroundModalDetails');
-  if (!modal || !details) return;
-  try {
-    const res = await fetch(path);
-    if (!res.ok) throw new Error('Network response was not ok');
-    const data = await res.json();
-    details.textContent = '';
-    details.appendChild(createHeader(data.name, 3));
-    if (data.skills) {
-      details.appendChild(createParagraph(`Abilità: ${data.skills.join(', ')}`));
+    try {
+      const res = await fetch(path);
+      if (!res.ok) throw new Error('Network response was not ok');
+      const data = await res.json();
+      detailRenderer(details, data);
+    } catch (e) {
+      details.textContent = 'Errore caricando i dettagli.';
     }
-    if (data.tools && data.tools.length) {
-      details.appendChild(createParagraph(`Strumenti: ${data.tools.join(', ')}`));
-    }
-  } catch (e) {
-    details.textContent = 'Errore caricando i dettagli del background.';
+    modal.classList.remove('hidden');
   }
-  modal.classList.remove('hidden');
-}
 
-function closeBackgroundModal() {
-  const modal = document.getElementById('backgroundModal');
-  if (modal) modal.classList.add('hidden');
-}
-
-
-async function showClassModal(name, path) {
-  pendingClassPath = path;
-  const modal = document.getElementById('classModal');
-  const details = document.getElementById('classModalDetails');
-  if (!modal || !details) return;
-  try {
-    const res = await fetch(path);
-    if (!res.ok) throw new Error('Network response was not ok');
-    const data = await res.json();
-    details.textContent = '';
-    details.appendChild(createHeader(data.name, 3));
-    details.appendChild(createParagraph(data.description));
-    details.appendChild(createParagraph(`Hit Die: ${data.hit_die}`));
-    details.appendChild(createParagraph(`Saving Throws: ${data.saving_throws.join(', ')}`));
-  } catch (e) {
-    details.textContent = 'Errore caricando i dettagli della classe.';
+  function closeModal() {
+    const modal = document.getElementById(modalId);
+    if (modal) modal.classList.add('hidden');
   }
-  modal.classList.remove('hidden');
-}
 
-function closeClassModal() {
-  const modal = document.getElementById('classModal');
-  if (modal) modal.classList.add('hidden');
+  renderEntityList(jsonPath, containerId, openModal);
+
+  if (closeId) {
+    const closeBtn = document.getElementById(closeId);
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+  }
+
+  return {
+    getPendingPath: () => pendingPath,
+    closeModal
+  };
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -112,9 +60,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
   loadDropdownData('data/races.json', 'raceSelect');
   loadDropdownData('data/classes.json', 'classSelect');
-  renderClassList();
-  renderRaceList();
-  renderBackgroundList();
+  const classSection = renderEntitySection(
+    'data/classes.json',
+    'classList',
+    { modalId: 'classModal', detailsId: 'classModalDetails', closeId: 'closeClassModal' },
+    (details, data) => {
+      details.appendChild(createHeader(data.name, 3));
+      details.appendChild(createParagraph(data.description));
+      details.appendChild(createParagraph(`Hit Die: ${data.hit_die}`));
+      details.appendChild(
+        createParagraph(`Saving Throws: ${data.saving_throws.join(', ')}`)
+      );
+    }
+  );
+  const raceSection = renderEntitySection(
+    'data/races.json',
+    'raceList',
+    { modalId: 'raceModal', detailsId: 'raceModalDetails', closeId: 'closeRaceModal' },
+    (details, data) => {
+      details.appendChild(createHeader(data.name, 3));
+    }
+  );
+  const backgroundSection = renderEntitySection(
+    'data/backgrounds.json',
+    'backgroundList',
+    {
+      modalId: 'backgroundModal',
+      detailsId: 'backgroundModalDetails',
+      closeId: 'closeBackgroundModal'
+    },
+    (details, data) => {
+      details.appendChild(createHeader(data.name, 3));
+      if (data.skills) {
+        details.appendChild(
+          createParagraph(`Abilità: ${data.skills.join(', ')}`)
+        );
+      }
+      if (data.tools && data.tools.length) {
+        details.appendChild(
+          createParagraph(`Strumenti: ${data.tools.join(', ')}`)
+        );
+      }
+    }
+  );
 
   ['step1','step2','step3','step4','step5','step6','step7'].forEach((stepId, idx) => {
     const btn = document.getElementById(`btnStep${idx + 1}`);
@@ -157,39 +145,35 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('raceSelect').addEventListener('change', displayRaceTraits);
   document.getElementById('levelSelect').addEventListener('change', () => displayRaceTraits());
   document.getElementById('generateJson').addEventListener('click', generateFinalJson);
-
-  document.getElementById('closeClassModal').addEventListener('click', closeClassModal);
-  document.getElementById('closeRaceModal').addEventListener('click', closeRaceModal);
-  document.getElementById('closeBackgroundModal').addEventListener('click', closeBackgroundModal);
   document.getElementById('addClassButton').addEventListener('click', () => {
     const classSelect = document.getElementById('classSelect');
     if (classSelect) {
-      classSelect.value = pendingClassPath;
+      classSelect.value = classSection.getPendingPath();
       classSelect.dispatchEvent(new Event('change'));
     }
-    closeClassModal();
+    classSection.closeModal();
   });
 
   document.getElementById('addRaceButton').addEventListener('click', () => {
     const raceSelect = document.getElementById('raceSelect');
     if (raceSelect) {
-      raceSelect.value = pendingRacePath;
+      raceSelect.value = raceSection.getPendingPath();
       displayRaceTraits();
       const confirmBtn = document.getElementById('confirmRaceSelection');
       if (confirmBtn) confirmBtn.style.display = 'inline-block';
     }
-    closeRaceModal();
+    raceSection.closeModal();
   });
 
   document.getElementById('addBackgroundButton').addEventListener('click', () => {
     const bgSelect = document.getElementById('backgroundSelect');
     if (bgSelect) {
-      bgSelect.value = pendingBackgroundPath;
+      bgSelect.value = backgroundSection.getPendingPath();
       bgSelect.dispatchEvent(new Event('change'));
       const confirmBtn = document.getElementById('confirmBackgroundSelection');
       if (confirmBtn) confirmBtn.style.display = 'inline-block';
     }
-    closeBackgroundModal();
+    backgroundSection.closeModal();
   });
 
   document.getElementById('confirmClassSelection').addEventListener('click', async () => {

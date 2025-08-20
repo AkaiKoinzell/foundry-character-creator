@@ -10,7 +10,7 @@ import {
   setAvailableLanguages,
   renderFinalRecap
 } from './script.js';
-import { getSelectedData, resetSelectedData } from './state.js';
+import { resetSelectedData } from './state.js';
 import './step4.js';
 import './step5.js';
 import './step7.js';
@@ -82,15 +82,6 @@ function closeBackgroundModal() {
   if (modal) modal.classList.add('hidden');
 }
 
-function openEquipmentModal() {
-  const modal = document.getElementById('equipmentModal');
-  if (modal) modal.classList.remove('hidden');
-}
-
-function closeEquipmentModal() {
-  const modal = document.getElementById('equipmentModal');
-  if (modal) modal.classList.add('hidden');
-}
 
 async function showClassModal(name, path) {
   pendingClassPath = path;
@@ -174,7 +165,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('closeClassModal').addEventListener('click', closeClassModal);
   document.getElementById('closeRaceModal').addEventListener('click', closeRaceModal);
   document.getElementById('closeBackgroundModal').addEventListener('click', closeBackgroundModal);
-  document.getElementById('closeEquipmentModal').addEventListener('click', closeEquipmentModal);
   document.getElementById('addClassButton').addEventListener('click', () => {
     const classSelect = document.getElementById('classSelect');
     if (classSelect) {
@@ -205,8 +195,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     closeBackgroundModal();
   });
-
-  document.getElementById('openEquipmentModal').addEventListener('click', openEquipmentModal);
 
   document.getElementById('confirmClassSelection').addEventListener('click', async () => {
     const classSelect = document.getElementById('classSelect');
@@ -245,18 +233,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     document.getElementById('confirmBackgroundSelection').style.display = 'none';
-  });
-
-  document.getElementById('confirmEquipment').addEventListener('click', () => {
-    closeEquipmentModal();
-    const list = document.getElementById('equipmentList');
-    const eq = getSelectedData().equipment;
-    if (list && eq) {
-      const items = [...(eq.standard || []), ...(eq.class || []), ...(eq.upgrades || [])];
-      list.innerHTML = items.length
-        ? `<p><strong>Equipaggiamento scelto:</strong> ${items.join(', ')}</p>`
-        : '';
-    }
   });
 
 });

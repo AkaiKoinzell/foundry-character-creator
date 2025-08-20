@@ -1,4 +1,5 @@
 import { getSelectedData, saveSelectedData } from './state.js';
+import { convertDetailsToAccordion, initializeAccordion } from './script.js';
 // Step 5: Equipment selection
 let equipmentData = null;
 
@@ -13,20 +14,16 @@ function renderEquipment() {
   if (!equipmentData) return;
   const className = getSelectedClassName();
   const level = parseInt(document.getElementById('levelSelect').value || '1', 10);
-  const standardDiv = document.getElementById('standardEquipment');
-  const classDiv = document.getElementById('classEquipmentChoices');
-  const upgradeDiv = document.getElementById('equipmentUpgrades');
+  const equipmentDiv = document.getElementById('equipmentSelections');
+  if (!equipmentDiv) return;
+  equipmentDiv.innerHTML = '';
 
   const standardDetail = document.createElement('details');
   standardDetail.className = 'feature-block';
   standardDetail.innerHTML = `<summary>Equipaggiamento Standard</summary><ul>${equipmentData.standard
     .map(item => `<li>${item}</li>`)
     .join('')}</ul>`;
-  standardDiv.innerHTML = '';
-  standardDiv.appendChild(standardDetail);
-
-  classDiv.innerHTML = '';
-  upgradeDiv.innerHTML = '';
+  equipmentDiv.appendChild(standardDetail);
 
   const classInfo = equipmentData.classes[className];
   if (classInfo) {
@@ -34,7 +31,7 @@ function renderEquipment() {
       const fixedDetail = document.createElement('details');
       fixedDetail.className = 'feature-block';
       fixedDetail.innerHTML = `<summary>Equipaggiamento fisso</summary><p>${classInfo.fixed.join(', ')}</p>`;
-      classDiv.appendChild(fixedDetail);
+      equipmentDiv.appendChild(fixedDetail);
     }
     if (Array.isArray(classInfo.choices)) {
       classInfo.choices.forEach((choice, idx) => {
@@ -55,17 +52,13 @@ function renderEquipment() {
           detail.appendChild(lab);
           detail.appendChild(document.createElement('br'));
         });
-        const update = () => {
-          const anyChecked = detail.querySelectorAll('input:checked').length > 0;
-          detail.classList.toggle('incomplete', !anyChecked);
-        };
-        detail.querySelectorAll('input').forEach(inp => inp.addEventListener('change', update));
-        classDiv.appendChild(detail);
-        update();
+        equipmentDiv.appendChild(detail);
       });
     }
   } else {
-    classDiv.innerHTML = '<p>Nessun equipaggiamento specifico per questa classe.</p>';
+    const p = document.createElement('p');
+    p.textContent = 'Nessun equipaggiamento specifico per questa classe.';
+    equipmentDiv.appendChild(p);
   }
 
   if (equipmentData.upgrades && level >= (equipmentData.upgrades.minLevel || 0)) {
@@ -104,8 +97,21 @@ function renderEquipment() {
       upDetail.appendChild(input);
       upDetail.appendChild(lab);
     }
-    upgradeDiv.appendChild(upDetail);
+    equipmentDiv.appendChild(upDetail);
   }
+
+  convertDetailsToAccordion(equipmentDiv);
+  equipmentDiv.classList.add('accordion');
+  initializeAccordion(equipmentDiv);
+
+  equipmentDiv.querySelectorAll('.accordion-item.needs-selection').forEach(block => {
+    const update = () => {
+      const anyChecked = block.querySelectorAll('input:checked').length > 0;
+      block.classList.toggle('incomplete', !anyChecked);
+    };
+    block.querySelectorAll('input').forEach(inp => inp.addEventListener('change', update));
+    update();
+  });
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -127,19 +133,21 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   const confirmBtn = document.getElementById('confirmEquipment');
-  if (confirmBtn) {
+  const equipmentDiv = document.getElementById('equipmentSelections');
+  if (confirmBtn && equipmentDiv) {
     confirmBtn.addEventListener('click', () => {
       const className = getSelectedClassName();
       const classInfo = equipmentData.classes[className] || { fixed: [] };
       const chosen = [];
       if (Array.isArray(classInfo.fixed)) chosen.push(...classInfo.fixed);
-      document
-        .querySelectorAll('#classEquipmentChoices input:checked')
-        .forEach(el => chosen.push(el.value));
       const upgrades = [];
-      document
-        .querySelectorAll('#equipmentUpgrades input:checked')
-        .forEach(el => upgrades.push(el.value));
+      equipmentDiv.querySelectorAll('input:checked').forEach(el => {
+        if (el.name && el.name.startsWith('equipChoice_')) {
+          chosen.push(el.value);
+        } else {
+          upgrades.push(el.value);
+        }
+      });
       const selectedData = getSelectedData();
       selectedData.equipment = {
         standard: equipmentData.standard,

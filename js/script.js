@@ -145,13 +145,10 @@ function getTakenProficiencies(type, incoming) {
   if (!incoming) return originalTaken;
 
   const lowerIncoming = incoming.map(i => i.toLowerCase());
-  const takenWithoutIncoming = new Set(
-    [...originalTaken].filter(v => !lowerIncoming.includes(v))
-  );
   const conflicts = incoming.filter((v, idx) =>
-    takenWithoutIncoming.has(lowerIncoming[idx])
+    originalTaken.has(lowerIncoming[idx])
   );
-  const taken = new Set([...takenWithoutIncoming, ...lowerIncoming]);
+  const taken = new Set([...originalTaken, ...lowerIncoming]);
   return { taken, conflicts };
 }
 

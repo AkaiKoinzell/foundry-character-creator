@@ -5,7 +5,7 @@ import { setExtraSelections } from './extrasState.js';
 import { extraCategoryAliases } from './extrasModal.js';
 import { convertDetailsToAccordion, initializeAccordion } from './ui/accordion.js';
 import { getSelectedData } from './state.js';
-import { ALL_LANGUAGES, ALL_SKILLS, ALL_TOOLS } from './data/proficiencies.js';
+import { ALL_LANGUAGES, ALL_SKILLS } from './data/proficiencies.js';
 
 export async function updateSubclasses() {
   const classPath = document.getElementById('classSelect').value;
@@ -70,23 +70,11 @@ export async function renderClassFeatures() {
   if (data.description) featuresDiv.appendChild(createParagraph(data.description));
 
   const profTexts = [];
-  let fixedTools = [];
-  if (Array.isArray(data.tool_proficiencies)) {
-    fixedTools = data.tool_proficiencies.filter(t => {
-      const lower = t.toLowerCase();
-      return !lower.includes('of your choice') && !lower.includes(' or ');
-    });
-  } else if (data.tool_proficiencies?.fixed) {
-    fixedTools = data.tool_proficiencies.fixed;
-  }
   if (data.weapon_proficiencies) {
     profTexts.push(`Weapon Training: ${data.weapon_proficiencies.join(', ')}`);
   }
   if (data.armor_proficiencies) {
     profTexts.push(`Armor Training: ${data.armor_proficiencies.join(', ')}`);
-  }
-  if (fixedTools.length) {
-    profTexts.push(`Tool Proficiencies: ${fixedTools.join(', ')}`);
   }
   if (data.skill_proficiencies && data.skill_proficiencies.choose) {
     profTexts.push(`Skill Proficiencies: Choose ${data.skill_proficiencies.choose} from ${data.skill_proficiencies.options.join(', ')}`);
@@ -158,7 +146,6 @@ export async function renderClassFeatures() {
 
     handleConflicts('languages', data.language_proficiencies?.fixed, ALL_LANGUAGES, 'Languages', 'Linguaggi');
     handleConflicts('skills', data.skill_proficiencies?.fixed, ALL_SKILLS, 'Skill Proficiency', 'Abilità');
-    handleConflicts('tools', fixedTools, ALL_TOOLS, 'Tool Proficiency', 'Strumenti');
     featuresDiv.appendChild(details);
   }
 

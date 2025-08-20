@@ -9,7 +9,7 @@
   ],
   "classes": {
     "Artificer": {
-      "fixed": ["Due pugnali"],
+      "fixed": ["Due pugnali", "Strumenti da scasso", "Utensili da inventore"],
       "choices": [
         {
           "label": "Arma",
@@ -28,11 +28,25 @@
           ]
         },
         {
-          "label": "Strumenti",
+          "label": "Utensili da artigiano",
           "type": "radio",
           "options": [
-            { "value": "Strumenti da scasso", "label": "Strumenti da scasso" },
-            { "value": "Utensili da artigiano", "label": "Utensili da artigiano" }
+            { "value": "Alchemist's Supplies", "label": "Alchemist's Supplies" },
+            { "value": "Brewer's Supplies", "label": "Brewer's Supplies" },
+            { "value": "Calligrapher's Tools", "label": "Calligrapher's Tools" },
+            { "value": "Carpenter's Tools", "label": "Carpenter's Tools" },
+            { "value": "Cartographer's Tools", "label": "Cartographer's Tools" },
+            { "value": "Cobbler's Tools", "label": "Cobbler's Tools" },
+            { "value": "Cook's Utensils", "label": "Cook's Utensils" },
+            { "value": "Glassblower's Tools", "label": "Glassblower's Tools" },
+            { "value": "Jeweler's Tools", "label": "Jeweler's Tools" },
+            { "value": "Leatherworker's Tools", "label": "Leatherworker's Tools" },
+            { "value": "Mason's Tools", "label": "Mason's Tools" },
+            { "value": "Painter's Supplies", "label": "Painter's Supplies" },
+            { "value": "Potter's Tools", "label": "Potter's Tools" },
+            { "value": "Smith's Tools", "label": "Smith's Tools" },
+            { "value": "Weaver's Tools", "label": "Weaver's Tools" },
+            { "value": "Woodcarver's Tools", "label": "Woodcarver's Tools" }
           ]
         },
         {

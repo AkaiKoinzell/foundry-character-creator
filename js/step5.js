@@ -1,6 +1,23 @@
 import { getSelectedData, saveSelectedData } from './state.js';
 import { convertDetailsToAccordion, initializeAccordion } from './script.js';
 // Step 5: Equipment selection
+const SIMPLE_WEAPONS = [
+  'Club',
+  'Crossbow, Light',
+  'Dagger',
+  'Dart',
+  'Greatclub',
+  'Handaxe',
+  'Javelin',
+  'Light Hammer',
+  'Mace',
+  'Quarterstaff',
+  'Shortbow',
+  'Sickle',
+  'Sling',
+  'Spear',
+  'Yklwa'
+];
 let equipmentData = null;
 
 function getSelectedClassName() {
@@ -39,7 +56,16 @@ function renderEquipment() {
         const detail = document.createElement('details');
         detail.className = 'feature-block needs-selection incomplete';
         detail.innerHTML = `<summary>${choice.label || 'Scegli'}</summary>`;
-        choice.options.forEach((opt, oIdx) => {
+        const options = [];
+        (choice.options || []).forEach(opt => {
+          const text = typeof opt === 'string' ? opt : opt.label || opt.value;
+          if (text === 'Arma semplice') {
+            SIMPLE_WEAPONS.forEach(w => options.push({ value: w, label: w }));
+          } else {
+            options.push(opt);
+          }
+        });
+        options.forEach((opt, oIdx) => {
           const id = `equipChoice_${idx}_${oIdx}`;
           const input = document.createElement('input');
           input.type = choice.type === 'checkbox' ? 'checkbox' : 'radio';

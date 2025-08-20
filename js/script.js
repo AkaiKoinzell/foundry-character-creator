@@ -208,13 +208,13 @@ function gatherExtraSelections(data, context, level = 1) {
     allChoices.forEach(choice => {
       if (!choice.level || parseInt(choice.level) <= level) {
         const key = extraCategoryAliases[choice.name] || choice.name;
+        if (key === 'Tool Proficiency') return; // tool choices handled in equipment
         const selected = (selectedData[key] || []).filter(v => v);
         let opts = choice.selection || choice.options || [];
         let note = '';
         const map = {
           Languages: { type: 'languages', taken: takenLangs },
-          'Skill Proficiency': { type: 'skills', taken: takenSkills },
-          'Tool Proficiency': { type: 'tools', taken: takenTools }
+          'Skill Proficiency': { type: 'skills', taken: takenSkills }
         };
         const info = map[key];
         if (info) {

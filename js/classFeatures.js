@@ -70,9 +70,6 @@ export async function renderClassFeatures() {
   if (data.description) featuresDiv.appendChild(createParagraph(data.description));
 
   const profTexts = [];
-  const toolChoice = data.tool_proficiencies && !Array.isArray(data.tool_proficiencies)
-    ? data.tool_proficiencies
-    : null;
   let fixedTools = [];
   if (Array.isArray(data.tool_proficiencies)) {
     fixedTools = data.tool_proficiencies.filter(t => {
@@ -276,15 +273,6 @@ export async function renderClassFeatures() {
   });
 
   const allChoices = [...(data.choices || []), ...(subData?.choices || [])];
-  if (toolChoice && !allChoices.some(c => c.name === 'Tool Proficiency')) {
-    allChoices.push({
-      level: 1,
-      name: 'Tool Proficiency',
-      description: `Choose ${toolChoice.choose} from the class options`,
-      count: toolChoice.choose,
-      selection: toolChoice.options
-    });
-  }
   if (data.skill_proficiencies && !allChoices.some(c => c.name === 'Skill Proficiency')) {
     allChoices.push({
       level: 1,
@@ -298,8 +286,7 @@ export async function renderClassFeatures() {
   setExtraSelections(extraSelections);
   const detailMatchers = {
     Languages: /Proficiencies/i,
-    'Skill Proficiency': /Proficiencies/i,
-    'Tool Proficiency': /Proficiencies/i
+    'Skill Proficiency': /Proficiencies/i
   };
   extraSelections.forEach(choice => {
     const featureKey = extraCategoryAliases[choice.name] || choice.name;

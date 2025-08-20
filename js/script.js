@@ -1162,41 +1162,38 @@ function renderFinalRecap() {
   selectedData = sessionStorage.getItem("selectedData")
     ? JSON.parse(sessionStorage.getItem("selectedData"))
     : selectedData;
-
+  const userName = document.getElementById("userName")?.value || "";
+  const characterName = document.getElementById("characterName")?.value || "";
   const className = document.getElementById("classSelect").selectedOptions[0]?.text || "";
   const subclassName = document.getElementById("subclassSelect").selectedOptions[0]?.text || "";
   const raceName = document.getElementById("raceSelect").selectedOptions[0]?.text || "";
-  const backgroundName = window.backgroundData ? window.backgroundData.name : "";
+  const level = document.getElementById("levelSelect")?.value || "";
+  const origin = document.getElementById("origin")?.value || "";
+  const age = document.getElementById("age")?.value || "";
+  const backgroundLanguages = window.backgroundData ? window.backgroundData.languages || [] : [];
+  const backgroundTools = window.backgroundData ? window.backgroundData.tools || [] : [];
+  const extraLangs = selectedData["Languages"] || [];
+  const extraTools = selectedData["Tool Proficiency"] || [];
+  const languages = [...new Set([...backgroundLanguages, ...extraLangs])];
+  const tools = [...new Set([...backgroundTools, ...extraTools])];
+  const equipment = selectedData.equipment || {};
+  const equipList = [
+    ...(equipment.standard || []),
+    ...(equipment.class || []),
+    ...(equipment.upgrades || [])
+  ];
 
   let html = "";
-  html += `<p><strong>Class:</strong> ${className}${subclassName ? ` (${subclassName})` : ""}</p>`;
-  html += `<p><strong>Race:</strong> ${raceName}</p>`;
-  if (backgroundName) html += `<p><strong>Background:</strong> ${backgroundName}</p>`;
-
-  const entries = Object.entries(selectedData).filter(([k, v]) => k !== "equipment" && v && v.length);
-  if (entries.length) {
-    html += `<h4>Selections</h4>`;
-    entries.forEach(([k, v]) => {
-      const vals = Array.isArray(v) ? v.filter(Boolean).join(", ") : v;
-      html += `<p><strong>${k}:</strong> ${vals}</p>`;
-    });
-  }
-
-  const equipment = selectedData.equipment || {};
-  const eqParts = [];
-  if (equipment.standard && equipment.standard.length) {
-    eqParts.push(`<p><strong>Standard:</strong> ${equipment.standard.join(", ")}</p>`);
-  }
-  if (equipment.class && equipment.class.length) {
-    eqParts.push(`<p><strong>Class:</strong> ${equipment.class.join(", ")}</p>`);
-  }
-  if (equipment.upgrades && equipment.upgrades.length) {
-    eqParts.push(`<p><strong>Upgrades:</strong> ${equipment.upgrades.join(", ")}</p>`);
-  }
-  if (eqParts.length) {
-    html += `<h4>Equipment</h4>` + eqParts.join("");
-  }
-
+  html += `<p><strong>Nome Utente:</strong> ${userName}</p>`;
+  html += `<p><strong>Nome PG:</strong> ${characterName}</p>`;
+  html += `<p><strong>Classe:</strong> ${className}${subclassName ? ` (${subclassName})` : ""}</p>`;
+  html += `<p><strong>Razza:</strong> ${raceName}</p>`;
+  html += `<p><strong>Livello:</strong> ${level}</p>`;
+  html += `<p><strong>Provenienza:</strong> ${origin}</p>`;
+  html += `<p><strong>Età:</strong> ${age}</p>`;
+  html += `<p><strong>Lingue:</strong> ${languages.join(", ")}</p>`;
+  html += `<p><strong>Strumenti:</strong> ${tools.join(", ")}</p>`;
+  html += `<p><strong>Equip:</strong> ${equipList.join(", ")}</p>`;
   recapDiv.innerHTML = html;
 }
 
@@ -1225,8 +1222,13 @@ function generateFinalJson() {
   if (variantSpellElem && variantSpellElem.value) {
     variantExtra.spell = variantSpellElem.value;
   }
+  const backgroundLanguages = window.backgroundData ? window.backgroundData.languages || [] : [];
+  const allLanguages = [...new Set([...(selectedData["Languages"] || []), ...backgroundLanguages])];
   const character = {
+    user_name: document.getElementById("userName")?.value || "",
     name: document.getElementById("characterName").value || "Senza Nome",
+    origin: document.getElementById("origin")?.value || "",
+    age: document.getElementById("age")?.value || "",
     level: document.getElementById("levelSelect").value || "1",
     race: document.getElementById("raceSelect").selectedOptions[0]?.text || "Nessuna",
     class: document.getElementById("classSelect").selectedOptions[0]?.text || "Nessuna",
@@ -1256,7 +1258,7 @@ function generateFinalJson() {
     background_feat: window.backgroundData ? window.backgroundData.feat || "" : "",
     equipment: selectedData.equipment || { standard: [], class: [], upgrades: [] },
     languages: {
-      selected: selectedData["Languages"] || []
+      selected: allLanguages
     },
     selections: selectedData,
     chromatic_ancestry: chromaticAncestry,

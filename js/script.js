@@ -337,6 +337,29 @@ const extraCategoryDescriptions = {
 };
 
 /**
+ * Returns a merged list of proficiencies already taken via
+ * previous selections or background grants.
+ * @param {string} type - One of 'skills', 'tools', or 'languages'.
+ * @returns {string[]} Array of taken proficiencies of the given type.
+ */
+function getTakenProficiencies(type) {
+  const selectedMap = {
+    skills: "Skill Proficiency",
+    tools: "Tool Proficiency",
+    languages: "Languages",
+  };
+
+  const taken = new Set((selectedData[selectedMap[type]] || []).filter(v => v));
+
+  if (window.backgroundData) {
+    const bgMap = { skills: "skills", tools: "tools", languages: "languages" };
+    (window.backgroundData[bgMap[type]] || []).forEach(v => taken.add(v));
+  }
+
+  return Array.from(taken);
+}
+
+/**
  * Builds a unified list of extra selections for races or classes.
  * @param {Object} data - Source data containing choice information.
  * @param {string} context - "race" or "class" to determine parsing logic.
@@ -345,11 +368,16 @@ const extraCategoryDescriptions = {
  */
 function gatherExtraSelections(data, context, level = 1) {
   const selections = [];
+
+  const takenLangs = new Set(getTakenProficiencies('languages'));
+  const takenSkills = new Set(getTakenProficiencies('skills'));
+  const takenTools = new Set(getTakenProficiencies('tools'));
+
   if (context === "race") {
     if (data.languages && (data.languages.fixed.length > 0 || data.languages.choice > 0)) {
-      const availableLangs = availableLanguages.filter(
-        lang => !data.languages.fixed.includes(lang)
-      );
+      const availableLangs = availableLanguages
+        .filter(lang => !data.languages.fixed.includes(lang))
+        .filter(lang => !takenLangs.has(lang));
       const fixedDesc = data.languages.fixed.length
         ? `<strong>Lingue Concesse:</strong> ${data.languages.fixed.join(', ')}`
         : '';
@@ -361,20 +389,26 @@ function gatherExtraSelections(data, context, level = 1) {
       });
     }
     if (data.skill_choices) {
-      selections.push({
-        name: "Skill Proficiency",
-        description: "Choose skill proficiencies.",
-        selection: data.skill_choices.options,
-        count: data.skill_choices.number
-      });
+      const filteredSkills = data.skill_choices.options.filter(opt => !takenSkills.has(opt));
+      if (filteredSkills.length > 0) {
+        selections.push({
+          name: "Skill Proficiency",
+          description: "Choose skill proficiencies.",
+          selection: filteredSkills,
+          count: data.skill_choices.number
+        });
+      }
     }
     if (data.tool_choices) {
-      selections.push({
-        name: "Tool Proficiency",
-        description: "Choose a tool proficiency.",
-        selection: data.tool_choices.options,
-        count: 1
-      });
+      const filteredTools = data.tool_choices.options.filter(opt => !takenTools.has(opt));
+      if (filteredTools.length > 0) {
+        selections.push({
+          name: "Tool Proficiency",
+          description: "Choose a tool proficiency.",
+          selection: filteredTools,
+          count: 1
+        });
+      }
     }
   } else if (context === "class") {
     const allChoices = data.choices || [];
@@ -383,7 +417,15 @@ function gatherExtraSelections(data, context, level = 1) {
         const key = extraCategoryAliases[choice.name] || choice.name;
         const selected = (selectedData[key] || []).filter(v => v);
         if (selected.length < (choice.count || 1)) {
-          selections.push(choice);
+          let opts = choice.selection || choice.options || [];
+          if (key === "Languages") {
+            opts = opts.filter(o => !takenLangs.has(o));
+          } else if (key === "Skill Proficiency") {
+            opts = opts.filter(o => !takenSkills.has(o));
+          } else if (key === "Tool Proficiency") {
+            opts = opts.filter(o => !takenTools.has(o));
+          }
+          selections.push({ ...choice, selection: opts });
         }
       }
     });
@@ -624,7 +666,14 @@ function showExtraSelection() {
 
   if (currentSelection.selection) {
     const categoryKey = extraCategoryAliases[currentSelection.name] || currentSelection.name;
+    const typeLookup = {
+      Languages: 'languages',
+      'Skill Proficiency': 'skills',
+      'Tool Proficiency': 'tools',
+    };
+    const taken = new Set(getTakenProficiencies(typeLookup[categoryKey] || ''));
     const selectedValues = new Set((selectedData[categoryKey] || []).filter(v => v));
+    taken.forEach(v => selectedValues.add(v));
 
     let dropdownHTML = "";
     for (let i = 0; i < currentSelection.count; i++) {
@@ -1523,6 +1572,7 @@ export {
   renderClassFeatures,
   openExtrasModal,
   displayRaceTraits,
+  getTakenProficiencies,
   generateFinalJson,
   initializeValues,
   renderFinalRecap

@@ -84,11 +84,6 @@ h1, h2 {
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   margin-bottom: 20px;
-  display: none;
-}
-
-.step.active {
-  display: block;
 }
 
 label {
@@ -154,6 +149,10 @@ th {
   text-align: center;
 }
 
+.hidden {
+  display: none !important;
+}
+
 #stepContainer {
   max-width: 800px;
   margin: 0 auto;
@@ -169,8 +168,9 @@ th {
 
 /* Accordion styles */
 .accordion {
+  max-width: 700px;
   margin: 15px auto;
-  display: none;
+  display: block;
 }
 
 .accordion-item {
@@ -237,7 +237,6 @@ details.needs-selection.incomplete > summary {
 
 /* Modal styles for class details */
 .modal {
-  display: none;
   position: fixed;
   top: 0;
   left: 0;
@@ -247,9 +246,6 @@ details.needs-selection.incomplete > summary {
   justify-content: center;
   align-items: center;
   z-index: 1000;
-}
-
-.modal.show {
   display: flex;
 }
 

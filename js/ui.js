@@ -4,11 +4,9 @@ export function showStep(stepId) {
 
   const steps = document.querySelectorAll('.step');
   steps.forEach(step => {
-    if (step.id === stepId) {
-      step.classList.add('active');
-    } else {
-      step.classList.remove('active');
-    }
+    const isTarget = step.id === stepId;
+    step.classList.toggle('active', isTarget);
+    step.classList.toggle('hidden', !isTarget);
   });
 
   updateProgress(stepId);
@@ -67,7 +65,9 @@ export function resetForm() {
   });
   const steps = document.querySelectorAll('.step');
   steps.forEach((step, index) => {
-    step.classList.toggle('active', index === 0);
+    const show = index === 0;
+    step.classList.toggle('active', show);
+    step.classList.toggle('hidden', !show);
   });
   const progressBar = document.getElementById('progressBar');
   if (progressBar) progressBar.style.width = '0%';

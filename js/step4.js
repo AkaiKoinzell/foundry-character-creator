@@ -1,6 +1,11 @@
 // Step 4: Background selection and feat handling
 import { loadDropdownData, loadLanguages } from './common.js';
-import { initFeatureSelectionHandlers, convertDetailsToAccordion, initializeAccordion } from './script.js';
+import {
+  initFeatureSelectionHandlers,
+  convertDetailsToAccordion,
+  initializeAccordion,
+  getTakenProficiencies,
+} from './script.js';
 
 let featPathIndex = {};
 let currentFeatData = null;
@@ -87,7 +92,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     if (data.skillChoices) {
       const num = data.skillChoices.choose || 0;
-      const opts = data.skillChoices.options || [];
+      const taken = new Set(getTakenProficiencies('skills'));
+      const opts = (data.skillChoices.options || []).filter(o => !taken.has(o));
       const p = document.createElement("p");
       p.innerHTML = `<strong>Scegli ${num} abilità:</strong>`;
       skillDetails.appendChild(p);
@@ -126,9 +132,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         const base = Array.isArray(data.tools) ? data.tools.slice() : [];
         backgroundData.tools = base.concat(chosen);
       };
+      const takenTools = new Set(getTakenProficiencies('tools'));
       if (data.tools && data.tools.choose) {
         const num = data.tools.choose;
-        const opts = data.tools.options || [];
+        const opts = (data.tools.options || []).filter(o => !takenTools.has(o));
         const p = document.createElement("p");
         p.innerHTML = `<strong>Scegli ${num} strumento:</strong>`;
         toolDetails.appendChild(p);
@@ -136,7 +143,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
       if (data.toolChoices) {
         const num = data.toolChoices.choose || 0;
-        const opts = data.toolChoices.options || [];
+        const opts = (data.toolChoices.options || []).filter(o => !takenTools.has(o));
         const p = document.createElement("p");
         p.innerHTML = `<strong>Scegli ${num} strumento:</strong>`;
         toolDetails.appendChild(p);
@@ -162,13 +169,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       } else if (data.languages && data.languages.choose) {
         const num = data.languages.choose;
         const buildSelectors = opts => {
+          const takenLangs = new Set(getTakenProficiencies('languages'));
+          const filtered = (opts || []).filter(o => !takenLangs.has(o));
           const p = document.createElement("p");
           p.innerHTML = `<strong>Scegli ${num} linguaggi:</strong>`;
           langDetails.appendChild(p);
           buildChoiceSelectors(
             langDetails,
             num,
-            opts,
+            filtered,
             "backgroundLanguageChoice",
             () => {
               const chosen = Array.from(

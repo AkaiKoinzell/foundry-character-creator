@@ -258,4 +258,4 @@ for name, data in backgrounds.items():
 # Write backgrounds.json mapping
 mapping = {name: f"data/backgrounds/{name.lower().replace(' ', '_').replace('/', '').replace("'", "")}.json" for name in backgrounds}
 with open('data/backgrounds.json', 'w', encoding='utf-8') as f:
-    json.dump({"backgrounds": mapping}, f, ensure_ascii=False, indent=2)
+    json.dump({"items": mapping}, f, ensure_ascii=False, indent=2)

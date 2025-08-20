@@ -1,5 +1,5 @@
 {
-  "backgrounds": {
+  "items": {
     "Acolyte": "data/backgrounds/acolyte.json",
     "Anthropologist": "data/backgrounds/anthropologist.json",
     "Archaeologist": "data/backgrounds/archaeologist.json",

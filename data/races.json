@@ -1,5 +1,5 @@
 {
-    "races": {
+    "items": {
         "Aarakocra": "data/races/aarakocra.json",
         "Aasimar (Fallen)": "data/races/aasimarfallen.json",
         "Aasimar (Protector)": "data/races/aasimarprotector.json",

@@ -209,14 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const classSelect = document.getElementById('classSelect');
     if (classSelect) {
       classSelect.value = pendingClassPath;
-      classSelectionConfirmed = false;
-      if (window.selectedData) {
-        Object.keys(window.selectedData).forEach(k => delete window.selectedData[k]);
-        sessionStorage.setItem('selectedData', JSON.stringify(window.selectedData));
-      }
-      updateSubclasses();
-      const confirmBtn = document.getElementById('confirmClassSelection');
-      if (confirmBtn) confirmBtn.style.display = 'inline-block';
+      classSelect.dispatchEvent(new Event('change'));
     }
     closeClassModal();
   });

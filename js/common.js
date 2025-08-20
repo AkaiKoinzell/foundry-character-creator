@@ -3,19 +3,19 @@
 // -------------------------
 // Caricamento dati e popolamento dropdown
 // -------------------------
-export async function loadDropdownData(jsonPath, selectId, key) {
+export async function loadDropdownData(jsonPath, selectId) {
   try {
     const response = await fetch(jsonPath);
     if (!response.ok) throw new Error('Network response was not ok');
     const data = await response.json();
     console.log(`📜 Dati ricevuti da ${jsonPath}:`, data);
-    if (!data[key]) {
-      handleError(`Chiave ${key} non trovata in ${jsonPath}`);
+    if (!data.items) {
+      handleError(`Chiave items non trovata in ${jsonPath}`);
       return;
     }
-    const options = Object.keys(data[key]).map(name => ({
-      name: name,
-      path: data[key][name]
+    const options = Object.entries(data.items).map(([name, path]) => ({
+      name,
+      path
     }));
     populateDropdown(selectId, options);
   } catch (error) {
@@ -41,13 +41,13 @@ export function populateDropdown(selectId, options) {
 // -------------------------
 // Funzione generica per il rendering di liste di entità
 // -------------------------
-export async function renderEntityList(jsonPath, key, containerId, modalFn) {
+export async function renderEntityList(jsonPath, containerId, modalFn) {
   try {
     const res = await fetch(jsonPath);
     if (!res.ok) throw new Error('Network response was not ok');
     const data = await res.json();
-    if (!data[key]) {
-      handleError(`Chiave ${key} non trovata in ${jsonPath}`);
+    if (!data.items) {
+      handleError(`Chiave items non trovata in ${jsonPath}`);
       return;
     }
     const list = document.getElementById(containerId);
@@ -55,7 +55,7 @@ export async function renderEntityList(jsonPath, key, containerId, modalFn) {
       handleError(`Elemento #${containerId} non trovato!`);
       return;
     }
-    Object.entries(data[key]).forEach(([name, path]) => {
+    Object.entries(data.items).forEach(([name, path]) => {
       const btn = document.createElement("button");
       btn.className = "btn btn-primary";
       btn.textContent = name;

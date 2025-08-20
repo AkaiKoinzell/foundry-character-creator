@@ -20,11 +20,11 @@ let pendingRacePath = '';
 let pendingBackgroundPath = '';
 
 function renderClassList() {
-  renderEntityList('data/classes.json', 'classes', 'classList', showClassModal);
+  renderEntityList('data/classes.json', 'classList', showClassModal);
 }
 
 function renderRaceList() {
-  renderEntityList('data/races.json', 'races', 'raceList', showRaceModal);
+  renderEntityList('data/races.json', 'raceList', showRaceModal);
 }
 
 async function showRaceModal(name, path) {
@@ -50,7 +50,7 @@ function closeRaceModal() {
 }
 
 function renderBackgroundList() {
-  renderEntityList('data/backgrounds.json', 'backgrounds', 'backgroundList', showBackgroundModal);
+  renderEntityList('data/backgrounds.json', 'backgroundList', showBackgroundModal);
 }
 
 async function showBackgroundModal(name, path) {
@@ -110,8 +110,8 @@ function closeClassModal() {
 document.addEventListener('DOMContentLoaded', () => {
   console.log('✅ Main.js caricato!');
 
-  loadDropdownData('data/races.json', 'raceSelect', 'races');
-  loadDropdownData('data/classes.json', 'classSelect', 'classes');
+  loadDropdownData('data/races.json', 'raceSelect');
+  loadDropdownData('data/classes.json', 'classSelect');
   renderClassList();
   renderRaceList();
   renderBackgroundList();

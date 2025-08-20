@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   window.backgroundData = { name: "", skills: [], tools: [], languages: [], feat: "" };
 
-  loadDropdownData("data/backgrounds.json", "backgroundSelect", "backgrounds");
+  loadDropdownData("data/backgrounds.json", "backgroundSelect");
   try {
     const resp = await fetch("data/feats.json");
     if (!resp.ok) throw new Error('Failed to load feats');

@@ -4,7 +4,7 @@ import { convertRaceData, ALL_SKILLS } from './raceData.js';
 import { getSelectedData, setSelectedData, saveSelectedData } from './state.js';
 import { createHeader, createParagraph, createList } from './domHelpers.js';
 import { ARTISAN_TOOLS, MUSICAL_INSTRUMENTS, ALL_TOOLS } from './proficiencies.js';
-import { updateVariantSkillOptions, handleVariantExtraSelections, handleVariantFeatureChoices } from './variantFeatures.js';
+import { handleVariantExtraSelections, handleVariantFeatureChoices } from './variantFeatures.js';
 import { handleExtraLanguages, handleExtraSkills, handleExtraTools, handleExtraAncestry, gatherRaceTraitSelections } from './extrasSelections.js';
 import { openExtrasModal, updateExtraSelectionsView, showExtraSelection, extraCategoryAliases, extraCategoryDescriptions } from './extrasModal.js';
 
@@ -1144,11 +1144,9 @@ function updateSkillOptions() {
 
 // ==================== EVENT LISTENERS AND INITIALIZATION ====================
 window.applyRacialBonuses = applyRacialBonuses;
-window.updateVariantSkillOptions = updateVariantSkillOptions;
 window.adjustPoints = adjustPoints;
 
 export {
-  updateVariantSkillOptions,
   handleVariantExtraSelections,
   handleVariantFeatureChoices,
   handleExtraAncestry,

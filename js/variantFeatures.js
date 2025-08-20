@@ -1,6 +1,7 @@
 import { loadSpells, filterSpells } from './spellcasting.js';
 import { getSelectedData, saveSelectedData } from './state.js';
 import { checkTraitCompletion } from './script.js';
+import { buildChoiceSelectors } from './selectionUtils.js';
 
 const variantExtraMapping = {
   "Drow Magic": {
@@ -22,26 +23,6 @@ const variantExtraMapping = {
   },
 };
 
-export function updateVariantSkillOptions() {
-  const allVariantSkillSelects = document.querySelectorAll('.variantSkillChoice');
-  if (!allVariantSkillSelects.length) return;
-
-  const selected = new Set([...allVariantSkillSelects].map(s => s.value).filter(Boolean));
-
-  allVariantSkillSelects.forEach(select => {
-    const current = select.value;
-    select.innerHTML = `<option value="">Seleziona...</option>`;
-    JSON.parse(select.getAttribute('data-options')).forEach(skill => {
-      const option = document.createElement('option');
-      option.value = skill;
-      option.textContent = skill;
-      if (skill === current || !selected.has(skill)) {
-        select.appendChild(option);
-        if (skill === current) option.selected = true;
-      }
-    });
-  });
-}
 
 export function handleVariantExtraSelections() {
   const variantElem = document.getElementById('variantFeatureChoice');
@@ -55,24 +36,16 @@ export function handleVariantExtraSelections() {
   if (!mapData) return;
 
   if (mapData.type === 'skills') {
-    container.innerHTML = `<p><strong>Seleziona ${mapData.count} skill per ${selectedVariant}:</strong></p>` +
-      Array(mapData.count).fill(0).map((_, i) =>
-        `<select class="variantSkillChoice" id="variantSkillChoice${i}" data-options='${JSON.stringify(mapData.options)}' onchange="updateVariantSkillOptions()">
-            <option value="">Seleziona...</option>
-            ${mapData.options.map(s => `<option value="${s}">${s}</option>`).join('')}
-          </select>`
-      ).join(' ');
-    container.querySelectorAll('select').forEach(sel => {
-      sel.addEventListener('change', () => {
-        const data = getSelectedData();
-        data['Variant Feature Skills'] = [...container.querySelectorAll('.variantSkillChoice')]
-          .map(s => s.value)
-          .filter(Boolean);
-        saveSelectedData();
-        checkTraitCompletion('variantFeatureTrait');
-      });
-    });
-    checkTraitCompletion('variantFeatureTrait');
+    container.innerHTML = `<p><strong>Seleziona ${mapData.count} skill per ${selectedVariant}:</strong></p>`;
+    const onChange = () => {
+      const data = getSelectedData();
+      data['Variant Feature Skills'] = [...container.querySelectorAll('.variantSkillChoice')]
+        .map(s => s.value)
+        .filter(Boolean);
+      saveSelectedData();
+      checkTraitCompletion('variantFeatureTrait');
+    };
+    buildChoiceSelectors(container, mapData.count, mapData.options, 'variantSkillChoice', onChange);
   } else if (mapData.type === 'spells') {
     loadSpells(spellList => {
       const filtered = filterSpells(spellList, mapData.filter);

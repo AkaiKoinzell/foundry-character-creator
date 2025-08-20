@@ -1,5 +1,5 @@
 import { showStep, loadFormData } from './ui.js';
-import { loadDropdownData, loadLanguages } from './common.js';
+import { loadDropdownData, loadLanguages, renderEntityList } from './common.js';
 import {
   updateSubclasses,
   renderClassFeatures,
@@ -18,40 +18,12 @@ let pendingClassPath = '';
 let pendingRacePath = '';
 let pendingBackgroundPath = '';
 
-async function renderClassList() {
-  try {
-    const res = await fetch('data/classes.json');
-    const data = await res.json();
-    const list = document.getElementById('classList');
-    if (!list) return;
-    Object.entries(data.classes).forEach(([name, path]) => {
-      const btn = document.createElement('button');
-      btn.className = 'btn btn-primary';
-      btn.textContent = name;
-      btn.addEventListener('click', () => showClassModal(name, path));
-      list.appendChild(btn);
-    });
-  } catch (err) {
-    console.error('Errore caricando le classi', err);
-  }
+function renderClassList() {
+  renderEntityList('data/classes.json', 'classes', 'classList', showClassModal);
 }
 
-async function renderRaceList() {
-  try {
-    const res = await fetch('data/races.json');
-    const data = await res.json();
-    const list = document.getElementById('raceList');
-    if (!list) return;
-    Object.entries(data.races).forEach(([name, path]) => {
-      const btn = document.createElement('button');
-      btn.className = 'btn btn-primary';
-      btn.textContent = name;
-      btn.addEventListener('click', () => showRaceModal(name, path));
-      list.appendChild(btn);
-    });
-  } catch (err) {
-    console.error('Errore caricando le razze', err);
-  }
+function renderRaceList() {
+  renderEntityList('data/races.json', 'races', 'raceList', showRaceModal);
 }
 
 async function showRaceModal(name, path) {
@@ -74,22 +46,8 @@ function closeRaceModal() {
   if (modal) modal.classList.add('hidden');
 }
 
-async function renderBackgroundList() {
-  try {
-    const res = await fetch('data/backgrounds.json');
-    const data = await res.json();
-    const list = document.getElementById('backgroundList');
-    if (!list) return;
-    Object.entries(data.backgrounds).forEach(([name, path]) => {
-      const btn = document.createElement('button');
-      btn.className = 'btn btn-primary';
-      btn.textContent = name;
-      btn.addEventListener('click', () => showBackgroundModal(name, path));
-      list.appendChild(btn);
-    });
-  } catch (err) {
-    console.error('Errore caricando i background', err);
-  }
+function renderBackgroundList() {
+  renderEntityList('data/backgrounds.json', 'backgrounds', 'backgroundList', showBackgroundModal);
 }
 
 async function showBackgroundModal(name, path) {

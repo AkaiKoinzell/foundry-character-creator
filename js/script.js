@@ -448,31 +448,29 @@ function gatherExtraSelections(data, context, level = 1) {
       if (!choice.level || parseInt(choice.level) <= level) {
         const key = extraCategoryAliases[choice.name] || choice.name;
         const selected = (selectedData[key] || []).filter(v => v);
-        if (selected.length < (choice.count || 1)) {
-          let opts = choice.selection || choice.options || [];
-          let note = '';
-          if (key === "Languages") {
-            opts = opts.filter(o => !takenLangs.has(o));
-            if (opts.length === 0) {
-              opts = availableLanguages.filter(o => !takenLangs.has(o));
-              note = ' (tutte le lingue disponibili)';
-            }
-          } else if (key === "Skill Proficiency") {
-            opts = opts.filter(o => !takenSkills.has(o));
-            if (opts.length === 0) {
-              opts = ALL_SKILLS.filter(o => !takenSkills.has(o));
-              note = ' (tutte le abilità disponibili)';
-            }
-          } else if (key === "Tool Proficiency") {
-            opts = opts.filter(o => !takenTools.has(o));
-            if (opts.length === 0) {
-              opts = ALL_TOOLS.filter(o => !takenTools.has(o));
-              note = ' (tutti gli strumenti disponibili)';
-            }
+        let opts = choice.selection || choice.options || [];
+        let note = '';
+        if (key === "Languages") {
+          opts = opts.filter(o => !takenLangs.has(o) || selected.includes(o));
+          if (opts.length === 0) {
+            opts = availableLanguages.filter(o => !takenLangs.has(o) || selected.includes(o));
+            note = ' (tutte le lingue disponibili)';
           }
-          const desc = note ? ((choice.description || '') + note) : choice.description;
-          selections.push({ ...choice, selection: opts, description: desc });
+        } else if (key === "Skill Proficiency") {
+          opts = opts.filter(o => !takenSkills.has(o) || selected.includes(o));
+          if (opts.length === 0) {
+            opts = ALL_SKILLS.filter(o => !takenSkills.has(o) || selected.includes(o));
+            note = ' (tutte le abilità disponibili)';
+          }
+        } else if (key === "Tool Proficiency") {
+          opts = opts.filter(o => !takenTools.has(o) || selected.includes(o));
+          if (opts.length === 0) {
+            opts = ALL_TOOLS.filter(o => !takenTools.has(o) || selected.includes(o));
+            note = ' (tutti gli strumenti disponibili)';
+          }
         }
+        const desc = note ? ((choice.description || '') + note) : choice.description;
+        selections.push({ ...choice, selection: opts, description: desc, selected });
       }
     });
   }
@@ -1364,7 +1362,7 @@ async function renderClassFeatures() {
     }
     const options = choice.options || choice.selection || [];
     for (let i = 0; i < (choice.count || 1); i++) {
-      const saved = selectedData[featureKey]?.[i] || '';
+      const saved = choice.selected?.[i] || selectedData[featureKey]?.[i] || '';
       const label = document.createElement('label');
       label.textContent = `${choice.name}${choice.count > 1 ? ' ' + (i + 1) : ''}: `;
       const select = document.createElement('select');

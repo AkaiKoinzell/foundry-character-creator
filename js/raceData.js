@@ -1,4 +1,4 @@
-const ALL_SKILLS = [
+export const ALL_SKILLS = [
   "Acrobatics",
   "Animal Handling",
   "Arcana",

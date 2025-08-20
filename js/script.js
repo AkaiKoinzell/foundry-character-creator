@@ -1,6 +1,6 @@
 import { loadLanguages, handleError, renderTables } from './common.js';
 import { loadSpells, filterSpells, handleSpellcasting } from './spellcasting.js';
-import { convertRaceData } from './raceData.js';
+import { convertRaceData, ALL_SKILLS } from './raceData.js';
 import { getSelectedData, setSelectedData, saveSelectedData } from './state.js';
 import { createHeader, createParagraph, createList } from './domHelpers.js';
 
@@ -60,6 +60,23 @@ const MUSICAL_INSTRUMENTS = [
   "Pan Flute",
   "Shawm",
   "Viol"
+];
+
+export const ALL_TOOLS = [
+  ...ARTISAN_TOOLS,
+  ...MUSICAL_INSTRUMENTS,
+  "Disguise Kit",
+  "Forgery Kit",
+  "Herbalism Kit",
+  "Navigator's Tools",
+  "Poisoner's Kit",
+  "Thieves' Tools",
+  "Dice Set",
+  "Dragonchess Set",
+  "Playing Card Set",
+  "Three-Dragon Ante Set",
+  "Vehicle (Land)",
+  "Vehicle (Water)",
 ];
 
 // ==================== FUNZIONI PER LE VARIANT FEATURES ====================
@@ -309,7 +326,7 @@ const nextTraitEl = document.getElementById("nextTrait");
 const closeModalEl = document.getElementById("closeModal");
 
 // Cached list of all languages loaded from JSON
-let availableLanguages = [];
+export let availableLanguages = [];
 export function setAvailableLanguages(langs) {
   availableLanguages = langs;
 }
@@ -375,36 +392,51 @@ function gatherExtraSelections(data, context, level = 1) {
 
   if (context === "race") {
     if (data.languages && (data.languages.fixed.length > 0 || data.languages.choice > 0)) {
-      const availableLangs = availableLanguages
+      let availableLangs = availableLanguages
         .filter(lang => !data.languages.fixed.includes(lang))
         .filter(lang => !takenLangs.has(lang));
+      let note = '';
+      if (availableLangs.length === 0) {
+        availableLangs = availableLanguages.filter(lang => !takenLangs.has(lang));
+        note = ' (tutte le lingue disponibili)';
+      }
       const fixedDesc = data.languages.fixed.length
         ? `<strong>Lingue Concesse:</strong> ${data.languages.fixed.join(', ')}`
         : '';
       selections.push({
         name: "Languages",
-        description: fixedDesc,
+        description: fixedDesc + note,
         selection: availableLangs,
         count: data.languages.choice
       });
     }
     if (data.skill_choices) {
-      const filteredSkills = data.skill_choices.options.filter(opt => !takenSkills.has(opt));
+      let filteredSkills = data.skill_choices.options.filter(opt => !takenSkills.has(opt));
+      let note = '';
+      if (filteredSkills.length === 0) {
+        filteredSkills = ALL_SKILLS.filter(opt => !takenSkills.has(opt));
+        note = ' (tutte le abilità disponibili)';
+      }
       if (filteredSkills.length > 0) {
         selections.push({
           name: "Skill Proficiency",
-          description: "Choose skill proficiencies.",
+          description: "Choose skill proficiencies." + note,
           selection: filteredSkills,
           count: data.skill_choices.number
         });
       }
     }
     if (data.tool_choices) {
-      const filteredTools = data.tool_choices.options.filter(opt => !takenTools.has(opt));
+      let filteredTools = data.tool_choices.options.filter(opt => !takenTools.has(opt));
+      let note = '';
+      if (filteredTools.length === 0) {
+        filteredTools = ALL_TOOLS.filter(opt => !takenTools.has(opt));
+        note = ' (tutti gli strumenti disponibili)';
+      }
       if (filteredTools.length > 0) {
         selections.push({
           name: "Tool Proficiency",
-          description: "Choose a tool proficiency.",
+          description: "Choose a tool proficiency." + note,
           selection: filteredTools,
           count: 1
         });
@@ -418,14 +450,28 @@ function gatherExtraSelections(data, context, level = 1) {
         const selected = (selectedData[key] || []).filter(v => v);
         if (selected.length < (choice.count || 1)) {
           let opts = choice.selection || choice.options || [];
+          let note = '';
           if (key === "Languages") {
             opts = opts.filter(o => !takenLangs.has(o));
+            if (opts.length === 0) {
+              opts = availableLanguages.filter(o => !takenLangs.has(o));
+              note = ' (tutte le lingue disponibili)';
+            }
           } else if (key === "Skill Proficiency") {
             opts = opts.filter(o => !takenSkills.has(o));
+            if (opts.length === 0) {
+              opts = ALL_SKILLS.filter(o => !takenSkills.has(o));
+              note = ' (tutte le abilità disponibili)';
+            }
           } else if (key === "Tool Proficiency") {
             opts = opts.filter(o => !takenTools.has(o));
+            if (opts.length === 0) {
+              opts = ALL_TOOLS.filter(o => !takenTools.has(o));
+              note = ' (tutti gli strumenti disponibili)';
+            }
           }
-          selections.push({ ...choice, selection: opts });
+          const desc = note ? ((choice.description || '') + note) : choice.description;
+          selections.push({ ...choice, selection: opts, description: desc });
         }
       }
     });

@@ -5,19 +5,38 @@ import {
   convertDetailsToAccordion,
   initializeAccordion,
   getTakenProficiencies,
+  availableLanguages,
+  ALL_TOOLS,
 } from './script.js';
+import { ALL_SKILLS } from './raceData.js';
 
 let featPathIndex = {};
 let currentFeatData = null;
 
 function buildChoiceSelectors(container, count, options, className, changeHandler) {
+  const selects = [];
   for (let i = 0; i < count; i++) {
     const sel = document.createElement('select');
     sel.className = className;
-    sel.innerHTML = `<option value="">Seleziona</option>` + options.map(o => `<option value="${o}">${o}</option>`).join('');
-    sel.addEventListener('change', changeHandler);
+    sel.dataset.options = JSON.stringify(options);
     container.appendChild(sel);
+    selects.push(sel);
   }
+
+  const update = () => {
+    const chosen = new Set(selects.map(s => s.value).filter(Boolean));
+    selects.forEach(sel => {
+      const opts = JSON.parse(sel.dataset.options);
+      const current = sel.value;
+      sel.innerHTML = `<option value="">Seleziona</option>` +
+        opts.map(o => `<option value="${o}" ${chosen.has(o) && o !== current ? 'disabled' : ''}>${o}</option>`).join('');
+      sel.value = current;
+    });
+    if (changeHandler) changeHandler();
+  };
+
+  selects.forEach(sel => sel.addEventListener('change', update));
+  update();
 }
 
 function makeAccordion(div) {
@@ -93,9 +112,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (data.skillChoices) {
       const num = data.skillChoices.choose || 0;
       const taken = new Set(getTakenProficiencies('skills'));
-      const opts = (data.skillChoices.options || []).filter(o => !taken.has(o));
+      let opts = (data.skillChoices.options || []).filter(o => !taken.has(o));
+      let note = '';
+      if (opts.length === 0) {
+        opts = ALL_SKILLS.filter(o => !taken.has(o));
+        note = ' (tutte le abilità disponibili)';
+      }
       const p = document.createElement("p");
-      p.innerHTML = `<strong>Scegli ${num} abilità:</strong>`;
+      p.innerHTML = `<strong>Scegli ${num} abilità${note}:</strong>`;
       skillDetails.appendChild(p);
       buildChoiceSelectors(
         skillDetails,
@@ -135,17 +159,27 @@ document.addEventListener("DOMContentLoaded", async () => {
       const takenTools = new Set(getTakenProficiencies('tools'));
       if (data.tools && data.tools.choose) {
         const num = data.tools.choose;
-        const opts = (data.tools.options || []).filter(o => !takenTools.has(o));
+        let opts = (data.tools.options || []).filter(o => !takenTools.has(o));
+        let note = '';
+        if (opts.length === 0) {
+          opts = ALL_TOOLS.filter(o => !takenTools.has(o));
+          note = ' (tutti gli strumenti disponibili)';
+        }
         const p = document.createElement("p");
-        p.innerHTML = `<strong>Scegli ${num} strumento:</strong>`;
+        p.innerHTML = `<strong>Scegli ${num} strumento${note}:</strong>`;
         toolDetails.appendChild(p);
         buildChoiceSelectors(toolDetails, num, opts, "backgroundToolChoice", toolChangeHandler);
       }
       if (data.toolChoices) {
         const num = data.toolChoices.choose || 0;
-        const opts = (data.toolChoices.options || []).filter(o => !takenTools.has(o));
+        let opts = (data.toolChoices.options || []).filter(o => !takenTools.has(o));
+        let note = '';
+        if (opts.length === 0) {
+          opts = ALL_TOOLS.filter(o => !takenTools.has(o));
+          note = ' (tutti gli strumenti disponibili)';
+        }
         const p = document.createElement("p");
-        p.innerHTML = `<strong>Scegli ${num} strumento:</strong>`;
+        p.innerHTML = `<strong>Scegli ${num} strumento${note}:</strong>`;
         toolDetails.appendChild(p);
         buildChoiceSelectors(toolDetails, num, opts, "backgroundToolChoice", toolChangeHandler);
       }
@@ -170,9 +204,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         const num = data.languages.choose;
         const buildSelectors = opts => {
           const takenLangs = new Set(getTakenProficiencies('languages'));
-          const filtered = (opts || []).filter(o => !takenLangs.has(o));
+          let filtered = (opts || []).filter(o => !takenLangs.has(o));
+          let note = '';
+          if (filtered.length === 0) {
+            filtered = availableLanguages.filter(o => !takenLangs.has(o));
+            note = ' (tutte le lingue disponibili)';
+          }
           const p = document.createElement("p");
-          p.innerHTML = `<strong>Scegli ${num} linguaggi:</strong>`;
+          p.innerHTML = `<strong>Scegli ${num} linguaggi${note}:</strong>`;
           langDetails.appendChild(p);
           buildChoiceSelectors(
             langDetails,

@@ -1028,7 +1028,13 @@ async function renderClassFeatures() {
   let toolChoice = null;
   if (data.tool_proficiencies) {
     if (Array.isArray(data.tool_proficiencies)) {
-      profs += `<p><strong>Tool Proficiencies:</strong> ${data.tool_proficiencies.join(", ")}</p>`;
+      const fixed = data.tool_proficiencies.filter(tp => {
+        const lower = tp.toLowerCase();
+        return !lower.includes("of your choice") && !lower.includes(" or ");
+      });
+      if (fixed.length) {
+        profs += `<p><strong>Tool Proficiencies:</strong> ${fixed.join(", ")}</p>`;
+      }
       data.tool_proficiencies.forEach(tp => {
         const lower = tp.toLowerCase();
         const wordMap = { one: 1, two: 2, three: 3 };
@@ -1047,6 +1053,9 @@ async function renderClassFeatures() {
           toolChoice = { choose: count, options: ARTISAN_TOOLS };
         }
       });
+      if (toolChoice) {
+        profs += `<p><strong>Tool Proficiencies:</strong> Choose ${toolChoice.choose} from ${toolChoice.options.join(", ")}</p>`;
+      }
     } else if (data.tool_proficiencies.options) {
       const fixed = data.tool_proficiencies.fixed || [];
       if (fixed.length) {
@@ -1150,6 +1159,15 @@ async function renderClassFeatures() {
   });
 
   const allChoices = [...(data.choices || []), ...(subData?.choices || [])];
+  if (toolChoice && !allChoices.some(c => c.name === 'Tool Proficiency')) {
+    allChoices.push({
+      level: 1,
+      name: 'Tool Proficiency',
+      description: `Choose ${toolChoice.choose} from the class options`,
+      count: toolChoice.choose,
+      selection: toolChoice.options
+    });
+  }
   if (data.skill_proficiencies && !allChoices.some(c => c.name === 'Skill Proficiency')) {
     allChoices.push({
       level: 1,

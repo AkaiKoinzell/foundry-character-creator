@@ -6,8 +6,8 @@ import {
   initializeAccordion,
   getTakenProficiencies,
   availableLanguages,
-  ALL_TOOLS,
 } from './script.js';
+import { ALL_TOOLS } from './proficiencies.js';
 import { ALL_SKILLS } from './raceData.js';
 
 let featPathIndex = {};

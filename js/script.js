@@ -347,13 +347,16 @@ const extraCategoryDescriptions = {
 function gatherExtraSelections(data, context, level = 1) {
   const selections = [];
   if (context === "race") {
-    if (data.languages && data.languages.choice > 0) {
+    if (data.languages && (data.languages.fixed.length > 0 || data.languages.choice > 0)) {
       const availableLangs = availableLanguages.filter(
         lang => !data.languages.fixed.includes(lang)
       );
+      const fixedDesc = data.languages.fixed.length
+        ? `<strong>Lingue Concesse:</strong> ${data.languages.fixed.join(', ')}`
+        : '';
       selections.push({
         name: "Languages",
-        description: "Choose an additional language.",
+        description: fixedDesc,
         selection: availableLangs,
         count: data.languages.choice
       });
@@ -373,30 +376,6 @@ function gatherExtraSelections(data, context, level = 1) {
         selection: data.tool_choices.options,
         count: 1
       });
-    }
-    if (data.spellcasting) {
-      if (
-        data.spellcasting.ability_choices &&
-        data.spellcasting.ability_choices.length > 1
-      ) {
-        selections.push({
-          name: "Spellcasting",
-          description: "Choose a casting ability.",
-          selection: data.spellcasting.ability_choices,
-          count: 1
-        });
-      }
-      if (
-        data.spellcasting.spell_choices &&
-        data.spellcasting.spell_choices.type === "fixed_list"
-      ) {
-        selections.push({
-          name: "Cantrips",
-          description: "Choose a spell.",
-          selection: data.spellcasting.spell_choices.options,
-          count: 1
-        });
-      }
     }
   } else if (context === "class") {
     const allChoices = data.choices || [];
@@ -830,22 +809,25 @@ function displayRaceTraits() {
         });
       }
 
-      // Languages
-      if (raceData.languages && (raceData.languages.fixed.length > 0 || raceData.languages.choice > 0)) {
-        const fixedLangs = raceData.languages.fixed.length > 0 ? raceData.languages.fixed.join(", ") : "Nessuna";
-        const langClass = raceData.languages.choice > 0 ? "race-trait feature-block needs-selection incomplete" : "race-trait feature-block";
-        traitsHtml += `<details class="${langClass}" id="languageTrait"><summary>Lingue</summary><p><strong>Lingue Concesse:</strong> ${fixedLangs}</p><div id="languageSelection"></div></details>`;
-      }
-
-      // Skill choices
-      if (raceData.skill_choices) {
-        traitsHtml += `<details class="race-trait feature-block needs-selection incomplete" id="skillTrait"><summary>Abilità Extra</summary><div id="skillSelectionContainer"></div></details>`;
-      }
-
-      // Tool choices
-      if (raceData.tool_choices) {
-        traitsHtml += `<details class="race-trait feature-block needs-selection incomplete" id="toolTrait"><summary>Strumenti Extra</summary><div id="toolSelectionContainer"></div></details>`;
-      }
+      // Extra selections (languages, skills, tools)
+      const extraSelections = gatherExtraSelections(raceData, "race");
+      extraSelections.forEach((choice, idx) => {
+        const featureKey = extraCategoryAliases[choice.name] || choice.name;
+        let block = `<details class="race-trait feature-block" id="race-extra-${idx}"><summary>${choice.name}</summary>`;
+        if (choice.description) block += `<div class="feature-desc">${choice.description}</div>`;
+        const options = choice.selection || [];
+        if (choice.count && choice.count > 0) {
+          for (let i = 0; i < choice.count; i++) {
+            const saved = selectedData[featureKey]?.[i] || '';
+            const optsHtml = options
+              .map(opt => `<option value="${opt}" ${saved === opt ? 'selected' : ''}>${opt}</option>`)
+              .join('');
+            block += `<label>${choice.name}${choice.count > 1 ? ' ' + (i + 1) : ''}: <select data-feature="${featureKey}" data-index="${i}"><option value="">Seleziona...</option>${optsHtml}</select></label>`;
+          }
+        }
+        block += `</details>`;
+        traitsHtml += block;
+      });
 
       // Variant feature choices
       if (raceData.variant_feature_choices) {
@@ -876,9 +858,6 @@ function displayRaceTraits() {
 
       // Render selection controls
       handleSpellcasting(raceData, "spellSelectionContainer");
-      handleExtraLanguages(raceData, "languageSelection");
-      handleExtraSkills(raceData, "skillSelectionContainer");
-      handleExtraTools(raceData, "toolSelectionContainer");
       handleVariantFeatureChoices(raceData);
       handleExtraAncestry(raceData, "ancestrySelectionContainer");
 
@@ -889,36 +868,6 @@ function displayRaceTraits() {
           ancestryDetail.classList.remove('hidden');
         }
       }
-
-      // Bind validation and data collection
-      const langSelect = document.getElementById("extraLanguageDropdown");
-      if (langSelect) {
-        langSelect.addEventListener("change", () => {
-          selectedData.Languages = [langSelect.value];
-          checkTraitCompletion("languageTrait");
-        });
-        checkTraitCompletion("languageTrait");
-      }
-
-      document.querySelectorAll("#skillSelectionContainer .skillChoice").forEach(sel => {
-        sel.addEventListener("change", () => {
-          selectedData["Skill Proficiency"] = [...document.querySelectorAll("#skillSelectionContainer .skillChoice")]
-            .map(s => s.value)
-            .filter(Boolean);
-          checkTraitCompletion("skillTrait");
-        });
-      });
-      checkTraitCompletion("skillTrait");
-
-      document.querySelectorAll("#toolSelectionContainer .toolChoice").forEach(sel => {
-        sel.addEventListener("change", () => {
-          selectedData["Tool Proficiency"] = [...document.querySelectorAll("#toolSelectionContainer .toolChoice")]
-            .map(s => s.value)
-            .filter(Boolean);
-          checkTraitCompletion("toolTrait");
-        });
-      });
-      checkTraitCompletion("toolTrait");
 
       const variantSelect = document.getElementById("variantFeatureChoice");
       if (variantSelect) {
@@ -1443,9 +1392,6 @@ export {
   updateVariantSkillOptions,
   handleVariantExtraSelections,
   handleVariantFeatureChoices,
-  handleExtraLanguages,
-  handleExtraSkills,
-  handleExtraTools,
   handleExtraAncestry,
   gatherExtraSelections,
   gatherRaceTraitSelections,

@@ -15,6 +15,10 @@ import './step5.js';
 import './step7.js';
 
 let classSelectionConfirmed = false;
+let raceSelectionConfirmed = false;
+let backgroundSelectionConfirmed = false;
+window.equipmentSelectionConfirmed = false;
+window.racialBonusesConfirmed = false;
 
 function renderEntitySection(jsonPath, containerId, modalIds, detailRenderer) {
   let pendingPath = '';
@@ -57,6 +61,37 @@ function renderEntitySection(jsonPath, containerId, modalIds, detailRenderer) {
 
 document.addEventListener('DOMContentLoaded', () => {
   console.log('✅ Main.js caricato!');
+
+  const requiredStep1 = ['userName', 'characterName', 'origin', 'age'];
+  function isStepComplete(idx) {
+    switch (idx) {
+      case 0:
+        return requiredStep1.every(id => document.getElementById(id)?.value.trim());
+      case 1:
+        return classSelectionConfirmed;
+      case 2:
+        return raceSelectionConfirmed;
+      case 3:
+        return backgroundSelectionConfirmed;
+      case 4:
+        return window.equipmentSelectionConfirmed;
+      case 5:
+        const remaining = parseInt(document.getElementById('pointsRemaining')?.textContent) || 0;
+        return remaining === 0 && window.racialBonusesConfirmed;
+      default:
+        return true;
+    }
+  }
+
+  function validateStepsUpTo(targetIdx) {
+    for (let i = 0; i < targetIdx; i++) {
+      if (!isStepComplete(i)) {
+        alert(`Completa Step ${i + 1} prima di procedere!`);
+        return false;
+      }
+    }
+    return true;
+  }
 
   loadDropdownData('data/races.json', 'raceSelect');
   loadDropdownData('data/classes.json', 'classSelect');
@@ -107,6 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ['step1','step2','step3','step4','step5','step6','step7'].forEach((stepId, idx) => {
     const btn = document.getElementById(`btnStep${idx + 1}`);
     if (btn) btn.addEventListener('click', () => {
+      if (!validateStepsUpTo(idx)) return;
       showStep(stepId);
       if (stepId === 'step7') renderFinalRecap();
     });
@@ -127,6 +163,30 @@ document.addEventListener('DOMContentLoaded', () => {
       renderClassFeatures();
     });
 
+  const raceSelectElem = document.getElementById('raceSelect');
+  if (raceSelectElem)
+    raceSelectElem.addEventListener('change', () => {
+      raceSelectionConfirmed = false;
+      const confirmBtn = document.getElementById('confirmRaceSelection');
+      if (confirmBtn) confirmBtn.style.display = 'inline-block';
+      displayRaceTraits();
+    });
+
+  const bgSelectElem = document.getElementById('backgroundSelect');
+  if (bgSelectElem)
+    bgSelectElem.addEventListener('change', () => {
+      backgroundSelectionConfirmed = false;
+      const confirmBtn = document.getElementById('confirmBackgroundSelection');
+      if (confirmBtn) confirmBtn.style.display = 'inline-block';
+    });
+
+  ['racialBonus1', 'racialBonus2', 'racialBonus3'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', () => {
+      window.racialBonusesConfirmed = false;
+    });
+  });
+
   initializeValues();
   const lastStep = loadFormData();
   const stepMap = {
@@ -142,7 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
   showStep(normalizedStep || 'step1');
   if ((normalizedStep || 'step1') === 'step7') renderFinalRecap();
 
-  document.getElementById('raceSelect').addEventListener('change', displayRaceTraits);
   document.getElementById('levelSelect').addEventListener('change', () => displayRaceTraits());
   document.getElementById('generateJson').addEventListener('click', generateFinalJson);
   document.getElementById('addClassButton').addEventListener('click', () => {
@@ -161,6 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
       displayRaceTraits();
       const confirmBtn = document.getElementById('confirmRaceSelection');
       if (confirmBtn) confirmBtn.style.display = 'inline-block';
+      raceSelectionConfirmed = false;
     }
     raceSection.closeModal();
   });
@@ -172,6 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
       bgSelect.dispatchEvent(new Event('change'));
       const confirmBtn = document.getElementById('confirmBackgroundSelection');
       if (confirmBtn) confirmBtn.style.display = 'inline-block';
+      backgroundSelectionConfirmed = false;
     }
     backgroundSection.closeModal();
   });
@@ -182,6 +243,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const level = parseInt(document.getElementById('levelSelect')?.value) || 1;
     if (!classSelect.value) {
       alert('⚠️ Seleziona una classe prima di procedere!');
+      return;
+    }
+    if (document.querySelector('#classFeatures .needs-selection, #classExtrasAccordion .needs-selection')) {
+      alert('⚠️ Completa tutte le scelte della classe prima di procedere!');
       return;
     }
     const className = classSelect.selectedOptions[0]?.text || '';
@@ -203,6 +268,11 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('⚠️ Seleziona una razza prima di procedere!');
       return;
     }
+    if (document.querySelector('#raceTraits .needs-selection.incomplete')) {
+      alert('⚠️ Completa tutte le scelte della razza prima di procedere!');
+      return;
+    }
+    raceSelectionConfirmed = true;
     document.getElementById('confirmRaceSelection').style.display = 'none';
   });
 
@@ -212,6 +282,11 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('⚠️ Seleziona un background prima di procedere!');
       return;
     }
+    if (document.querySelector('#step4 .needs-selection.incomplete')) {
+      alert('⚠️ Completa tutte le scelte del background prima di procedere!');
+      return;
+    }
+    backgroundSelectionConfirmed = true;
     document.getElementById('confirmBackgroundSelection').style.display = 'none';
   });
 

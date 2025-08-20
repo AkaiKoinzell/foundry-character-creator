@@ -849,9 +849,6 @@ function displayRaceTraits() {
         checkTraitCompletion("ancestryTrait");
       }
 
-      // Selezioni extra già fatte nel pop-up (modalità view-only)
-      updateExtraSelectionsView();
-
       resetRacialBonuses();
       window.currentRaceData = raceData;
     })
@@ -861,11 +858,8 @@ function displayRaceTraits() {
 // ==================== UPDATE SUBCLASSES (STEP 5) ====================
 function updateSubclasses() {
   const classPath = document.getElementById("classSelect").value;
-  const subclassSelect = document.getElementById("subclassSelect");
   const featuresDiv = document.getElementById("classFeatures");
   if (!classPath) {
-    subclassSelect.innerHTML = `<option value="">Nessuna sottoclasse disponibile</option>`;
-    subclassSelect.style.display = "none";
     window.currentClassData = null;
     if (featuresDiv) featuresDiv.innerHTML = `<p>Seleziona una classe per vedere i tratti.</p>`;
     return;
@@ -874,14 +868,6 @@ function updateSubclasses() {
     .then(response => response.json())
     .then(data => {
       window.currentClassData = data;
-      subclassSelect.innerHTML = `<option value="">Seleziona una sottoclasse</option>`;
-      data.subclasses.forEach(subclass => {
-        const option = document.createElement("option");
-        option.value = subclass.name;
-        option.textContent = subclass.name;
-        subclassSelect.appendChild(option);
-      });
-      subclassSelect.style.display = data.subclasses.length > 0 ? "block" : "none";
       renderClassFeatures();
     })
     .catch(error => handleError(`Errore caricando le sottoclasse: ${error}`));
@@ -913,7 +899,6 @@ function getSubclassFilename(name) {
 
 async function renderClassFeatures() {
   const featuresDiv = document.getElementById("classFeatures");
-  const subclassSelect = document.getElementById("subclassSelect");
   const data = window.currentClassData;
   if (!featuresDiv) return;
   if (!data) {
@@ -921,7 +906,7 @@ async function renderClassFeatures() {
     return;
   }
   const charLevel = parseInt(document.getElementById("levelSelect")?.value) || 1;
-  const subclassName = subclassSelect.value;
+  const subclassName = document.getElementById("subclassSelect")?.value || "";
   let html = `<h3>${data.name}</h3>`;
   if (data.description) {
     html += `<p>${data.description}</p>`;
@@ -956,6 +941,15 @@ async function renderClassFeatures() {
       .map(([ability, score]) => `${ability} ${score}`)
       .join(", ");
     html += `<p><strong>Multiclassing Prerequisite:</strong> ${prereqs}</p>`;
+  }
+
+  if (data.subclasses && data.subclasses.length > 0) {
+    let opts = `<option value="">Seleziona una sottoclasse</option>`;
+    data.subclasses.forEach(sc => {
+      const sel = subclassName === sc.name ? 'selected' : '';
+      opts += `<option value="${sc.name}" ${sel}>${sc.name}</option>`;
+    });
+    html += `<details class="feature-block" id="subclassTrait"><summary>Sottoclasse</summary><select id="subclassSelect" class="form-control">${opts}</select></details>`;
   }
 
   // Fetch subclass data first if one is selected
@@ -1029,14 +1023,30 @@ async function renderClassFeatures() {
       selection: data.skill_proficiencies.options
     });
   }
-  const selections = gatherExtraSelections({ choices: allChoices }, "class", charLevel);
+  const extraSelections = gatherExtraSelections({ choices: allChoices }, "class", charLevel);
+  extraSelections.forEach((choice, idx) => {
+    const featureKey = extraCategoryAliases[choice.name] || choice.name;
+    let block = `<details class="feature-block" id="class-extra-${idx}"><summary>${choice.name}</summary>`;
+    if (choice.description) block += `<div class="feature-desc">${choice.description}</div>`;
+    const options = choice.options || choice.selection || [];
+    for (let i = 0; i < (choice.count || 1); i++) {
+      const saved = selectedData[featureKey]?.[i] || '';
+      const optsHtml = options.map(opt => `<option value="${opt}" ${saved === opt ? 'selected' : ''}>${opt}</option>`).join('');
+      block += `<label>${choice.name}${choice.count > 1 ? ' ' + (i + 1) : ''}: <select data-feature="${featureKey}" data-index="${i}"><option value="">Seleziona...</option>${optsHtml}</select></label>`;
+    }
+    block += `</details>`;
+    html += block;
+  });
 
   if (!subclassName) {
     html += `<p>Seleziona una sottoclasse per vedere i tratti.</p>`;
   }
   featuresDiv.innerHTML = html;
   initFeatureSelectionHandlers(featuresDiv, saveFeatureSelection);
-  return selections;
+  const subSel = document.getElementById('subclassSelect');
+  if (subSel) {
+    subSel.addEventListener('change', renderClassFeatures);
+  }
 }
 
 function renderFinalRecap() {

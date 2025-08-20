@@ -7,14 +7,6 @@
   <link rel="stylesheet" href="css/site-theme.css">
   <script type="module" src="js/main.js"></script>
   <style>
-  #raceExtraTraitsContainer {
-    display: none;
-  }
-
-  #subclassSelect {
-    display: none;
-  }
-
   #progressContainer {
     width: 100%;
     background-color: var(--primary-hover);
@@ -94,13 +86,7 @@
           <option value="">Seleziona una classe</option>
         </select>
         <br>
-        <label for="subclassSelect">Sottoclasse:</label>
-        <select id="subclassSelect" class="form-control">
-          <option value="">Seleziona una sottoclasse</option>
-        </select>
-        <br><br>
         <div id="classFeatures"></div>
-        <div id="classExtrasAccordion" class="accordion"></div>
         <button id="confirmClassSelection" class="btn btn-primary">Seleziona Classe</button>
       </div>
       <!-- Step 3: Scelta della Razza -->
@@ -113,8 +99,6 @@
         <br><br>
         <div id="raceTraits"></div>
         <button id="confirmRaceSelection" class="btn btn-primary">Seleziona Razza</button>
-        <!-- Contenitore dei tratti extra -->
-        <div id="raceExtraTraitsContainer" class="accordion"></div>
       </div>
       <!-- Step 4: Background -->
       <div id="step4" class="step">

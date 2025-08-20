@@ -247,7 +247,7 @@ export async function displayRaceTraits() {
 
     // Ancestry placeholder
     const ancestryDetails = document.createElement('details');
-    ancestryDetails.className = 'race-trait feature-block needs-selection incomplete hidden';
+    ancestryDetails.className = 'race-trait feature-block hidden';
     ancestryDetails.id = 'ancestryTrait';
     const ancestrySummary = document.createElement('summary');
     ancestrySummary.textContent = 'Ancestry';
@@ -280,6 +280,9 @@ export async function displayRaceTraits() {
       const ancContainer = document.getElementById('ancestrySelectionContainer');
       if (ancContainer && ancContainer.innerHTML.trim() !== '') {
         ancestryDetail.classList.remove('hidden');
+        ancestryDetail.classList.add('needs-selection');
+      } else {
+        ancestryDetail.remove();
       }
     }
 

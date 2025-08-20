@@ -24,11 +24,31 @@
     "simple weapons",
     "firearms"
   ],
-  "tool_proficiencies": [
-    "thieves' tools",
-    "tinker's tools",
-    "one type of artisan's tools of your choice"
-  ],
+  "tool_proficiencies": {
+    "fixed": [
+      "thieves' tools",
+      "tinker's tools"
+    ],
+    "choose": 1,
+    "options": [
+      "Alchemist's Supplies",
+      "Brewer's Supplies",
+      "Calligrapher's Tools",
+      "Carpenter's Tools",
+      "Cartographer's Tools",
+      "Cobbler's Tools",
+      "Cook's Utensils",
+      "Glassblower's Tools",
+      "Jeweler's Tools",
+      "Leatherworker's Tools",
+      "Mason's Tools",
+      "Painter's Supplies",
+      "Potter's Tools",
+      "Smith's Tools",
+      "Weaver's Tools",
+      "Woodcarver's Tools"
+    ]
+  },
   "armor_proficiencies": [
     "light armor",
     "medium armor",

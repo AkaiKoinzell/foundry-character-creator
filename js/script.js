@@ -1330,19 +1330,37 @@ async function renderClassFeatures() {
     });
   }
   const extraSelections = gatherExtraSelections({ choices: allChoices }, 'class', charLevel);
-  extraSelections.forEach((choice, idx) => {
+  const detailMatchers = {
+    'Languages': /Proficiencies/i,
+    'Skill Proficiency': /Proficiencies/i,
+    'Tool Proficiency': /Proficiencies/i
+  };
+  extraSelections.forEach(choice => {
     const featureKey = extraCategoryAliases[choice.name] || choice.name;
-    const details = document.createElement('details');
-    details.className = 'feature-block';
-    details.id = `class-extra-${idx}`;
-    const summary = document.createElement('summary');
-    summary.textContent = choice.name;
-    details.appendChild(summary);
-    if (choice.description) {
+    const allDetails = Array.from(featuresDiv.querySelectorAll('details'));
+    let targetDetail = allDetails.find(det => {
+      const txt = det.querySelector('summary')?.textContent || '';
+      return txt === choice.name || txt === featureKey;
+    });
+    if (!targetDetail) {
+      const matcher = detailMatchers[choice.name] || detailMatchers[featureKey];
+      if (matcher) {
+        targetDetail = allDetails.find(det => matcher.test(det.querySelector('summary')?.textContent || ''));
+      }
+    }
+    if (!targetDetail) {
+      targetDetail = document.createElement('details');
+      targetDetail.className = 'feature-block';
+      const summary = document.createElement('summary');
+      summary.textContent = choice.name;
+      targetDetail.appendChild(summary);
+      featuresDiv.appendChild(targetDetail);
+    }
+    if (choice.description && !targetDetail.querySelector('.feature-desc')) {
       const desc = document.createElement('div');
       desc.className = 'feature-desc';
       desc.textContent = choice.description;
-      details.appendChild(desc);
+      targetDetail.appendChild(desc);
     }
     const options = choice.options || choice.selection || [];
     for (let i = 0; i < (choice.count || 1); i++) {
@@ -1364,9 +1382,8 @@ async function renderClassFeatures() {
         select.appendChild(option);
       });
       label.appendChild(select);
-      details.appendChild(label);
+      targetDetail.appendChild(label);
     }
-    featuresDiv.appendChild(details);
   });
 
   convertDetailsToAccordion(featuresDiv);

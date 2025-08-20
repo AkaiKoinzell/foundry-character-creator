@@ -3,14 +3,14 @@
     "name": "False Life",
     "level": 1,
     "school": "Necromancy",
-    "spell_list": ["Arteficer", "Wizard", "Sorcerer"],
+    "spell_list": ["Artificer", "Wizard", "Sorcerer"],
     "ritual": false
   },
   {
     "name": "Feather Fall",
     "level": 1,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Bard", "Wizard", "Sorcerer"],
+    "spell_list": ["Artificer", "Bard", "Wizard", "Sorcerer"],
     "ritual": false
   },
   {
@@ -52,7 +52,7 @@
     "name": "Grease",
     "level": 1,
     "school": "Conjuration",
-    "spell_list": ["Arteficer", "Wizard", "Sorcerer"],
+    "spell_list": ["Artificer", "Wizard", "Sorcerer"],
     "ritual": false
   },
   {
@@ -122,7 +122,7 @@
     "name": "Identify",
     "level": 1,
     "school": "Divination",
-    "spell_list": ["Arteficer", "Bard", "Wizard"],
+    "spell_list": ["Artificer", "Bard", "Wizard"],
     "ritual": true
   },
   {
@@ -143,14 +143,14 @@
     "name": "Jump",
     "level": 1,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Bard", "Druid", "Wizard", "Ranger", "Sorcerer"],
+    "spell_list": ["Artificer", "Bard", "Druid", "Wizard", "Ranger", "Sorcerer"],
     "ritual": false
   },
   {
     "name": "Longstrider",
     "level": 1,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Bard", "Druid", "Ranger"],
+    "spell_list": ["Artificer", "Bard", "Druid", "Ranger"],
     "ritual": false
   },
   {
@@ -185,7 +185,7 @@
     "name": "Purify Food and Drink",
     "level": 1,
     "school": "Abjuration",
-    "spell_list": ["Arteficer", "Cleric", "Druid", "Paladin"],
+    "spell_list": ["Artificer", "Cleric", "Druid", "Paladin"],
     "ritual": true
   },
   {
@@ -199,7 +199,7 @@
     "name": "Sanctuary",
     "level": 1,
     "school": "Abjuration",
-    "spell_list": ["Arteficer", "Cleric"],
+    "spell_list": ["Artificer", "Cleric"],
     "ritual": false
   },
   {
@@ -241,7 +241,7 @@
     "name": "Snare",
     "level": 1,
     "school": "Abjuration",
-    "spell_list": ["Arteficer", "Druid", "Wizard", "Ranger"],
+    "spell_list": ["Artificer", "Druid", "Wizard", "Ranger"],
     "ritual": false
   },
   {
@@ -259,17 +259,66 @@
     "ritual": false
   },
   {
+    "name": "Eldritch Blast",
+    "level": 0,
+    "school": "Evocation",
+    "spell_list": ["Warlock"],
+    "ritual": false
+  },
+  {
+    "name": "Fire Bolt",
+    "level": 0,
+    "school": "Evocation",
+    "spell_list": ["Artificer", "Wizard", "Sorcerer"],
+    "ritual": false
+  },
+  {
+    "name": "Guidance",
+    "level": 0,
+    "school": "Divination",
+    "spell_list": ["Artificer", "Cleric", "Druid"],
+    "ritual": false
+  },
+  {
+    "name": "Light",
+    "level": 0,
+    "school": "Evocation",
+    "spell_list": ["Artificer", "Bard", "Cleric", "Sorcerer", "Wizard"],
+    "ritual": false
+  },
+  {
+    "name": "Mage Hand",
+    "level": 0,
+    "school": "Conjuration",
+    "spell_list": ["Artificer", "Bard", "Wizard", "Sorcerer", "Warlock"],
+    "ritual": false
+  },
+  {
+    "name": "Prestidigitation",
+    "level": 0,
+    "school": "Transmutation",
+    "spell_list": ["Artificer", "Bard", "Sorcerer", "Warlock", "Wizard"],
+    "ritual": false
+  },
+  {
+    "name": "Produce Flame",
+    "level": 0,
+    "school": "Conjuration",
+    "spell_list": ["Druid"],
+    "ritual": false
+  },
+  {
     "name": "Ray of Frost",
     "level": 0,
     "school": "Evocation",
-    "spell_list": ["Arteficer", "Wizard", "Sorcerer"],
+    "spell_list": ["Artificer", "Wizard", "Sorcerer"],
     "ritual": false
   },
   {
     "name": "Resistance",
     "level": 0,
     "school": "Abjuration",
-    "spell_list": ["Arteficer", "Cleric", "Druid"],
+    "spell_list": ["Artificer", "Cleric", "Druid"],
     "ritual": false
   },
   {
@@ -297,21 +346,21 @@
     "name": "Shocking Grasp",
     "level": 0,
     "school": "Evocation",
-    "spell_list": ["Arteficer", "Wizard", "Sorcerer"],
+    "spell_list": ["Artificer", "Wizard", "Sorcerer"],
     "ritual": false
   },
   {
     "name": "Spare the Dying",
     "level": 0,
     "school": "Necromancy",
-    "spell_list": ["Arteficer", "Cleric"],
+    "spell_list": ["Artificer", "Cleric"],
     "ritual": false
   },
   {
     "name": "Sword Burst",
     "level": 0,
     "school": "Conjuration",
-    "spell_list": ["Arteficer", "Wizard", "Sorcerer", "Warlock"],
+    "spell_list": ["Artificer", "Wizard", "Sorcerer", "Warlock"],
     "ritual": false
   },
   {
@@ -325,14 +374,14 @@
     "name": "Thorn Whip",
     "level": 0,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Druid"],
+    "spell_list": ["Artificer", "Druid"],
     "ritual": false
   },
   {
     "name": "Thunderclap",
     "level": 0,
     "school": "Evocation",
-    "spell_list": ["Arteficer", "Bard", "Druid", "Wizard", "Sorcerer", "Warlock"],
+    "spell_list": ["Artificer", "Bard", "Druid", "Wizard", "Sorcerer", "Warlock"],
     "ritual": false
   },
   {
@@ -367,14 +416,14 @@
     "name": "Absorb Elements",
     "level": 1,
     "school": "Abjuration",
-    "spell_list": ["Arteficer", "Druid", "Wizard", "Ranger", "Sorcerer"],
+    "spell_list": ["Artificer", "Druid", "Wizard", "Ranger", "Sorcerer"],
     "ritual": false
   },
   {
     "name": "Alarm",
     "level": 1,
     "school": "Abjuration",
-    "spell_list": ["Arteficer", "Wizard", "Ranger"],
+    "spell_list": ["Artificer", "Wizard", "Ranger"],
     "ritual": false
   },
   {
@@ -430,7 +479,7 @@
     "name": "Catapult",
     "level": 1,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Wizard", "Sorcerer"],
+    "spell_list": ["Artificer", "Wizard", "Sorcerer"],
     "ritual": false
   },
   {
@@ -444,7 +493,7 @@
     "name": "Caustic Brew",
     "level": 1,
     "school": "Evocation",
-    "spell_list": ["Arteficer", "Wizard", "Sorcerer"],
+    "spell_list": ["Artificer", "Wizard", "Sorcerer"],
     "ritual": false
   },
   {
@@ -514,7 +563,7 @@
     "name": "Cure Wounds",
     "level": 1,
     "school": "Evocation",
-    "spell_list": ["Arteficer", "Bard", "Cleric", "Druid", "Paladin"],
+    "spell_list": ["Artificer", "Bard", "Cleric", "Druid", "Paladin"],
     "ritual": false
   },
   {
@@ -528,7 +577,7 @@
     "name": "Detect Magic",
     "level": 1,
     "school": "Divination",
-    "spell_list": ["Arteficer", "Bard", "Cleric", "Druid", "Wizard", "Paladin", "Ranger", "Sorcerer"],
+    "spell_list": ["Artificer", "Bard", "Cleric", "Druid", "Wizard", "Paladin", "Ranger", "Sorcerer"],
     "ritual": true
   },
   {
@@ -542,7 +591,7 @@
     "name": "Disguise Self",
     "level": 1,
     "school": "Illusion",
-    "spell_list": ["Arteficer", "Bard", "Wizard", "Sorcerer"],
+    "spell_list": ["Artificer", "Bard", "Wizard", "Sorcerer"],
     "ritual": false
   },
   {
@@ -584,28 +633,28 @@
     "name": "Expeditious Retreat",
     "level": 1,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Wizard", "Sorcerer", "Warlock"],
+    "spell_list": ["Artificer", "Wizard", "Sorcerer", "Warlock"],
     "ritual": false
   },
   {
     "name": "Faerie Fire",
     "level": 1,
     "school": "Evocation",
-    "spell_list": ["Arteficer", "Bard", "Druid"],
+    "spell_list": ["Artificer", "Bard", "Druid"],
     "ritual": false
   },
   {
     "name": "False Life",
     "level": 1,
     "school": "Necromancy",
-    "spell_list": ["Arteficer", "Wizard", "Sorcerer"],
+    "spell_list": ["Artificer", "Wizard", "Sorcerer"],
     "ritual": false
   },
   {
     "name": "Feather Fall",
     "level": 1,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Bard", "Wizard", "Sorcerer"],
+    "spell_list": ["Artificer", "Bard", "Wizard", "Sorcerer"],
     "ritual": false
   },
   {
@@ -647,7 +696,7 @@
     "name": "Grease",
     "level": 1,
     "school": "Conjuration",
-    "spell_list": ["Arteficer", "Wizard", "Sorcerer"],
+    "spell_list": ["Artificer", "Wizard", "Sorcerer"],
     "ritual": false
   },
   {
@@ -717,7 +766,7 @@
     "name": "Identify",
     "level": 1,
     "school": "Divination",
-    "spell_list": ["Arteficer", "Bard", "Wizard"],
+    "spell_list": ["Artificer", "Bard", "Wizard"],
     "ritual": true
   },
   {
@@ -738,14 +787,14 @@
     "name": "Jump",
     "level": 1,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Bard", "Druid", "Wizard", "Ranger", "Sorcerer"],
+    "spell_list": ["Artificer", "Bard", "Druid", "Wizard", "Ranger", "Sorcerer"],
     "ritual": false
   },
   {
     "name": "Longstrider",
     "level": 1,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Bard", "Druid", "Ranger"],
+    "spell_list": ["Artificer", "Bard", "Druid", "Ranger"],
     "ritual": false
   },
   {
@@ -780,7 +829,7 @@
     "name": "Purify Food and Drink",
     "level": 1,
     "school": "Abjuration",
-    "spell_list": ["Arteficer", "Cleric", "Druid", "Paladin"],
+    "spell_list": ["Artificer", "Cleric", "Druid", "Paladin"],
     "ritual": true
   },
   {
@@ -794,7 +843,7 @@
     "name": "Sanctuary",
     "level": 1,
     "school": "Abjuration",
-    "spell_list": ["Arteficer", "Cleric"],
+    "spell_list": ["Artificer", "Cleric"],
     "ritual": false
   },
   {
@@ -836,7 +885,7 @@
     "name": "Snare",
     "level": 1,
     "school": "Abjuration",
-    "spell_list": ["Arteficer", "Druid", "Wizard", "Ranger"],
+    "spell_list": ["Artificer", "Druid", "Wizard", "Ranger"],
     "ritual": false
   },
   {
@@ -864,14 +913,14 @@
     "name": "Aid",
     "level": 2,
     "school": "Abjuration",
-    "spell_list": ["Arteficer", "Bard", "Cleric", "Paladin", "Ranger"],
+    "spell_list": ["Artificer", "Bard", "Cleric", "Paladin", "Ranger"],
     "ritual": false
   },
   {
     "name": "Alter Self",
     "level": 2,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Wizard", "Sorcerer"],
+    "spell_list": ["Artificer", "Wizard", "Sorcerer"],
     "ritual": false
   },
   {
@@ -885,7 +934,7 @@
     "name": "Arcane Lock",
     "level": 2,
     "school": "Abjuration",
-    "spell_list": ["Arteficer", "Wizard"],
+    "spell_list": ["Artificer", "Wizard"],
     "ritual": false
   },
   {
@@ -934,7 +983,7 @@
     "name": "Blur",
     "level": 2,
     "school": "Illusion",
-    "spell_list": ["Arteficer", "Wizard", "Sorcerer"],
+    "spell_list": ["Artificer", "Wizard", "Sorcerer"],
     "ritual": false
   },
   {
@@ -962,7 +1011,7 @@
     "name": "Continual Flame",
     "level": 2,
     "school": "Evocation",
-    "spell_list": ["Arteficer", "Cleric", "Druid", "Wizard"],
+    "spell_list": ["Artificer", "Cleric", "Druid", "Wizard"],
     "ritual": false
   },
   {
@@ -990,7 +1039,7 @@
     "name": "Darkvision",
     "level": 2,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Druid", "Wizard", "Sorcerer"],
+    "spell_list": ["Artificer", "Druid", "Wizard", "Sorcerer"],
     "ritual": false
   },
   {
@@ -1025,14 +1074,14 @@
     "name": "Enhance Ability",
     "level": 2,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Bard", "Cleric", "Druid", "Wizard", "Ranger", "Sorcerer"],
+    "spell_list": ["Artificer", "Bard", "Cleric", "Druid", "Wizard", "Ranger", "Sorcerer"],
     "ritual": false
   },
   {
     "name": "Enlarge/Reduce",
     "level": 2,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Bard", "Druid", "Wizard", "Sorcerer"],
+    "spell_list": ["Artificer", "Bard", "Druid", "Wizard", "Sorcerer"],
     "ritual": false
   },
   {
@@ -1081,7 +1130,7 @@
     "name": "Invisibility",
     "level": 2,
     "school": "Illusion",
-    "spell_list": ["Arteficer", "Bard", "Wizard", "Sorcerer", "Warlock"],
+    "spell_list": ["Artificer", "Bard", "Wizard", "Sorcerer", "Warlock"],
     "ritual": false
   },
   {
@@ -1095,14 +1144,14 @@
     "name": "Lesser Restoration",
     "level": 2,
     "school": "Abjuration",
-    "spell_list": ["Arteficer", "Bard", "Cleric", "Druid", "Paladin", "Ranger"],
+    "spell_list": ["Artificer", "Bard", "Cleric", "Druid", "Paladin", "Ranger"],
     "ritual": false
   },
   {
     "name": "Levitate",
     "level": 2,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Wizard", "Sorcerer"],
+    "spell_list": ["Artificer", "Wizard", "Sorcerer"],
     "ritual": false
   },
   {
@@ -1123,14 +1172,14 @@
     "name": "Magic Mouth",
     "level": 2,
     "school": "Illusion",
-    "spell_list": ["Arteficer", "Bard", "Wizard"],
+    "spell_list": ["Artificer", "Bard", "Wizard"],
     "ritual": true
   },
   {
     "name": "Magic Weapon",
     "level": 2,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Wizard", "Paladin", "Ranger", "Sorcerer"],
+    "spell_list": ["Artificer", "Wizard", "Paladin", "Ranger", "Sorcerer"],
     "ritual": false
   },
   {
@@ -1179,14 +1228,14 @@
     "name": "Protection from Poison",
     "level": 2,
     "school": "Abjuration",
-    "spell_list": ["Arteficer", "Cleric", "Druid", "Paladin", "Ranger"],
+    "spell_list": ["Artificer", "Cleric", "Druid", "Paladin", "Ranger"],
     "ritual": false
   },
   {
     "name": "See Invisibility",
     "level": 2,
     "school": "Divination",
-    "spell_list": ["Arteficer", "Bard", "Wizard", "Sorcerer"],
+    "spell_list": ["Artificer", "Bard", "Wizard", "Sorcerer"],
     "ritual": false
   },
   {
@@ -1207,14 +1256,14 @@
     "name": "Skywrite",
     "level": 2,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Bard", "Druid", "Wizard"],
+    "spell_list": ["Artificer", "Bard", "Druid", "Wizard"],
     "ritual": true
   },
   {
     "name": "Spider Climb",
     "level": 2,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Wizard", "Sorcerer", "Warlock"],
+    "spell_list": ["Artificer", "Wizard", "Sorcerer", "Warlock"],
     "ritual": false
   },
   {
@@ -1256,7 +1305,7 @@
     "name": "Web",
     "level": 2,
     "school": "Conjuration",
-    "spell_list": ["Arteficer", "Wizard", "Sorcerer"],
+    "spell_list": ["Artificer", "Wizard", "Sorcerer"],
     "ritual": false
   },
   {
@@ -1305,7 +1354,7 @@
     "name": "Blink",
     "level": 3,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Wizard", "Sorcerer"],
+    "spell_list": ["Artificer", "Wizard", "Sorcerer"],
     "ritual": false
   },
   {
@@ -1319,7 +1368,7 @@
     "name": "Catnap",
     "level": 3,
     "school": "Enchantment",
-    "spell_list": ["Arteficer", "Bard", "Wizard", "Sorcerer"],
+    "spell_list": ["Artificer", "Bard", "Wizard", "Sorcerer"],
     "ritual": false
   },
   {
@@ -1354,7 +1403,7 @@
     "name": "Create Food and Water",
     "level": 3,
     "school": "Conjuration",
-    "spell_list": ["Arteficer", "Cleric", "Paladin"],
+    "spell_list": ["Artificer", "Cleric", "Paladin"],
     "ritual": false
   },
   {
@@ -1375,14 +1424,14 @@
     "name": "Dispel Magic",
     "level": 3,
     "school": "Abjuration",
-    "spell_list": ["Arteficer", "Bard", "Cleric", "Druid", "Wizard", "Paladin", "Sorcerer", "Warlock"],
+    "spell_list": ["Artificer", "Bard", "Cleric", "Druid", "Wizard", "Paladin", "Sorcerer", "Warlock"],
     "ritual": false
   },
   {
     "name": "Elemental Weapon",
     "level": 3,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Druid", "Paladin", "Ranger"],
+    "spell_list": ["Artificer", "Druid", "Paladin", "Ranger"],
     "ritual": false
   },
   {
@@ -1424,7 +1473,7 @@
     "name": "Fly",
     "level": 3,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Wizard", "Sorcerer", "Warlock"],
+    "spell_list": ["Artificer", "Wizard", "Sorcerer", "Warlock"],
     "ritual": false
   },
   {
@@ -1438,14 +1487,14 @@
     "name": "Glyph of Warding",
     "level": 3,
     "school": "Abjuration",
-    "spell_list": ["Arteficer", "Bard", "Cleric", "Wizard"],
+    "spell_list": ["Artificer", "Bard", "Cleric", "Wizard"],
     "ritual": false
   },
   {
     "name": "Haste",
     "level": 3,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Wizard", "Sorcerer"],
+    "spell_list": ["Artificer", "Wizard", "Sorcerer"],
     "ritual": false
   },
   {
@@ -1466,7 +1515,7 @@
     "name": "Intellect Fortress",
     "level": 3,
     "school": "Abjuration",
-    "spell_list": ["Arteficer", "Bard", "Wizard", "Sorcerer", "Warlock"],
+    "spell_list": ["Artificer", "Bard", "Wizard", "Sorcerer", "Warlock"],
     "ritual": false
   },
   {
@@ -1536,7 +1585,7 @@
     "name": "Protection from Energy",
     "level": 3,
     "school": "Abjuration",
-    "spell_list": ["Arteficer", "Druid", "Wizard", "Ranger", "Sorcerer"],
+    "spell_list": ["Artificer", "Druid", "Wizard", "Ranger", "Sorcerer"],
     "ritual": false
   },
   {
@@ -1550,7 +1599,7 @@
     "name": "Revivify",
     "level": 3,
     "school": "Necromancy",
-    "spell_list": ["Arteficer", "Cleric", "Druid", "Paladin", "Ranger"],
+    "spell_list": ["Artificer", "Cleric", "Druid", "Paladin", "Ranger"],
     "ritual": false
   },
   {
@@ -1676,14 +1725,14 @@
     "name": "Water Breathing",
     "level": 3,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Druid", "Wizard", "Ranger", "Sorcerer"],
+    "spell_list": ["Artificer", "Druid", "Wizard", "Ranger", "Sorcerer"],
     "ritual": true
   },
   {
     "name": "Water Walk",
     "level": 3,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Cleric", "Druid", "Ranger", "Sorcerer"],
+    "spell_list": ["Artificer", "Cleric", "Druid", "Ranger", "Sorcerer"],
     "ritual": true
   },
   {
@@ -1697,7 +1746,7 @@
     "name": "Arcane Eye",
     "level": 4,
     "school": "Divination",
-    "spell_list": ["Arteficer", "Wizard"],
+    "spell_list": ["Artificer", "Wizard"],
     "ritual": false
   },
   {
@@ -1809,21 +1858,21 @@
     "name": "Elemental Bane",
     "level": 4,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Druid", "Wizard", "Warlock"],
+    "spell_list": ["Artificer", "Druid", "Wizard", "Warlock"],
     "ritual": false
   },
   {
     "name": "Fabricate",
     "level": 4,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Wizard"],
+    "spell_list": ["Artificer", "Wizard"],
     "ritual": false
   },
   {
     "name": "Faithful Hound",
     "level": 4,
     "school": "Conjuration",
-    "spell_list": ["Arteficer", "Wizard"],
+    "spell_list": ["Artificer", "Wizard"],
     "ritual": false
   },
   {
@@ -1844,7 +1893,7 @@
     "name": "Freedom of Movement",
     "level": 4,
     "school": "Abjuration",
-    "spell_list": ["Arteficer", "Bard", "Cleric", "Druid", "Ranger"],
+    "spell_list": ["Artificer", "Bard", "Cleric", "Druid", "Ranger"],
     "ritual": false
   },
   {
@@ -1921,7 +1970,7 @@
     "name": "Private Sanctum",
     "level": 4,
     "school": "Conjuration",
-    "spell_list": ["Arteficer", "Wizard"],
+    "spell_list": ["Artificer", "Wizard"],
     "ritual": false
   },
   {
@@ -1935,14 +1984,14 @@
     "name": "Resilient Sphere",
     "level": 4,
     "school": "Evocation",
-    "spell_list": ["Arteficer", "Wizard"],
+    "spell_list": ["Artificer", "Wizard"],
     "ritual": false
   },
   {
     "name": "Secret Chest",
     "level": 4,
     "school": "Conjuration",
-    "spell_list": ["Arteficer", "Wizard"],
+    "spell_list": ["Artificer", "Wizard"],
     "ritual": false
   },
   {
@@ -1977,14 +2026,14 @@
     "name": "Stone Shape",
     "level": 4,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Cleric", "Druid", "Wizard", "Sorcerer"],
+    "spell_list": ["Artificer", "Cleric", "Druid", "Wizard", "Sorcerer"],
     "ritual": false
   },
   {
     "name": "Stoneskin",
     "level": 4,
     "school": "Abjuration",
-    "spell_list": ["Arteficer", "Druid", "Wizard", "Ranger", "Sorcerer"],
+    "spell_list": ["Artificer", "Druid", "Wizard", "Ranger", "Sorcerer"],
     "ritual": false
   },
   {
@@ -2005,7 +2054,7 @@
     "name": "Summon Construct",
     "level": 4,
     "school": "Conjuration",
-    "spell_list": ["Arteficer", "Wizard"],
+    "spell_list": ["Artificer", "Wizard"],
     "ritual": false
   },
   {
@@ -2047,7 +2096,7 @@
     "name": "Animate Objects",
     "level": 5,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Bard", "Wizard", "Sorcerer"],
+    "spell_list": ["Artificer", "Bard", "Wizard", "Sorcerer"],
     "ritual": false
   },
   {
@@ -2061,7 +2110,7 @@
     "name": "Arcane Hand",
     "level": 5,
     "school": "Evocation",
-    "spell_list": ["Arteficer", "Wizard", "Sorcerer"],
+    "spell_list": ["Artificer", "Wizard", "Sorcerer"],
     "ritual": false
   },
   {
@@ -2152,7 +2201,7 @@
     "name": "Creation",
     "level": 5,
     "school": "Illusion",
-    "spell_list": ["Arteficer", "Wizard", "Sorcerer"],
+    "spell_list": ["Artificer", "Wizard", "Sorcerer"],
     "ritual": false
   },
   {
@@ -2230,7 +2279,7 @@
     "name": "Greater Restoration",
     "level": 5,
     "school": "Abjuration",
-    "spell_list": ["Arteficer", "Bard", "Cleric", "Druid", "Ranger"],
+    "spell_list": ["Artificer", "Bard", "Cleric", "Druid", "Ranger"],
     "ritual": false
   },
   {
@@ -2370,7 +2419,7 @@
     "name": "Skill Empowerment",
     "level": 5,
     "school": "Transmutation",
-    "spell_list": ["Arteficer", "Bard", "Wizard", "Sorcerer"],
+    "spell_list": ["Artificer", "Bard", "Wizard", "Sorcerer"],
     "ritual": false
   },
   {

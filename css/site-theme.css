@@ -7,6 +7,8 @@
   --accent-color: #3498db;
   --accent-hover: #2a80b9;
   --text-color: #333;
+  --choice-color: #e67e22;
+  --choice-hover: #d35400;
 }
 
 body {
@@ -174,28 +176,26 @@ th {
 }
 
 .accordion-item {
-  border: 1px solid var(--primary-color);
-  border-radius: 4px;
   margin-bottom: 10px;
-  overflow: hidden;
 }
 
 .accordion-header {
-  background-color: var(--accent-color);
-  color: #fff;
+  background-color: var(--secondary-color);
+  color: var(--text-color);
   cursor: pointer;
   padding: 10px;
   width: 100%;
-  text-align: left;
-  border: none;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: background 0.3s ease;
+  text-align: center;
+  border: 2px solid var(--accent-color);
+  border-radius: 4px;
+  display: block;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
-.accordion-header:hover {
-  background-color: var(--accent-hover);
+.accordion-header:hover,
+.accordion-header.active {
+  background-color: var(--accent-color);
+  color: #fff;
 }
 
 .accordion-header:focus {
@@ -203,20 +203,14 @@ th {
   outline-offset: 2px;
 }
 
-.accordion-header::after {
-  content: '\25BA';
-  transition: transform 0.3s ease;
-}
-
-.accordion-header.active::after {
-  transform: rotate(90deg);
-}
-
 .accordion-content {
   max-height: 0;
   overflow: hidden;
   padding: 0 10px;
   background: #fff;
+  border: 2px solid var(--accent-color);
+  border-top: none;
+  border-radius: 0 0 4px 4px;
   transition: max-height 0.3s ease, padding 0.3s ease;
 }
 
@@ -225,18 +219,29 @@ th {
   max-height: 500px;
 }
 
-/* Evidenzia le sezioni che richiedono una selezione */
-details.needs-selection {
-  border: 2px solid transparent;
-  padding: 0.5em;
+.accordion-item.user-choice .accordion-header {
+  background-color: var(--choice-color);
+  border-color: var(--choice-color);
+  color: #fff;
+}
+
+.accordion-item.user-choice .accordion-header:hover,
+.accordion-item.user-choice .accordion-header.active {
+  background-color: var(--choice-hover);
+  border-color: var(--choice-hover);
+}
+
+.accordion-item.user-choice .accordion-content {
+  border-color: var(--choice-color);
+}
+
+/* Highlight sections that require a user choice */
+.feature-block.needs-selection {
   margin-bottom: 0.5em;
 }
 
-details.needs-selection.incomplete {
+.feature-block.needs-selection.incomplete .accordion-header {
   border-color: #e74c3c;
-}
-
-details.needs-selection.incomplete > summary {
   color: #e74c3c;
 }
 

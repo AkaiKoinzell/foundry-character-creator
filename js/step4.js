@@ -1,9 +1,15 @@
 // Step 4: Background selection and feat handling
 import { loadDropdownData, loadLanguages } from './common.js';
-import { initFeatureSelectionHandlers } from './script.js';
+import { initFeatureSelectionHandlers, convertDetailsToAccordion, initializeAccordion } from './script.js';
 
 let featPathIndex = {};
 let currentFeatData = null;
+
+function makeAccordion(div) {
+  convertDetailsToAccordion(div);
+  div.classList.add('accordion');
+  initializeAccordion(div);
+}
 
 function resetBackgroundTalentFields() {
   ["str", "dex", "con", "int", "wis", "cha"].forEach(ab => {
@@ -79,6 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     skillDiv.appendChild(skillDetails);
     initFeatureSelectionHandlers(skillDiv);
+    makeAccordion(skillDiv);
 
     const toolDiv = document.getElementById("backgroundTools");
     toolDiv.innerHTML = "";
@@ -128,6 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     toolDiv.appendChild(toolDetails);
     initFeatureSelectionHandlers(toolDiv);
+    makeAccordion(toolDiv);
 
     const langDiv = document.getElementById("backgroundLanguages");
     langDiv.innerHTML = "";
@@ -141,6 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
       langDetails.appendChild(p);
       langDiv.appendChild(langDetails);
       initFeatureSelectionHandlers(langDiv);
+      makeAccordion(langDiv);
     } else if (data.languages && data.languages.choose) {
       const num = data.languages.choose;
       const buildSelectors = opts => {
@@ -159,6 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         langDiv.appendChild(langDetails);
         initFeatureSelectionHandlers(langDiv);
+        makeAccordion(langDiv);
       };
       if (data.languages.any) {
         loadLanguages(buildSelectors);
@@ -168,6 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       langDiv.appendChild(langDetails);
       initFeatureSelectionHandlers(langDiv);
+      makeAccordion(langDiv);
     }
 
     const featDiv = document.getElementById("backgroundFeat");
@@ -227,6 +238,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     featDiv.appendChild(featDetails);
     initFeatureSelectionHandlers(featDiv);
+    makeAccordion(featDiv);
   });
 });
 

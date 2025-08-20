@@ -68,20 +68,19 @@ function renderDuplicateSelectors(type, detailsEl, baseList, allOptions) {
   const existing = detailsEl.querySelector(`.duplicate-${type}-choices`);
   if (existing) existing.remove();
   // Evaluate conflicts before background proficiencies are applied
-  backgroundData[type] = [];
+  window.backgroundData[type] = [];
   const { taken, conflicts } = getTakenProficiencies(type, baseList);
   const duplicates = conflicts;
   if (duplicates.length === 0) {
     detailsEl.classList.remove('needs-selection', 'incomplete');
     initFeatureSelectionHandlers(detailsEl.parentElement);
-    backgroundData[type] = baseList.slice();
-    if (type === 'skills') renderSkillSummary(backgroundData.skills, detailsEl);
+    window.backgroundData[type] = baseList.slice();
     saveBackgroundData();
     return;
   }
   const base = baseList.filter(s => !conflicts.includes(s));
   const opts = allOptions.filter(o => !taken.has(o.toLowerCase()));
-  backgroundData[type] = base;
+  window.backgroundData[type] = base;
   saveBackgroundData();
   const dupDiv = document.createElement('div');
   dupDiv.className = `duplicate-${type}-choices`;
@@ -98,11 +97,11 @@ function renderDuplicateSelectors(type, detailsEl, baseList, allOptions) {
     const chosen = Array.from(dupDiv.querySelectorAll(`.${choiceClass}`))
       .map(s => s.value)
       .filter(Boolean);
-    backgroundData[type] = base.concat(chosen);
+    window.backgroundData[type] = base.concat(chosen);
     saveBackgroundData();
     if (type === 'skills') renderSkillSummary(backgroundData.skills, detailsEl);
     if (chosen.length === duplicates.length) {
-      renderDuplicateSelectors(type, detailsEl, backgroundData[type], allOptions);
+      renderDuplicateSelectors(type, detailsEl, window.backgroundData[type], allOptions);
       return;
     }
     detailsEl.classList.toggle('incomplete', chosen.length < duplicates.length);
@@ -121,6 +120,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   window.backgroundData = stored
     ? JSON.parse(stored)
     : { name: "", skills: [], tools: [], languages: [], feat: "" };
+  const backgroundData = window.backgroundData;
 
   saveBackgroundData();
 

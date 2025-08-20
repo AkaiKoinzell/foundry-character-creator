@@ -1,23 +1,4 @@
-export const ALL_SKILLS = [
-  "Acrobatics",
-  "Animal Handling",
-  "Arcana",
-  "Athletics",
-  "Deception",
-  "History",
-  "Insight",
-  "Intimidation",
-  "Investigation",
-  "Medicine",
-  "Nature",
-  "Perception",
-  "Performance",
-  "Persuasion",
-  "Religion",
-  "Sleight of Hand",
-  "Stealth",
-  "Survival"
-];
+import { ALL_SKILLS } from './data/proficiencies.js';
 
 function flattenEntries(entries) {
   if (!Array.isArray(entries)) return "";

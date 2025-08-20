@@ -1,20 +1,18 @@
-import { loadLanguages } from './common.js';
 import { buildChoiceSelectors } from './selectionUtils.js';
+import { ALL_LANGUAGES } from './data/proficiencies.js';
 
 export function handleExtraLanguages(data, containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
   container.innerHTML = '';
   if (data.languages && data.languages.choice > 0) {
-    loadLanguages(langs => {
-      const availableLangs = langs.filter(lang => !data.languages.fixed.includes(lang));
-      const wrapper = document.createElement('div');
-      const title = document.createElement('h4');
-      title.textContent = 'Lingue Extra';
-      wrapper.appendChild(title);
-      buildChoiceSelectors(wrapper, data.languages.choice, availableLangs, 'extraLanguageChoice');
-      container.appendChild(wrapper);
-    });
+    const availableLangs = ALL_LANGUAGES.filter(lang => !data.languages.fixed.includes(lang));
+    const wrapper = document.createElement('div');
+    const title = document.createElement('h4');
+    title.textContent = 'Lingue Extra';
+    wrapper.appendChild(title);
+    buildChoiceSelectors(wrapper, data.languages.choice, availableLangs, 'extraLanguageChoice');
+    container.appendChild(wrapper);
   }
 }
 

@@ -47,3 +47,43 @@ export const ALL_TOOLS = [
   "Vehicle (Land)",
   "Vehicle (Water)",
 ];
+
+export const ALL_LANGUAGES = [
+  "Common",
+  "Dwarvish",
+  "Elvish",
+  "Giant",
+  "Gnomish",
+  "Goblin",
+  "Halfling",
+  "Orc",
+  "Abyssal",
+  "Celestial",
+  "Draconic",
+  "Deep Speech",
+  "Infernal",
+  "Primordial",
+  "Sylvan",
+  "Undercommon",
+];
+
+export const ALL_SKILLS = [
+  "Acrobatics",
+  "Animal Handling",
+  "Arcana",
+  "Athletics",
+  "Deception",
+  "History",
+  "Insight",
+  "Intimidation",
+  "Investigation",
+  "Medicine",
+  "Nature",
+  "Perception",
+  "Performance",
+  "Persuasion",
+  "Religion",
+  "Sleight of Hand",
+  "Stealth",
+  "Survival",
+];

@@ -1,5 +1,5 @@
 import { showStep, loadFormData } from './ui.js';
-import { loadDropdownData, loadLanguages, renderEntityList } from './common.js';
+import { loadDropdownData, renderEntityList } from './common.js';
 import { createHeader, createParagraph } from './domHelpers.js';
 import {
   updateSubclasses,
@@ -7,7 +7,6 @@ import {
   displayRaceTraits,
   generateFinalJson,
   initializeValues,
-  setAvailableLanguages,
   renderFinalRecap
 } from './script.js';
 import { resetSelectedData } from './state.js';
@@ -116,9 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
   renderClassList();
   renderRaceList();
   renderBackgroundList();
-  loadLanguages(langs => {
-    setAvailableLanguages(langs);
-  });
 
   ['step1','step2','step3','step4','step5','step6','step7'].forEach((stepId, idx) => {
     const btn = document.getElementById(`btnStep${idx + 1}`);

@@ -1,17 +1,13 @@
-import { loadLanguages, handleError, renderTables } from './common.js';
+import { handleError, renderTables } from './common.js';
 import { loadSpells, filterSpells, handleSpellcasting } from './spellcasting.js';
-import { convertRaceData, ALL_SKILLS } from './raceData.js';
+import { convertRaceData } from './raceData.js';
+import { ARTISAN_TOOLS, MUSICAL_INSTRUMENTS, ALL_TOOLS, ALL_LANGUAGES, ALL_SKILLS } from './data/proficiencies.js';
 import { getSelectedData, setSelectedData, saveSelectedData } from './state.js';
 import { createHeader, createParagraph, createList } from './domHelpers.js';
-import { ARTISAN_TOOLS, MUSICAL_INSTRUMENTS, ALL_TOOLS } from './proficiencies.js';
 import { handleVariantExtraSelections, handleVariantFeatureChoices } from './variantFeatures.js';
 import { handleExtraLanguages, handleExtraSkills, handleExtraTools, handleExtraAncestry, gatherRaceTraitSelections } from './extrasSelections.js';
 import { openExtrasModal, updateExtraSelectionsView, showExtraSelection, extraCategoryAliases, extraCategoryDescriptions } from './extrasModal.js';
 
-export let availableLanguages = [];
-export function setAvailableLanguages(langs) {
-  availableLanguages = langs;
-}
 
 let selectedData = getSelectedData();
 
@@ -128,12 +124,12 @@ function gatherExtraSelections(data, context, level = 1) {
   if (context === "race") {
     if (data.languages && (data.languages.fixed.length > 0 || data.languages.choice > 0)) {
       const fixedLangs = new Set(data.languages.fixed.map(l => l.toLowerCase()));
-      let availableLangs = availableLanguages
+      let availableLangs = ALL_LANGUAGES
         .filter(lang => !fixedLangs.has(lang.toLowerCase()))
         .filter(lang => !takenLangs.has(lang.toLowerCase()));
       let note = '';
       if (availableLangs.length === 0) {
-        availableLangs = availableLanguages.filter(lang => !takenLangs.has(lang.toLowerCase()));
+        availableLangs = ALL_LANGUAGES.filter(lang => !takenLangs.has(lang.toLowerCase()));
         note = ' (tutte le lingue disponibili)';
       }
       const fixedDesc = data.languages.fixed.length
@@ -190,7 +186,7 @@ function gatherExtraSelections(data, context, level = 1) {
         if (key === "Languages") {
           opts = opts.filter(o => !takenLangs.has(o.toLowerCase()) || selectedLower.includes(o.toLowerCase()));
           if (opts.length === 0) {
-            opts = availableLanguages.filter(o => !takenLangs.has(o.toLowerCase()) || selectedLower.includes(o.toLowerCase()));
+            opts = ALL_LANGUAGES.filter(o => !takenLangs.has(o.toLowerCase()) || selectedLower.includes(o.toLowerCase()));
             note = ' (tutte le lingue disponibili)';
           }
         } else if (key === "Skill Proficiency") {

@@ -1,14 +1,12 @@
 // Step 4: Background selection and feat handling
-import { loadDropdownData, loadLanguages } from './common.js';
+import { loadDropdownData } from './common.js';
 import {
   initFeatureSelectionHandlers,
   convertDetailsToAccordion,
   initializeAccordion,
   getTakenProficiencies,
-  availableLanguages,
 } from './script.js';
-import { ALL_TOOLS } from './proficiencies.js';
-import { ALL_SKILLS } from './raceData.js';
+import { ALL_TOOLS, ALL_LANGUAGES, ALL_SKILLS } from './data/proficiencies.js';
 import { buildChoiceSelectors } from './selectionUtils.js';
 
 let featPathIndex = {};
@@ -214,7 +212,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           let filtered = (opts || []).filter(o => !takenLangs.has(o));
           let note = '';
           if (filtered.length === 0) {
-            filtered = availableLanguages.filter(o => !takenLangs.has(o));
+            filtered = ALL_LANGUAGES.filter(o => !takenLangs.has(o));
             note = ' (tutte le lingue disponibili)';
           }
           const p = document.createElement("p");
@@ -239,7 +237,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           makeAccordion(langDiv);
         };
         if (data.languages.any) {
-          loadLanguages(buildSelectors);
+          buildSelectors(ALL_LANGUAGES);
         } else {
           buildSelectors(data.languages.options || []);
         }

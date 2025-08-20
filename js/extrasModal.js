@@ -154,8 +154,10 @@ export function updateExtraSelectionsView() {
       'Skill Proficiency': 'skills',
       'Tool Proficiency': 'tools',
     };
-    const taken = new Set(getTakenProficiencies(typeLookup[categoryKey] || ''));
-    const selectedValues = new Set((selectedData[categoryKey] || []).filter(v => v));
+    const taken = getTakenProficiencies(typeLookup[categoryKey] || '');
+    const selectedArray = (selectedData[categoryKey] || []).filter(v => v);
+    const selectedLower = selectedArray.map(v => v.toLowerCase());
+    const selectedValues = new Set(selectedLower);
     taken.forEach(v => selectedValues.add(v));
 
     let dropdownHTML = '';
@@ -163,7 +165,8 @@ export function updateExtraSelectionsView() {
       dropdownHTML += `<select class="extra-selection" data-category="${categoryKey}" data-index="${i}">` +
                         `<option value="">Seleziona...</option>`;
       currentSelection.selection.forEach(option => {
-        const disabled = selectedValues.has(option) && !selectedData[categoryKey]?.includes(option);
+        const optionLower = option.toLowerCase();
+        const disabled = selectedValues.has(optionLower) && !selectedLower.includes(optionLower);
         dropdownHTML += `<option value="${option}" ${disabled ? 'disabled' : ''}>${option}</option>`;
       });
       dropdownHTML += `</select><br>`;

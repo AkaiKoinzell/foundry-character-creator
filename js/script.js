@@ -32,7 +32,7 @@ export function checkTraitCompletion(detailId) {
  * Returns a merged list of proficiencies already taken via
  * previous selections or background grants.
  * @param {string} type - One of 'skills', 'tools', or 'languages'.
- * @returns {string[]} Array of taken proficiencies of the given type.
+ * @returns {Set<string>} Set of taken proficiencies of the given type (lowercase).
  */
 function getTakenProficiencies(type) {
   const selectedMap = {
@@ -42,27 +42,14 @@ function getTakenProficiencies(type) {
   };
 
   const taken = new Set();
-  const originals = [];
 
   (selectedData[selectedMap[type]] || [])
     .filter(v => v)
-    .forEach(v => {
-      const lower = v.toLowerCase();
-      if (!taken.has(lower)) {
-        taken.add(lower);
-        originals.push(v);
-      }
-    });
+    .forEach(v => taken.add(v.toLowerCase()));
 
   if (window.backgroundData) {
     const bgMap = { skills: "skills", tools: "tools", languages: "languages" };
-    (window.backgroundData[bgMap[type]] || []).forEach(v => {
-      const lower = v.toLowerCase();
-      if (!taken.has(lower)) {
-        taken.add(lower);
-        originals.push(v);
-      }
-    });
+    (window.backgroundData[bgMap[type]] || []).forEach(v => taken.add(v.toLowerCase()));
   }
 
   // Include fixed proficiencies granted by the currently selected class
@@ -73,47 +60,46 @@ function getTakenProficiencies(type) {
         tp.forEach(t => {
           const lower = t.toLowerCase();
           if (!lower.includes('of your choice') && !lower.includes(' or ')) {
-            if (!taken.has(lower)) {
-              taken.add(lower);
-              originals.push(t);
-            }
+            taken.add(lower);
           }
         });
       } else if (tp && Array.isArray(tp.fixed)) {
-        tp.fixed.forEach(t => {
-          const lower = t.toLowerCase();
-          if (!taken.has(lower)) {
-            taken.add(lower);
-            originals.push(t);
-          }
-        });
+        tp.fixed.forEach(t => taken.add(t.toLowerCase()));
       }
     } else if (type === 'skills') {
       const sp = window.currentClassData.skill_proficiencies;
       if (sp && Array.isArray(sp.fixed)) {
-        sp.fixed.forEach(s => {
-          const lower = s.toLowerCase();
-          if (!taken.has(lower)) {
-            taken.add(lower);
-            originals.push(s);
-          }
-        });
+        sp.fixed.forEach(s => taken.add(s.toLowerCase()));
       }
     } else if (type === 'languages') {
       const lp = window.currentClassData.language_proficiencies;
       if (lp && Array.isArray(lp.fixed)) {
-        lp.fixed.forEach(l => {
-          const lower = l.toLowerCase();
-          if (!taken.has(lower)) {
-            taken.add(lower);
-            originals.push(l);
-          }
-        });
+        lp.fixed.forEach(l => taken.add(l.toLowerCase()));
       }
     }
   }
 
-  return originals;
+  // Include fixed proficiencies granted by the currently selected race
+  if (window.currentRaceData) {
+    if (type === 'languages') {
+      const langs = window.currentRaceData.languages;
+      if (langs && Array.isArray(langs.fixed)) {
+        langs.fixed.forEach(l => taken.add(l.toLowerCase()));
+      }
+    } else if (type === 'skills') {
+      const sc = window.currentRaceData.skill_choices;
+      if (sc && Array.isArray(sc.fixed)) {
+        sc.fixed.forEach(s => taken.add(s.toLowerCase()));
+      }
+    } else if (type === 'tools') {
+      const tc = window.currentRaceData.tool_choices;
+      if (tc && Array.isArray(tc.fixed)) {
+        tc.fixed.forEach(t => taken.add(t.toLowerCase()));
+      }
+    }
+  }
+
+  return taken;
 }
 
 /**
@@ -126,9 +112,9 @@ function getTakenProficiencies(type) {
 function gatherExtraSelections(data, context, level = 1) {
   const selections = [];
 
-  const takenLangs = new Set(getTakenProficiencies('languages').map(v => v.toLowerCase()));
-  const takenSkills = new Set(getTakenProficiencies('skills').map(v => v.toLowerCase()));
-  const takenTools = new Set(getTakenProficiencies('tools').map(v => v.toLowerCase()));
+  const takenLangs = getTakenProficiencies('languages');
+  const takenSkills = getTakenProficiencies('skills');
+  const takenTools = getTakenProficiencies('tools');
 
   if (context === "race") {
     if (data.languages && (data.languages.fixed.length > 0 || data.languages.choice > 0)) {

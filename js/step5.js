@@ -12,6 +12,7 @@ function getSelectedClassName() {
 
 function renderEquipment() {
   if (!equipmentData) return;
+  const saved = getSelectedData().equipment || { class: [], upgrades: [] };
   const className = getSelectedClassName();
   const level = parseInt(document.getElementById('levelSelect').value || '1', 10);
   const equipmentDiv = document.getElementById('equipmentSelections');
@@ -45,6 +46,9 @@ function renderEquipment() {
           input.name = `equipChoice_${idx}`;
           input.id = id;
           input.value = opt.value || opt;
+          if (saved.class && saved.class.includes(input.value)) {
+            input.checked = true;
+          }
           const lab = document.createElement('label');
           lab.htmlFor = id;
           lab.textContent = opt.label || opt;
@@ -77,6 +81,9 @@ function renderEquipment() {
         input.name = 'upgradeArmor';
         input.id = id;
         input.value = armor;
+        if (saved.upgrades && saved.upgrades.includes(input.value)) {
+          input.checked = true;
+        }
         const lab = document.createElement('label');
         lab.htmlFor = id;
         lab.textContent = armor;
@@ -91,6 +98,9 @@ function renderEquipment() {
       input.type = 'checkbox';
       input.id = id;
       input.value = up.weapon;
+      if (saved.upgrades && saved.upgrades.includes(input.value)) {
+        input.checked = true;
+      }
       const lab = document.createElement('label');
       lab.htmlFor = id;
       lab.textContent = up.weapon;
@@ -111,6 +121,7 @@ function renderEquipment() {
     };
     block.querySelectorAll('input').forEach(inp => inp.addEventListener('change', update));
     update();
+    block.querySelectorAll('input:checked').forEach(inp => inp.dispatchEvent(new Event('change')));
   });
 }
 

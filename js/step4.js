@@ -76,12 +76,18 @@ function renderDuplicateSelectors(type, detailsEl, baseList, allOptions) {
     initFeatureSelectionHandlers(detailsEl.parentElement);
     window.backgroundData[type] = baseList.slice();
     saveBackgroundData();
+    if (type === 'skills') renderSkillSummary(window.backgroundData[type], detailsEl);
     return;
   }
   const base = baseList.filter(s => !conflicts.includes(s));
-  const opts = allOptions.filter(o => !taken.has(o.toLowerCase()));
+  let opts = allOptions.filter(o => !taken.has(o.toLowerCase()));
+  if (opts.length === 0) {
+    const baseLower = base.map(b => b.toLowerCase());
+    opts = allOptions.filter(o => !baseLower.includes(o.toLowerCase()));
+  }
   window.backgroundData[type] = base;
   saveBackgroundData();
+  if (type === 'skills') renderSkillSummary(window.backgroundData[type], detailsEl);
   const dupDiv = document.createElement('div');
   dupDiv.className = `duplicate-${type}-choices`;
   const typeMap = {

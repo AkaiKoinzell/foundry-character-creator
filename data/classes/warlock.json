@@ -4,16 +4,40 @@
   "hit_die": "d8",
   "hp_at_1st_level": "8 + your Constitution modifier",
   "hp_at_higher_levels": "1d8 (or 5) + your Constitution modifier per Warlock level after 1st",
-  "saving_throws": ["Wisdom", "Charisma"],
+  "saving_throws": [
+    "Wisdom",
+    "Charisma"
+  ],
   "skill_proficiencies": {
     "choose": 2,
-    "options": ["Arcana", "Deception", "History", "Intimidation", "Investigation", "Nature", "Religion"]
+    "options": [
+      "Arcana",
+      "Deception",
+      "History",
+      "Intimidation",
+      "Investigation",
+      "Nature",
+      "Religion"
+    ]
   },
-  "weapon_proficiencies": ["simple weapons"],
-  "armor_proficiencies": ["light armor"],
+  "weapon_proficiencies": [
+    "simple weapons"
+  ],
+  "armor_proficiencies": [
+    "light armor"
+  ],
   "multiclassing": {
-    "prerequisites": {"Charisma": 13},
-    "proficiencies": {"weapons": ["simple weapons"], "armor": ["light armor"]}
+    "prerequisites": {
+      "Charisma": 13
+    },
+    "proficiencies": {
+      "weapons": [
+        "simple weapons"
+      ],
+      "armor": [
+        "light armor"
+      ]
+    }
   },
   "features_by_level": {
     "1": [
@@ -209,6 +233,21 @@
     }
   ],
   "choices": [
+    {
+      "level": 1,
+      "name": "Cantrip",
+      "description": "Choose 2 warlock cantrips to learn",
+      "count": 2,
+      "type": "cantrips",
+      "selection": [
+        "Eldritch Blast",
+        "Mage Hand",
+        "Prestidigitation",
+        "Sword Burst",
+        "Thunderclap",
+        "Toll the Dead"
+      ]
+    },
     {
       "level": 2,
       "name": "Eldritch Invocations",

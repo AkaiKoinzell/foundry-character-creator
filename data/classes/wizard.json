@@ -1,16 +1,36 @@
 {
   "name": "Wizard",
-  "description": "A scholarly magic-user capable of manipulating the structures of reality.",
+  "description": "Description for Wizard class.",
   "hit_die": "d6",
   "hp_at_1st_level": "6 + your Constitution modifier",
   "hp_at_higher_levels": "1d6 (or 4) + your Constitution modifier per Wizard level after 1st",
-  "saving_throws": ["Intelligence", "Wisdom"],
+  "saving_throws": [
+    "Intelligence",
+    "Wisdom"
+  ],
   "skill_proficiencies": {
     "choose": 2,
-    "options": ["Arcana", "History", "Insight", "Investigation", "Medicine", "Religion"]
+    "options": [
+      "Arcana",
+      "History",
+      "Insight",
+      "Investigation",
+      "Medicine",
+      "Religion"
+    ]
   },
-  "weapon_proficiencies": ["daggers", "darts", "slings", "quarterstaffs", "light crossbows"],
-  "multiclassing": {"prerequisites": {"Intelligence": 13}},
+  "weapon_proficiencies": [
+    "daggers",
+    "darts",
+    "slings",
+    "quarterstaffs",
+    "light crossbows"
+  ],
+  "multiclassing": {
+    "prerequisites": {
+      "Intelligence": 13
+    }
+  },
   "subclasses": [
     {
       "name": "School of Abjuration",
@@ -93,7 +113,6 @@
       ]
     }
   ],
-  "description": "Description for Wizard class.",
   "features_by_level": {
     "1": [
       {
@@ -112,14 +131,21 @@
     {
       "level": 1,
       "name": "Cantrip",
-      "description": "Choose two wizard cantrips to learn",
-      "count": 2,
+      "description": "Choose 3 wizard cantrips to learn",
+      "count": 3,
       "type": "cantrips",
       "selection": [
+        "Fire Bolt",
+        "Light",
         "Mage Hand",
         "Prestidigitation",
         "Ray of Frost",
-        "Light"
+        "Shape Water",
+        "Shocking Grasp",
+        "Sword Burst",
+        "Thunderclap",
+        "Toll the Dead",
+        "True Strike"
       ]
     },
     {

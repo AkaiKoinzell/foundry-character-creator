@@ -4,7 +4,10 @@
   "hit_die": "d8",
   "hp_at_1st_level": "8 + your Constitution modifier",
   "hp_at_higher_levels": "1d8 (or 5) + your Constitution modifier per Bard level after 1st",
-  "saving_throws": ["Dexterity", "Charisma"],
+  "saving_throws": [
+    "Dexterity",
+    "Charisma"
+  ],
   "skill_proficiencies": {
     "choose": 3,
     "options": [
@@ -28,15 +31,33 @@
       "Survival"
     ]
   },
-  "weapon_proficiencies": ["simple weapons", "hand crossbows", "longswords", "rapiers", "shortswords"],
-  "tool_proficiencies": ["three musical instruments of your choice"],
-  "armor_proficiencies": ["light armor"],
+  "weapon_proficiencies": [
+    "simple weapons",
+    "hand crossbows",
+    "longswords",
+    "rapiers",
+    "shortswords"
+  ],
+  "tool_proficiencies": [
+    "three musical instruments of your choice"
+  ],
+  "armor_proficiencies": [
+    "light armor"
+  ],
   "multiclassing": {
-    "prerequisites": {"Charisma": 13},
+    "prerequisites": {
+      "Charisma": 13
+    },
     "proficiencies": {
-      "skills": ["Choose any one skill"],
-      "tools": ["one musical instrument of your choice"],
-      "armor": ["light armor"]
+      "skills": [
+        "Choose any one skill"
+      ],
+      "tools": [
+        "one musical instrument of your choice"
+      ],
+      "armor": [
+        "light armor"
+      ]
     }
   },
   "features_by_level": {
@@ -267,6 +288,21 @@
     }
   ],
   "choices": [
+    {
+      "level": 1,
+      "name": "Cantrip",
+      "description": "Choose 2 bard cantrips to learn",
+      "count": 2,
+      "type": "cantrips",
+      "selection": [
+        "Light",
+        "Mage Hand",
+        "Prestidigitation",
+        "Thunderclap",
+        "True Strike",
+        "Vicious Mockery"
+      ]
+    },
     {
       "level": 3,
       "name": "Expertise",

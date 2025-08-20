@@ -4,7 +4,10 @@
   "hit_die": "d8",
   "hp_at_1st_level": "8 + your Constitution modifier",
   "hp_at_higher_levels": "1d8 (or 5) + your Constitution modifier per Artificer level after 1st",
-  "saving_throws": ["Constitution", "Intelligence"],
+  "saving_throws": [
+    "Constitution",
+    "Intelligence"
+  ],
   "skill_proficiencies": {
     "choose": 2,
     "options": [
@@ -17,14 +20,34 @@
       "Sleight of Hand"
     ]
   },
-  "weapon_proficiencies": ["simple weapons", "firearms"],
-  "tool_proficiencies": ["thieves' tools", "tinker's tools", "one type of artisan's tools of your choice"],
-  "armor_proficiencies": ["light armor", "medium armor", "shields"],
+  "weapon_proficiencies": [
+    "simple weapons",
+    "firearms"
+  ],
+  "tool_proficiencies": [
+    "thieves' tools",
+    "tinker's tools",
+    "one type of artisan's tools of your choice"
+  ],
+  "armor_proficiencies": [
+    "light armor",
+    "medium armor",
+    "shields"
+  ],
   "multiclassing": {
-    "prerequisites": {"Intelligence": 13},
+    "prerequisites": {
+      "Intelligence": 13
+    },
     "proficiencies": {
-      "tools": ["thieves' tools", "tinker's tools"],
-      "armor": ["light armor", "medium armor", "shields"]
+      "tools": [
+        "thieves' tools",
+        "tinker's tools"
+      ],
+      "armor": [
+        "light armor",
+        "medium armor",
+        "shields"
+      ]
     }
   },
   "features_by_level": {
@@ -198,6 +221,27 @@
     }
   ],
   "choices": [
+    {
+      "level": 1,
+      "name": "Cantrip",
+      "description": "Choose 2 artificer cantrips to learn",
+      "count": 2,
+      "type": "cantrips",
+      "selection": [
+        "Fire Bolt",
+        "Guidance",
+        "Light",
+        "Mage Hand",
+        "Prestidigitation",
+        "Ray of Frost",
+        "Resistance",
+        "Shocking Grasp",
+        "Spare the Dying",
+        "Sword Burst",
+        "Thorn Whip",
+        "Thunderclap"
+      ]
+    },
     {
       "level": 2,
       "name": "Infusion",

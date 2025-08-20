@@ -236,10 +236,6 @@ export function saveFeatureSelection(select) {
 
 updateExtraSelectionsView();
 
-  if (subSel) {
-    subSel.addEventListener('change', renderClassFeatures);
-  }
-}
 
 function renderFinalRecap() {
   const recapDiv = document.getElementById("finalRecap");
@@ -484,9 +480,6 @@ export {
   initializeAccordion,
   updateSubclasses,
   renderClassFeatures,
-  saveFeatureSelection,
-  refreshSelectedData,
-  resetRacialBonuses,
   openExtrasModal,
   updateExtraSelectionsView,
   showExtraSelection,

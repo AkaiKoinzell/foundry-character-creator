@@ -451,10 +451,15 @@ function saveFeatureSelection(select) {
 function initializeAccordion(root) {
   if (!root) return;
   root.querySelectorAll('.accordion-header').forEach(header => {
+    const label = header.dataset.label || header.textContent.trim();
+    header.setAttribute('aria-expanded', 'false');
+    header.setAttribute('aria-label', `Expand ${label}`);
     header.addEventListener('click', () => {
-      header.classList.toggle('active');
+      const expanded = header.classList.toggle('active');
       const content = header.nextElementSibling;
       content.classList.toggle('show');
+      header.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+      header.setAttribute('aria-label', `${expanded ? 'Collapse' : 'Expand'} ${label}`);
     });
   });
 }
@@ -496,7 +501,13 @@ function openExtrasModal(selections, context = "race") {
     const header = document.createElement('button');
     header.type = 'button';
     header.classList.add('accordion-header');
+    header.dataset.label = selection.name;
     header.textContent = selection.name;
+    const arrow = document.createElement('span');
+    arrow.classList.add('accordion-arrow');
+    arrow.setAttribute('aria-hidden', 'true');
+    arrow.textContent = '►';
+    header.appendChild(arrow);
     item.appendChild(header);
 
     const content = document.createElement('div');

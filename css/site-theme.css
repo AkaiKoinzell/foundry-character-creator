@@ -198,12 +198,11 @@ th {
   background-color: var(--accent-hover);
 }
 
-.accordion-header::after {
-  content: '\25BA';
+.accordion-arrow {
   transition: transform 0.3s ease;
 }
 
-.accordion-header.active::after {
+.accordion-header.active .accordion-arrow {
   transform: rotate(90deg);
 }
 

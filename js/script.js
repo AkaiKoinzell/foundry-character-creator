@@ -416,11 +416,28 @@ function getTakenProficiencies(type) {
     languages: "Languages",
   };
 
-  const taken = new Set((selectedData[selectedMap[type]] || []).filter(v => v));
+  const taken = new Set();
+  const originals = [];
+
+  (selectedData[selectedMap[type]] || [])
+    .filter(v => v)
+    .forEach(v => {
+      const lower = v.toLowerCase();
+      if (!taken.has(lower)) {
+        taken.add(lower);
+        originals.push(v);
+      }
+    });
 
   if (window.backgroundData) {
     const bgMap = { skills: "skills", tools: "tools", languages: "languages" };
-    (window.backgroundData[bgMap[type]] || []).forEach(v => taken.add(v));
+    (window.backgroundData[bgMap[type]] || []).forEach(v => {
+      const lower = v.toLowerCase();
+      if (!taken.has(lower)) {
+        taken.add(lower);
+        originals.push(v);
+      }
+    });
   }
 
   // Include fixed proficiencies granted by the currently selected class
@@ -431,26 +448,47 @@ function getTakenProficiencies(type) {
         tp.forEach(t => {
           const lower = t.toLowerCase();
           if (!lower.includes('of your choice') && !lower.includes(' or ')) {
-            taken.add(t);
+            if (!taken.has(lower)) {
+              taken.add(lower);
+              originals.push(t);
+            }
           }
         });
       } else if (tp && Array.isArray(tp.fixed)) {
-        tp.fixed.forEach(t => taken.add(t));
+        tp.fixed.forEach(t => {
+          const lower = t.toLowerCase();
+          if (!taken.has(lower)) {
+            taken.add(lower);
+            originals.push(t);
+          }
+        });
       }
     } else if (type === 'skills') {
       const sp = window.currentClassData.skill_proficiencies;
       if (sp && Array.isArray(sp.fixed)) {
-        sp.fixed.forEach(s => taken.add(s));
+        sp.fixed.forEach(s => {
+          const lower = s.toLowerCase();
+          if (!taken.has(lower)) {
+            taken.add(lower);
+            originals.push(s);
+          }
+        });
       }
     } else if (type === 'languages') {
       const lp = window.currentClassData.language_proficiencies;
       if (lp && Array.isArray(lp.fixed)) {
-        lp.fixed.forEach(l => taken.add(l));
+        lp.fixed.forEach(l => {
+          const lower = l.toLowerCase();
+          if (!taken.has(lower)) {
+            taken.add(lower);
+            originals.push(l);
+          }
+        });
       }
     }
   }
 
-  return Array.from(taken);
+  return originals;
 }
 
 /**
@@ -463,18 +501,19 @@ function getTakenProficiencies(type) {
 function gatherExtraSelections(data, context, level = 1) {
   const selections = [];
 
-  const takenLangs = new Set(getTakenProficiencies('languages'));
-  const takenSkills = new Set(getTakenProficiencies('skills'));
-  const takenTools = new Set(getTakenProficiencies('tools'));
+  const takenLangs = new Set(getTakenProficiencies('languages').map(v => v.toLowerCase()));
+  const takenSkills = new Set(getTakenProficiencies('skills').map(v => v.toLowerCase()));
+  const takenTools = new Set(getTakenProficiencies('tools').map(v => v.toLowerCase()));
 
   if (context === "race") {
     if (data.languages && (data.languages.fixed.length > 0 || data.languages.choice > 0)) {
+      const fixedLangs = new Set(data.languages.fixed.map(l => l.toLowerCase()));
       let availableLangs = availableLanguages
-        .filter(lang => !data.languages.fixed.includes(lang))
-        .filter(lang => !takenLangs.has(lang));
+        .filter(lang => !fixedLangs.has(lang.toLowerCase()))
+        .filter(lang => !takenLangs.has(lang.toLowerCase()));
       let note = '';
       if (availableLangs.length === 0) {
-        availableLangs = availableLanguages.filter(lang => !takenLangs.has(lang));
+        availableLangs = availableLanguages.filter(lang => !takenLangs.has(lang.toLowerCase()));
         note = ' (tutte le lingue disponibili)';
       }
       const fixedDesc = data.languages.fixed.length
@@ -488,10 +527,10 @@ function gatherExtraSelections(data, context, level = 1) {
       });
     }
     if (data.skill_choices) {
-      let filteredSkills = data.skill_choices.options.filter(opt => !takenSkills.has(opt));
+      let filteredSkills = data.skill_choices.options.filter(opt => !takenSkills.has(opt.toLowerCase()));
       let note = '';
       if (filteredSkills.length === 0) {
-        filteredSkills = ALL_SKILLS.filter(opt => !takenSkills.has(opt));
+        filteredSkills = ALL_SKILLS.filter(opt => !takenSkills.has(opt.toLowerCase()));
         note = ' (tutte le abilità disponibili)';
       }
       if (filteredSkills.length > 0) {
@@ -504,10 +543,10 @@ function gatherExtraSelections(data, context, level = 1) {
       }
     }
     if (data.tool_choices) {
-      let filteredTools = data.tool_choices.options.filter(opt => !takenTools.has(opt));
+      let filteredTools = data.tool_choices.options.filter(opt => !takenTools.has(opt.toLowerCase()));
       let note = '';
       if (filteredTools.length === 0) {
-        filteredTools = ALL_TOOLS.filter(opt => !takenTools.has(opt));
+        filteredTools = ALL_TOOLS.filter(opt => !takenTools.has(opt.toLowerCase()));
         note = ' (tutti gli strumenti disponibili)';
       }
       if (filteredTools.length > 0) {
@@ -525,24 +564,25 @@ function gatherExtraSelections(data, context, level = 1) {
       if (!choice.level || parseInt(choice.level) <= level) {
         const key = extraCategoryAliases[choice.name] || choice.name;
         const selected = (selectedData[key] || []).filter(v => v);
+        const selectedLower = selected.map(v => v.toLowerCase());
         let opts = choice.selection || choice.options || [];
         let note = '';
         if (key === "Languages") {
-          opts = opts.filter(o => !takenLangs.has(o) || selected.includes(o));
+          opts = opts.filter(o => !takenLangs.has(o.toLowerCase()) || selectedLower.includes(o.toLowerCase()));
           if (opts.length === 0) {
-            opts = availableLanguages.filter(o => !takenLangs.has(o) || selected.includes(o));
+            opts = availableLanguages.filter(o => !takenLangs.has(o.toLowerCase()) || selectedLower.includes(o.toLowerCase()));
             note = ' (tutte le lingue disponibili)';
           }
         } else if (key === "Skill Proficiency") {
-          opts = opts.filter(o => !takenSkills.has(o) || selected.includes(o));
+          opts = opts.filter(o => !takenSkills.has(o.toLowerCase()) || selectedLower.includes(o.toLowerCase()));
           if (opts.length === 0) {
-            opts = ALL_SKILLS.filter(o => !takenSkills.has(o) || selected.includes(o));
+            opts = ALL_SKILLS.filter(o => !takenSkills.has(o.toLowerCase()) || selectedLower.includes(o.toLowerCase()));
             note = ' (tutte le abilità disponibili)';
           }
         } else if (key === "Tool Proficiency") {
-          opts = opts.filter(o => !takenTools.has(o) || selected.includes(o));
+          opts = opts.filter(o => !takenTools.has(o.toLowerCase()) || selectedLower.includes(o.toLowerCase()));
           if (opts.length === 0) {
-            opts = ALL_TOOLS.filter(o => !takenTools.has(o) || selected.includes(o));
+            opts = ALL_TOOLS.filter(o => !takenTools.has(o.toLowerCase()) || selectedLower.includes(o.toLowerCase()));
             note = ' (tutti gli strumenti disponibili)';
           }
         }

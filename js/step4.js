@@ -16,6 +16,20 @@ function saveBackgroundData() {
   sessionStorage.setItem('backgroundData', JSON.stringify(window.backgroundData));
 }
 
+function renderSkillSummary(skills, container) {
+  let summary = container.querySelector('.skill-summary');
+  if (!skills || skills.length === 0) {
+    if (summary) summary.remove();
+    return;
+  }
+  if (!summary) {
+    summary = document.createElement('p');
+    summary.className = 'skill-summary';
+    container.appendChild(summary);
+  }
+  summary.innerHTML = `<strong>Abilità:</strong> ${skills.join(', ')}`;
+}
+
 function makeAccordion(div) {
   convertDetailsToAccordion(div);
   div.classList.add('accordion');
@@ -85,6 +99,7 @@ function renderDuplicateSelectors(type, detailsEl, baseList, allOptions) {
       .filter(Boolean);
     window.backgroundData[type] = base.concat(chosen);
     saveBackgroundData();
+    if (type === 'skills') renderSkillSummary(backgroundData.skills, detailsEl);
     if (chosen.length === duplicates.length) {
       renderDuplicateSelectors(type, detailsEl, window.backgroundData[type], allOptions);
       return;
@@ -135,12 +150,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       skillDetails.className = "feature-block";
       skillDetails.innerHTML = "<summary>Abilità</summary>";
       backgroundData.skills = Array.isArray(data.skills) ? data.skills.slice() : [];
-
-      if (backgroundData.skills.length > 0) {
-        const p = document.createElement("p");
-        p.innerHTML = `<strong>Abilità:</strong> ${backgroundData.skills.join(", ")}`;
-        skillDetails.appendChild(p);
-      }
       if (data.skillChoices) {
         const num = data.skillChoices.choose || 0;
         const taken = getTakenProficiencies('skills');
@@ -164,11 +173,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                 .filter(Boolean);
               backgroundData.skills = (data.skills || []).concat(chosen);
               renderDuplicateSelectors('skills', skillDetails, backgroundData.skills, ALL_SKILLS);
+              renderSkillSummary(backgroundData.skills, skillDetails);
             }
           );
         }
         skillDiv.appendChild(skillDetails);
         renderDuplicateSelectors('skills', skillDetails, backgroundData.skills, ALL_SKILLS);
+        renderSkillSummary(backgroundData.skills, skillDetails);
         makeAccordion(skillDiv);
 
       const toolDiv = document.getElementById("backgroundTools");

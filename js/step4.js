@@ -5,6 +5,16 @@ import { initFeatureSelectionHandlers, convertDetailsToAccordion, initializeAcco
 let featPathIndex = {};
 let currentFeatData = null;
 
+function buildChoiceSelectors(container, count, options, className, changeHandler) {
+  for (let i = 0; i < count; i++) {
+    const sel = document.createElement('select');
+    sel.className = className;
+    sel.innerHTML = `<option value="">Seleziona</option>` + options.map(o => `<option value="${o}">${o}</option>`).join('');
+    sel.addEventListener('change', changeHandler);
+    container.appendChild(sel);
+  }
+}
+
 function makeAccordion(div) {
   convertDetailsToAccordion(div);
   div.classList.add('accordion');
@@ -72,16 +82,18 @@ document.addEventListener("DOMContentLoaded", () => {
       const p = document.createElement("p");
       p.innerHTML = `<strong>Scegli ${num} abilità:</strong>`;
       skillDetails.appendChild(p);
-      for (let i = 0; i < num; i++) {
-        const sel = document.createElement("select");
-        sel.className = "backgroundSkillChoice";
-        sel.innerHTML = `<option value="">Seleziona</option>` + opts.map(o => `<option value="${o}">${o}</option>`).join("");
-        sel.addEventListener("change", () => {
-          const chosen = Array.from(document.querySelectorAll(".backgroundSkillChoice")).map(s => s.value).filter(Boolean);
+      buildChoiceSelectors(
+        skillDetails,
+        num,
+        opts,
+        "backgroundSkillChoice",
+        () => {
+          const chosen = Array.from(document.querySelectorAll(".backgroundSkillChoice"))
+            .map(s => s.value)
+            .filter(Boolean);
           backgroundData.skills = (data.skills || []).concat(chosen);
-        });
-        skillDetails.appendChild(sel);
-      }
+        }
+      );
     }
     skillDiv.appendChild(skillDetails);
     initFeatureSelectionHandlers(skillDiv);
@@ -98,22 +110,20 @@ document.addEventListener("DOMContentLoaded", () => {
       p.innerHTML = `<strong>Strumenti:</strong> ${data.tools.join(", ")}`;
       toolDetails.appendChild(p);
     }
+    const toolChangeHandler = () => {
+      const chosen = Array.from(document.querySelectorAll(".backgroundToolChoice"))
+        .map(s => s.value)
+        .filter(Boolean);
+      const base = Array.isArray(data.tools) ? data.tools.slice() : [];
+      backgroundData.tools = base.concat(chosen);
+    };
     if (data.tools && data.tools.choose) {
       const num = data.tools.choose;
       const opts = data.tools.options || [];
       const p = document.createElement("p");
       p.innerHTML = `<strong>Scegli ${num} strumento:</strong>`;
       toolDetails.appendChild(p);
-      for (let i = 0; i < num; i++) {
-        const sel = document.createElement("select");
-        sel.className = "backgroundToolChoice";
-        sel.innerHTML = `<option value="">Seleziona</option>` + opts.map(o => `<option value="${o}">${o}</option>`).join("");
-        sel.addEventListener("change", () => {
-          const chosen = Array.from(document.querySelectorAll(".backgroundToolChoice")).map(s => s.value).filter(Boolean);
-          backgroundData.tools = chosen;
-        });
-        toolDetails.appendChild(sel);
-      }
+      buildChoiceSelectors(toolDetails, num, opts, "backgroundToolChoice", toolChangeHandler);
     }
     if (data.toolChoices) {
       const num = data.toolChoices.choose || 0;
@@ -121,17 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const p = document.createElement("p");
       p.innerHTML = `<strong>Scegli ${num} strumento:</strong>`;
       toolDetails.appendChild(p);
-      for (let i = 0; i < num; i++) {
-        const sel = document.createElement("select");
-        sel.className = "backgroundToolChoice";
-        sel.innerHTML = `<option value="">Seleziona</option>` + opts.map(o => `<option value="${o}">${o}</option>`).join("");
-        sel.addEventListener("change", () => {
-          const chosen = Array.from(document.querySelectorAll(".backgroundToolChoice")).map(s => s.value).filter(Boolean);
-          const base = Array.isArray(data.tools) ? data.tools.slice() : [];
-          backgroundData.tools = base.concat(chosen);
-        });
-        toolDetails.appendChild(sel);
-      }
+      buildChoiceSelectors(toolDetails, num, opts, "backgroundToolChoice", toolChangeHandler);
     }
     toolDiv.appendChild(toolDetails);
     initFeatureSelectionHandlers(toolDiv);
@@ -156,16 +156,20 @@ document.addEventListener("DOMContentLoaded", () => {
         const p = document.createElement("p");
         p.innerHTML = `<strong>Scegli ${num} linguaggi:</strong>`;
         langDetails.appendChild(p);
-        for (let i = 0; i < num; i++) {
-          const sel = document.createElement("select");
-          sel.className = "backgroundLanguageChoice";
-          sel.innerHTML = `<option value="">Seleziona</option>` + opts.map(o => `<option value="${o}">${o}</option>`).join("");
-          sel.addEventListener("change", () => {
-            const chosen = Array.from(document.querySelectorAll(".backgroundLanguageChoice")).map(s => s.value).filter(Boolean);
+        buildChoiceSelectors(
+          langDetails,
+          num,
+          opts,
+          "backgroundLanguageChoice",
+          () => {
+            const chosen = Array.from(
+              document.querySelectorAll(".backgroundLanguageChoice")
+            )
+              .map(s => s.value)
+              .filter(Boolean);
             backgroundData.languages = chosen;
-          });
-          langDetails.appendChild(sel);
-        }
+          }
+        );
         langDiv.appendChild(langDetails);
         initFeatureSelectionHandlers(langDiv);
         makeAccordion(langDiv);

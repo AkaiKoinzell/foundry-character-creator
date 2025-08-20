@@ -103,28 +103,6 @@
           "label": "Weapon",
           "type": "radio",
           "options": [
-            {
-              "value": "Quarterstaff",
-              "label": "Quarterstaff"
-            },
-            {
-              "value": "Dagger",
-              "label": "Dagger"
-            }
-          ]
-        },
-        {
-          "label": "Arcane focus",
-          "type": "radio",
-          "options": [
-            {
-              "value": "Component pouch",
-              "label": "Component pouch"
-            },
-            {
-              "value": "Arcane focus",
-              "label": "Arcane focus"
-            },
             { "value": "Mazza", "label": "Mazza" },
             { "value": "Martello da guerra", "label": "Martello da guerra" }
           ]
@@ -152,7 +130,6 @@
           "options": [
             { "value": "Pacchetto da sacerdote", "label": "Pacchetto da sacerdote" },
             { "value": "Pacchetto da esploratore", "label": "Pacchetto da esploratore" }
-
           ]
         }
       ]

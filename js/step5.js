@@ -1,9 +1,16 @@
 // Step 5: Equipment selection
 let equipmentData = null;
 
+function getSelectedClassName() {
+  const sel = document.getElementById('classSelect');
+  return sel && sel.selectedOptions.length
+    ? sel.selectedOptions[0].text.trim().normalize('NFC')
+    : '';
+}
+
 function renderEquipment() {
   if (!equipmentData) return;
-  const className = document.getElementById('classSelect').value;
+  const className = getSelectedClassName();
   const level = parseInt(document.getElementById('levelSelect').value || '1', 10);
   const standardDiv = document.getElementById('standardEquipment');
   const classDiv = document.getElementById('classEquipmentChoices');
@@ -122,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const confirmBtn = document.getElementById('confirmEquipment');
   if (confirmBtn) {
     confirmBtn.addEventListener('click', () => {
-      const className = document.getElementById('classSelect').value;
+      const className = getSelectedClassName();
       const classInfo = equipmentData.classes[className] || { fixed: [] };
       const chosen = [];
       if (Array.isArray(classInfo.fixed)) chosen.push(...classInfo.fixed);

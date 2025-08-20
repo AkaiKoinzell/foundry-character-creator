@@ -1,6 +1,14 @@
 import { getSelectedData, setSelectedData, saveSelectedData } from './state.js';
 import { showStep } from './ui.js';
 import { displayRaceTraits, renderClassFeatures, getTakenProficiencies, initializeAccordion } from './script.js';
+import {
+  getExtraSelections,
+  setExtraSelections,
+  getCurrentSelectionIndex,
+  setCurrentSelectionIndex,
+  getExtraModalContext,
+  setExtraModalContext,
+} from './extrasState.js';
 
 export const extraCategoryAliases = {
   "Cantrip": "Cantrips",
@@ -23,9 +31,6 @@ export const extraCategoryDescriptions = {
 };
 
 let selectedData = getSelectedData();
-let extraSelections = [];
-let currentSelectionIndex = 0;
-let extraModalContext = '';
 
 const prevTraitEl = document.getElementById('prevTrait');
 const nextTraitEl = document.getElementById('nextTrait');
@@ -37,9 +42,9 @@ export function openExtrasModal(selections, context = 'race') {
     return;
   }
 
-  extraSelections = selections;
-  currentSelectionIndex = 0;
-  extraModalContext = context;
+  setExtraSelections(selections);
+  setCurrentSelectionIndex(0);
+  setExtraModalContext(context);
 
   const containerId = context === 'class' ? 'classExtrasAccordion' : 'raceExtraTraitsContainer';
   const container = document.getElementById(containerId);
@@ -100,6 +105,7 @@ export function openExtrasModal(selections, context = 'race') {
 
 export function updateExtraSelectionsView() {
   selectedData = getSelectedData();
+  const extraSelections = getExtraSelections();
 
   function updateContainer(id, title, dataKey) {
     const container = document.getElementById(id);
@@ -114,7 +120,7 @@ export function updateExtraSelectionsView() {
     }
   }
 
-  const summaryMap = extraModalContext === 'class' ? {} : {
+  const summaryMap = getExtraModalContext() === 'class' ? {} : {
     'Languages': ['languageSelection', 'Lingue Extra'],
     'Skill Proficiency': ['skillSelectionContainer', 'Skill Proficiency'],
     'Tool Proficiency': ['toolSelectionContainer', 'Tool Proficiency'],
@@ -135,7 +141,7 @@ export function updateExtraSelectionsView() {
   const selectionElem = document.getElementById('extraSelectionContainer');
   if (!titleElem || !descElem || !selectionElem) return;
 
-  const currentSelection = extraSelections[currentSelectionIndex];
+  const currentSelection = extraSelections[getCurrentSelectionIndex()];
   titleElem.innerText = currentSelection.name;
   const desc = currentSelection.description || extraCategoryDescriptions[currentSelection.name] || '';
   descElem.innerText = desc;
@@ -180,14 +186,15 @@ export function updateExtraSelectionsView() {
   }
 
   if (prevTraitEl && nextTraitEl && closeModalEl) {
-    prevTraitEl.disabled = (currentSelectionIndex === 0);
-    nextTraitEl.disabled = (currentSelectionIndex === extraSelections.length - 1);
+    const idx = getCurrentSelectionIndex();
+    prevTraitEl.disabled = (idx === 0);
+    nextTraitEl.disabled = (idx === extraSelections.length - 1);
 
     const allChoicesFilled = extraSelections.every(sel =>
       selectedData[sel.name] && selectedData[sel.name].filter(v => v).length === sel.count
     );
 
-    if (currentSelectionIndex === extraSelections.length - 1 && allChoicesFilled) {
+    if (idx === extraSelections.length - 1 && allChoicesFilled) {
       closeModalEl.style.display = 'inline-block';
     } else {
       closeModalEl.style.display = 'none';
@@ -196,21 +203,25 @@ export function updateExtraSelectionsView() {
 }
 
 export function showExtraSelection() {
-  if (!extraSelections || extraSelections.length === 0) return;
+  const selections = getExtraSelections();
+  if (!selections || selections.length === 0) return;
   updateExtraSelectionsView();
 }
 
 if (prevTraitEl && nextTraitEl) {
   prevTraitEl.addEventListener('click', () => {
-    if (currentSelectionIndex > 0) {
-      currentSelectionIndex--;
+    const idx = getCurrentSelectionIndex();
+    if (idx > 0) {
+      setCurrentSelectionIndex(idx - 1);
       showExtraSelection();
     }
   });
 
   nextTraitEl.addEventListener('click', () => {
-    if (currentSelectionIndex < extraSelections.length - 1) {
-      currentSelectionIndex++;
+    const idx = getCurrentSelectionIndex();
+    const selections = getExtraSelections();
+    if (idx < selections.length - 1) {
+      setCurrentSelectionIndex(idx + 1);
       showExtraSelection();
     }
   });
@@ -222,7 +233,8 @@ if (closeModalEl) {
     if (raceModal) raceModal.classList.add('hidden');
     sessionStorage.removeItem('popupOpened');
     saveSelectedData();
-    if (extraModalContext === 'race') {
+    const context = getExtraModalContext();
+    if (context === 'race') {
       showStep('step3');
       setTimeout(() => {
         displayRaceTraits();
@@ -230,7 +242,7 @@ if (closeModalEl) {
           updateExtraSelectionsView();
         }, 500);
       }, 300);
-    } else if (extraModalContext === 'class') {
+    } else if (context === 'class') {
       renderClassFeatures();
     }
   });

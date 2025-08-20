@@ -7,6 +7,7 @@ import { createHeader, createParagraph, createList } from './domHelpers.js';
 import { handleVariantExtraSelections, handleVariantFeatureChoices } from './variantFeatures.js';
 import { handleExtraLanguages, handleExtraSkills, handleExtraTools, handleExtraAncestry, gatherRaceTraitSelections } from './extrasSelections.js';
 import { openExtrasModal, updateExtraSelectionsView, showExtraSelection, extraCategoryAliases, extraCategoryDescriptions } from './extrasModal.js';
+import { setExtraSelections } from './extrasState.js';
 
 
 let selectedData = getSelectedData();
@@ -422,6 +423,7 @@ async function displayRaceTraits() {
 
       // Extra selections (languages, skills, tools) merged into existing traits
       const extraSelections = gatherExtraSelections(raceData, 'race');
+      setExtraSelections(extraSelections);
       const detailMatchers = {
         'Languages': /language/i,
         'Skill Proficiency': /skill/i,
@@ -828,6 +830,7 @@ async function renderClassFeatures() {
     });
   }
   const extraSelections = gatherExtraSelections({ choices: allChoices }, 'class', charLevel);
+  setExtraSelections(extraSelections);
   const detailMatchers = {
     'Languages': /Proficiencies/i,
     'Skill Proficiency': /Proficiencies/i,

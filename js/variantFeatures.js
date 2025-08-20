@@ -2,6 +2,7 @@ import { loadSpells, filterSpells } from './spellcasting.js';
 import { getSelectedData, saveSelectedData } from './state.js';
 import { checkTraitCompletion } from './script.js';
 import { buildChoiceSelectors } from './selectionUtils.js';
+import { ALL_SKILLS } from './data/proficiencies.js';
 
 const variantExtraMapping = {
   "Drow Magic": {
@@ -10,11 +11,7 @@ const variantExtraMapping = {
   "Skill Versatility": {
     type: "skills",
     count: 2,
-    options: [
-      "Acrobatics", "Animal Handling", "Arcana", "Athletics", "Deception", "History",
-      "Insight", "Intimidation", "Investigation", "Medicine", "Nature", "Perception",
-      "Performance", "Persuasion", "Religion", "Sleight of Hand", "Stealth", "Survival",
-    ],
+    options: ALL_SKILLS,
   },
   "Swim": { type: "none" },
   "Cantrip (Wizard)": {

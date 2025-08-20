@@ -1,16 +1,36 @@
 {
   "name": "Sorcerer",
-  "description": "A spellcaster who draws on inherent magic from a gift or bloodline.",
+  "description": "A spellcaster who draws arcane power from an innate magical source and shapes it through force of will.",
   "hit_die": "d6",
   "hp_at_1st_level": "6 + your Constitution modifier",
   "hp_at_higher_levels": "1d6 (or 4) + your Constitution modifier per Sorcerer level after 1st",
-  "saving_throws": ["Constitution", "Charisma"],
+  "saving_throws": [
+    "Constitution",
+    "Charisma"
+  ],
   "skill_proficiencies": {
     "choose": 2,
-    "options": ["Arcana", "Deception", "Insight", "Intimidation", "Persuasion", "Religion"]
+    "options": [
+      "Arcana",
+      "Deception",
+      "Insight",
+      "Intimidation",
+      "Persuasion",
+      "Religion"
+    ]
   },
-  "weapon_proficiencies": ["daggers", "darts", "slings", "quarterstaffs", "light crossbows"],
-  "multiclassing": {"prerequisites": {"Charisma": 13}},
+  "weapon_proficiencies": [
+    "daggers",
+    "darts",
+    "slings",
+    "quarterstaffs",
+    "light crossbows"
+  ],
+  "multiclassing": {
+    "prerequisites": {
+      "Charisma": 13
+    }
+  },
   "subclasses": [
     {
       "name": "Aberrant Mind",
@@ -108,7 +128,6 @@
       ]
     }
   ],
-  "description": "A spellcaster who draws arcane power from an innate magical source and shapes it through force of will.",
   "features_by_level": {
     "1": [
       {
@@ -214,6 +233,25 @@
     ]
   },
   "choices": [
+    {
+      "level": 1,
+      "name": "Cantrip",
+      "description": "Choose 4 sorcerer cantrips to learn",
+      "count": 4,
+      "type": "cantrips",
+      "selection": [
+        "Fire Bolt",
+        "Light",
+        "Mage Hand",
+        "Prestidigitation",
+        "Ray of Frost",
+        "Shape Water",
+        "Shocking Grasp",
+        "Sword Burst",
+        "Thunderclap",
+        "True Strike"
+      ]
+    },
     {
       "level": 3,
       "name": "Metamagic",
@@ -333,4 +371,3 @@
     }
   ]
 }
-

@@ -1,10 +1,11 @@
 import { handleError } from './common.js';
 import { createHeader, createParagraph } from './domHelpers.js';
-import { gatherExtraSelections, initFeatureSelectionHandlers, saveFeatureSelection } from './script.js';
+import { gatherExtraSelections, initFeatureSelectionHandlers, saveFeatureSelection, getTakenProficiencies } from './script.js';
 import { setExtraSelections } from './extrasState.js';
 import { extraCategoryAliases } from './extrasModal.js';
 import { convertDetailsToAccordion, initializeAccordion } from './ui/accordion.js';
 import { getSelectedData } from './state.js';
+import { ALL_LANGUAGES, ALL_SKILLS, ALL_TOOLS } from './data/proficiencies.js';
 
 export async function updateSubclasses() {
   const classPath = document.getElementById('classSelect').value;
@@ -72,14 +73,32 @@ export async function renderClassFeatures() {
   const toolChoice = data.tool_proficiencies && !Array.isArray(data.tool_proficiencies)
     ? data.tool_proficiencies
     : null;
+  let fixedTools = [];
+  if (Array.isArray(data.tool_proficiencies)) {
+    fixedTools = data.tool_proficiencies.filter(t => {
+      const lower = t.toLowerCase();
+      return !lower.includes('of your choice') && !lower.includes(' or ');
+    });
+  } else if (data.tool_proficiencies?.fixed) {
+    fixedTools = data.tool_proficiencies.fixed;
+  }
   if (data.weapon_proficiencies) {
     profTexts.push(`Weapon Training: ${data.weapon_proficiencies.join(', ')}`);
   }
   if (data.armor_proficiencies) {
     profTexts.push(`Armor Training: ${data.armor_proficiencies.join(', ')}`);
   }
+  if (fixedTools.length) {
+    profTexts.push(`Tool Proficiencies: ${fixedTools.join(', ')}`);
+  }
   if (data.skill_proficiencies && data.skill_proficiencies.choose) {
     profTexts.push(`Skill Proficiencies: Choose ${data.skill_proficiencies.choose} from ${data.skill_proficiencies.options.join(', ')}`);
+  }
+  if (data.skill_proficiencies && Array.isArray(data.skill_proficiencies.fixed) && data.skill_proficiencies.fixed.length) {
+    profTexts.push(`Skill Proficiencies: ${data.skill_proficiencies.fixed.join(', ')}`);
+  }
+  if (data.language_proficiencies && Array.isArray(data.language_proficiencies.fixed) && data.language_proficiencies.fixed.length) {
+    profTexts.push(`Languages: ${data.language_proficiencies.fixed.join(', ')}`);
   }
   if (data.multiclassing && data.multiclassing.prerequisites) {
     const prereqs = Object.entries(data.multiclassing.prerequisites)
@@ -94,6 +113,55 @@ export async function renderClassFeatures() {
     summary.textContent = 'Proficiencies';
     details.appendChild(summary);
     profTexts.forEach(t => details.appendChild(createParagraph(t)));
+
+    const handleConflicts = (type, fixedList, allOptions, featureKey, label) => {
+      if (!fixedList || fixedList.length === 0) return;
+      const { taken, conflicts } = getTakenProficiencies(type, fixedList);
+      if (!conflicts.length) return;
+      const startIndex = details.querySelectorAll(`select[data-feature="${featureKey}"]`).length;
+      const opts = allOptions.filter(o => !taken.has(o.toLowerCase()));
+      const selects = [];
+      const p = document.createElement('p');
+      p.innerHTML = `<strong>${label} duplicate, scegli sostituti:</strong>`;
+      details.appendChild(p);
+      conflicts.forEach((conflict, i) => {
+        const lab = document.createElement('label');
+        lab.textContent = `${conflict}: `;
+        const sel = document.createElement('select');
+        sel.dataset.feature = featureKey;
+        sel.dataset.index = startIndex + i;
+        const def = document.createElement('option');
+        def.value = '';
+        def.textContent = 'Seleziona...';
+        sel.appendChild(def);
+        opts.forEach(o => {
+          const option = document.createElement('option');
+          option.value = o;
+          option.textContent = o;
+          sel.appendChild(option);
+        });
+        const saved = selectedData[featureKey]?.[startIndex + i] || '';
+        if (saved) sel.value = saved;
+        lab.appendChild(sel);
+        details.appendChild(lab);
+        selects.push(sel);
+      });
+      const update = () => {
+        const chosen = new Set(selects.map(s => s.value).filter(Boolean));
+        selects.forEach(sel => {
+          const curr = sel.value;
+          sel.innerHTML = '<option value="">Seleziona...</option>' +
+            opts.map(o => `<option value="${o}" ${chosen.has(o) && o !== curr ? 'disabled' : ''}>${o}</option>`).join('');
+          sel.value = curr;
+        });
+      };
+      selects.forEach(sel => sel.addEventListener('change', update));
+      update();
+    };
+
+    handleConflicts('languages', data.language_proficiencies?.fixed, ALL_LANGUAGES, 'Languages', 'Linguaggi');
+    handleConflicts('skills', data.skill_proficiencies?.fixed, ALL_SKILLS, 'Skill Proficiency', 'Abilità');
+    handleConflicts('tools', fixedTools, ALL_TOOLS, 'Tool Proficiency', 'Strumenti');
     featuresDiv.appendChild(details);
   }
 

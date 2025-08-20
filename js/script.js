@@ -139,9 +139,20 @@ function getTakenSelections(type) {
   return taken;
 }
 
-// Backwards compatibility for existing imports
-function getTakenProficiencies(type) {
-  return getTakenSelections(type);
+// Backwards compatibility for existing imports and conflict detection
+function getTakenProficiencies(type, incoming) {
+  const originalTaken = getTakenSelections(type);
+  if (!incoming) return originalTaken;
+
+  const lowerIncoming = incoming.map(i => i.toLowerCase());
+  const takenWithoutIncoming = new Set(
+    [...originalTaken].filter(v => !lowerIncoming.includes(v))
+  );
+  const conflicts = incoming.filter((v, idx) =>
+    takenWithoutIncoming.has(lowerIncoming[idx])
+  );
+  const taken = new Set([...takenWithoutIncoming, ...lowerIncoming]);
+  return { taken, conflicts };
 }
 
 /**

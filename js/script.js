@@ -421,13 +421,14 @@ function gatherExtraSelections(data, context, level = 1) {
  */
 function initFeatureSelectionHandlers(container, saveCallback) {
   if (!container) return;
-  const detailsBlocks = container.querySelectorAll('details');
-  detailsBlocks.forEach(det => {
-    const selects = det.querySelectorAll('select');
+  const blocks = container.querySelectorAll('.feature-block');
+  blocks.forEach(block => {
+    const selects = block.querySelectorAll('select');
     if (selects.length === 0) return;
+    block.classList.add('user-choice');
     const mark = () => {
       const unfilled = Array.from(selects).some(s => !s.value);
-      det.classList.toggle('needs-selection', unfilled);
+      block.classList.toggle('needs-selection', unfilled);
     };
     mark();
     selects.forEach(sel => {
@@ -446,6 +447,31 @@ function saveFeatureSelection(select) {
   if (!selectedData[feature]) selectedData[feature] = [];
   selectedData[feature][index] = select.value || undefined;
   sessionStorage.setItem('selectedData', JSON.stringify(selectedData));
+}
+
+function convertDetailsToAccordion(container) {
+  if (!container) return;
+  container.querySelectorAll('details').forEach(det => {
+    const summary = det.querySelector('summary');
+    const contentNodes = Array.from(det.childNodes).filter(n => n !== summary);
+    const item = document.createElement('div');
+    const classes = ['accordion-item', 'feature-block', ...det.classList];
+    item.className = classes.join(' ');
+    if (det.id) item.id = det.id;
+
+    const header = document.createElement('button');
+    header.type = 'button';
+    header.className = 'accordion-header';
+    header.innerHTML = summary ? summary.innerHTML : '';
+    item.appendChild(header);
+
+    const content = document.createElement('div');
+    content.className = 'accordion-content';
+    contentNodes.forEach(n => content.appendChild(n));
+    item.appendChild(content);
+
+    det.replaceWith(item);
+  });
 }
 
 function initializeAccordion(root) {
@@ -519,7 +545,7 @@ function openExtrasModal(selections, context = "race") {
   selections.forEach((selection, selIdx) => {
     const categoryKey = extraCategoryAliases[selection.name] || selection.name;
     const item = document.createElement('div');
-    item.classList.add('accordion-item');
+    item.classList.add('accordion-item', 'user-choice');
 
     const header = document.createElement('button');
     header.type = 'button';
@@ -807,27 +833,27 @@ function displayRaceTraits() {
       // Languages
       if (raceData.languages && (raceData.languages.fixed.length > 0 || raceData.languages.choice > 0)) {
         const fixedLangs = raceData.languages.fixed.length > 0 ? raceData.languages.fixed.join(", ") : "Nessuna";
-        const langClass = raceData.languages.choice > 0 ? "race-trait needs-selection incomplete" : "race-trait";
+        const langClass = raceData.languages.choice > 0 ? "race-trait feature-block needs-selection incomplete" : "race-trait feature-block";
         traitsHtml += `<details class="${langClass}" id="languageTrait"><summary>Lingue</summary><p><strong>Lingue Concesse:</strong> ${fixedLangs}</p><div id="languageSelection"></div></details>`;
       }
 
       // Skill choices
       if (raceData.skill_choices) {
-        traitsHtml += `<details class="race-trait needs-selection incomplete" id="skillTrait"><summary>Abilità Extra</summary><div id="skillSelectionContainer"></div></details>`;
+        traitsHtml += `<details class="race-trait feature-block needs-selection incomplete" id="skillTrait"><summary>Abilità Extra</summary><div id="skillSelectionContainer"></div></details>`;
       }
 
       // Tool choices
       if (raceData.tool_choices) {
-        traitsHtml += `<details class="race-trait needs-selection incomplete" id="toolTrait"><summary>Strumenti Extra</summary><div id="toolSelectionContainer"></div></details>`;
+        traitsHtml += `<details class="race-trait feature-block needs-selection incomplete" id="toolTrait"><summary>Strumenti Extra</summary><div id="toolSelectionContainer"></div></details>`;
       }
 
       // Variant feature choices
       if (raceData.variant_feature_choices) {
-        traitsHtml += `<details class="race-trait needs-selection incomplete" id="variantFeatureTrait"><summary>Variant Feature</summary><div id="variantFeatureSelectionContainer"></div><div id="variantExtraContainer"></div></details>`;
+        traitsHtml += `<details class="race-trait feature-block needs-selection incomplete" id="variantFeatureTrait"><summary>Variant Feature</summary><div id="variantFeatureSelectionContainer"></div><div id="variantExtraContainer"></div></details>`;
       }
 
       // Ancestry placeholder
-      traitsHtml += `<details class="race-trait needs-selection incomplete hidden" id="ancestryTrait"><summary>Ancestry</summary><div id="ancestrySelectionContainer"></div></details>`;
+      traitsHtml += `<details class="race-trait feature-block needs-selection incomplete hidden" id="ancestryTrait"><summary>Ancestry</summary><div id="ancestrySelectionContainer"></div></details>`;
 
       // Tables (rawEntries)
       const tablesHtml = renderTables(raceData.rawEntries);
@@ -838,8 +864,11 @@ function displayRaceTraits() {
 
       if (raceTraitsDiv) {
         raceTraitsDiv.innerHTML = traitsHtml;
+        convertDetailsToAccordion(raceTraitsDiv);
+        raceTraitsDiv.classList.add('accordion');
         raceTraitsDiv.style.display = "block";
         initFeatureSelectionHandlers(raceTraitsDiv, saveFeatureSelection);
+        initializeAccordion(raceTraitsDiv);
         console.log("✅ Tratti della razza aggiornati con successo!");
       } else {
         console.error("❌ ERRORE: Il div dei tratti della razza non è stato trovato!");
@@ -973,25 +1002,33 @@ async function renderClassFeatures() {
     html += `<p>${data.description}</p>`;
   }
 
-  if (data.hit_die) {
-    html += `<p><strong>Hit Die:</strong> ${data.hit_die}</p>`;
+  // Build basic class info into collapsible sections
+  let basics = "";
+  if (data.hit_die || data.hp_at_1st_level || data.hp_at_higher_levels) {
+    basics += `<details class="feature-block"><summary>Hit Points</summary>`;
+    if (data.hit_die) {
+      basics += `<p><strong>Hit Die:</strong> ${data.hit_die}</p>`;
+    }
+    if (data.hp_at_1st_level) {
+      basics += `<p><strong>Hit Points at 1st Level:</strong> ${data.hp_at_1st_level}</p>`;
+    }
+    if (data.hp_at_higher_levels) {
+      basics += `<p><strong>Hit Points at Higher Levels:</strong> ${data.hp_at_higher_levels}</p>`;
+    }
+    basics += `</details>`;
   }
-  if (data.hp_at_1st_level) {
-    html += `<p><strong>Hit Points at 1st Level:</strong> ${data.hp_at_1st_level}</p>`;
-  }
-  if (data.hp_at_higher_levels) {
-    html += `<p><strong>Hit Points at Higher Levels:</strong> ${data.hp_at_higher_levels}</p>`;
-  }
+
+  let profs = "";
   if (data.saving_throws) {
-    html += `<p><strong>Saving Throw Proficiencies:</strong> ${data.saving_throws.join(", ")}</p>`;
+    profs += `<p><strong>Saving Throw Proficiencies:</strong> ${data.saving_throws.join(", ")}</p>`;
   }
   if (data.weapon_proficiencies) {
-    html += `<p><strong>Weapon Proficiencies:</strong> ${data.weapon_proficiencies.join(", ")}</p>`;
+    profs += `<p><strong>Weapon Proficiencies:</strong> ${data.weapon_proficiencies.join(", ")}</p>`;
   }
   let toolChoice = null;
   if (data.tool_proficiencies) {
     if (Array.isArray(data.tool_proficiencies)) {
-      html += `<p><strong>Tool Proficiencies:</strong> ${data.tool_proficiencies.join(", ")}</p>`;
+      profs += `<p><strong>Tool Proficiencies:</strong> ${data.tool_proficiencies.join(", ")}</p>`;
       data.tool_proficiencies.forEach(tp => {
         const lower = tp.toLowerCase();
         const wordMap = { one: 1, two: 2, three: 3 };
@@ -1013,29 +1050,34 @@ async function renderClassFeatures() {
     } else if (data.tool_proficiencies.options) {
       const fixed = data.tool_proficiencies.fixed || [];
       if (fixed.length) {
-        html += `<p><strong>Tool Proficiencies:</strong> ${fixed.join(", ")}</p>`;
+        profs += `<p><strong>Tool Proficiencies:</strong> ${fixed.join(", ")}</p>`;
       }
       if (data.tool_proficiencies.choose && data.tool_proficiencies.options.length) {
         toolChoice = {
           choose: data.tool_proficiencies.choose,
           options: data.tool_proficiencies.options
         };
-        html += `<p><strong>Tool Proficiencies:</strong> Choose ${toolChoice.choose} from ${toolChoice.options.join(", ")}</p>`;
+        profs += `<p><strong>Tool Proficiencies:</strong> Choose ${toolChoice.choose} from ${toolChoice.options.join(", ")}</p>`;
       }
     }
   }
   if (data.armor_proficiencies) {
-    html += `<p><strong>Armor Training:</strong> ${data.armor_proficiencies.join(", ")}</p>`;
+    profs += `<p><strong>Armor Training:</strong> ${data.armor_proficiencies.join(", ")}</p>`;
   }
   if (data.skill_proficiencies && data.skill_proficiencies.choose) {
-    html += `<p><strong>Skill Proficiencies:</strong> Choose ${data.skill_proficiencies.choose} from ${data.skill_proficiencies.options.join(", ")}</p>`;
+    profs += `<p><strong>Skill Proficiencies:</strong> Choose ${data.skill_proficiencies.choose} from ${data.skill_proficiencies.options.join(", ")}</p>`;
   }
   if (data.multiclassing && data.multiclassing.prerequisites) {
     const prereqs = Object.entries(data.multiclassing.prerequisites)
       .map(([ability, score]) => `${ability} ${score}`)
       .join(", ");
-    html += `<p><strong>Multiclassing Prerequisite:</strong> ${prereqs}</p>`;
+    profs += `<p><strong>Multiclassing Prerequisite:</strong> ${prereqs}</p>`;
   }
+  if (profs) {
+    basics += `<details class="feature-block"><summary>Proficiencies</summary>${profs}</details>`;
+  }
+
+  html += basics;
 
   if (data.subclasses && data.subclasses.length > 0) {
     let opts = `<option value="">Seleziona una sottoclasse</option>`;
@@ -1136,7 +1178,10 @@ async function renderClassFeatures() {
     html += `<p>Seleziona una sottoclasse per vedere i tratti.</p>`;
   }
   featuresDiv.innerHTML = html;
+  convertDetailsToAccordion(featuresDiv);
+  featuresDiv.classList.add('accordion');
   initFeatureSelectionHandlers(featuresDiv, saveFeatureSelection);
+  initializeAccordion(featuresDiv);
   const subSel = document.getElementById('subclassSelect');
   if (subSel) {
     subSel.addEventListener('change', renderClassFeatures);

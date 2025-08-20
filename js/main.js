@@ -1,12 +1,8 @@
 import { showStep, loadFormData } from './ui.js';
-import { convertRaceData } from './raceData.js';
-import { loadSpells, filterSpells } from './spellcasting.js';
-import { loadDropdownData, loadLanguages, handleError } from './common.js';
+import { loadDropdownData, loadLanguages } from './common.js';
 import {
-  gatherExtraSelections,
   updateSubclasses,
   renderClassFeatures,
-  openExtrasModal,
   displayRaceTraits,
   generateFinalJson,
   initializeValues,
@@ -77,7 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   const classSelectElem = document.getElementById('classSelect');
-  const subclassSelectElem = document.getElementById('subclassSelect');
   const levelSelectElem = document.getElementById('levelSelect');
   if (classSelectElem)
     classSelectElem.addEventListener('change', () => {
@@ -90,19 +85,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (confirmBtn) confirmBtn.style.display = 'inline-block';
       updateSubclasses();
     });
-  if (subclassSelectElem)
-    subclassSelectElem.addEventListener('change', async () => {
-      const selections = await renderClassFeatures();
-      if (classSelectionConfirmed && selections.length > 0) {
-        openExtrasModal(selections, 'class');
-      }
-    });
   if (levelSelectElem)
-    levelSelectElem.addEventListener('change', async () => {
-      const selections = await renderClassFeatures();
-      if (classSelectionConfirmed && selections.length > 0) {
-        openExtrasModal(selections, 'class');
-      }
+    levelSelectElem.addEventListener('change', () => {
+      renderClassFeatures();
     });
 
   initializeValues();
@@ -152,15 +137,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const className = classSelect.selectedOptions[0]?.text || '';
     const subclassLevels = { Cleric: 1, Warlock: 1, Sorcerer: 1 };
     const requiredLevel = subclassLevels[className] || 3;
-    if (subclassSelect.style.display !== 'none' && level >= requiredLevel && !subclassSelect.value) {
+    if (subclassSelect && level >= requiredLevel && !subclassSelect.value) {
       alert('⚠️ Seleziona una sottoclasse prima di procedere!');
       return;
     }
     classSelectionConfirmed = true;
-    const selections = await renderClassFeatures();
-    if (selections.length > 0) {
-      openExtrasModal(selections, 'class');
-    }
+    await renderClassFeatures();
+    const confirmBtn = document.getElementById('confirmClassSelection');
+    if (confirmBtn) confirmBtn.style.display = 'none';
   });
 
   document.getElementById('confirmRaceSelection').addEventListener('click', () => {
@@ -169,24 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('⚠️ Seleziona una razza prima di procedere!');
       return;
     }
-
-    fetch(selectedRace)
-      .then(response => response.json())
-      .then(data => {
-        const raceData = convertRaceData(data);
-        const selections = gatherExtraSelections(raceData, 'race');
-        if (raceData.spellcasting && raceData.spellcasting.spell_choices && raceData.spellcasting.spell_choices.type === 'filter') {
-          loadSpells(spellList => {
-            const filtered = filterSpells(spellList, raceData.spellcasting.spell_choices.filter).map(spell => spell.name);
-            selections.push({ name: 'Cantrips', description: 'Choose a spell.', selection: filtered, count: 1 });
-            openExtrasModal(selections);
-          });
-        } else {
-          openExtrasModal(selections);
-        }
-        document.getElementById('confirmRaceSelection').style.display = 'none';
-      })
-      .catch(error => handleError('Errore caricando i dati della razza: ' + error));
+    document.getElementById('confirmRaceSelection').style.display = 'none';
   });
 
 });

@@ -46,12 +46,12 @@ async function showClassModal(name, path) {
   } catch (e) {
     details.textContent = 'Errore caricando i dettagli della classe.';
   }
-  modal.classList.add('show');
+  modal.classList.remove('hidden');
 }
 
 function closeClassModal() {
   const modal = document.getElementById('classModal');
-  if (modal) modal.classList.remove('show');
+  if (modal) modal.classList.add('hidden');
 }
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -504,6 +504,7 @@ function openExtrasModal(selections, context = "race") {
   const containerId = context === "class" ? "classExtrasAccordion" : "raceExtraTraitsContainer";
   const container = document.getElementById(containerId);
   if (!container) return;
+  container.classList.remove('hidden');
 
   // Ensure categories exist in selectedData
   selections.forEach(selection => {
@@ -555,7 +556,6 @@ function openExtrasModal(selections, context = "race") {
   });
 
   initializeAccordion(container);
-  container.style.display = 'block';
   updateExtraSelectionsView();
 }
 
@@ -575,10 +575,10 @@ function updateExtraSelectionsView() {
 
     if (values.length > 0) {
       container.innerHTML = `<p><strong>${title}:</strong> ${values.join(", ")}</p>`;
-      container.style.display = "block";
+      container.classList.remove('hidden');
     } else {
       container.innerHTML = "";
-      container.style.display = "none";
+      container.classList.add('hidden');
     }
   }
 
@@ -594,7 +594,7 @@ function updateExtraSelectionsView() {
       updateContainer(id, title, key);
     } else {
       const container = document.getElementById(id);
-      if (container) container.style.display = "none";
+      if (container) container.classList.add('hidden');
     }
   });
 
@@ -693,7 +693,7 @@ function showExtraSelection() {
     closeModalEl.addEventListener("click", () => {
       console.log("🔄 Chiusura pop-up e aggiornamento UI...");
       const raceModal = document.getElementById("raceExtrasModal");
-      if (raceModal) raceModal.style.display = "none";
+      if (raceModal) raceModal.classList.add('hidden');
       sessionStorage.removeItem("popupOpened");
 
       // ✅ Salviamo le selezioni extra PRIMA di eventuali refresh
@@ -827,7 +827,7 @@ function displayRaceTraits() {
       }
 
       // Ancestry placeholder
-      traitsHtml += `<details class="race-trait needs-selection incomplete" id="ancestryTrait" style="display:none;"><summary>Ancestry</summary><div id="ancestrySelectionContainer"></div></details>`;
+      traitsHtml += `<details class="race-trait needs-selection incomplete hidden" id="ancestryTrait"><summary>Ancestry</summary><div id="ancestrySelectionContainer"></div></details>`;
 
       // Tables (rawEntries)
       const tablesHtml = renderTables(raceData.rawEntries);
@@ -857,7 +857,7 @@ function displayRaceTraits() {
       if (ancestryDetail) {
         const ancContainer = document.getElementById("ancestrySelectionContainer");
         if (ancContainer && ancContainer.innerHTML.trim() !== "") {
-          ancestryDetail.style.display = "block";
+          ancestryDetail.classList.remove('hidden');
         }
       }
 

@@ -78,19 +78,20 @@
       </select>
     </div>
       <!-- Step 2: Scelta della Classe e Sottoclasse -->
-      <div id="step2" class="step">
+      <div id="step2" class="step hidden">
         <h2>Step 2: Scelta della Classe e Sottoclasse</h2>
         <div id="classList" class="class-list"></div>
-        <label for="classSelect" style="display:none">Classe:</label>
-        <select id="classSelect" class="form-control" style="display:none">
+        <label for="classSelect" class="hidden">Classe:</label>
+        <select id="classSelect" class="form-control hidden">
           <option value="">Seleziona una classe</option>
         </select>
         <br>
         <div id="classFeatures"></div>
+        <div id="classExtrasAccordion" class="accordion hidden"></div>
         <button id="confirmClassSelection" class="btn btn-primary">Seleziona Classe</button>
       </div>
       <!-- Step 3: Scelta della Razza -->
-      <div id="step3" class="step">
+      <div id="step3" class="step hidden">
         <h2>Step 3: Scelta della Razza</h2>
         <label for="raceSelect">Razza:</label>
         <select id="raceSelect" class="form-control">
@@ -98,10 +99,11 @@
         </select>
         <br><br>
         <div id="raceTraits"></div>
+        <div id="raceExtraTraitsContainer" class="accordion hidden"></div>
         <button id="confirmRaceSelection" class="btn btn-primary">Seleziona Razza</button>
       </div>
       <!-- Step 4: Background -->
-      <div id="step4" class="step">
+      <div id="step4" class="step hidden">
         <h2>Step 4: Background</h2>
         <label for="backgroundSelect">Background:</label>
         <select id="backgroundSelect" class="form-control">
@@ -113,7 +115,7 @@
         <div id="backgroundFeat"></div>
       </div>
       <!-- Step 5: Equipaggiamento -->
-      <div id="step5" class="step">
+      <div id="step5" class="step hidden">
         <h2>Step 5: Equipaggiamento</h2>
         <div id="standardEquipment"></div>
         <div id="classEquipmentChoices"></div>
@@ -121,7 +123,7 @@
         <button id="confirmEquipment" class="btn btn-primary">Conferma Equipaggiamento</button>
       </div>
       <!-- Step 6: Sistema Point Buy -->
-      <div id="step6" class="step">
+      <div id="step6" class="step hidden">
         <h2>Step 6: Sistema Point Buy</h2>
         <p class="text-center"><strong>Total Points Remaining:</strong> <span id="pointsRemaining">27</span></p>
         <p class="text-center">Assegna i tuoi punti tra i punteggi di caratteristica (FOR, DES, COS, INT, SAG, CAR).</p>
@@ -243,7 +245,7 @@
         <input type="hidden" id="chaBackgroundTalent" value="0">
       </div>
       <!-- Step 7: Recap & Esportazione -->
-      <div id="step7" class="step">
+      <div id="step7" class="step hidden">
         <h2>Step 7: Recap & Esportazione</h2>
         <div id="finalRecap"></div>
         <button id="generateJson" class="btn btn-primary">Genera JSON</button>
@@ -251,7 +253,7 @@
   </div>
 
   <!-- Modal per i dettagli della classe -->
-  <div id="classModal" class="modal">
+  <div id="classModal" class="modal hidden">
     <div class="modal-content">
       <span id="closeClassModal" class="close">&times;</span>
       <div id="classModalDetails"></div>

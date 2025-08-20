@@ -30,29 +30,51 @@ export function filterSpells(spells, filterString) {
   });
 }
 
-export function handleSpellcasting(data, containerId) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
+export function handleSpellcasting(data, container) {
+  return new Promise(resolve => {
+    const target = typeof container === 'string' ? document.getElementById(container) : container;
+    if (!target || !data.spellcasting) { resolve(); return; }
 
-  container.innerHTML = '';
-
-  if (data.spellcasting) {
     console.log(`🔍 JSON Spellcasting per ${data.name}:`, data.spellcasting);
 
     if (data.spellcasting.fixed_spell) {
-      container.innerHTML += `<p><strong>✨ Assigned spell:</strong> ${data.spellcasting.fixed_spell}</p>`;
+      const p = document.createElement('p');
+      p.innerHTML = `<strong>✨ Assigned spell:</strong> ${data.spellcasting.fixed_spell}`;
+      target.appendChild(p);
     }
+
+    const finish = () => {
+      if (data.spellcasting.ability_choices && Array.isArray(data.spellcasting.ability_choices)) {
+        console.log(`🧙‍♂️ Checking casting ability for ${data.name}:`, data.spellcasting.ability_choices);
+        if (data.spellcasting.ability_choices.length > 1) {
+          const abilityOptions = data.spellcasting.ability_choices
+            .map(a => `<option value="${a.toUpperCase()}">${a.toUpperCase()}</option>`)
+            .join('');
+          const wrapper = document.createElement('div');
+          wrapper.innerHTML = `
+            <p><strong>🧠 Select the casting ability:</strong></p>
+            <select id="castingAbility">
+              <option value="">Select...</option>${abilityOptions}
+            </select>`;
+          target.appendChild(wrapper);
+        }
+      }
+      resolve();
+    };
 
     if (data.spellcasting.spell_choices) {
       if (data.spellcasting.spell_choices.type === 'fixed_list') {
         const options = data.spellcasting.spell_choices.options
           .map(spell => `<option value="${spell}">${spell}</option>`)
           .join('');
-        container.innerHTML += `
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = `
           <p><strong>🔮 Choose a spell:</strong></p>
           <select id="spellSelection">
             <option value="">Select...</option>${options}
           </select>`;
+        target.appendChild(wrapper);
+        finish();
       } else if (data.spellcasting.spell_choices.type === 'filter') {
         const filterParts = data.spellcasting.spell_choices.filter.split('|');
         const spellLevel = filterParts.find(part => part.startsWith('level='))?.split('=')[1];
@@ -64,35 +86,30 @@ export function handleSpellcasting(data, containerId) {
               .filter(spell => parseInt(spell.level) === parseInt(spellLevel) && spell.spell_list.includes(spellClass))
               .map(spell => `<option value="${spell.name}">${spell.name}</option>`)
               .join('');
-
+            const wrapper = document.createElement('div');
             if (filteredSpells) {
-              container.innerHTML += `
+              wrapper.innerHTML = `
                 <p><strong>🔮 Choose a ${spellClass} Cantrip:</strong></p>
                 <select id="spellSelection">
                   <option value="">Select...</option>${filteredSpells}
                 </select>`;
             } else {
-              container.innerHTML += `<p><strong>⚠️ No Cantrip available for ${spellClass}.</strong></p>`;
+              wrapper.innerHTML = `<p><strong>⚠️ No Cantrip available for ${spellClass}.</strong></p>`;
             }
+            target.appendChild(wrapper);
+            finish();
           });
         } else {
-          container.innerHTML += `<p><strong>⚠️ Error: Spell filter is not valid for this race.</strong></p>`;
+          const p = document.createElement('p');
+          p.innerHTML = `<strong>⚠️ Error: Spell filter is not valid for this race.</strong>`;
+          target.appendChild(p);
+          finish();
         }
+      } else {
+        finish();
       }
+    } else {
+      finish();
     }
-
-    if (data.spellcasting.ability_choices && Array.isArray(data.spellcasting.ability_choices)) {
-      console.log(`🧙‍♂️ Checking casting ability for ${data.name}:`, data.spellcasting.ability_choices);
-      if (data.spellcasting.ability_choices.length > 1) {
-        const abilityOptions = data.spellcasting.ability_choices
-          .map(a => `<option value="${a.toUpperCase()}">${a.toUpperCase()}</option>`)
-          .join('');
-        container.innerHTML += `
-          <p><strong>🧠 Select the casting ability:</strong></p>
-          <select id="castingAbility">
-            <option value="">Select...</option>${abilityOptions}
-          </select>`;
-      }
-    }
-  }
+  });
 }

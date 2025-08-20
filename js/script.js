@@ -1450,6 +1450,8 @@ export {
   gatherExtraSelections,
   gatherRaceTraitSelections,
   initFeatureSelectionHandlers,
+  convertDetailsToAccordion,
+  initializeAccordion,
   updateSubclasses,
   renderClassFeatures,
   openExtrasModal,

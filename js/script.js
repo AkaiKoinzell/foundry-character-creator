@@ -195,53 +195,103 @@ function handleExtraLanguages(data, containerId) {
 
 function handleExtraSkills(data, containerId) {
   if (data.skill_choices) {
-    const skillOptions = JSON.stringify(data.skill_choices.options);
     const skillContainer = document.createElement("div");
-const title = document.createElement("h4");
-title.textContent = "Skill Extra";
-skillContainer.appendChild(title);
+    const title = document.createElement("h4");
+    title.textContent = "Skill Extra";
+    skillContainer.appendChild(title);
 
-for (let i = 0; i < data.skill_choices.number; i++) {
-  const select = document.createElement("select");
-  select.classList.add("skillChoice");
-  select.id = `skillChoice${i}`;
-  select.dataset.options = JSON.stringify(data.skill_choices.options);
-  
-  const defaultOption = document.createElement("option");
-  defaultOption.value = "";
-  defaultOption.textContent = "Seleziona...";
-  select.appendChild(defaultOption);
-  
-  data.skill_choices.options.forEach(skill => {
-    const option = document.createElement("option");
-    option.value = skill;
-    option.textContent = skill;
-    select.appendChild(option);
-  });
+    const selects = [];
+    for (let i = 0; i < data.skill_choices.number; i++) {
+      const select = document.createElement("select");
+      select.classList.add("skillChoice");
+      select.id = `skillChoice${i}`;
+      select.dataset.options = JSON.stringify(data.skill_choices.options);
 
-  skillContainer.appendChild(select);
-}
+      const defaultOption = document.createElement("option");
+      defaultOption.value = "";
+      defaultOption.textContent = "Seleziona...";
+      select.appendChild(defaultOption);
 
-const container = document.getElementById(containerId);
-if (container) container.appendChild(skillContainer);
+      data.skill_choices.options.forEach(skill => {
+        const option = document.createElement("option");
+        option.value = skill;
+        option.textContent = skill;
+        select.appendChild(option);
+      });
+
+      skillContainer.appendChild(select);
+      selects.push(select);
+    }
+
+    const update = () => {
+      const chosen = new Set(selects.map(s => s.value).filter(Boolean));
+      selects.forEach(sel => {
+        const opts = JSON.parse(sel.dataset.options);
+        const current = sel.value;
+        sel.innerHTML = `<option value="">Seleziona...</option>` +
+          opts.map(o => `<option value="${o}" ${chosen.has(o) && o !== current ? 'disabled' : ''}>${o}</option>`).join('');
+        sel.value = current;
+      });
+    };
+    selects.forEach(sel => sel.addEventListener('change', update));
+    update();
+
+    const container = document.getElementById(containerId);
+    if (container) container.appendChild(skillContainer);
   }
 }
 
 function handleExtraTools(data, containerId) {
   if (data.tool_choices) {
-    const toolOptions = JSON.stringify(data.tool_choices.options);
-    let html = `<h4>Tool Extra</h4>`;
-    for (let i = 0; i < data.tool_choices.number; i++) {
-      html += `<select class="toolChoice" id="toolChoice${i}" data-options='${toolOptions}'>
-                  <option value="">Seleziona...</option>`;
-      html += data.tool_choices.options.map(t => `<option value="${t}">${t}</option>`).join("");
-      html += `</select>`;
-    }
     const container = document.getElementById(containerId);
-    if (container) container.innerHTML = html;
+    const toolDiv = document.createElement('div');
+    const title = document.createElement('h4');
+    title.textContent = 'Tool Extra';
+    toolDiv.appendChild(title);
+
+    const selects = [];
+    for (let i = 0; i < data.tool_choices.number; i++) {
+      const select = document.createElement('select');
+      select.classList.add('toolChoice');
+      select.id = `toolChoice${i}`;
+      select.dataset.options = JSON.stringify(data.tool_choices.options);
+
+      const defaultOption = document.createElement('option');
+      defaultOption.value = '';
+      defaultOption.textContent = 'Seleziona...';
+      select.appendChild(defaultOption);
+
+      data.tool_choices.options.forEach(tool => {
+        const option = document.createElement('option');
+        option.value = tool;
+        option.textContent = tool;
+        select.appendChild(option);
+      });
+
+      toolDiv.appendChild(select);
+      selects.push(select);
+    }
+
+    const update = () => {
+      const chosen = new Set(selects.map(s => s.value).filter(Boolean));
+      selects.forEach(sel => {
+        const opts = JSON.parse(sel.dataset.options);
+        const current = sel.value;
+        sel.innerHTML = `<option value="">Seleziona...</option>` +
+          opts.map(o => `<option value="${o}" ${chosen.has(o) && o !== current ? 'disabled' : ''}>${o}</option>`).join('');
+        sel.value = current;
+      });
+    };
+    selects.forEach(sel => sel.addEventListener('change', update));
+    update();
+
+    if (container) {
+      container.innerHTML = '';
+      container.appendChild(toolDiv);
+    }
   } else {
     const container = document.getElementById(containerId);
-    if (container) container.innerHTML = "";
+    if (container) container.innerHTML = '';
   }
 }
 
@@ -371,6 +421,33 @@ function getTakenProficiencies(type) {
   if (window.backgroundData) {
     const bgMap = { skills: "skills", tools: "tools", languages: "languages" };
     (window.backgroundData[bgMap[type]] || []).forEach(v => taken.add(v));
+  }
+
+  // Include fixed proficiencies granted by the currently selected class
+  if (window.currentClassData) {
+    if (type === 'tools') {
+      const tp = window.currentClassData.tool_proficiencies;
+      if (Array.isArray(tp)) {
+        tp.forEach(t => {
+          const lower = t.toLowerCase();
+          if (!lower.includes('of your choice') && !lower.includes(' or ')) {
+            taken.add(t);
+          }
+        });
+      } else if (tp && Array.isArray(tp.fixed)) {
+        tp.fixed.forEach(t => taken.add(t));
+      }
+    } else if (type === 'skills') {
+      const sp = window.currentClassData.skill_proficiencies;
+      if (sp && Array.isArray(sp.fixed)) {
+        sp.fixed.forEach(s => taken.add(s));
+      }
+    } else if (type === 'languages') {
+      const lp = window.currentClassData.language_proficiencies;
+      if (lp && Array.isArray(lp.fixed)) {
+        lp.fixed.forEach(l => taken.add(l));
+      }
+    }
   }
 
   return Array.from(taken);
@@ -1361,6 +1438,7 @@ async function renderClassFeatures() {
       targetDetail.appendChild(desc);
     }
     const options = choice.options || choice.selection || [];
+    const selects = [];
     for (let i = 0; i < (choice.count || 1); i++) {
       const saved = choice.selected?.[i] || selectedData[featureKey]?.[i] || '';
       const label = document.createElement('label');
@@ -1368,6 +1446,7 @@ async function renderClassFeatures() {
       const select = document.createElement('select');
       select.dataset.feature = featureKey;
       select.dataset.index = i;
+      select.dataset.options = JSON.stringify(options);
       const optDef = document.createElement('option');
       optDef.value = '';
       optDef.textContent = 'Seleziona...';
@@ -1376,12 +1455,26 @@ async function renderClassFeatures() {
         const option = document.createElement('option');
         option.value = opt;
         option.textContent = opt;
-        if (saved === opt) option.selected = true;
         select.appendChild(option);
       });
+      if (saved) select.value = saved;
       label.appendChild(select);
       targetDetail.appendChild(label);
+      selects.push(select);
     }
+
+    const update = () => {
+      const chosen = new Set(selects.map(s => s.value).filter(Boolean));
+      selects.forEach(sel => {
+        const opts = JSON.parse(sel.dataset.options);
+        const current = sel.value;
+        sel.innerHTML = `<option value="">Seleziona...</option>` +
+          opts.map(o => `<option value="${o}" ${chosen.has(o) && o !== current ? 'disabled' : ''}>${o}</option>`).join('');
+        sel.value = current;
+      });
+    };
+    selects.forEach(sel => sel.addEventListener('change', update));
+    update();
   });
 
   convertDetailsToAccordion(featuresDiv);

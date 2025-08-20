@@ -88,11 +88,12 @@
       <!-- Step 2: Scelta della Classe e Sottoclasse -->
       <div id="step2" class="step">
         <h2>Step 2: Scelta della Classe e Sottoclasse</h2>
-        <label for="classSelect">Classe:</label>
-        <select id="classSelect" class="form-control">
+        <div id="classList" class="class-list"></div>
+        <label for="classSelect" style="display:none">Classe:</label>
+        <select id="classSelect" class="form-control" style="display:none">
           <option value="">Seleziona una classe</option>
         </select>
-        <br><br>
+        <br>
         <label for="subclassSelect">Sottoclasse:</label>
         <select id="subclassSelect" class="form-control">
           <option value="">Seleziona una sottoclasse</option>
@@ -263,6 +264,15 @@
         <div id="finalRecap"></div>
         <button id="generateJson" class="btn btn-primary">Genera JSON</button>
       </div>
+  </div>
+
+  <!-- Modal per i dettagli della classe -->
+  <div id="classModal" class="modal">
+    <div class="modal-content">
+      <span id="closeClassModal" class="close">&times;</span>
+      <div id="classModalDetails"></div>
+      <button id="addClassButton" class="btn btn-primary">Aggiungi Classe</button>
+    </div>
   </div>
 </body>
 </html>

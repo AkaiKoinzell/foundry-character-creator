@@ -1,6 +1,6 @@
 import { getSelectedData, setSelectedData, saveSelectedData } from './state.js';
 import { showStep } from './ui.js';
-import { displayRaceTraits, renderClassFeatures, getTakenProficiencies, initializeAccordion } from './script.js';
+import { displayRaceTraits, renderClassFeatures, getTakenSelections, initializeAccordion } from './script.js';
 import {
   getExtraSelections,
   setExtraSelections,
@@ -153,8 +153,9 @@ export function updateExtraSelectionsView() {
       Languages: 'languages',
       'Skill Proficiency': 'skills',
       'Tool Proficiency': 'tools',
+      Cantrips: 'cantrips',
     };
-    const taken = getTakenProficiencies(typeLookup[categoryKey] || '');
+    const taken = getTakenSelections(typeLookup[categoryKey] || '');
     const selectedArray = (selectedData[categoryKey] || []).filter(v => v);
     const selectedLower = selectedArray.map(v => v.toLowerCase());
     const selectedValues = new Set(selectedLower);

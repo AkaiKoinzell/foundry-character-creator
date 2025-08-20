@@ -12,6 +12,10 @@ import { buildChoiceSelectors } from './selectionUtils.js';
 let featPathIndex = {};
 let currentFeatData = null;
 
+function saveBackgroundData() {
+  sessionStorage.setItem('backgroundData', JSON.stringify(window.backgroundData));
+}
+
 function makeAccordion(div) {
   convertDetailsToAccordion(div);
   div.classList.add('accordion');
@@ -49,16 +53,21 @@ function applyFeatAbilityChoices() {
 function renderDuplicateSelectors(type, detailsEl, baseList, allOptions) {
   const existing = detailsEl.querySelector(`.duplicate-${type}-choices`);
   if (existing) existing.remove();
+  // Evaluate conflicts before background proficiencies are applied
+  backgroundData[type] = [];
   const { taken, conflicts } = getTakenProficiencies(type, baseList);
   const duplicates = conflicts;
   if (duplicates.length === 0) {
     detailsEl.classList.remove('needs-selection', 'incomplete');
     initFeatureSelectionHandlers(detailsEl.parentElement);
     backgroundData[type] = baseList.slice();
+    saveBackgroundData();
     return;
   }
   const base = baseList.filter(s => !conflicts.includes(s));
   const opts = allOptions.filter(o => !taken.has(o.toLowerCase()));
+  backgroundData[type] = base;
+  saveBackgroundData();
   const dupDiv = document.createElement('div');
   dupDiv.className = `duplicate-${type}-choices`;
   const typeMap = {
@@ -75,6 +84,7 @@ function renderDuplicateSelectors(type, detailsEl, baseList, allOptions) {
       .map(s => s.value)
       .filter(Boolean);
     backgroundData[type] = base.concat(chosen);
+    saveBackgroundData();
     if (chosen.length === duplicates.length) {
       renderDuplicateSelectors(type, detailsEl, backgroundData[type], allOptions);
       return;
@@ -91,7 +101,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   const step = document.getElementById("step4");
   if (!step) return;
 
-  window.backgroundData = { name: "", skills: [], tools: [], languages: [], feat: "" };
+  const stored = sessionStorage.getItem('backgroundData');
+  window.backgroundData = stored
+    ? JSON.parse(stored)
+    : { name: "", skills: [], tools: [], languages: [], feat: "" };
+
+  saveBackgroundData();
 
   loadDropdownData("data/backgrounds.json", "backgroundSelect");
   try {
@@ -111,6 +126,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (!res.ok) throw new Error('Network response was not ok');
       const data = await res.json();
       backgroundData.name = data.name;
+      saveBackgroundData();
 
       const skillDiv = document.getElementById("backgroundSkills");
       skillDiv.innerHTML = "";
@@ -264,6 +280,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       featDiv.innerHTML = "";
       backgroundData.feat = "";
       currentFeatData = null;
+      saveBackgroundData();
       const featDetails = document.createElement("details");
       featDetails.className = "feature-block";
       featDetails.innerHTML = "<summary>Talento</summary>";
@@ -283,6 +300,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           currentFeatData = null;
           abilDiv.innerHTML = "";
           backgroundData.feat = select.value || "";
+          saveBackgroundData();
           resetBackgroundTalentFields();
           if (!select.value || !featPathIndex[select.value]) {
             updateFinalScores();
@@ -321,6 +339,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       featDiv.appendChild(featDetails);
       initFeatureSelectionHandlers(featDiv);
       makeAccordion(featDiv);
+      saveBackgroundData();
     } catch (err) {
       handleError(`Errore caricando il background: ${err}`);
     }

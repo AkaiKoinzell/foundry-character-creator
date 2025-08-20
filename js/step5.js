@@ -1,3 +1,4 @@
+import { getSelectedData, saveSelectedData } from './state.js';
 // Step 5: Equipment selection
 let equipmentData = null;
 
@@ -111,10 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const step = document.getElementById('step5');
   if (!step) return;
 
-  if (!window.selectedData) {
-    window.selectedData = {};
-  }
-
   fetch('data/equipment.json')
     .then(r => r.json())
     .then(data => {
@@ -140,12 +137,13 @@ document.addEventListener('DOMContentLoaded', () => {
       document
         .querySelectorAll('#equipmentUpgrades input:checked')
         .forEach(el => upgrades.push(el.value));
-      window.selectedData.equipment = {
+      const selectedData = getSelectedData();
+      selectedData.equipment = {
         standard: equipmentData.standard,
         class: chosen,
         upgrades: upgrades
       };
-      sessionStorage.setItem('selectedData', JSON.stringify(window.selectedData));
+      saveSelectedData();
     });
   }
 });

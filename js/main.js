@@ -9,6 +9,7 @@ import {
   setAvailableLanguages,
   renderFinalRecap
 } from './script.js';
+import { getSelectedData, resetSelectedData } from './state.js';
 import './step4.js';
 import './step5.js';
 import './step7.js';
@@ -127,10 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (classSelectElem)
     classSelectElem.addEventListener('change', () => {
       classSelectionConfirmed = false;
-      if (window.selectedData) {
-        Object.keys(window.selectedData).forEach(k => delete window.selectedData[k]);
-        sessionStorage.setItem('selectedData', JSON.stringify(window.selectedData));
-      }
+      resetSelectedData();
       const confirmBtn = document.getElementById('confirmClassSelection');
       if (confirmBtn) confirmBtn.style.display = 'inline-block';
       updateSubclasses();
@@ -238,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('confirmEquipment').addEventListener('click', () => {
     closeEquipmentModal();
     const list = document.getElementById('equipmentList');
-    const eq = window.selectedData?.equipment;
+    const eq = getSelectedData().equipment;
     if (list && eq) {
       const items = [...(eq.standard || []), ...(eq.class || []), ...(eq.upgrades || [])];
       list.innerHTML = items.length

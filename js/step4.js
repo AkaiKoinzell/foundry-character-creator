@@ -49,18 +49,16 @@ function applyFeatAbilityChoices() {
 function renderDuplicateSelectors(type, detailsEl, baseList, allOptions) {
   const existing = detailsEl.querySelector(`.duplicate-${type}-choices`);
   if (existing) existing.remove();
-  const taken = getTakenProficiencies(type);
-  const duplicates = baseList.filter(s => taken.has(s.toLowerCase()));
+  const { taken, conflicts } = getTakenProficiencies(type, baseList);
+  const duplicates = conflicts;
   if (duplicates.length === 0) {
     detailsEl.classList.remove('needs-selection', 'incomplete');
     initFeatureSelectionHandlers(detailsEl.parentElement);
     backgroundData[type] = baseList.slice();
     return;
   }
-  const base = baseList.filter(s => !taken.has(s.toLowerCase()));
-  const opts = allOptions.filter(
-    o => !taken.has(o.toLowerCase()) && !base.includes(o)
-  );
+  const base = baseList.filter(s => !conflicts.includes(s));
+  const opts = allOptions.filter(o => !taken.has(o.toLowerCase()));
   const dupDiv = document.createElement('div');
   dupDiv.className = `duplicate-${type}-choices`;
   const typeMap = {
@@ -77,6 +75,10 @@ function renderDuplicateSelectors(type, detailsEl, baseList, allOptions) {
       .map(s => s.value)
       .filter(Boolean);
     backgroundData[type] = base.concat(chosen);
+    if (chosen.length === duplicates.length) {
+      renderDuplicateSelectors(type, detailsEl, backgroundData[type], allOptions);
+      return;
+    }
     detailsEl.classList.toggle('incomplete', chosen.length < duplicates.length);
   };
   buildChoiceSelectors(dupDiv, duplicates.length, opts, choiceClass, update);

@@ -40,7 +40,12 @@ function normalizeSpellName(name) {
  * @param {string} type - One of 'skills', 'tools', 'languages', or 'cantrips'.
  * @returns {Set<string>} Set of taken selections of the given type (lowercase).
  */
-function getTakenSelections(type) {
+function getTakenSelections(type, opts = {}) {
+  const {
+    excludeRace = false,
+    excludeClass = false,
+    excludeBackground = false,
+  } = opts;
   const selectedMap = {
     skills: 'Skill Proficiency',
     tools: 'Tool Proficiency',
@@ -54,7 +59,7 @@ function getTakenSelections(type) {
     .filter(v => v)
     .forEach(v => taken.add(v.toLowerCase()));
 
-  if (window.backgroundData) {
+  if (!excludeBackground && window.backgroundData) {
     const bgMap = {
       skills: 'skills',
       tools: 'tools',
@@ -70,7 +75,7 @@ function getTakenSelections(type) {
   }
 
   // Include fixed selections granted by the currently selected class
-  if (window.currentClassData) {
+  if (!excludeClass && window.currentClassData) {
     if (type === 'tools') {
       const tp = window.currentClassData.tool_proficiencies;
       if (Array.isArray(tp)) {
@@ -107,7 +112,7 @@ function getTakenSelections(type) {
   }
 
   // Include fixed selections granted by the currently selected race
-  if (window.currentRaceData) {
+  if (!excludeRace && window.currentRaceData) {
     if (type === 'languages') {
       const langs = window.currentRaceData.languages;
       if (langs && Array.isArray(langs.fixed)) {
@@ -140,8 +145,8 @@ function getTakenSelections(type) {
 }
 
 // Backwards compatibility for existing imports and conflict detection
-function getTakenProficiencies(type, incoming) {
-  const originalTaken = getTakenSelections(type);
+function getTakenProficiencies(type, incoming, opts = {}) {
+  const originalTaken = getTakenSelections(type, opts);
   if (!incoming) return originalTaken;
 
   const lowerIncoming = incoming.map(i => i.toLowerCase());

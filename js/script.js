@@ -1,7 +1,7 @@
 import { handleError, renderTables } from './common.js';
 import { loadSpells, filterSpells, handleSpellcasting } from './spellcasting.js';
 import { convertRaceData } from './raceData.js';
-import { ARTISAN_TOOLS, MUSICAL_INSTRUMENTS, ALL_TOOLS, ALL_LANGUAGES, ALL_SKILLS } from './data/proficiencies.js';
+import { ARTISAN_TOOLS, MUSICAL_INSTRUMENTS, ALL_TOOLS, ALL_LANGUAGES, ALL_SKILLS, filterAvailableProficiencies } from './data/proficiencies.js';
 import { getSelectedData, setSelectedData, saveSelectedData } from './state.js';
 import { createHeader, createParagraph, createList } from './domHelpers.js';
 import { handleVariantExtraSelections, handleVariantFeatureChoices } from './variantFeatures.js';
@@ -133,14 +133,8 @@ function gatherExtraSelections(data, context, level = 1) {
   if (context === "race") {
     if (data.languages && (data.languages.fixed.length > 0 || data.languages.choice > 0)) {
       const fixedLangs = new Set(data.languages.fixed.map(l => l.toLowerCase()));
-      let availableLangs = ALL_LANGUAGES
-        .filter(lang => !fixedLangs.has(lang.toLowerCase()))
-        .filter(lang => !takenLangs.has(lang.toLowerCase()));
-      let note = '';
-      if (availableLangs.length === 0) {
-        availableLangs = ALL_LANGUAGES.filter(lang => !takenLangs.has(lang.toLowerCase()));
-        note = ' (tutte le lingue disponibili)';
-      }
+      const baseLangs = ALL_LANGUAGES.filter(lang => !fixedLangs.has(lang.toLowerCase()));
+      const { options: availableLangs, note } = filterAvailableProficiencies('languages', baseLangs, takenLangs);
       const fixedDesc = data.languages.fixed.length
         ? `<strong>Lingue Concesse:</strong> ${data.languages.fixed.join(', ')}`
         : '';
@@ -152,12 +146,7 @@ function gatherExtraSelections(data, context, level = 1) {
       });
     }
     if (data.skill_choices) {
-      let filteredSkills = data.skill_choices.options.filter(opt => !takenSkills.has(opt.toLowerCase()));
-      let note = '';
-      if (filteredSkills.length === 0) {
-        filteredSkills = ALL_SKILLS.filter(opt => !takenSkills.has(opt.toLowerCase()));
-        note = ' (tutte le abilità disponibili)';
-      }
+      const { options: filteredSkills, note } = filterAvailableProficiencies('skills', data.skill_choices.options, takenSkills);
       if (filteredSkills.length > 0) {
         selections.push({
           name: "Skill Proficiency",
@@ -168,12 +157,7 @@ function gatherExtraSelections(data, context, level = 1) {
       }
     }
     if (data.tool_choices) {
-      let filteredTools = data.tool_choices.options.filter(opt => !takenTools.has(opt.toLowerCase()));
-      let note = '';
-      if (filteredTools.length === 0) {
-        filteredTools = ALL_TOOLS.filter(opt => !takenTools.has(opt.toLowerCase()));
-        note = ' (tutti gli strumenti disponibili)';
-      }
+      const { options: filteredTools, note } = filterAvailableProficiencies('tools', data.tool_choices.options, takenTools);
       if (filteredTools.length > 0) {
         selections.push({
           name: "Tool Proficiency",
@@ -189,27 +173,18 @@ function gatherExtraSelections(data, context, level = 1) {
       if (!choice.level || parseInt(choice.level) <= level) {
         const key = extraCategoryAliases[choice.name] || choice.name;
         const selected = (selectedData[key] || []).filter(v => v);
-        const selectedLower = selected.map(v => v.toLowerCase());
         let opts = choice.selection || choice.options || [];
         let note = '';
-        if (key === "Languages") {
-          opts = opts.filter(o => !takenLangs.has(o.toLowerCase()) || selectedLower.includes(o.toLowerCase()));
-          if (opts.length === 0) {
-            opts = ALL_LANGUAGES.filter(o => !takenLangs.has(o.toLowerCase()) || selectedLower.includes(o.toLowerCase()));
-            note = ' (tutte le lingue disponibili)';
-          }
-        } else if (key === "Skill Proficiency") {
-          opts = opts.filter(o => !takenSkills.has(o.toLowerCase()) || selectedLower.includes(o.toLowerCase()));
-          if (opts.length === 0) {
-            opts = ALL_SKILLS.filter(o => !takenSkills.has(o.toLowerCase()) || selectedLower.includes(o.toLowerCase()));
-            note = ' (tutte le abilità disponibili)';
-          }
-        } else if (key === "Tool Proficiency") {
-          opts = opts.filter(o => !takenTools.has(o.toLowerCase()) || selectedLower.includes(o.toLowerCase()));
-          if (opts.length === 0) {
-            opts = ALL_TOOLS.filter(o => !takenTools.has(o.toLowerCase()) || selectedLower.includes(o.toLowerCase()));
-            note = ' (tutti gli strumenti disponibili)';
-          }
+        const map = {
+          Languages: { type: 'languages', taken: takenLangs },
+          'Skill Proficiency': { type: 'skills', taken: takenSkills },
+          'Tool Proficiency': { type: 'tools', taken: takenTools }
+        };
+        const info = map[key];
+        if (info) {
+          const res = filterAvailableProficiencies(info.type, opts, info.taken, selected);
+          opts = res.options;
+          note = res.note;
         }
         const desc = note ? ((choice.description || '') + note) : choice.description;
         selections.push({ ...choice, selection: opts, description: desc, selected });

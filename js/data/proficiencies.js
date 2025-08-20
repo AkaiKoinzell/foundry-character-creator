@@ -87,3 +87,40 @@ export const ALL_SKILLS = [
   "Stealth",
   "Survival",
 ];
+
+/**
+ * Filters available proficiencies, returning a note if none of the provided
+ * options remain. When no options are left, a full list minus taken entries is
+ * returned instead with a localized note.
+ * @param {string} type - 'languages', 'skills', or 'tools'.
+ * @param {string[]} options - Initial options to consider.
+ * @param {Set<string>} taken - Set of taken proficiencies (lowercase).
+ * @param {string[]} [selected=[]] - Already selected proficiencies to retain.
+ * @returns {{options: string[], note: string}}
+ */
+export function filterAvailableProficiencies(type, options, taken, selected = []) {
+  const ALL = {
+    languages: ALL_LANGUAGES,
+    skills: ALL_SKILLS,
+    tools: ALL_TOOLS,
+  };
+  const NOTES = {
+    languages: " (tutte le lingue disponibili)",
+    skills: " (tutte le abilità disponibili)",
+    tools: " (tutti gli strumenti disponibili)",
+  };
+
+  const selectedLower = selected.map(s => s.toLowerCase());
+  let filtered = options.filter(
+    o => !taken.has(o.toLowerCase()) || selectedLower.includes(o.toLowerCase())
+  );
+
+  if (filtered.length === 0) {
+    filtered = (ALL[type] || []).filter(
+      o => !taken.has(o.toLowerCase()) || selectedLower.includes(o.toLowerCase())
+    );
+    return { options: filtered, note: NOTES[type] || "" };
+  }
+
+  return { options: filtered, note: "" };
+}

@@ -198,6 +198,11 @@ th {
   background-color: var(--accent-hover);
 }
 
+.accordion-header:focus {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
 .accordion-header::after {
   content: '\25BA';
   transition: transform 0.3s ease;

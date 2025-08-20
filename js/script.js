@@ -450,11 +450,38 @@ function saveFeatureSelection(select) {
 
 function initializeAccordion(root) {
   if (!root) return;
-  root.querySelectorAll('.accordion-header').forEach(header => {
-    header.addEventListener('click', () => {
-      header.classList.toggle('active');
-      const content = header.nextElementSibling;
-      content.classList.toggle('show');
+
+  root.querySelectorAll('.accordion-header').forEach((header, index) => {
+    const content = header.nextElementSibling;
+
+    // Apply ARIA roles and relationships
+    header.setAttribute('role', 'button');
+    if (!header.hasAttribute('tabindex')) header.setAttribute('tabindex', '0');
+    header.setAttribute('aria-expanded', 'false');
+
+    if (content) {
+      const headerId = header.id || `accordion-header-${index}`;
+      header.id = headerId;
+      content.setAttribute('role', 'region');
+      content.setAttribute('aria-labelledby', headerId);
+    }
+
+    const toggleAccordion = () => {
+      const expanded = header.getAttribute('aria-expanded') === 'true';
+      header.setAttribute('aria-expanded', String(!expanded));
+      header.classList.toggle('active', !expanded);
+      if (content) {
+        content.classList.toggle('show', !expanded);
+      }
+      header.focus();
+    };
+
+    header.addEventListener('click', toggleAccordion);
+    header.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleAccordion();
+      }
     });
   });
 }

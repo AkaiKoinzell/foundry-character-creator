@@ -170,7 +170,7 @@ export async function displayRaceTraits() {
 
     const addSubstitutionSelectors = (type, fixedList, allOptions, featureKey, matcher) => {
       if (!fixedList || fixedList.length === 0) return;
-      const { taken, conflicts } = getTakenProficiencies(type, fixedList);
+      const { taken, conflicts } = getTakenProficiencies(type, fixedList, { excludeRace: true });
       if (!conflicts.length) return;
       let detail = Array.from(raceTraitsDiv.querySelectorAll('details'))
         .find(det => matcher.test(det.querySelector('summary')?.textContent || ''));

@@ -675,9 +675,8 @@ function updateExtraSelectionsView() {
   const summaryMap = extraModalContext === "class" ? {} : {
     "Languages": ["languageSelection", "Lingue Extra"],
     "Skill Proficiency": ["skillSelectionContainer", "Skill Proficiency"],
-    "Tool Proficiency": ["toolSelectionContainer", "Tool Proficiency"],
-    "Spellcasting": ["spellSelectionContainer", "Spellcasting"],
-    "Cantrips": ["spellSelectionContainer", "Cantrips"]
+    "Tool Proficiency": ["toolSelectionContainer", "Tool Proficiency"]
+    // Spellcasting selections are now integrated directly within trait details
   };
   Object.entries(summaryMap).forEach(([key, [id, title]]) => {
     if (selectedData[key] !== undefined) {
@@ -825,7 +824,6 @@ document.getElementById("raceSelect").addEventListener("change", () => {
   document.getElementById("languageSelection").innerHTML = "";
   document.getElementById("skillSelectionContainer").innerHTML = "";
   document.getElementById("toolSelectionContainer").innerHTML = "";
-  document.getElementById("spellSelectionContainer").innerHTML = "";
 
   displayRaceTraits(); // Ricarica i tratti della nuova razza
   document.getElementById("confirmRaceSelection").style.display = "inline-block";
@@ -876,9 +874,10 @@ async function displayRaceTraits() {
       }
 
       // Trait details
+      let cantripDetail = null;
       if (raceData.traits && raceData.traits.length > 0) {
         raceTraitsDiv.appendChild(createHeader('Tratti:', 4));
-        raceData.traits.forEach((trait, tIdx) => {
+        raceData.traits.forEach(trait => {
           const traitId = `trait-${trait.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
           const featureKey = trait.name;
           const details = document.createElement('details');
@@ -916,51 +915,66 @@ async function displayRaceTraits() {
               details.appendChild(label);
             });
           }
+          if (trait.name.toLowerCase().includes('cantrip')) {
+            cantripDetail = details;
+          }
           raceTraitsDiv.appendChild(details);
         });
       }
 
-      // Extra selections (languages, skills, tools)
+      // Extra selections (languages, skills, tools) merged into existing traits
       const extraSelections = gatherExtraSelections(raceData, 'race');
+      const detailMatchers = {
+        'Languages': /language/i,
+        'Skill Proficiency': /skill/i,
+        'Tool Proficiency': /tool/i
+      };
       extraSelections.forEach((choice, idx) => {
         const featureKey = extraCategoryAliases[choice.name] || choice.name;
-        const details = document.createElement('details');
-        details.className = 'race-trait feature-block';
-        details.id = `race-extra-${idx}`;
-        const summary = document.createElement('summary');
-        summary.textContent = choice.name;
-        details.appendChild(summary);
-        if (choice.description) {
+        let targetDetail = null;
+        const matcher = detailMatchers[choice.name];
+        if (matcher) {
+          targetDetail = Array.from(raceTraitsDiv.querySelectorAll('details'))
+            .find(det => matcher.test(det.querySelector('summary')?.textContent || ''));
+        }
+        if (!targetDetail) {
+          targetDetail = document.createElement('details');
+          targetDetail.className = 'race-trait feature-block';
+          targetDetail.id = `race-extra-${idx}`;
+          const summary = document.createElement('summary');
+          summary.textContent = choice.name;
+          targetDetail.appendChild(summary);
+          raceTraitsDiv.appendChild(targetDetail);
+        }
+        if (choice.description && !targetDetail.querySelector('.feature-desc')) {
           const desc = document.createElement('div');
           desc.className = 'feature-desc';
           desc.textContent = choice.description;
-          details.appendChild(desc);
+          targetDetail.appendChild(desc);
         }
         const options = choice.selection || [];
-        if (choice.count && choice.count > 0) {
-          for (let i = 0; i < choice.count; i++) {
-            const saved = selectedData[featureKey]?.[i] || '';
-            const label = document.createElement('label');
-            label.textContent = `${choice.name}${choice.count > 1 ? ' ' + (i + 1) : ''}: `;
-            const select = document.createElement('select');
-            select.dataset.feature = featureKey;
-            select.dataset.index = i;
-            const def = document.createElement('option');
-            def.value = '';
-            def.textContent = 'Seleziona...';
-            select.appendChild(def);
-            options.forEach(opt => {
-              const option = document.createElement('option');
-              option.value = opt;
-              option.textContent = opt;
-              if (saved === opt) option.selected = true;
-              select.appendChild(option);
-            });
-            label.appendChild(select);
-            details.appendChild(label);
-          }
+        const count = choice.count || 1;
+        for (let i = 0; i < count; i++) {
+          const saved = selectedData[featureKey]?.[i] || '';
+          const label = document.createElement('label');
+          label.textContent = `${choice.name}${count > 1 ? ' ' + (i + 1) : ''}: `;
+          const select = document.createElement('select');
+          select.dataset.feature = featureKey;
+          select.dataset.index = i;
+          const def = document.createElement('option');
+          def.value = '';
+          def.textContent = 'Seleziona...';
+          select.appendChild(def);
+          options.forEach(opt => {
+            const option = document.createElement('option');
+            option.value = opt;
+            option.textContent = opt;
+            if (saved === opt) option.selected = true;
+            select.appendChild(option);
+          });
+          label.appendChild(select);
+          targetDetail.appendChild(label);
         }
-        raceTraitsDiv.appendChild(details);
       });
 
       // Variant feature choices
@@ -1000,21 +1014,15 @@ async function displayRaceTraits() {
         raceTraitsDiv.appendChild(wrapper);
       }
 
-      // Spellcasting container
-      const spellContainer = document.createElement('div');
-      spellContainer.id = 'spellSelectionContainer';
-      raceTraitsDiv.appendChild(spellContainer);
+      await handleSpellcasting(raceData, cantripDetail);
+      handleVariantFeatureChoices(raceData);
+      handleExtraAncestry(raceData, 'ancestrySelectionContainer');
 
       convertDetailsToAccordion(raceTraitsDiv);
       raceTraitsDiv.classList.add('accordion');
       raceTraitsDiv.style.display = 'block';
       initFeatureSelectionHandlers(raceTraitsDiv, saveFeatureSelection);
       initializeAccordion(raceTraitsDiv);
-
-      // Render selection controls
-      handleSpellcasting(raceData, 'spellSelectionContainer');
-      handleVariantFeatureChoices(raceData);
-      handleExtraAncestry(raceData, 'ancestrySelectionContainer');
 
       const ancestryDetail = document.getElementById('ancestryTrait');
       if (ancestryDetail) {

@@ -26,6 +26,40 @@ const variantExtraMapping = {
   // Aggiungi altri mapping se necessario
 };
 
+// ==================== LISTE DI STRUMENTI ====================
+const ARTISAN_TOOLS = [
+  "Alchemist's Supplies",
+  "Brewer's Supplies",
+  "Calligrapher's Tools",
+  "Carpenter's Tools",
+  "Cartographer's Tools",
+  "Cobbler's Tools",
+  "Cook's Utensils",
+  "Glassblower's Tools",
+  "Jeweler's Tools",
+  "Leatherworker's Tools",
+  "Mason's Tools",
+  "Painter's Supplies",
+  "Potter's Tools",
+  "Smith's Tools",
+  "Tinker's Tools",
+  "Weaver's Tools",
+  "Woodcarver's Tools"
+];
+
+const MUSICAL_INSTRUMENTS = [
+  "Bagpipes",
+  "Drum",
+  "Dulcimer",
+  "Flute",
+  "Lute",
+  "Lyre",
+  "Horn",
+  "Pan Flute",
+  "Shawm",
+  "Viol"
+];
+
 // ==================== FUNZIONI PER LE VARIANT FEATURES ====================
 function updateVariantSkillOptions() {
   const allVariantSkillSelects = document.querySelectorAll(".variantSkillChoice");
@@ -942,8 +976,41 @@ async function renderClassFeatures() {
   if (data.weapon_proficiencies) {
     html += `<p><strong>Weapon Proficiencies:</strong> ${data.weapon_proficiencies.join(", ")}</p>`;
   }
+  let toolChoice = null;
   if (data.tool_proficiencies) {
-    html += `<p><strong>Tool Proficiencies:</strong> ${data.tool_proficiencies.join(", ")}</p>`;
+    if (Array.isArray(data.tool_proficiencies)) {
+      html += `<p><strong>Tool Proficiencies:</strong> ${data.tool_proficiencies.join(", ")}</p>`;
+      data.tool_proficiencies.forEach(tp => {
+        const lower = tp.toLowerCase();
+        const wordMap = { one: 1, two: 2, three: 3 };
+        let count = 1;
+        for (const word in wordMap) {
+          if (lower.includes(word)) {
+            count = wordMap[word];
+            break;
+          }
+        }
+        if (lower.includes("artisan's tools") && lower.includes("musical instrument")) {
+          toolChoice = { choose: count, options: [...ARTISAN_TOOLS, ...MUSICAL_INSTRUMENTS] };
+        } else if (lower.includes("musical instrument")) {
+          toolChoice = { choose: count, options: MUSICAL_INSTRUMENTS };
+        } else if (lower.includes("artisan's tools")) {
+          toolChoice = { choose: count, options: ARTISAN_TOOLS };
+        }
+      });
+    } else if (data.tool_proficiencies.options) {
+      const fixed = data.tool_proficiencies.fixed || [];
+      if (fixed.length) {
+        html += `<p><strong>Tool Proficiencies:</strong> ${fixed.join(", ")}</p>`;
+      }
+      if (data.tool_proficiencies.choose && data.tool_proficiencies.options.length) {
+        toolChoice = {
+          choose: data.tool_proficiencies.choose,
+          options: data.tool_proficiencies.options
+        };
+        html += `<p><strong>Tool Proficiencies:</strong> Choose ${toolChoice.choose} from ${toolChoice.options.join(", ")}</p>`;
+      }
+    }
   }
   if (data.armor_proficiencies) {
     html += `<p><strong>Armor Training:</strong> ${data.armor_proficiencies.join(", ")}</p>`;
@@ -1027,6 +1094,15 @@ async function renderClassFeatures() {
       description: `Choose ${data.skill_proficiencies.choose} from the class skill list`,
       count: data.skill_proficiencies.choose,
       selection: data.skill_proficiencies.options
+    });
+  }
+  if (toolChoice && !allChoices.some(c => c.name === 'Tool Proficiency')) {
+    allChoices.push({
+      level: 1,
+      name: 'Tool Proficiency',
+      description: `Choose ${toolChoice.choose} from the class tool list`,
+      count: toolChoice.choose,
+      selection: toolChoice.options
     });
   }
   const selections = gatherExtraSelections({ choices: allChoices }, "class", charLevel);

@@ -15,6 +15,8 @@ import './step7.js';
 
 let classSelectionConfirmed = false;
 let pendingClassPath = '';
+let pendingRacePath = '';
+let pendingBackgroundPath = '';
 
 async function renderClassList() {
   try {
@@ -32,6 +34,94 @@ async function renderClassList() {
   } catch (err) {
     console.error('Errore caricando le classi', err);
   }
+}
+
+async function renderRaceList() {
+  try {
+    const res = await fetch('data/races.json');
+    const data = await res.json();
+    const list = document.getElementById('raceList');
+    if (!list) return;
+    Object.entries(data.races).forEach(([name, path]) => {
+      const btn = document.createElement('button');
+      btn.className = 'btn btn-primary';
+      btn.textContent = name;
+      btn.addEventListener('click', () => showRaceModal(name, path));
+      list.appendChild(btn);
+    });
+  } catch (err) {
+    console.error('Errore caricando le razze', err);
+  }
+}
+
+async function showRaceModal(name, path) {
+  pendingRacePath = path;
+  const modal = document.getElementById('raceModal');
+  const details = document.getElementById('raceModalDetails');
+  if (!modal || !details) return;
+  try {
+    const res = await fetch(path);
+    const data = await res.json();
+    details.innerHTML = `<h3>${data.name}</h3>`;
+  } catch (e) {
+    details.textContent = 'Errore caricando i dettagli della razza.';
+  }
+  modal.classList.remove('hidden');
+}
+
+function closeRaceModal() {
+  const modal = document.getElementById('raceModal');
+  if (modal) modal.classList.add('hidden');
+}
+
+async function renderBackgroundList() {
+  try {
+    const res = await fetch('data/backgrounds.json');
+    const data = await res.json();
+    const list = document.getElementById('backgroundList');
+    if (!list) return;
+    Object.entries(data.backgrounds).forEach(([name, path]) => {
+      const btn = document.createElement('button');
+      btn.className = 'btn btn-primary';
+      btn.textContent = name;
+      btn.addEventListener('click', () => showBackgroundModal(name, path));
+      list.appendChild(btn);
+    });
+  } catch (err) {
+    console.error('Errore caricando i background', err);
+  }
+}
+
+async function showBackgroundModal(name, path) {
+  pendingBackgroundPath = path;
+  const modal = document.getElementById('backgroundModal');
+  const details = document.getElementById('backgroundModalDetails');
+  if (!modal || !details) return;
+  try {
+    const res = await fetch(path);
+    const data = await res.json();
+    const skills = data.skills ? `<p><strong>Abilità:</strong> ${data.skills.join(', ')}</p>` : '';
+    const tools = data.tools && data.tools.length ? `<p><strong>Strumenti:</strong> ${data.tools.join(', ')}</p>` : '';
+    details.innerHTML = `<h3>${data.name}</h3>${skills}${tools}`;
+  } catch (e) {
+    details.textContent = 'Errore caricando i dettagli del background.';
+  }
+  modal.classList.remove('hidden');
+}
+
+function closeBackgroundModal() {
+  const modal = document.getElementById('backgroundModal');
+  if (modal) modal.classList.add('hidden');
+}
+
+function openEquipmentModal() {
+  const modal = document.getElementById('equipmentModal');
+  if (modal) modal.classList.remove('hidden');
+}
+
+function closeEquipmentModal() {
+  const modal = document.getElementById('equipmentModal');
+  if (modal) modal.classList.add('hidden');
 }
 
 async function showClassModal(name, path) {
@@ -60,6 +150,8 @@ document.addEventListener('DOMContentLoaded', () => {
   loadDropdownData('data/races.json', 'raceSelect', 'races');
   loadDropdownData('data/classes.json', 'classSelect', 'classes');
   renderClassList();
+  renderRaceList();
+  renderBackgroundList();
   loadLanguages(langs => {
     setAvailableLanguages(langs);
   });
@@ -110,6 +202,9 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('generateJson').addEventListener('click', generateFinalJson);
 
   document.getElementById('closeClassModal').addEventListener('click', closeClassModal);
+  document.getElementById('closeRaceModal').addEventListener('click', closeRaceModal);
+  document.getElementById('closeBackgroundModal').addEventListener('click', closeBackgroundModal);
+  document.getElementById('closeEquipmentModal').addEventListener('click', closeEquipmentModal);
   document.getElementById('addClassButton').addEventListener('click', () => {
     const classSelect = document.getElementById('classSelect');
     if (classSelect) {
@@ -125,6 +220,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     closeClassModal();
   });
+
+  document.getElementById('addRaceButton').addEventListener('click', () => {
+    const raceSelect = document.getElementById('raceSelect');
+    if (raceSelect) {
+      raceSelect.value = pendingRacePath;
+      displayRaceTraits();
+      const confirmBtn = document.getElementById('confirmRaceSelection');
+      if (confirmBtn) confirmBtn.style.display = 'inline-block';
+    }
+    closeRaceModal();
+  });
+
+  document.getElementById('addBackgroundButton').addEventListener('click', () => {
+    const bgSelect = document.getElementById('backgroundSelect');
+    if (bgSelect) {
+      bgSelect.value = pendingBackgroundPath;
+      bgSelect.dispatchEvent(new Event('change'));
+      const confirmBtn = document.getElementById('confirmBackgroundSelection');
+      if (confirmBtn) confirmBtn.style.display = 'inline-block';
+    }
+    closeBackgroundModal();
+  });
+
+  document.getElementById('openEquipmentModal').addEventListener('click', openEquipmentModal);
 
   document.getElementById('confirmClassSelection').addEventListener('click', async () => {
     const classSelect = document.getElementById('classSelect');
@@ -154,6 +273,27 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     document.getElementById('confirmRaceSelection').style.display = 'none';
+  });
+
+  document.getElementById('confirmBackgroundSelection').addEventListener('click', () => {
+    const bgSelect = document.getElementById('backgroundSelect').value;
+    if (!bgSelect) {
+      alert('⚠️ Seleziona un background prima di procedere!');
+      return;
+    }
+    document.getElementById('confirmBackgroundSelection').style.display = 'none';
+  });
+
+  document.getElementById('confirmEquipment').addEventListener('click', () => {
+    closeEquipmentModal();
+    const list = document.getElementById('equipmentList');
+    const eq = window.selectedData?.equipment;
+    if (list && eq) {
+      const items = [...(eq.standard || []), ...(eq.class || []), ...(eq.upgrades || [])];
+      list.innerHTML = items.length
+        ? `<p><strong>Equipaggiamento scelto:</strong> ${items.join(', ')}</p>`
+        : '';
+    }
   });
 
 });

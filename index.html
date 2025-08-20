@@ -35,8 +35,8 @@
   </div>
   <!-- Navigazione a step -->
   <nav>
-    <button id="btnStep1" class="btn">Step 1: Nome & Livello</button>
-    <button id="btnStep2" class="btn">Step 2: Classe</button>
+    <button id="btnStep1" class="btn">Step 1: Dati Iniziali</button>
+    <button id="btnStep2" class="btn">Step 2: Classe & Livello</button>
     <button id="btnStep3" class="btn">Step 3: Razza</button>
     <button id="btnStep4" class="btn">Step 4: Background</button>
     <button id="btnStep5" class="btn">Step 5: Equipaggiamento</button>
@@ -46,40 +46,49 @@
   <div class="section-divider"></div>
   <!-- Container degli step -->
   <div id="stepContainer">
-    <!-- Step 1: Nome & Livello -->
+    <!-- Step 1: Dati Iniziali -->
     <div id="step1" class="step active">
-      <h2>Step 1: Nome & Livello</h2>
+      <h2>Step 1: Dati Iniziali</h2>
+      <label for="userName">Nome Utente:</label>
+      <input type="text" id="userName" class="form-control" placeholder="Inserisci il tuo nome">
+      <br><br>
       <label for="characterName">Nome del Personaggio:</label>
       <input type="text" id="characterName" class="form-control" placeholder="Inserisci il nome del tuo personaggio">
       <br><br>
-      <label for="levelSelect">Livello del Personaggio:</label>
-      <select id="levelSelect" class="form-control">
-        <!-- Opzioni da 1 a 20 -->
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="6">6</option>
-        <option value="7">7</option>
-        <option value="8">8</option>
-        <option value="9">9</option>
-        <option value="10">10</option>
-        <option value="11">11</option>
-        <option value="12">12</option>
-        <option value="13">13</option>
-        <option value="14">14</option>
-        <option value="15">15</option>
-        <option value="16">16</option>
-        <option value="17">17</option>
-        <option value="18">18</option>
-        <option value="19">19</option>
-        <option value="20">20</option>
-      </select>
+      <label for="origin">Provenienza:</label>
+      <input type="text" id="origin" class="form-control" placeholder="Inserisci la provenienza del personaggio">
+      <br><br>
+      <label for="age">Età:</label>
+      <input type="number" id="age" class="form-control" placeholder="Inserisci l'età del personaggio">
     </div>
-      <!-- Step 2: Scelta della Classe e Sottoclasse -->
+      <!-- Step 2: Scelta della Classe, Sottoclasse e Livello -->
       <div id="step2" class="step hidden">
-        <h2>Step 2: Scelta della Classe e Sottoclasse</h2>
+        <h2>Step 2: Scelta della Classe, Sottoclasse e Livello</h2>
+        <label for="levelSelect">Livello del Personaggio:</label>
+        <select id="levelSelect" class="form-control">
+          <!-- Opzioni da 1 a 20 -->
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+          <option value="13">13</option>
+          <option value="14">14</option>
+          <option value="15">15</option>
+          <option value="16">16</option>
+          <option value="17">17</option>
+          <option value="18">18</option>
+          <option value="19">19</option>
+          <option value="20">20</option>
+        </select>
+        <br>
         <div id="classList" class="class-list"></div>
         <label for="classSelect" class="hidden">Classe:</label>
         <select id="classSelect" class="form-control hidden">

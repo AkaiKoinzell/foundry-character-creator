@@ -3,22 +3,24 @@
 // -------------------------
 // Caricamento dati e popolamento dropdown
 // -------------------------
-export function loadDropdownData(jsonPath, selectId, key) {
-  fetch(jsonPath)
-    .then(response => response.json())
-    .then(data => {
-      console.log(`📜 Dati ricevuti da ${jsonPath}:`, data);
-      if (!data[key]) {
-        handleError(`Chiave ${key} non trovata in ${jsonPath}`);
-        return;
-      }
-      const options = Object.keys(data[key]).map(name => ({
-        name: name,
-        path: data[key][name]
-      }));
-      populateDropdown(selectId, options);
-    })
-    .catch(error => handleError(`Errore caricando ${jsonPath}: ${error}`));
+export async function loadDropdownData(jsonPath, selectId, key) {
+  try {
+    const response = await fetch(jsonPath);
+    if (!response.ok) throw new Error('Network response was not ok');
+    const data = await response.json();
+    console.log(`📜 Dati ricevuti da ${jsonPath}:`, data);
+    if (!data[key]) {
+      handleError(`Chiave ${key} non trovata in ${jsonPath}`);
+      return;
+    }
+    const options = Object.keys(data[key]).map(name => ({
+      name: name,
+      path: data[key][name]
+    }));
+    populateDropdown(selectId, options);
+  } catch (error) {
+    handleError(`Errore caricando ${jsonPath}: ${error}`);
+  }
 }
 
 export function populateDropdown(selectId, options) {
@@ -42,6 +44,7 @@ export function populateDropdown(selectId, options) {
 export async function renderEntityList(jsonPath, key, containerId, modalFn) {
   try {
     const res = await fetch(jsonPath);
+    if (!res.ok) throw new Error('Network response was not ok');
     const data = await res.json();
     if (!data[key]) {
       handleError(`Chiave ${key} non trovata in ${jsonPath}`);
@@ -67,17 +70,19 @@ export async function renderEntityList(jsonPath, key, containerId, modalFn) {
 // -------------------------
 // Funzione per caricare le lingue da un file JSON
 // -------------------------
-export function loadLanguages(callback) {
-  fetch("data/languages.json")
-    .then(response => response.json())
-    .then(data => {
-      if (data.languages) {
-        callback(data.languages);
-      } else {
-        handleError("Nessuna lingua trovata nel file JSON.");
-      }
-    })
-    .catch(error => handleError(`Errore caricando le lingue: ${error}`));
+export async function loadLanguages(callback) {
+  try {
+    const response = await fetch("data/languages.json");
+    if (!response.ok) throw new Error('Failed to load languages');
+    const data = await response.json();
+    if (data.languages) {
+      callback(data.languages);
+    } else {
+      handleError("Nessuna lingua trovata nel file JSON.");
+    }
+  } catch (error) {
+    handleError(`Errore caricando le lingue: ${error}`);
+  }
 }
 
 // -------------------------

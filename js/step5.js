@@ -108,20 +108,23 @@ function renderEquipment() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const step = document.getElementById('step5');
   if (!step) return;
 
-  fetch('data/equipment.json')
-    .then(r => r.json())
-    .then(data => {
-      equipmentData = data;
-      renderEquipment();
-      const classSel = document.getElementById('classSelect');
-      const levelSel = document.getElementById('levelSelect');
-      if (classSel) classSel.addEventListener('change', renderEquipment);
-      if (levelSel) levelSel.addEventListener('change', renderEquipment);
-    });
+  try {
+    const res = await fetch('data/equipment.json');
+    if (!res.ok) throw new Error('Failed to load equipment data');
+    const data = await res.json();
+    equipmentData = data;
+    renderEquipment();
+    const classSel = document.getElementById('classSelect');
+    const levelSel = document.getElementById('levelSelect');
+    if (classSel) classSel.addEventListener('change', renderEquipment);
+    if (levelSel) levelSel.addEventListener('change', renderEquipment);
+  } catch (err) {
+    console.error('Error loading equipment:', err);
+  }
 
   const confirmBtn = document.getElementById('confirmEquipment');
   if (confirmBtn) {

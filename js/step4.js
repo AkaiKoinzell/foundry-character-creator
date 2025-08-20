@@ -81,15 +81,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       const renderDuplicateSkillSelectors = () => {
         const existing = skillDetails.querySelector('.duplicate-skill-choices');
         if (existing) existing.remove();
-        const taken = new Set(getTakenProficiencies('skills'));
-        const duplicates = backgroundData.skills.filter(s => taken.has(s));
+        const taken = getTakenProficiencies('skills');
+        const duplicates = backgroundData.skills.filter(s => taken.has(s.toLowerCase()));
         if (duplicates.length === 0) {
           skillDetails.classList.remove('needs-selection', 'incomplete');
           initFeatureSelectionHandlers(skillDiv);
           return;
         }
-        const base = backgroundData.skills.filter(s => !taken.has(s));
-        const opts = ALL_SKILLS.filter(o => !taken.has(o) && !base.includes(o));
+        const base = backgroundData.skills.filter(s => !taken.has(s.toLowerCase()));
+        const opts = ALL_SKILLS.filter(o => !taken.has(o.toLowerCase()) && !base.includes(o));
         const dupDiv = document.createElement('div');
         dupDiv.className = 'duplicate-skill-choices';
         const p = document.createElement('p');
@@ -115,11 +115,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
       if (data.skillChoices) {
         const num = data.skillChoices.choose || 0;
-        const taken = new Set(getTakenProficiencies('skills'));
-        let opts = (data.skillChoices.options || []).filter(o => !taken.has(o));
+        const taken = getTakenProficiencies('skills');
+        let opts = (data.skillChoices.options || []).filter(o => !taken.has(o.toLowerCase()));
         let note = '';
         if (opts.length === 0) {
-          opts = ALL_SKILLS.filter(o => !taken.has(o));
+          opts = ALL_SKILLS.filter(o => !taken.has(o.toLowerCase()));
           note = ' (tutte le abilità disponibili)';
         }
         const p = document.createElement("p");
@@ -161,13 +161,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         const base = Array.isArray(data.tools) ? data.tools.slice() : [];
         backgroundData.tools = base.concat(chosen);
       };
-      const takenTools = new Set(getTakenProficiencies('tools'));
+      const takenTools = getTakenProficiencies('tools');
       if (data.tools && data.tools.choose) {
         const num = data.tools.choose;
-        let opts = (data.tools.options || []).filter(o => !takenTools.has(o));
+        let opts = (data.tools.options || []).filter(o => !takenTools.has(o.toLowerCase()));
         let note = '';
         if (opts.length === 0) {
-          opts = ALL_TOOLS.filter(o => !takenTools.has(o));
+          opts = ALL_TOOLS.filter(o => !takenTools.has(o.toLowerCase()));
           note = ' (tutti gli strumenti disponibili)';
         }
         const p = document.createElement("p");
@@ -177,10 +177,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
       if (data.toolChoices) {
         const num = data.toolChoices.choose || 0;
-        let opts = (data.toolChoices.options || []).filter(o => !takenTools.has(o));
+        let opts = (data.toolChoices.options || []).filter(o => !takenTools.has(o.toLowerCase()));
         let note = '';
         if (opts.length === 0) {
-          opts = ALL_TOOLS.filter(o => !takenTools.has(o));
+          opts = ALL_TOOLS.filter(o => !takenTools.has(o.toLowerCase()));
           note = ' (tutti gli strumenti disponibili)';
         }
         const p = document.createElement("p");
@@ -208,11 +208,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       } else if (data.languages && data.languages.choose) {
         const num = data.languages.choose;
         const buildSelectors = opts => {
-          const takenLangs = new Set(getTakenProficiencies('languages'));
-          let filtered = (opts || []).filter(o => !takenLangs.has(o));
+          const takenLangs = getTakenProficiencies('languages');
+          let filtered = (opts || []).filter(o => !takenLangs.has(o.toLowerCase()));
           let note = '';
           if (filtered.length === 0) {
-            filtered = ALL_LANGUAGES.filter(o => !takenLangs.has(o));
+            filtered = ALL_LANGUAGES.filter(o => !takenLangs.has(o.toLowerCase()));
             note = ' (tutte le lingue disponibili)';
           }
           const p = document.createElement("p");

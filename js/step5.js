@@ -38,7 +38,7 @@ function renderEquipment() {
 
   const standardDetail = document.createElement('details');
   standardDetail.className = 'feature-block';
-  standardDetail.innerHTML = `<summary>Equipaggiamento Standard</summary><ul>${equipmentData.standard
+  standardDetail.innerHTML = `<summary>Standard Equipment</summary><ul>${equipmentData.standard
     .map(item => `<li>${item}</li>`)
     .join('')}</ul>`;
   equipmentDiv.appendChild(standardDetail);
@@ -48,18 +48,18 @@ function renderEquipment() {
     if (Array.isArray(classInfo.fixed) && classInfo.fixed.length > 0) {
       const fixedDetail = document.createElement('details');
       fixedDetail.className = 'feature-block';
-      fixedDetail.innerHTML = `<summary>Equipaggiamento fisso</summary><p>${classInfo.fixed.join(', ')}</p>`;
+      fixedDetail.innerHTML = `<summary>Fixed Equipment</summary><p>${classInfo.fixed.join(', ')}</p>`;
       equipmentDiv.appendChild(fixedDetail);
     }
     if (Array.isArray(classInfo.choices)) {
       classInfo.choices.forEach((choice, idx) => {
         const detail = document.createElement('details');
         detail.className = 'feature-block needs-selection incomplete';
-        detail.innerHTML = `<summary>${choice.label || 'Scegli'}</summary>`;
+        detail.innerHTML = `<summary>${choice.label || 'Choose'}</summary>`;
         const options = [];
         (choice.options || []).forEach(opt => {
           const text = typeof opt === 'string' ? opt : opt.label || opt.value;
-          if (text === 'Arma semplice') {
+          if (text.toLowerCase() === 'simple weapon') {
             SIMPLE_WEAPONS.forEach(w => options.push({ value: w, label: w }));
           } else {
             options.push(opt);
@@ -87,7 +87,7 @@ function renderEquipment() {
     }
   } else {
     const p = document.createElement('p');
-    p.textContent = 'Nessun equipaggiamento specifico per questa classe.';
+    p.textContent = 'No specific equipment for this class.';
     equipmentDiv.appendChild(p);
   }
 
@@ -95,10 +95,10 @@ function renderEquipment() {
     const up = equipmentData.upgrades;
     const upDetail = document.createElement('details');
     upDetail.className = 'feature-block';
-    upDetail.innerHTML = '<summary>Opzioni Avanzate</summary>';
+    upDetail.innerHTML = '<summary>Advanced Options</summary>';
     if (Array.isArray(up.armor)) {
       const armorLabel = document.createElement('p');
-      armorLabel.innerHTML = '<strong>Armatura:</strong>';
+      armorLabel.innerHTML = '<strong>Armor:</strong>';
       upDetail.appendChild(armorLabel);
       up.armor.forEach((armor, idx) => {
         const id = `upgradeArmor_${idx}`;

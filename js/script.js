@@ -1,6 +1,7 @@
 import { loadLanguages, handleError, renderTables } from './common.js';
 import { loadSpells, filterSpells, handleSpellcasting } from './spellcasting.js';
 import { convertRaceData } from './raceData.js';
+import { getSelectedData, setSelectedData, saveSelectedData } from './state.js';
 
 // ==================== MAPPING PER LE EXTRA VARIANT FEATURES ====================
 const variantExtraMapping = {
@@ -289,10 +290,7 @@ function gatherRaceTraitSelections() {
 // ==================== POPUP FOR EXTRA SELECTIONS ====================
 
 // Global variables for the extra selections popup
-let selectedData = sessionStorage.getItem("selectedData")
-  ? JSON.parse(sessionStorage.getItem("selectedData"))
-  : {};
-window.selectedData = selectedData;
+let selectedData = getSelectedData();
 
 // These variables are referenced throughout the extra selections workflow.
 // In earlier refactors they were implicitly assumed to exist which caused
@@ -425,7 +423,7 @@ function saveFeatureSelection(select) {
   if (!feature) return;
   if (!selectedData[feature]) selectedData[feature] = [];
   selectedData[feature][index] = select.value || undefined;
-  sessionStorage.setItem('selectedData', JSON.stringify(selectedData));
+  saveSelectedData();
 }
 
 function convertDetailsToAccordion(container) {
@@ -551,7 +549,7 @@ function openExtrasModal(selections, context = "race") {
           selectedData[category] = [];
         }
         selectedData[category][index] = e.target.value;
-        sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
+        saveSelectedData();
         updateExtraSelectionsView();
       });
     }
@@ -567,10 +565,8 @@ function openExtrasModal(selections, context = "race") {
 function updateExtraSelectionsView() {
   console.log("🔄 Recupero selezioni extra salvate...");
 
-  // ✅ Assicuriamoci di recuperare i dati dallo storage
-  selectedData = sessionStorage.getItem("selectedData")
-    ? JSON.parse(sessionStorage.getItem("selectedData"))
-    : selectedData;
+  // ✅ Recupera i dati attuali dallo stato
+  selectedData = getSelectedData();
 
   function updateContainer(id, title, dataKey) {
     const container = document.getElementById(id);
@@ -655,7 +651,7 @@ function showExtraSelection() {
 
         console.log(`📝 Salvato: ${category} -> ${selectedData[category]}`);
 
-        sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
+        saveSelectedData();
         updateExtraSelectionsView();
       });
     });
@@ -702,7 +698,7 @@ function showExtraSelection() {
       sessionStorage.removeItem("popupOpened");
 
       // ✅ Salviamo le selezioni extra PRIMA di eventuali refresh
-      sessionStorage.setItem("selectedData", JSON.stringify(selectedData));
+      saveSelectedData();
       console.log("📝 Selezioni salvate prima dell'update:", selectedData);
 
       if (extraModalContext === "race") {
@@ -728,7 +724,8 @@ updateExtraSelectionsView();
 
 document.getElementById("raceSelect").addEventListener("change", () => {
   console.log("🔄 Razza cambiata, reset delle selezioni extra...");
-  selectedData = {}; // Reset delle selezioni extra
+  setSelectedData({}); // Reset delle selezioni extra
+  selectedData = getSelectedData();
   document.getElementById("languageSelection").innerHTML = "";
   document.getElementById("skillSelectionContainer").innerHTML = "";
   document.getElementById("toolSelectionContainer").innerHTML = "";
@@ -1159,9 +1156,7 @@ function renderFinalRecap() {
   const recapDiv = document.getElementById("finalRecap");
   if (!recapDiv) return;
 
-  selectedData = sessionStorage.getItem("selectedData")
-    ? JSON.parse(sessionStorage.getItem("selectedData"))
-    : selectedData;
+  selectedData = getSelectedData();
   const userName = document.getElementById("userName")?.value || "";
   const characterName = document.getElementById("characterName")?.value || "";
   const className = document.getElementById("classSelect").selectedOptions[0]?.text || "";

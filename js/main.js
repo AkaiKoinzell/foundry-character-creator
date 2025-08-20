@@ -1,5 +1,6 @@
 import { showStep, loadFormData } from './ui.js';
 import { loadDropdownData, loadLanguages, renderEntityList } from './common.js';
+import { createHeader, createParagraph } from './domHelpers.js';
 import {
   updateSubclasses,
   renderClassFeatures,
@@ -35,7 +36,8 @@ async function showRaceModal(name, path) {
   try {
     const res = await fetch(path);
     const data = await res.json();
-    details.innerHTML = `<h3>${data.name}</h3>`;
+    details.textContent = '';
+    details.appendChild(createHeader(data.name, 3));
   } catch (e) {
     details.textContent = 'Errore caricando i dettagli della razza.';
   }
@@ -59,9 +61,14 @@ async function showBackgroundModal(name, path) {
   try {
     const res = await fetch(path);
     const data = await res.json();
-    const skills = data.skills ? `<p><strong>Abilità:</strong> ${data.skills.join(', ')}</p>` : '';
-    const tools = data.tools && data.tools.length ? `<p><strong>Strumenti:</strong> ${data.tools.join(', ')}</p>` : '';
-    details.innerHTML = `<h3>${data.name}</h3>${skills}${tools}`;
+    details.textContent = '';
+    details.appendChild(createHeader(data.name, 3));
+    if (data.skills) {
+      details.appendChild(createParagraph(`Abilità: ${data.skills.join(', ')}`));
+    }
+    if (data.tools && data.tools.length) {
+      details.appendChild(createParagraph(`Strumenti: ${data.tools.join(', ')}`));
+    }
   } catch (e) {
     details.textContent = 'Errore caricando i dettagli del background.';
   }
@@ -91,7 +98,11 @@ async function showClassModal(name, path) {
   try {
     const res = await fetch(path);
     const data = await res.json();
-    details.innerHTML = `<h3>${data.name}</h3><p>${data.description}</p><p><strong>Hit Die:</strong> ${data.hit_die}</p><p><strong>Saving Throws:</strong> ${data.saving_throws.join(', ')}</p>`;
+    details.textContent = '';
+    details.appendChild(createHeader(data.name, 3));
+    details.appendChild(createParagraph(data.description));
+    details.appendChild(createParagraph(`Hit Die: ${data.hit_die}`));
+    details.appendChild(createParagraph(`Saving Throws: ${data.saving_throws.join(', ')}`));
   } catch (e) {
     details.textContent = 'Errore caricando i dettagli della classe.';
   }

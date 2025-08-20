@@ -2,6 +2,7 @@ import { loadLanguages, handleError, renderTables } from './common.js';
 import { loadSpells, filterSpells, handleSpellcasting } from './spellcasting.js';
 import { convertRaceData } from './raceData.js';
 import { getSelectedData, setSelectedData, saveSelectedData } from './state.js';
+import { createHeader, createParagraph, createList } from './domHelpers.js';
 
 // ==================== MAPPING PER LE EXTRA VARIANT FEATURES ====================
 const variantExtraMapping = {
@@ -743,9 +744,10 @@ function displayRaceTraits() {
   const raceTraitsDiv = document.getElementById("raceTraits");
   const racialBonusDiv = document.getElementById("racialBonusSelection");
 
-   if (!racePath) {
+  if (!racePath) {
     console.warn("⚠️ displayRaceTraits(): Nessuna razza selezionata.");
-    raceTraitsDiv.innerHTML = "<p>Seleziona una razza per vedere i tratti.</p>";
+    raceTraitsDiv.textContent = '';
+    raceTraitsDiv.appendChild(createParagraph('Seleziona una razza per vedere i tratti.'));
     racialBonusDiv.style.display = "none";
     resetRacialBonuses();
     return;
@@ -756,133 +758,193 @@ function displayRaceTraits() {
     .then(response => response.json())
     .then(data => {
       console.log("📜 Dati razza caricati:", data);
-      console.log("🔍 JSON completo della razza selezionata:", data);
-      if (raceTraitsDiv) raceTraitsDiv.innerHTML = "";
       const raceData = convertRaceData(data);
-      let traitsHtml = `<h3>Tratti di ${raceData.name}</h3>`;
+      raceTraitsDiv.textContent = '';
+      raceTraitsDiv.appendChild(createHeader(`Tratti di ${raceData.name}`, 3));
 
       // Speed
+      let speedText = 'Velocità: Non disponibile';
       if (raceData.speed) {
-        if (typeof raceData.speed === "object") {
-          const speedDetails = [];
-          for (let type in raceData.speed) {
-            speedDetails.push(`${type}: ${raceData.speed[type]} ft`);
-          }
-          traitsHtml += `<p><strong>Velocità:</strong> ${speedDetails.join(", ")}</p>`;
+        if (typeof raceData.speed === 'object') {
+          const parts = Object.entries(raceData.speed).map(([t, v]) => `${t}: ${v} ft`);
+          speedText = `Velocità: ${parts.join(', ')}`;
         } else {
-          traitsHtml += `<p><strong>Velocità:</strong> ${raceData.speed} ft</p>`;
+          speedText = `Velocità: ${raceData.speed} ft`;
         }
-      } else {
-        traitsHtml += `<p><strong>Velocità:</strong> Non disponibile</p>`;
       }
+      raceTraitsDiv.appendChild(createParagraph(speedText));
 
       // Darkvision
       if (raceData.senses && raceData.senses.darkvision) {
-        traitsHtml += `<p><strong>Visione:</strong> ${raceData.senses.darkvision} ft</p>`;
+        raceTraitsDiv.appendChild(createParagraph(`Visione: ${raceData.senses.darkvision} ft`));
       }
 
       // Trait details
       if (raceData.traits && raceData.traits.length > 0) {
-        traitsHtml += `<h4>Tratti:</h4>`;
+        raceTraitsDiv.appendChild(createHeader('Tratti:', 4));
         raceData.traits.forEach((trait, tIdx) => {
           const traitId = `trait-${trait.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
-          const featureKey = trait.name.replace(/"/g, '&quot;');
-          let block = `<details class="race-trait feature-block" id="${traitId}"><summary>${trait.name}</summary>`;
-          block += `<div class="feature-desc">${trait.description || ''}</div>`;
+          const featureKey = trait.name;
+          const details = document.createElement('details');
+          details.className = 'race-trait feature-block';
+          details.id = traitId;
+          const summary = document.createElement('summary');
+          summary.textContent = trait.name;
+          details.appendChild(summary);
+          const desc = document.createElement('div');
+          desc.className = 'feature-desc';
+          desc.textContent = trait.description || '';
+          details.appendChild(desc);
           const choices = trait.choices || trait.variant_feature_choices;
           if (choices) {
             choices.forEach((choice, cIdx) => {
               const options = choice.options || choice.selection || [];
               const saved = selectedData[featureKey]?.[cIdx] || '';
-              const label = choice.name || 'Scegli';
-              const optsHtml = options
-                .map(opt => `<option value="${opt}" ${saved === opt ? 'selected' : ''}>${opt}</option>`)
-                .join('');
-              block += `<label>${label}: <select data-feature="${featureKey}" data-index="${cIdx}"><option value="">Seleziona...</option>${optsHtml}</select></label>`;
+              const label = document.createElement('label');
+              label.textContent = (choice.name || 'Scegli') + ': ';
+              const select = document.createElement('select');
+              select.dataset.feature = featureKey;
+              select.dataset.index = cIdx;
+              const defaultOpt = document.createElement('option');
+              defaultOpt.value = '';
+              defaultOpt.textContent = 'Seleziona...';
+              select.appendChild(defaultOpt);
+              options.forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt;
+                option.textContent = opt;
+                if (saved === opt) option.selected = true;
+                select.appendChild(option);
+              });
+              label.appendChild(select);
+              details.appendChild(label);
             });
           }
-          block += `</details>`;
-          traitsHtml += block;
+          raceTraitsDiv.appendChild(details);
         });
       }
 
       // Extra selections (languages, skills, tools)
-      const extraSelections = gatherExtraSelections(raceData, "race");
+      const extraSelections = gatherExtraSelections(raceData, 'race');
       extraSelections.forEach((choice, idx) => {
         const featureKey = extraCategoryAliases[choice.name] || choice.name;
-        let block = `<details class="race-trait feature-block" id="race-extra-${idx}"><summary>${choice.name}</summary>`;
-        if (choice.description) block += `<div class="feature-desc">${choice.description}</div>`;
+        const details = document.createElement('details');
+        details.className = 'race-trait feature-block';
+        details.id = `race-extra-${idx}`;
+        const summary = document.createElement('summary');
+        summary.textContent = choice.name;
+        details.appendChild(summary);
+        if (choice.description) {
+          const desc = document.createElement('div');
+          desc.className = 'feature-desc';
+          desc.textContent = choice.description;
+          details.appendChild(desc);
+        }
         const options = choice.selection || [];
         if (choice.count && choice.count > 0) {
           for (let i = 0; i < choice.count; i++) {
             const saved = selectedData[featureKey]?.[i] || '';
-            const optsHtml = options
-              .map(opt => `<option value="${opt}" ${saved === opt ? 'selected' : ''}>${opt}</option>`)
-              .join('');
-            block += `<label>${choice.name}${choice.count > 1 ? ' ' + (i + 1) : ''}: <select data-feature="${featureKey}" data-index="${i}"><option value="">Seleziona...</option>${optsHtml}</select></label>`;
+            const label = document.createElement('label');
+            label.textContent = `${choice.name}${choice.count > 1 ? ' ' + (i + 1) : ''}: `;
+            const select = document.createElement('select');
+            select.dataset.feature = featureKey;
+            select.dataset.index = i;
+            const def = document.createElement('option');
+            def.value = '';
+            def.textContent = 'Seleziona...';
+            select.appendChild(def);
+            options.forEach(opt => {
+              const option = document.createElement('option');
+              option.value = opt;
+              option.textContent = opt;
+              if (saved === opt) option.selected = true;
+              select.appendChild(option);
+            });
+            label.appendChild(select);
+            details.appendChild(label);
           }
         }
-        block += `</details>`;
-        traitsHtml += block;
+        raceTraitsDiv.appendChild(details);
       });
 
       // Variant feature choices
       if (raceData.variant_feature_choices) {
-        traitsHtml += `<details class="race-trait feature-block needs-selection incomplete" id="variantFeatureTrait"><summary>Variant Feature</summary><div id="variantFeatureSelectionContainer"></div><div id="variantExtraContainer"></div></details>`;
+        const details = document.createElement('details');
+        details.className = 'race-trait feature-block needs-selection incomplete';
+        details.id = 'variantFeatureTrait';
+        const summary = document.createElement('summary');
+        summary.textContent = 'Variant Feature';
+        details.appendChild(summary);
+        const selContainer = document.createElement('div');
+        selContainer.id = 'variantFeatureSelectionContainer';
+        details.appendChild(selContainer);
+        const extraContainer = document.createElement('div');
+        extraContainer.id = 'variantExtraContainer';
+        details.appendChild(extraContainer);
+        raceTraitsDiv.appendChild(details);
       }
 
       // Ancestry placeholder
-      traitsHtml += `<details class="race-trait feature-block needs-selection incomplete hidden" id="ancestryTrait"><summary>Ancestry</summary><div id="ancestrySelectionContainer"></div></details>`;
+      const ancestryDetails = document.createElement('details');
+      ancestryDetails.className = 'race-trait feature-block needs-selection incomplete hidden';
+      ancestryDetails.id = 'ancestryTrait';
+      const ancestrySummary = document.createElement('summary');
+      ancestrySummary.textContent = 'Ancestry';
+      ancestryDetails.appendChild(ancestrySummary);
+      const ancestryContainer = document.createElement('div');
+      ancestryContainer.id = 'ancestrySelectionContainer';
+      ancestryDetails.appendChild(ancestryContainer);
+      raceTraitsDiv.appendChild(ancestryDetails);
 
       // Tables (rawEntries)
       const tablesHtml = renderTables(raceData.rawEntries);
-      traitsHtml += tablesHtml;
-
-      // Spellcasting container
-      traitsHtml += `<div id="spellSelectionContainer"></div>`;
-
-      if (raceTraitsDiv) {
-        raceTraitsDiv.innerHTML = traitsHtml;
-        convertDetailsToAccordion(raceTraitsDiv);
-        raceTraitsDiv.classList.add('accordion');
-        raceTraitsDiv.style.display = "block";
-        initFeatureSelectionHandlers(raceTraitsDiv, saveFeatureSelection);
-        initializeAccordion(raceTraitsDiv);
-        console.log("✅ Tratti della razza aggiornati con successo!");
-      } else {
-        console.error("❌ ERRORE: Il div dei tratti della razza non è stato trovato!");
+      if (tablesHtml) {
+        const wrapper = document.createElement('div');
+        wrapper.appendChild(document.createRange().createContextualFragment(tablesHtml));
+        raceTraitsDiv.appendChild(wrapper);
       }
 
-      // Render selection controls
-      handleSpellcasting(raceData, "spellSelectionContainer");
-      handleVariantFeatureChoices(raceData);
-      handleExtraAncestry(raceData, "ancestrySelectionContainer");
+      // Spellcasting container
+      const spellContainer = document.createElement('div');
+      spellContainer.id = 'spellSelectionContainer';
+      raceTraitsDiv.appendChild(spellContainer);
 
-      const ancestryDetail = document.getElementById("ancestryTrait");
+      convertDetailsToAccordion(raceTraitsDiv);
+      raceTraitsDiv.classList.add('accordion');
+      raceTraitsDiv.style.display = 'block';
+      initFeatureSelectionHandlers(raceTraitsDiv, saveFeatureSelection);
+      initializeAccordion(raceTraitsDiv);
+
+      // Render selection controls
+      handleSpellcasting(raceData, 'spellSelectionContainer');
+      handleVariantFeatureChoices(raceData);
+      handleExtraAncestry(raceData, 'ancestrySelectionContainer');
+
+      const ancestryDetail = document.getElementById('ancestryTrait');
       if (ancestryDetail) {
-        const ancContainer = document.getElementById("ancestrySelectionContainer");
-        if (ancContainer && ancContainer.innerHTML.trim() !== "") {
+        const ancContainer = document.getElementById('ancestrySelectionContainer');
+        if (ancContainer && ancContainer.innerHTML.trim() !== '') {
           ancestryDetail.classList.remove('hidden');
         }
       }
 
-      const variantSelect = document.getElementById("variantFeatureChoice");
+      const variantSelect = document.getElementById('variantFeatureChoice');
       if (variantSelect) {
-        variantSelect.addEventListener("change", () => {
-          selectedData["Variant Feature"] = [variantSelect.value];
+        variantSelect.addEventListener('change', () => {
+          selectedData['Variant Feature'] = [variantSelect.value];
           handleVariantExtraSelections();
-          checkTraitCompletion("variantFeatureTrait");
+          checkTraitCompletion('variantFeatureTrait');
         });
-        checkTraitCompletion("variantFeatureTrait");
+        checkTraitCompletion('variantFeatureTrait');
       }
 
-      const ancestrySelect = document.getElementById("ancestrySelection");
+      const ancestrySelect = document.getElementById('ancestrySelection');
       if (ancestrySelect) {
-        ancestrySelect.addEventListener("change", () => {
-          selectedData["Ancestry"] = [ancestrySelect.value];
-          checkTraitCompletion("ancestryTrait");
+        ancestrySelect.addEventListener('change', () => {
+          selectedData['Ancestry'] = [ancestrySelect.value];
+          checkTraitCompletion('ancestryTrait');
         });
-        checkTraitCompletion("ancestryTrait");
+        checkTraitCompletion('ancestryTrait');
       }
 
       resetRacialBonuses();
@@ -897,7 +959,10 @@ function updateSubclasses() {
   const featuresDiv = document.getElementById("classFeatures");
   if (!classPath) {
     window.currentClassData = null;
-    if (featuresDiv) featuresDiv.innerHTML = `<p>Seleziona una classe per vedere i tratti.</p>`;
+    if (featuresDiv) {
+      featuresDiv.textContent = '';
+      featuresDiv.appendChild(createParagraph('Seleziona una classe per vedere i tratti.'));
+    }
     return;
   }
   fetch(classPath)
@@ -934,116 +999,124 @@ function getSubclassFilename(name) {
 }
 
 async function renderClassFeatures() {
-  const featuresDiv = document.getElementById("classFeatures");
+  const featuresDiv = document.getElementById('classFeatures');
   const data = window.currentClassData;
   if (!featuresDiv) return;
   if (!data) {
-    featuresDiv.innerHTML = `<p>Seleziona una classe per vedere i tratti.</p>`;
+    featuresDiv.textContent = '';
+    featuresDiv.appendChild(createParagraph('Seleziona una classe per vedere i tratti.'));
     return;
   }
-  const charLevel = parseInt(document.getElementById("levelSelect")?.value) || 1;
-  const subclassName = document.getElementById("subclassSelect")?.value || "";
-  let html = `<h3>${data.name}</h3>`;
-  if (data.description) {
-    html += `<p>${data.description}</p>`;
-  }
+  const charLevel = parseInt(document.getElementById('levelSelect')?.value) || 1;
+  const subclassName = document.getElementById('subclassSelect')?.value || '';
+  featuresDiv.textContent = '';
+  featuresDiv.appendChild(createHeader(data.name, 3));
+  if (data.description) featuresDiv.appendChild(createParagraph(data.description));
 
-  // Build basic class info into collapsible sections
-  let basics = "";
+  // Hit points section
   if (data.hit_die || data.hp_at_1st_level || data.hp_at_higher_levels) {
-    basics += `<details class="feature-block"><summary>Hit Points</summary>`;
-    if (data.hit_die) {
-      basics += `<p><strong>Hit Die:</strong> ${data.hit_die}</p>`;
-    }
-    if (data.hp_at_1st_level) {
-      basics += `<p><strong>Hit Points at 1st Level:</strong> ${data.hp_at_1st_level}</p>`;
-    }
-    if (data.hp_at_higher_levels) {
-      basics += `<p><strong>Hit Points at Higher Levels:</strong> ${data.hp_at_higher_levels}</p>`;
-    }
-    basics += `</details>`;
+    const details = document.createElement('details');
+    details.className = 'feature-block';
+    const summary = document.createElement('summary');
+    summary.textContent = 'Hit Points';
+    details.appendChild(summary);
+    if (data.hit_die) details.appendChild(createParagraph(`Hit Die: ${data.hit_die}`));
+    if (data.hp_at_1st_level) details.appendChild(createParagraph(`Hit Points at 1st Level: ${data.hp_at_1st_level}`));
+    if (data.hp_at_higher_levels) details.appendChild(createParagraph(`Hit Points at Higher Levels: ${data.hp_at_higher_levels}`));
+    featuresDiv.appendChild(details);
   }
 
-  let profs = "";
-  if (data.saving_throws) {
-    profs += `<p><strong>Saving Throw Proficiencies:</strong> ${data.saving_throws.join(", ")}</p>`;
-  }
-  if (data.weapon_proficiencies) {
-    profs += `<p><strong>Weapon Proficiencies:</strong> ${data.weapon_proficiencies.join(", ")}</p>`;
-  }
+  // Proficiencies section
+  const profTexts = [];
   let toolChoice = null;
+  if (data.saving_throws) profTexts.push(`Saving Throw Proficiencies: ${data.saving_throws.join(', ')}`);
+  if (data.weapon_proficiencies) profTexts.push(`Weapon Proficiencies: ${data.weapon_proficiencies.join(', ')}`);
   if (data.tool_proficiencies) {
     if (Array.isArray(data.tool_proficiencies)) {
       const fixed = data.tool_proficiencies.filter(tp => {
         const lower = tp.toLowerCase();
-        return !lower.includes("of your choice") && !lower.includes(" or ");
+        return !lower.includes('of your choice') && !lower.includes(' or ');
       });
-      if (fixed.length) {
-        profs += `<p><strong>Tool Proficiencies:</strong> ${fixed.join(", ")}</p>`;
-      }
+      if (fixed.length) profTexts.push(`Tool Proficiencies: ${fixed.join(', ')}`);
       data.tool_proficiencies.forEach(tp => {
         const lower = tp.toLowerCase();
         const wordMap = { one: 1, two: 2, three: 3 };
         let count = 1;
         for (const word in wordMap) {
-          if (lower.includes(word)) {
-            count = wordMap[word];
-            break;
-          }
+          if (lower.includes(word)) { count = wordMap[word]; break; }
         }
-        if (lower.includes("artisan's tools") && lower.includes("musical instrument")) {
+        if (lower.includes("artisan's tools") && lower.includes('musical instrument')) {
           toolChoice = { choose: count, options: [...ARTISAN_TOOLS, ...MUSICAL_INSTRUMENTS] };
-        } else if (lower.includes("musical instrument")) {
+        } else if (lower.includes('musical instrument')) {
           toolChoice = { choose: count, options: MUSICAL_INSTRUMENTS };
         } else if (lower.includes("artisan's tools")) {
           toolChoice = { choose: count, options: ARTISAN_TOOLS };
         }
       });
       if (toolChoice) {
-        profs += `<p><strong>Tool Proficiencies:</strong> Choose ${toolChoice.choose} from ${toolChoice.options.join(", ")}</p>`;
+        profTexts.push(`Tool Proficiencies: Choose ${toolChoice.choose} from ${toolChoice.options.join(', ')}`);
       }
     } else if (data.tool_proficiencies.options) {
       const fixed = data.tool_proficiencies.fixed || [];
-      if (fixed.length) {
-        profs += `<p><strong>Tool Proficiencies:</strong> ${fixed.join(", ")}</p>`;
-      }
+      if (fixed.length) profTexts.push(`Tool Proficiencies: ${fixed.join(', ')}`);
       if (data.tool_proficiencies.choose && data.tool_proficiencies.options.length) {
         toolChoice = {
           choose: data.tool_proficiencies.choose,
           options: data.tool_proficiencies.options
         };
-        profs += `<p><strong>Tool Proficiencies:</strong> Choose ${toolChoice.choose} from ${toolChoice.options.join(", ")}</p>`;
+        profTexts.push(`Tool Proficiencies: Choose ${toolChoice.choose} from ${toolChoice.options.join(', ')}`);
       }
     }
   }
   if (data.armor_proficiencies) {
-    profs += `<p><strong>Armor Training:</strong> ${data.armor_proficiencies.join(", ")}</p>`;
+    profTexts.push(`Armor Training: ${data.armor_proficiencies.join(', ')}`);
   }
   if (data.skill_proficiencies && data.skill_proficiencies.choose) {
-    profs += `<p><strong>Skill Proficiencies:</strong> Choose ${data.skill_proficiencies.choose} from ${data.skill_proficiencies.options.join(", ")}</p>`;
+    profTexts.push(`Skill Proficiencies: Choose ${data.skill_proficiencies.choose} from ${data.skill_proficiencies.options.join(', ')}`);
   }
   if (data.multiclassing && data.multiclassing.prerequisites) {
     const prereqs = Object.entries(data.multiclassing.prerequisites)
       .map(([ability, score]) => `${ability} ${score}`)
-      .join(", ");
-    profs += `<p><strong>Multiclassing Prerequisite:</strong> ${prereqs}</p>`;
+      .join(', ');
+    profTexts.push(`Multiclassing Prerequisite: ${prereqs}`);
   }
-  if (profs) {
-    basics += `<details class="feature-block"><summary>Proficiencies</summary>${profs}</details>`;
+  if (profTexts.length) {
+    const details = document.createElement('details');
+    details.className = 'feature-block';
+    const summary = document.createElement('summary');
+    summary.textContent = 'Proficiencies';
+    details.appendChild(summary);
+    profTexts.forEach(t => details.appendChild(createParagraph(t)));
+    featuresDiv.appendChild(details);
   }
 
-  html += basics;
-
+  // Subclasses select
   if (data.subclasses && data.subclasses.length > 0) {
-    let opts = `<option value="">Seleziona una sottoclasse</option>`;
+    const details = document.createElement('details');
+    details.className = 'feature-block';
+    details.id = 'subclassTrait';
+    const summary = document.createElement('summary');
+    summary.textContent = 'Sottoclasse';
+    details.appendChild(summary);
+    const select = document.createElement('select');
+    select.id = 'subclassSelect';
+    select.className = 'form-control';
+    const def = document.createElement('option');
+    def.value = '';
+    def.textContent = 'Seleziona una sottoclasse';
+    select.appendChild(def);
     data.subclasses.forEach(sc => {
-      const sel = subclassName === sc.name ? 'selected' : '';
-      opts += `<option value="${sc.name}" ${sel}>${sc.name}</option>`;
+      const option = document.createElement('option');
+      option.value = sc.name;
+      option.textContent = sc.name;
+      if (subclassName === sc.name) option.selected = true;
+      select.appendChild(option);
     });
-    html += `<details class="feature-block" id="subclassTrait"><summary>Sottoclasse</summary><select id="subclassSelect" class="form-control">${opts}</select></details>`;
+    details.appendChild(select);
+    featuresDiv.appendChild(details);
   }
 
-  // Fetch subclass data first if one is selected
+  // Fetch subclass data
   let subData = null;
   if (subclassName) {
     try {
@@ -1051,11 +1124,13 @@ async function renderClassFeatures() {
       const resp = await fetch(`data/subclasses/${file}`);
       subData = await resp.json();
       if (subData.description) {
-        html += `<p>${subData.description}</p>`;
+        featuresDiv.appendChild(createParagraph(subData.description));
       }
     } catch (err) {
-      html += `<p>Dettagli della sottoclasse non disponibili.</p>`;
+      featuresDiv.appendChild(createParagraph('Dettagli della sottoclasse non disponibili.'));
     }
+  } else {
+    featuresDiv.appendChild(createParagraph('Seleziona una sottoclasse per vedere i tratti.'));
   }
 
   // Merge class and subclass features by level
@@ -1071,34 +1146,57 @@ async function renderClassFeatures() {
       mergedFeatures[lvl].push(...feats);
     });
   }
-
   const levels = Object.keys(mergedFeatures).sort((a, b) => a - b);
   levels.forEach(lvl => {
     if (parseInt(lvl) <= charLevel) {
-      html += `<h4>Livello ${lvl}</h4>`;
+      featuresDiv.appendChild(createHeader(`Livello ${lvl}`, 4));
       mergedFeatures[lvl].forEach((f, idx) => {
         if (typeof f === 'string') {
-          html += `<details class="feature-block"><summary>${f}</summary></details>`;
+          const details = document.createElement('details');
+          details.className = 'feature-block';
+          const summary = document.createElement('summary');
+          summary.textContent = f;
+          details.appendChild(summary);
+          featuresDiv.appendChild(details);
         } else {
-          const featureKey = f.name.replace(/"/g, '&quot;');
-          let block = `<details class="feature-block" id="class-feature-${lvl}-${idx}"><summary>${f.name}</summary>`;
+          const details = document.createElement('details');
+          details.className = 'feature-block';
+          details.id = `class-feature-${lvl}-${idx}`;
+          const summary = document.createElement('summary');
+          summary.textContent = f.name;
+          details.appendChild(summary);
           if (f.description) {
-            block += `<div class="feature-desc">${f.description}</div>`;
+            const desc = document.createElement('div');
+            desc.className = 'feature-desc';
+            desc.textContent = f.description;
+            details.appendChild(desc);
           }
           const choices = f.choices || f.variant_feature_choices;
           if (choices) {
             choices.forEach((choice, cIdx) => {
               const options = choice.options || choice.selection || [];
-              const saved = selectedData[featureKey]?.[cIdx] || '';
-              const label = choice.name || 'Scegli';
-              const optsHtml = options
-                .map(opt => `<option value="${opt}" ${saved === opt ? 'selected' : ''}>${opt}</option>`)
-                .join('');
-              block += `<label>${label}: <select data-feature="${featureKey}" data-index="${cIdx}"><option value="">Seleziona...</option>${optsHtml}</select></label>`;
+              const saved = selectedData[f.name]?.[cIdx] || '';
+              const label = document.createElement('label');
+              label.textContent = (choice.name || 'Scegli') + ': ';
+              const select = document.createElement('select');
+              select.dataset.feature = f.name;
+              select.dataset.index = cIdx;
+              const optDef = document.createElement('option');
+              optDef.value = '';
+              optDef.textContent = 'Seleziona...';
+              select.appendChild(optDef);
+              options.forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt;
+                option.textContent = opt;
+                if (saved === opt) option.selected = true;
+                select.appendChild(option);
+              });
+              label.appendChild(select);
+              details.appendChild(label);
             });
           }
-          block += `</details>`;
-          html += block;
+          featuresDiv.appendChild(details);
         }
       });
     }
@@ -1123,25 +1221,46 @@ async function renderClassFeatures() {
       selection: data.skill_proficiencies.options
     });
   }
-  const extraSelections = gatherExtraSelections({ choices: allChoices }, "class", charLevel);
+  const extraSelections = gatherExtraSelections({ choices: allChoices }, 'class', charLevel);
   extraSelections.forEach((choice, idx) => {
     const featureKey = extraCategoryAliases[choice.name] || choice.name;
-    let block = `<details class="feature-block" id="class-extra-${idx}"><summary>${choice.name}</summary>`;
-    if (choice.description) block += `<div class="feature-desc">${choice.description}</div>`;
+    const details = document.createElement('details');
+    details.className = 'feature-block';
+    details.id = `class-extra-${idx}`;
+    const summary = document.createElement('summary');
+    summary.textContent = choice.name;
+    details.appendChild(summary);
+    if (choice.description) {
+      const desc = document.createElement('div');
+      desc.className = 'feature-desc';
+      desc.textContent = choice.description;
+      details.appendChild(desc);
+    }
     const options = choice.options || choice.selection || [];
     for (let i = 0; i < (choice.count || 1); i++) {
       const saved = selectedData[featureKey]?.[i] || '';
-      const optsHtml = options.map(opt => `<option value="${opt}" ${saved === opt ? 'selected' : ''}>${opt}</option>`).join('');
-      block += `<label>${choice.name}${choice.count > 1 ? ' ' + (i + 1) : ''}: <select data-feature="${featureKey}" data-index="${i}"><option value="">Seleziona...</option>${optsHtml}</select></label>`;
+      const label = document.createElement('label');
+      label.textContent = `${choice.name}${choice.count > 1 ? ' ' + (i + 1) : ''}: `;
+      const select = document.createElement('select');
+      select.dataset.feature = featureKey;
+      select.dataset.index = i;
+      const optDef = document.createElement('option');
+      optDef.value = '';
+      optDef.textContent = 'Seleziona...';
+      select.appendChild(optDef);
+      options.forEach(opt => {
+        const option = document.createElement('option');
+        option.value = opt;
+        option.textContent = opt;
+        if (saved === opt) option.selected = true;
+        select.appendChild(option);
+      });
+      label.appendChild(select);
+      details.appendChild(label);
     }
-    block += `</details>`;
-    html += block;
+    featuresDiv.appendChild(details);
   });
 
-  if (!subclassName) {
-    html += `<p>Seleziona una sottoclasse per vedere i tratti.</p>`;
-  }
-  featuresDiv.innerHTML = html;
   convertDetailsToAccordion(featuresDiv);
   featuresDiv.classList.add('accordion');
   initFeatureSelectionHandlers(featuresDiv, saveFeatureSelection);

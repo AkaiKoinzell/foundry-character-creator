@@ -35,6 +35,9 @@ function renderEquipment() {
   const equipmentDiv = document.getElementById('equipmentSelections');
   if (!equipmentDiv) return;
   equipmentDiv.innerHTML = '';
+  const confirmBtn = document.getElementById('confirmEquipment');
+  if (confirmBtn) confirmBtn.style.display = 'inline-block';
+  window.equipmentSelectionConfirmed = false;
 
   const standardDetail = document.createElement('details');
   standardDetail.className = 'feature-block';
@@ -185,6 +188,10 @@ document.addEventListener('DOMContentLoaded', async () => {
           upgrades.push(el.value);
         }
       });
+      if (equipmentDiv.querySelector('.needs-selection.incomplete')) {
+        alert('⚠️ Seleziona tutte le opzioni di equipaggiamento prima di procedere!');
+        return;
+      }
       const selectedData = getSelectedData();
       selectedData.equipment = {
         standard: equipmentData.standard,
@@ -192,6 +199,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         upgrades: upgrades
       };
       saveSelectedData();
+      window.equipmentSelectionConfirmed = true;
+      confirmBtn.style.display = 'none';
     });
   }
 });

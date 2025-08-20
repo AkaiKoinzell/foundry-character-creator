@@ -481,6 +481,7 @@ function applyRacialBonuses() {
     }
   });
   console.log("✅ Bonus razziali applicati:", counts);
+  window.racialBonusesConfirmed = true;
   updateFinalScores();
 }
 
@@ -493,6 +494,7 @@ export function resetRacialBonuses() {
     const el = document.getElementById(ability + "RaceModifier");
     if (el) el.textContent = "0";
   });
+  window.racialBonusesConfirmed = false;
   updateFinalScores();
 }
 

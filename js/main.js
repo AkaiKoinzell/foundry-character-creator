@@ -245,6 +245,10 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('⚠️ Seleziona una classe prima di procedere!');
       return;
     }
+    if (document.querySelector('#classFeatures .needs-selection, #classExtrasAccordion .needs-selection')) {
+      alert('⚠️ Completa tutte le scelte della classe prima di procedere!');
+      return;
+    }
     const className = classSelect.selectedOptions[0]?.text || '';
     const subclassLevels = { Cleric: 1, Warlock: 1, Sorcerer: 1 };
     const requiredLevel = subclassLevels[className] || 3;
@@ -264,6 +268,10 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('⚠️ Seleziona una razza prima di procedere!');
       return;
     }
+    if (document.querySelector('#raceTraits .needs-selection.incomplete')) {
+      alert('⚠️ Completa tutte le scelte della razza prima di procedere!');
+      return;
+    }
     raceSelectionConfirmed = true;
     document.getElementById('confirmRaceSelection').style.display = 'none';
   });
@@ -272,6 +280,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const bgSelect = document.getElementById('backgroundSelect').value;
     if (!bgSelect) {
       alert('⚠️ Seleziona un background prima di procedere!');
+      return;
+    }
+    if (document.querySelector('#step4 .needs-selection.incomplete')) {
+      alert('⚠️ Completa tutte le scelte del background prima di procedere!');
       return;
     }
     backgroundSelectionConfirmed = true;

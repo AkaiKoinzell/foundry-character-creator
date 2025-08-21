@@ -100,19 +100,41 @@ export async function renderClassFeatures() {
     details.appendChild(summary);
     profTexts.forEach(t => details.appendChild(createParagraph(t)));
 
-    renderProficiencyReplacements(
+    const renderReplacement = (type, fixed, allOptions, featureKey, label) => {
+      const container = document.createElement('div');
+      details.appendChild(container);
+      const render = () => {
+        container.innerHTML = '';
+        renderProficiencyReplacements(
+          type,
+          fixed,
+          allOptions,
+          container,
+          {
+            featureKey,
+            label,
+            selectedData: getSelectedData(),
+            getTakenOptions: { excludeClass: true },
+            changeHandler: () => setTimeout(render, 0),
+          }
+        );
+      };
+      render();
+    };
+
+    renderReplacement(
       'languages',
       data.language_proficiencies?.fixed,
       ALL_LANGUAGES,
-      details,
-      { featureKey: 'Languages', label: 'Linguaggi', selectedData }
+      'Languages',
+      'Linguaggi'
     );
-    renderProficiencyReplacements(
+    renderReplacement(
       'skills',
       data.skill_proficiencies?.fixed,
       ALL_SKILLS,
-      details,
-      { featureKey: 'Skill Proficiency', label: 'Abilità', selectedData }
+      'Skill Proficiency',
+      'Abilità'
     );
     featuresDiv.appendChild(details);
   }

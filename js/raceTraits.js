@@ -182,18 +182,25 @@ export async function displayRaceTraits() {
         detail.appendChild(summary);
         raceTraitsDiv.appendChild(detail);
       }
-      renderProficiencyReplacements(
-        type,
-        fixedList,
-        allOptions,
-        detail,
-        {
-          featureKey,
-          label: labels[featureKey],
-          selectedData,
-          getTakenOptions: { excludeRace: true },
-        }
-      );
+      const container = document.createElement('div');
+      detail.appendChild(container);
+      const render = () => {
+        container.innerHTML = '';
+        renderProficiencyReplacements(
+          type,
+          fixedList,
+          allOptions,
+          container,
+          {
+            featureKey,
+            label: labels[featureKey],
+            selectedData: getSelectedData(),
+            getTakenOptions: { excludeRace: true },
+            changeHandler: () => setTimeout(render, 0),
+          }
+        );
+      };
+      render();
     };
 
     addSubs('languages', raceData.languages?.fixed, ALL_LANGUAGES, 'Languages', /language/i);

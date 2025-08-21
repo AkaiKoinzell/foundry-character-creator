@@ -1,4 +1,4 @@
-import { getState, saveState } from './characterState.js';
+import { getState, saveState, recordStep } from './characterState.js';
 
 /**
  * Applies the grants of a step to the character state and reports any conflicts.
@@ -41,5 +41,6 @@ export function applyStep(step, grants = {}, choices = {}) {
   }
 
   saveState();
+  recordStep(step, grants, choices);
   return { characterState: state, conflicts };
 }

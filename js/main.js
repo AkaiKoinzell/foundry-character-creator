@@ -10,6 +10,7 @@ import {
   renderFinalRecap
 } from './script.js';
 import { resetSelectedData } from './state.js';
+import { undoToStep } from './characterState.js';
 import './step4.js';
 import './step5.js';
 import './step7.js';
@@ -139,10 +140,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   );
 
-  ['step1','step2','step3','step4','step5','step6','step7'].forEach((stepId, idx) => {
+  const stepIds = ['step1','step2','step3','step4','step5','step6','step7'];
+  const stepMapForUndo = {
+    step2: 'class',
+    step3: 'race',
+    step4: 'background',
+    step5: 'equipment',
+    step6: 'abilities',
+  };
+  stepIds.forEach((stepId, idx) => {
     const btn = document.getElementById(`btnStep${idx + 1}`);
     if (btn) btn.addEventListener('click', () => {
       if (!validateStepsUpTo(idx)) return;
+      const currentId = localStorage.getItem('currentStep') || 'step1';
+      const currentIdx = stepIds.indexOf(currentId);
+      if (idx < currentIdx) {
+        const undoId = stepMapForUndo[stepId];
+        if (undoId) undoToStep(undoId);
+      }
       showStep(stepId);
       if (stepId === 'step7') renderFinalRecap();
     });

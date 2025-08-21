@@ -24,6 +24,7 @@ describe('character creation flow', () => {
   let getSelectedData;
   let filterSpells;
   let getTakenProficiencies;
+  let gatherExtraSelections;
   let renderProficiencyReplacements;
   let ALL_SKILLS;
   let storage;
@@ -41,7 +42,7 @@ describe('character creation flow', () => {
     ({ getState, resetState } = await import('../js/characterState.js'));
     ({ setSelectedData, getSelectedData } = await import('../js/state.js'));
     ({ filterSpells } = await import('../js/spellcasting.js'));
-    ({ getTakenProficiencies } = await import('../js/script.js'));
+    ({ getTakenProficiencies, gatherExtraSelections } = await import('../js/script.js'));
     ({ renderProficiencyReplacements } = await import('../js/selectionUtils.js'));
     ({ ALL_SKILLS } = await import('../js/data/proficiencies.js'));
     resetState();
@@ -127,6 +128,29 @@ describe('character creation flow', () => {
     expect(new Set(finalData.Languages).size).toBe(finalData.Languages.length);
     expect(new Set(finalData['Skill Proficiency']).size).toBe(
       finalData['Skill Proficiency'].length
+    );
+  });
+
+  test('class selections retain chosen skills after confirmation', () => {
+    // Confirm class with History and Nature
+    applyStep('class', { proficiencies: { skills: ['History', 'Nature'] } });
+    setSelectedData({ 'Skill Proficiency': ['History', 'Nature'] });
+
+    // Gather selections for class again and ensure choices include taken skills
+    const data = {
+      choices: [
+        {
+          name: 'Skill Proficiency',
+          selection: ['Arcana', 'History', 'Nature', 'Medicine'],
+          count: 2,
+        },
+      ],
+    };
+
+    const selections = gatherExtraSelections(data, 'class', 1);
+    const skillChoice = selections.find(c => c.name === 'Skill Proficiency');
+    expect(skillChoice.selection).toEqual(
+      expect.arrayContaining(['History', 'Nature'])
     );
   });
 });

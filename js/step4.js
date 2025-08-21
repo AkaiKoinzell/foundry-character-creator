@@ -7,7 +7,7 @@ import {
   getTakenProficiencies,
 } from './script.js';
 import { ALL_TOOLS, ALL_LANGUAGES, ALL_SKILLS } from './data/proficiencies.js';
-import { buildChoiceSelectors } from './selectionUtils.js';
+import { buildChoiceSelectors, renderProficiencyReplacements } from './selectionUtils.js';
 
 let featPathIndex = {};
 let currentFeatData = null;
@@ -80,37 +80,31 @@ function renderDuplicateSelectors(type, detailsEl, baseList, allOptions) {
     return;
   }
   const base = baseList.filter(s => !conflicts.includes(s));
-  let opts = allOptions.filter(o => !taken.has(o.toLowerCase()));
-  if (opts.length === 0) {
-    const baseLower = base.map(b => b.toLowerCase());
-    opts = allOptions.filter(o => !baseLower.includes(o.toLowerCase()));
-  }
   const dupDiv = document.createElement('div');
   dupDiv.className = `duplicate-${type}-choices`;
   const typeMap = {
-    skills: { label: 'Abilità', choiceClass: 'duplicateSkillChoice' },
-    tools: { label: 'Strumenti', choiceClass: 'duplicateToolChoice' },
-    languages: { label: 'Linguaggi', choiceClass: 'duplicateLanguageChoice' },
+    skills: { label: 'Abilità', selectClass: 'duplicateSkillChoice' },
+    tools: { label: 'Strumenti', selectClass: 'duplicateToolChoice' },
+    languages: { label: 'Linguaggi', selectClass: 'duplicateLanguageChoice' },
   };
-  const { label, choiceClass } = typeMap[type];
-  const p = document.createElement('p');
-  p.innerHTML = `<strong>${label} duplicate, scegli sostituti:</strong>`;
-  dupDiv.appendChild(p);
-  const update = () => {
-    const chosen = Array.from(dupDiv.querySelectorAll(`.${choiceClass}`))
-      .map(s => s.value)
-      .filter(Boolean);
-    window.backgroundData[type] = base.concat(chosen);
-    saveBackgroundData();
-    if (type === 'skills') renderSkillSummary(window.backgroundData[type], detailsEl);
-    if (chosen.length === conflicts.length) {
-      renderDuplicateSelectors(type, detailsEl, window.backgroundData[type], allOptions);
-      return;
-    }
-    detailsEl.classList.toggle('incomplete', chosen.length < conflicts.length);
-  };
-  buildChoiceSelectors(dupDiv, conflicts.length, opts, choiceClass, update);
+  const { label, selectClass } = typeMap[type];
   detailsEl.appendChild(dupDiv);
+  renderProficiencyReplacements(type, baseList, allOptions, dupDiv, {
+    label,
+    selectClass,
+    getTakenOptions: { excludeBackground: true },
+    changeHandler: values => {
+      const chosen = values.filter(Boolean);
+      window.backgroundData[type] = base.concat(chosen);
+      saveBackgroundData();
+      if (type === 'skills') renderSkillSummary(window.backgroundData[type], detailsEl);
+      if (chosen.length === conflicts.length) {
+        renderDuplicateSelectors(type, detailsEl, window.backgroundData[type], allOptions);
+        return;
+      }
+      detailsEl.classList.toggle('incomplete', chosen.length < conflicts.length);
+    },
+  });
   detailsEl.classList.add('needs-selection', 'incomplete');
   initFeatureSelectionHandlers(detailsEl.parentElement);
 }

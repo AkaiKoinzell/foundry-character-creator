@@ -6,6 +6,7 @@ import { extraCategoryAliases } from './extrasModal.js';
 import { convertDetailsToAccordion, initializeAccordion } from './ui/accordion.js';
 import { getSelectedData } from './state.js';
 import { ALL_LANGUAGES, ALL_SKILLS } from './data/proficiencies.js';
+import { renderProficiencyReplacements } from './selectionUtils.js';
 
 export async function updateSubclasses() {
   const classPath = document.getElementById('classSelect').value;
@@ -99,53 +100,20 @@ export async function renderClassFeatures() {
     details.appendChild(summary);
     profTexts.forEach(t => details.appendChild(createParagraph(t)));
 
-    const handleConflicts = (type, fixedList, allOptions, featureKey, label) => {
-      if (!fixedList || fixedList.length === 0) return;
-      const { taken, conflicts } = getTakenProficiencies(type, fixedList);
-      if (!conflicts.length) return;
-      const startIndex = details.querySelectorAll(`select[data-feature="${featureKey}"]`).length;
-      const opts = allOptions.filter(o => !taken.has(o.toLowerCase()));
-      const selects = [];
-      const p = document.createElement('p');
-      p.innerHTML = `<strong>${label} duplicate, scegli sostituti:</strong>`;
-      details.appendChild(p);
-      conflicts.forEach((conflict, i) => {
-        const lab = document.createElement('label');
-        lab.textContent = `${conflict}: `;
-        const sel = document.createElement('select');
-        sel.dataset.feature = featureKey;
-        sel.dataset.index = startIndex + i;
-        const def = document.createElement('option');
-        def.value = '';
-        def.textContent = 'Seleziona...';
-        sel.appendChild(def);
-        opts.forEach(o => {
-          const option = document.createElement('option');
-          option.value = o;
-          option.textContent = o;
-          sel.appendChild(option);
-        });
-        const saved = selectedData[featureKey]?.[startIndex + i] || '';
-        if (saved) sel.value = saved;
-        lab.appendChild(sel);
-        details.appendChild(lab);
-        selects.push(sel);
-      });
-      const update = () => {
-        const chosen = new Set(selects.map(s => s.value).filter(Boolean));
-        selects.forEach(sel => {
-          const curr = sel.value;
-          sel.innerHTML = '<option value="">Seleziona...</option>' +
-            opts.map(o => `<option value="${o}" ${chosen.has(o) && o !== curr ? 'disabled' : ''}>${o}</option>`).join('');
-          sel.value = curr;
-        });
-      };
-      selects.forEach(sel => sel.addEventListener('change', update));
-      update();
-    };
-
-    handleConflicts('languages', data.language_proficiencies?.fixed, ALL_LANGUAGES, 'Languages', 'Linguaggi');
-    handleConflicts('skills', data.skill_proficiencies?.fixed, ALL_SKILLS, 'Skill Proficiency', 'Abilità');
+    renderProficiencyReplacements(
+      'languages',
+      data.language_proficiencies?.fixed,
+      ALL_LANGUAGES,
+      details,
+      { featureKey: 'Languages', label: 'Linguaggi', selectedData }
+    );
+    renderProficiencyReplacements(
+      'skills',
+      data.skill_proficiencies?.fixed,
+      ALL_SKILLS,
+      details,
+      { featureKey: 'Skill Proficiency', label: 'Abilità', selectedData }
+    );
     featuresDiv.appendChild(details);
   }
 

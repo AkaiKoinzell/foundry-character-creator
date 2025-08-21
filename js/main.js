@@ -204,6 +204,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('levelSelect').addEventListener('change', () => displayRaceTraits());
   document.getElementById('generateJson').addEventListener('click', generateFinalJson);
+  const pdfBtn = document.getElementById('generatePdf');
+  if (pdfBtn) pdfBtn.addEventListener('click', generateFinalJson);
   document.getElementById('addClassButton').addEventListener('click', () => {
     const classSelect = document.getElementById('classSelect');
     if (classSelect) {

@@ -1,4 +1,5 @@
 import { nodeResolve } from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
 import terser from '@rollup/plugin-terser';
 
 export default {
@@ -6,10 +7,12 @@ export default {
   output: {
     file: 'dist/bundle.js',
     format: 'iife',
-    sourcemap: false
+    sourcemap: false,
+    inlineDynamicImports: true
   },
   plugins: [
     nodeResolve(),
+    commonjs(),
     terser()
   ]
 };

@@ -6,6 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
     <h2>Step 7: Riepilogo ed Esportazione</h2>
     <div id="finalRecap"></div>
     <button id="generateJson">Genera JSON</button>
-    <!-- Puoi aggiungere qui anche il pulsante per esportare in PDF -->
+    <button id="generatePdf">Genera PDF</button>
   `;
 });

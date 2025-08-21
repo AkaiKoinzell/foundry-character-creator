@@ -187,4 +187,3 @@ describe('character creation flow', () => {
     expect(opts).not.toContain('Athletics');
   });
 });
-

@@ -13,7 +13,7 @@ import { setExtraSelections } from './extrasState.js';
 import { displayRaceTraits } from './raceTraits.js';
 import { updateSubclasses, renderClassFeatures } from './classFeatures.js';
 import { convertDetailsToAccordion, initializeAccordion } from './ui/accordion.js';
-import { getState } from './characterState.js';
+import { getState, addProficiency, removeProficiency } from './characterState.js';
 
 
 let selectedData = getSelectedData();
@@ -183,6 +183,41 @@ function getTakenProficiencies(type, incoming, opts = {}) {
     });
 
   return { owned: ownedAll, conflicts };
+}
+
+// Registry tracking current conflicts by a unique grant identifier
+const conflictRegistry = {};
+
+/**
+ * Register a conflict so that it can later be resolved.
+ * @param {string} grantId - Unique identifier for the grant.
+ * @param {Object} conflict - Conflict details including type, key, source and replacementPool.
+ */
+export function registerConflict(grantId, conflict) {
+  if (!grantId || !conflict) return;
+  conflictRegistry[grantId] = { ...conflict };
+}
+
+/**
+ * Resolve a previously registered conflict by swapping the duplicate proficiency.
+ * @param {string} grantId - Identifier returned when the conflict was registered.
+ * @param {string} replacement - Proficiency selected by the user.
+ * @returns {boolean} True if resolution succeeded.
+ */
+export function resolveConflict(grantId, replacement) {
+  const conflict = conflictRegistry[grantId];
+  if (!conflict) return false;
+  if (!conflict.replacementPool.includes(replacement)) return false;
+
+  const { type, key, source } = conflict;
+  // Remove the conflicting grant from state for this source
+  removeProficiency(type, key, source);
+  // Add the replacement proficiency for the same source
+  addProficiency(type, replacement, source);
+
+  console.log(`🔄 Swapped ${key} → ${replacement} for ${source}`);
+  conflict.resolved = true;
+  return true;
 }
 
 /**
@@ -596,6 +631,8 @@ export {
   displayRaceTraits,
   getTakenSelections,
   getTakenProficiencies,
+  registerConflict,
+  resolveConflict,
   generateFinalJson,
   generateFinalPdf,
   initializeValues,

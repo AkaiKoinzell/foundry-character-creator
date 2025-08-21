@@ -197,6 +197,7 @@ export async function displayRaceTraits() {
             selectedData: getSelectedData(),
             getTakenOptions: { excludeRace: true },
             changeHandler: () => setTimeout(render, 0),
+            source: 'race',
           }
         );
       };

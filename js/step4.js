@@ -8,12 +8,21 @@ import {
 } from './script.js';
 import { ALL_TOOLS, ALL_LANGUAGES, ALL_SKILLS } from './data/proficiencies.js';
 import { buildChoiceSelectors, renderProficiencyReplacements } from './selectionUtils.js';
+import { applyStep } from './stepEngine.js';
 
 let featPathIndex = {};
 let currentFeatData = null;
 
 function saveBackgroundData() {
   sessionStorage.setItem('backgroundData', JSON.stringify(window.backgroundData));
+  const grants = {
+    proficiencies: {
+      skills: window.backgroundData.skills || [],
+      tools: window.backgroundData.tools || [],
+      languages: window.backgroundData.languages || [],
+    },
+  };
+  applyStep('background', grants);
 }
 
 function renderSkillSummary(skills, container) {

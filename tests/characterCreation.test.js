@@ -24,6 +24,7 @@ describe('character creation flow', () => {
   let getSelectedData;
   let filterSpells;
   let getTakenProficiencies;
+  let gatherExtraSelections;
   let renderProficiencyReplacements;
   let ALL_SKILLS;
   let storage;
@@ -41,7 +42,7 @@ describe('character creation flow', () => {
     ({ getState, resetState } = await import('../js/characterState.js'));
     ({ setSelectedData, getSelectedData } = await import('../js/state.js'));
     ({ filterSpells } = await import('../js/spellcasting.js'));
-    ({ getTakenProficiencies } = await import('../js/script.js'));
+    ({ getTakenProficiencies, gatherExtraSelections } = await import('../js/script.js'));
     ({ renderProficiencyReplacements } = await import('../js/selectionUtils.js'));
     ({ ALL_SKILLS } = await import('../js/data/proficiencies.js'));
     resetState();
@@ -128,6 +129,87 @@ describe('character creation flow', () => {
     expect(new Set(finalData['Skill Proficiency']).size).toBe(
       finalData['Skill Proficiency'].length
     );
+  });
+
+  test('class selections retain chosen skills after confirmation', () => {
+    // Confirm class with History and Nature
+    applyStep('class', { proficiencies: { skills: ['History', 'Nature'] } });
+    setSelectedData({ 'Skill Proficiency': ['History', 'Nature'] });
+
+    // Gather selections for class again and ensure choices include taken skills
+    const data = {
+      choices: [
+        {
+          name: 'Skill Proficiency',
+          selection: ['Arcana', 'History', 'Nature', 'Medicine'],
+          count: 2,
+        },
+      ],
+    };
+
+    const selections = gatherExtraSelections(data, 'class', 1);
+    const skillChoice = selections.find(c => c.name === 'Skill Proficiency');
+    expect(skillChoice.selection).toEqual(
+      expect.arrayContaining(['History', 'Nature'])
+    );
+  });
+
+  test('class choices ignore race/background proficiencies', () => {
+    // Start with class selections
+    applyStep('class', { proficiencies: { skills: ['History', 'Nature'] } });
+    setSelectedData({ 'Skill Proficiency': ['History', 'Nature'] });
+
+    // Background grants History which should not remove it from class options
+    applyStep('background', { proficiencies: { skills: ['History'] } });
+
+    const data = {
+      choices: [
+        {
+          name: 'Skill Proficiency',
+          selection: ['Arcana', 'History', 'Nature', 'Medicine'],
+          count: 2,
+        },
+      ],
+    };
+
+    const selections = gatherExtraSelections(data, 'class', 1);
+    const skillChoice = selections.find(c => c.name === 'Skill Proficiency');
+    expect(skillChoice.selection).toEqual(
+      expect.arrayContaining(['History', 'Nature'])
+    );
+  });
+
+  test('race filters out previously known proficiencies', () => {
+    applyStep('class', { proficiencies: { languages: ['Common', 'Elvish'] } });
+    const raceData = {
+      languages: { fixed: [], choice: 1, options: ['Common', 'Dwarvish', 'Giant'] },
+    };
+    const selections = gatherExtraSelections(raceData, 'race');
+    const langChoice = selections.find(c => c.name === 'Languages');
+    expect(langChoice.selection).toEqual(
+      expect.arrayContaining(['Dwarvish', 'Giant'])
+    );
+    expect(langChoice.selection).not.toContain('Common');
+    expect(langChoice.selection).not.toContain('Elvish');
+  });
+
+  test('background swaps use only allowed pool', () => {
+    applyStep('class', { proficiencies: { skills: ['History'] } });
+    const container = document.createElement('div');
+    const selects = renderProficiencyReplacements(
+      'skills',
+      ['History'],
+      ['Arcana', 'Religion'],
+      container,
+      {
+        label: 'Skill',
+        source: 'background',
+        getTakenOptions: { allowed: ['Arcana', 'Religion'] },
+      }
+    );
+    const opts = Array.from(selects[0].options).map(o => o.value);
+    expect(opts).toEqual(expect.arrayContaining(['Arcana', 'Religion']));
+    expect(opts).not.toContain('Athletics');
   });
 });
 

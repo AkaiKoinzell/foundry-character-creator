@@ -48,9 +48,13 @@ export function renderProficiencyReplacements(
     if (!conflicts.length) return [];
     const base = fixedList.filter(s => !conflicts.some(c => c.key === s));
     let opts = conflicts[0]?.replacementPool || [];
+    if (allOptions && allOptions.length) {
+      const allowed = new Set(allOptions.map(o => o.toLowerCase()));
+      opts = opts.filter(o => allowed.has(o.toLowerCase()));
+    }
     if (opts.length === 0) {
       const baseLower = base.map(b => b.toLowerCase());
-      opts = allOptions.filter(o => !baseLower.includes(o.toLowerCase()));
+      opts = (allOptions || []).filter(o => !baseLower.includes(o.toLowerCase()));
     }
   const si =
     startIndex !== undefined

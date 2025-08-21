@@ -116,6 +116,7 @@ export async function renderClassFeatures() {
             selectedData: getSelectedData(),
             getTakenOptions: { excludeClass: true },
             changeHandler: () => setTimeout(render, 0),
+            source: 'class',
           }
         );
       };

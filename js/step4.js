@@ -102,6 +102,7 @@ function renderDuplicateSelectors(type, detailsEl, baseList, allOptions) {
     label,
     selectClass,
     getTakenOptions: { excludeBackground: true },
+    source: 'background',
     changeHandler: values => {
       const chosen = values.filter(Boolean);
       window.backgroundData[type] = base.concat(chosen);

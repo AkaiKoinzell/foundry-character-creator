@@ -80,9 +80,12 @@ function renderDuplicateSelectors(type, detailsEl, baseList, allOptions) {
     return;
   }
   const base = baseList.filter(s => !conflicts.includes(s));
-  let opts = allOptions.filter(o => !taken.has(o.toLowerCase()));
+  const baseLower = baseList.map(b => b.toLowerCase());
+  const takenWithoutBase = new Set(
+    [...taken].filter(t => !baseLower.includes(t))
+  );
+  let opts = allOptions.filter(o => !takenWithoutBase.has(o.toLowerCase()));
   if (opts.length === 0) {
-    const baseLower = base.map(b => b.toLowerCase());
     opts = allOptions.filter(o => !baseLower.includes(o.toLowerCase()));
   }
   const dupDiv = document.createElement('div');
@@ -96,6 +99,7 @@ function renderDuplicateSelectors(type, detailsEl, baseList, allOptions) {
   const p = document.createElement('p');
   p.innerHTML = `<strong>${label} duplicate, scegli sostituti:</strong>`;
   dupDiv.appendChild(p);
+  let initializing = true;
   const update = () => {
     const chosen = Array.from(dupDiv.querySelectorAll(`.${choiceClass}`))
       .map(s => s.value)
@@ -103,11 +107,10 @@ function renderDuplicateSelectors(type, detailsEl, baseList, allOptions) {
     window.backgroundData[type] = base.concat(chosen);
     saveBackgroundData();
     if (type === 'skills') renderSkillSummary(window.backgroundData[type], detailsEl);
-    if (chosen.length === conflicts.length) {
+    if (!initializing) {
       renderDuplicateSelectors(type, detailsEl, window.backgroundData[type], allOptions);
-      return;
     }
-    detailsEl.classList.toggle('incomplete', chosen.length < conflicts.length);
+    initializing = false;
   };
   buildChoiceSelectors(dupDiv, conflicts.length, opts, choiceClass, update);
   detailsEl.appendChild(dupDiv);

@@ -183,7 +183,14 @@ export async function displayRaceTraits() {
         raceTraitsDiv.appendChild(detail);
       }
       const startIndex = detail.querySelectorAll(`select[data-feature="${featureKey}"]`).length;
-      const opts = allOptions.filter(o => !taken.has(o.toLowerCase()));
+      const baseLower = fixedList.map(f => f.toLowerCase());
+      const takenWithoutBase = new Set(
+        [...taken].filter(t => !baseLower.includes(t))
+      );
+      let opts = allOptions.filter(o => !takenWithoutBase.has(o.toLowerCase()));
+      if (opts.length === 0) {
+        opts = allOptions.filter(o => !baseLower.includes(o.toLowerCase()));
+      }
       const selects = [];
       const p = document.createElement('p');
       const labels = { Languages: 'Linguaggi', 'Skill Proficiency': 'Abilità', 'Tool Proficiency': 'Strumenti' };

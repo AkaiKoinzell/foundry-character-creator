@@ -196,7 +196,12 @@ export async function displayRaceTraits() {
             label: labels[featureKey],
             selectedData: getSelectedData(),
             getTakenOptions: { excludeRace: true },
-            changeHandler: () => setTimeout(render, 0),
+            changeHandler: values => {
+              const d = getSelectedData();
+              d[featureKey] = values;
+              setSelectedData(d);
+              setTimeout(render, 0);
+            },
             source: 'race',
           }
         );

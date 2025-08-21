@@ -9,7 +9,8 @@ import {
   initializeValues,
   renderFinalRecap
 } from './script.js';
-import { resetSelectedData } from './state.js';
+import { resetSelectedData, getSelectedData } from './state.js';
+import { applyStep } from './stepEngine.js';
 import { undoToStep } from './characterState.js';
 import './step4.js';
 import './step5.js';
@@ -274,6 +275,21 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     classSelectionConfirmed = true;
+    const sel = getSelectedData();
+    const grants = { proficiencies: { skills: [], tools: [], languages: [], cantrips: [] } };
+    const data = window.currentClassData || {};
+    if (data.skill_proficiencies?.fixed) grants.proficiencies.skills.push(...data.skill_proficiencies.fixed);
+    if (data.tool_proficiencies?.fixed) grants.proficiencies.tools.push(...data.tool_proficiencies.fixed);
+    if (data.language_proficiencies?.fixed) grants.proficiencies.languages.push(...data.language_proficiencies.fixed);
+    if (data.spellcasting?.fixed_cantrips) grants.proficiencies.cantrips.push(...data.spellcasting.fixed_cantrips);
+    if (sel['Skill Proficiency']) grants.proficiencies.skills.push(...sel['Skill Proficiency'].filter(Boolean));
+    if (sel['Tool Proficiency']) grants.proficiencies.tools.push(...sel['Tool Proficiency'].filter(Boolean));
+    if (sel['Languages']) grants.proficiencies.languages.push(...sel['Languages'].filter(Boolean));
+    if (sel['Cantrips']) grants.proficiencies.cantrips.push(...sel['Cantrips'].filter(Boolean));
+    for (const key of Object.keys(grants.proficiencies)) {
+      grants.proficiencies[key] = [...new Set(grants.proficiencies[key])].filter(Boolean);
+    }
+    applyStep('class', grants);
     await renderClassFeatures();
     const confirmBtn = document.getElementById('confirmClassSelection');
     if (confirmBtn) confirmBtn.style.display = 'none';
@@ -290,6 +306,22 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     raceSelectionConfirmed = true;
+    const sel = getSelectedData();
+    const grants = { proficiencies: { skills: [], tools: [], languages: [], cantrips: [] } };
+    const data = window.currentRaceData || {};
+    if (data.languages?.fixed) grants.proficiencies.languages.push(...data.languages.fixed);
+    if (data.skill_choices?.fixed) grants.proficiencies.skills.push(...data.skill_choices.fixed);
+    if (data.tool_choices?.fixed) grants.proficiencies.tools.push(...data.tool_choices.fixed);
+    if (data.spellcasting?.fixed_cantrips) grants.proficiencies.cantrips.push(...data.spellcasting.fixed_cantrips);
+    if (data.spellcasting?.fixed_spell) grants.proficiencies.cantrips.push(data.spellcasting.fixed_spell);
+    if (sel['Skill Proficiency']) grants.proficiencies.skills.push(...sel['Skill Proficiency'].filter(Boolean));
+    if (sel['Tool Proficiency']) grants.proficiencies.tools.push(...sel['Tool Proficiency'].filter(Boolean));
+    if (sel['Languages']) grants.proficiencies.languages.push(...sel['Languages'].filter(Boolean));
+    if (sel['Cantrips']) grants.proficiencies.cantrips.push(...sel['Cantrips'].filter(Boolean));
+    for (const key of Object.keys(grants.proficiencies)) {
+      grants.proficiencies[key] = [...new Set(grants.proficiencies[key])].filter(Boolean);
+    }
+    applyStep('race', grants);
     document.getElementById('confirmRaceSelection').style.display = 'none';
   });
 

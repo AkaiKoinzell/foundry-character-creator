@@ -2,10 +2,11 @@
   "name": "foundry-character-creator",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "test": "jest"
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.6",

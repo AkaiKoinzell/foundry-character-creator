@@ -210,7 +210,6 @@ describe('character creation flow', () => {
     expect(opts).toEqual(expect.arrayContaining(['Arcana', 'Religion']));
     expect(opts).not.toContain('Athletics');
   });
-});
 
   test('class selections retain chosen skills after confirmation', () => {
     // Confirm class with History and Nature

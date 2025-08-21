@@ -6,11 +6,25 @@ const DEFAULT_STATE = {
    * - sources: array of strings referencing where the proficiency came from.
    */
   proficiencies: [],
+  /**
+   * Ordered list of steps that have been applied to the character.
+   * Each entry stores the step id along with the grants and choices
+   * used so the step can be replayed if necessary.
+   */
+  stepsCompleted: [],
+  /**
+   * Log of swaps performed to resolve proficiency conflicts.
+   * Entries are objects of the form { step, conflicts } where conflicts
+   * mirrors the structure returned by applyStep.
+   */
+  swapLog: [],
 };
 
 function cloneDefaultState() {
   return JSON.parse(JSON.stringify(DEFAULT_STATE));
 }
+
+import { applyStep } from './stepEngine.js';
 
 let state = loadState();
 
@@ -64,6 +78,56 @@ export function removeProficiency(type, key, source) {
   if (!source || prof.sources.length === 0) {
     state.proficiencies.splice(index, 1);
   }
+  saveState();
+}
+
+/**
+ * Record that a step has been applied with the given grants and choices.
+ * If the step was previously recorded it will be replaced.
+ */
+export function recordStep(step, grants = {}, choices = {}) {
+  if (!step) return;
+  const entry = { step, grants, choices };
+  const idx = state.stepsCompleted.findIndex(s => s.step === step);
+  if (idx >= 0) state.stepsCompleted[idx] = entry;
+  else state.stepsCompleted.push(entry);
+  saveState();
+}
+
+/**
+ * Append an entry to the swap log.
+ * @param {Object} logEntry - Object describing the swap resolution.
+ */
+export function logSwap(logEntry) {
+  if (!logEntry) return;
+  state.swapLog.push(logEntry);
+  saveState();
+}
+
+/**
+ * Undo state to the specified step.
+ * Removes any later steps and rebuilds the character state by replaying
+ * the remaining recorded steps through applyStep. Swap log entries are
+ * recomputed based on the replay results.
+ * @param {string} step - Identifier of the step to undo back to.
+ */
+export function undoToStep(step) {
+  const idx = state.stepsCompleted.findIndex(s => s.step === step);
+  if (idx === -1) return;
+
+  const stepsToReplay = state.stepsCompleted.slice(0, idx + 1);
+
+  // Reset to default state
+  state = cloneDefaultState();
+
+  // Replay steps and rebuild swap log
+  stepsToReplay.forEach(({ step: id, grants, choices }) => {
+    const { conflicts } = applyStep(id, grants, choices);
+    if (conflicts && Object.keys(conflicts).length > 0) {
+      state.swapLog.push({ step: id, conflicts });
+    }
+  });
+
   saveState();
 }
 

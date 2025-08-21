@@ -63,28 +63,89 @@ function renderEquipment() {
         (choice.options || []).forEach(opt => {
           const text = typeof opt === 'string' ? opt : opt.label || opt.value;
           if (text.toLowerCase() === 'simple weapon') {
-            SIMPLE_WEAPONS.forEach(w => options.push({ value: w, label: w }));
+            options.push({ value: 'simple weapon', label: 'Simple weapon', simpleWeapon: true });
           } else {
-            options.push(opt);
+            options.push(typeof opt === 'string' ? { value: opt, label: opt } : opt);
           }
         });
-        options.forEach((opt, oIdx) => {
-          const id = `equipChoice_${idx}_${oIdx}`;
-          const input = document.createElement('input');
-          input.type = choice.type === 'checkbox' ? 'checkbox' : 'radio';
-          input.name = `equipChoice_${idx}`;
-          input.id = id;
-          input.value = opt.value || opt;
-          if (saved.class && saved.class.includes(input.value)) {
-            input.checked = true;
+
+        const needsDropdown =
+          choice.type === 'radio' &&
+          (options.length > 5 || /tools|instrument/i.test(choice.label || '')) &&
+          !options.some(o => o.simpleWeapon);
+
+        if (needsDropdown) {
+          const select = document.createElement('select');
+          select.name = `equipChoice_${idx}`;
+          select.id = `equipChoice_${idx}`;
+          const placeholder = document.createElement('option');
+          placeholder.value = '';
+          placeholder.textContent = '-- select --';
+          select.appendChild(placeholder);
+          options.forEach(opt => {
+            const optEl = document.createElement('option');
+            optEl.value = opt.value || opt;
+            optEl.textContent = opt.label || opt;
+            select.appendChild(optEl);
+          });
+          if (saved.class) {
+            const savedOpt = options.find(o => saved.class.includes(o.value || o));
+            if (savedOpt) select.value = savedOpt.value || savedOpt;
           }
-          const lab = document.createElement('label');
-          lab.htmlFor = id;
-          lab.textContent = opt.label || opt;
-          detail.appendChild(input);
-          detail.appendChild(lab);
+          detail.appendChild(select);
           detail.appendChild(document.createElement('br'));
-        });
+        } else {
+          options.forEach((opt, oIdx) => {
+            const id = `equipChoice_${idx}_${oIdx}`;
+            if (opt.simpleWeapon) {
+              const input = document.createElement('input');
+              input.type = 'radio';
+              input.name = `equipChoice_${idx}`;
+              input.id = id;
+              const savedSimple = (saved.class || []).find(v => SIMPLE_WEAPONS.includes(v));
+              input.value = savedSimple || '';
+              if (savedSimple) input.checked = true;
+              const lab = document.createElement('label');
+              lab.htmlFor = id;
+              lab.textContent = opt.label;
+              detail.appendChild(input);
+              detail.appendChild(lab);
+              const select = document.createElement('select');
+              const placeholder = document.createElement('option');
+              placeholder.value = '';
+              placeholder.textContent = '-- select --';
+              select.appendChild(placeholder);
+              SIMPLE_WEAPONS.forEach(w => {
+                const swOpt = document.createElement('option');
+                swOpt.value = w;
+                swOpt.textContent = w;
+                select.appendChild(swOpt);
+              });
+              if (savedSimple) select.value = savedSimple;
+              select.addEventListener('change', () => {
+                input.value = select.value;
+                input.checked = true;
+              });
+              detail.appendChild(select);
+              detail.appendChild(document.createElement('br'));
+            } else {
+              const input = document.createElement('input');
+              input.type = choice.type === 'checkbox' ? 'checkbox' : 'radio';
+              input.name = `equipChoice_${idx}`;
+              input.id = id;
+              input.value = opt.value || opt;
+              if (saved.class && saved.class.includes(input.value)) {
+                input.checked = true;
+              }
+              const lab = document.createElement('label');
+              lab.htmlFor = id;
+              lab.textContent = opt.label || opt;
+              detail.appendChild(input);
+              detail.appendChild(lab);
+              detail.appendChild(document.createElement('br'));
+            }
+          });
+        }
         equipmentDiv.appendChild(detail);
       });
     }
@@ -145,12 +206,16 @@ function renderEquipment() {
 
   equipmentDiv.querySelectorAll('.accordion-item.needs-selection').forEach(block => {
     const update = () => {
-      const anyChecked = block.querySelectorAll('input:checked').length > 0;
+      const anyChecked =
+        block.querySelectorAll('input:checked').length > 0 ||
+        Array.from(block.querySelectorAll('select')).some(sel => sel.value);
       block.classList.toggle('incomplete', !anyChecked);
     };
-    block.querySelectorAll('input').forEach(inp => inp.addEventListener('change', update));
+    block.querySelectorAll('input, select').forEach(inp => inp.addEventListener('change', update));
     update();
-    block.querySelectorAll('input:checked').forEach(inp => inp.dispatchEvent(new Event('change')));
+    block.querySelectorAll('input:checked, select').forEach(inp =>
+      inp.dispatchEvent(new Event('change'))
+    );
   });
 }
 
@@ -186,6 +251,13 @@ document.addEventListener('DOMContentLoaded', async () => {
           chosen.push(el.value);
         } else {
           upgrades.push(el.value);
+        }
+      });
+      equipmentDiv.querySelectorAll('select').forEach(sel => {
+        if (sel.name && sel.name.startsWith('equipChoice_')) {
+          if (sel.value) chosen.push(sel.value);
+        } else if (sel.value) {
+          upgrades.push(sel.value);
         }
       });
       if (equipmentDiv.querySelector('.needs-selection.incomplete')) {

@@ -254,7 +254,6 @@ function gatherExtraSelections(data, context, level = 1) {
   } else {
     exclusion = {};
   }
-
   const takenLangs = getTakenProficiencies('languages', undefined, exclusion);
   const takenSkills = getTakenProficiencies('skills', undefined, exclusion);
   const takenTools = getTakenProficiencies('tools', undefined, exclusion);

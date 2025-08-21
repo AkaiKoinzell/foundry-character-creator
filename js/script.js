@@ -236,12 +236,24 @@ function gatherExtraSelections(data, context, level = 1) {
 
   // Exclude proficiencies granted by the current context so already
   // selected options remain available when re-rendering the same step.
-  const exclusion = {
-    excludeClass: context === 'class',
-    excludeRace: context === 'race',
-    excludeBackground: context === 'background',
-  };
-
+  let exclusion;
+  if (context === 'class') {
+    // Allow full choice list when editing class, ignoring proficiencies from
+    // other sources so duplicates can be swapped later.
+    exclusion = {
+      excludeClass: true,
+      excludeRace: true,
+      excludeBackground: true,
+    };
+  } else if (context === 'race') {
+    // Filter out proficiencies already owned (e.g. from class or background)
+    // but ignore race's own grants so re-rendering keeps previous selections.
+    exclusion = { excludeRace: true };
+  } else if (context === 'background') {
+    exclusion = { excludeBackground: true };
+  } else {
+    exclusion = {};
+  }
   const takenLangs = getTakenProficiencies('languages', undefined, exclusion);
   const takenSkills = getTakenProficiencies('skills', undefined, exclusion);
   const takenTools = getTakenProficiencies('tools', undefined, exclusion);

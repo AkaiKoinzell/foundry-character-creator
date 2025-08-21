@@ -149,7 +149,12 @@ function getTakenSelections(type, opts = {}) {
 
 // Utility reading CharacterState.proficiencies and reporting conflicts
 function getTakenProficiencies(type, incoming, opts = {}) {
-  const { excludeRace = false, excludeClass = false, excludeBackground = false } = opts;
+  const {
+    excludeRace = false,
+    excludeClass = false,
+    excludeBackground = false,
+    allowed,
+  } = opts;
   const state = getState();
   let entries = state.proficiencies.filter(p => p.type === type);
   if (excludeRace) entries = entries.filter(p => !p.sources.includes('race'));
@@ -167,9 +172,8 @@ function getTakenProficiencies(type, incoming, opts = {}) {
     skills: ALL_SKILLS,
     tools: ALL_TOOLS,
   };
-  const replacementPool = (defaults[type] || []).filter(
-    o => !ownedAll.has(o.toLowerCase())
-  );
+  const pool = allowed || defaults[type] || [];
+  const replacementPool = pool.filter(o => !ownedAll.has(o.toLowerCase()));
 
   const conflicts = incoming
     .filter(item => ownedExisting.has(item.toLowerCase()))
@@ -230,9 +234,17 @@ export function resolveConflict(grantId, replacement) {
 function gatherExtraSelections(data, context, level = 1) {
   const selections = [];
 
-  const takenLangs = getTakenProficiencies('languages');
-  const takenSkills = getTakenProficiencies('skills');
-  const takenTools = getTakenProficiencies('tools');
+  // Exclude proficiencies granted by the current context so already
+  // selected options remain available when re-rendering the same step.
+  const exclusion = {
+    excludeClass: context === 'class',
+    excludeRace: context === 'race',
+    excludeBackground: context === 'background',
+  };
+
+  const takenLangs = getTakenProficiencies('languages', undefined, exclusion);
+  const takenSkills = getTakenProficiencies('skills', undefined, exclusion);
+  const takenTools = getTakenProficiencies('tools', undefined, exclusion);
 
   if (context === "race") {
     if (data.languages && (data.languages.fixed.length > 0 || data.languages.choice > 0)) {

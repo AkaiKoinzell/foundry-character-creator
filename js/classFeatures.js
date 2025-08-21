@@ -4,7 +4,7 @@ import { gatherExtraSelections, initFeatureSelectionHandlers, saveFeatureSelecti
 import { setExtraSelections } from './extrasState.js';
 import { extraCategoryAliases } from './extrasModal.js';
 import { convertDetailsToAccordion, initializeAccordion } from './ui/accordion.js';
-import { getSelectedData } from './state.js';
+import { getSelectedData, setSelectedData } from './state.js';
 import { ALL_LANGUAGES, ALL_SKILLS } from './data/proficiencies.js';
 import { renderProficiencyReplacements } from './selectionUtils.js';
 
@@ -115,7 +115,12 @@ export async function renderClassFeatures() {
             label,
             selectedData: getSelectedData(),
             getTakenOptions: { excludeClass: true },
-            changeHandler: () => setTimeout(render, 0),
+            changeHandler: values => {
+              const d = getSelectedData();
+              d[featureKey] = values;
+              setSelectedData(d);
+              setTimeout(render, 0);
+            },
             source: 'class',
           }
         );

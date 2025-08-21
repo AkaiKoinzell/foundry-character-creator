@@ -147,6 +147,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       skillDetails.className = "feature-block";
       skillDetails.innerHTML = "<summary>Abilità</summary>";
       backgroundData.skills = Array.isArray(data.skills) ? data.skills.slice() : [];
+      const skillOptions =
+        (data.skillChoices && data.skillChoices.options) ? data.skillChoices.options : ALL_SKILLS;
       if (data.skillChoices) {
         const num = data.skillChoices.choose || 0;
         const taken = getTakenProficiencies('skills');
@@ -164,20 +166,20 @@ document.addEventListener("DOMContentLoaded", async () => {
           num,
           opts,
           "backgroundSkillChoice",
-            () => {
-              const chosen = Array.from(document.querySelectorAll(".backgroundSkillChoice"))
-                .map(s => s.value)
-                .filter(Boolean);
-              backgroundData.skills = (data.skills || []).concat(chosen);
-              renderDuplicateSelectors('skills', skillDetails, backgroundData.skills, ALL_SKILLS);
-              renderSkillSummary(backgroundData.skills, skillDetails);
-            }
-          );
-        }
-        skillDiv.appendChild(skillDetails);
-        renderDuplicateSelectors('skills', skillDetails, backgroundData.skills, ALL_SKILLS);
-        renderSkillSummary(backgroundData.skills, skillDetails);
-        makeAccordion(skillDiv);
+          () => {
+            const chosen = Array.from(document.querySelectorAll(".backgroundSkillChoice"))
+              .map(s => s.value)
+              .filter(Boolean);
+            backgroundData.skills = (data.skills || []).concat(chosen);
+            renderDuplicateSelectors('skills', skillDetails, backgroundData.skills, skillOptions);
+            renderSkillSummary(backgroundData.skills, skillDetails);
+          }
+        );
+      }
+      skillDiv.appendChild(skillDetails);
+      renderDuplicateSelectors('skills', skillDetails, backgroundData.skills, skillOptions);
+      renderSkillSummary(backgroundData.skills, skillDetails);
+      makeAccordion(skillDiv);
 
       const toolDiv = document.getElementById("backgroundTools");
       toolDiv.innerHTML = "";

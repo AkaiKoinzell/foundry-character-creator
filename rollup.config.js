@@ -7,7 +7,7 @@ export default {
   output: {
     file: 'dist/bundle.js',
     format: 'iife',
-    sourcemap: false,
+    sourcemap: true,
     inlineDynamicImports: true
   },
   plugins: [

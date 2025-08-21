@@ -631,8 +631,6 @@ export {
   displayRaceTraits,
   getTakenSelections,
   getTakenProficiencies,
-  registerConflict,
-  resolveConflict,
   generateFinalJson,
   generateFinalPdf,
   initializeValues,

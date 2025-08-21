@@ -78,7 +78,7 @@ function renderDuplicateSelectors(type, detailsEl, baseList, allOptions) {
   if (existing) existing.remove();
   // Store current selections and evaluate conflicts excluding background picks
   window.backgroundData[type] = baseList.slice();
-  const { taken, conflicts } = getTakenProficiencies(type, baseList, {
+  const { owned, conflicts } = getTakenProficiencies(type, baseList, {
     excludeBackground: true,
   });
   saveBackgroundData();
@@ -88,7 +88,7 @@ function renderDuplicateSelectors(type, detailsEl, baseList, allOptions) {
     initFeatureSelectionHandlers(detailsEl.parentElement);
     return;
   }
-  const base = baseList.filter(s => !conflicts.includes(s));
+  const base = baseList.filter(s => !conflicts.some(c => c.key === s));
   const dupDiv = document.createElement('div');
   dupDiv.className = `duplicate-${type}-choices`;
   const typeMap = {

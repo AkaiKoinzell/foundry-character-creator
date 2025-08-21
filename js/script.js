@@ -13,6 +13,7 @@ import { setExtraSelections } from './extrasState.js';
 import { displayRaceTraits } from './raceTraits.js';
 import { updateSubclasses, renderClassFeatures } from './classFeatures.js';
 import { convertDetailsToAccordion, initializeAccordion } from './ui/accordion.js';
+import { getState } from './characterState.js';
 
 
 let selectedData = getSelectedData();
@@ -146,17 +147,42 @@ function getTakenSelections(type, opts = {}) {
   return taken;
 }
 
-// Backwards compatibility for existing imports and conflict detection
+// Utility reading CharacterState.proficiencies and reporting conflicts
 function getTakenProficiencies(type, incoming, opts = {}) {
-  const originalTaken = getTakenSelections(type, opts);
-  if (!incoming) return originalTaken;
+  const { excludeRace = false, excludeClass = false, excludeBackground = false } = opts;
+  const state = getState();
+  let entries = state.proficiencies.filter(p => p.type === type);
+  if (excludeRace) entries = entries.filter(p => !p.sources.includes('race'));
+  if (excludeClass) entries = entries.filter(p => !p.sources.includes('class'));
+  if (excludeBackground) entries = entries.filter(p => !p.sources.includes('background'));
+
+  const ownedExisting = new Set(entries.map(p => p.key.toLowerCase()));
+  if (!incoming) return ownedExisting;
 
   const lowerIncoming = incoming.map(i => i.toLowerCase());
-  const conflicts = incoming.filter((v, idx) =>
-    originalTaken.has(lowerIncoming[idx])
+  const ownedAll = new Set([...ownedExisting, ...lowerIncoming]);
+
+  const defaults = {
+    languages: ALL_LANGUAGES,
+    skills: ALL_SKILLS,
+    tools: ALL_TOOLS,
+  };
+  const replacementPool = (defaults[type] || []).filter(
+    o => !ownedAll.has(o.toLowerCase())
   );
-  const taken = new Set([...originalTaken, ...lowerIncoming]);
-  return { taken, conflicts };
+
+  const conflicts = incoming
+    .filter(item => ownedExisting.has(item.toLowerCase()))
+    .map(item => {
+      const entry = entries.find(e => e.key.toLowerCase() === item.toLowerCase());
+      return {
+        key: item,
+        ownedFrom: entry ? [...entry.sources] : [],
+        replacementPool,
+      };
+    });
+
+  return { owned: ownedAll, conflicts };
 }
 
 /**

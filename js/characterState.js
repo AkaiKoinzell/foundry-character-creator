@@ -26,7 +26,9 @@ function cloneDefaultState() {
 
 import { applyStep } from './stepEngine.js';
 
-let state = loadState();
+let state;
+
+loadState();
 
 export function loadState() {
   const stored = sessionStorage.getItem('characterState');

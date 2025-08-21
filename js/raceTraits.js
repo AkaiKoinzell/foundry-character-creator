@@ -195,7 +195,7 @@ export async function displayRaceTraits() {
             featureKey,
             label: labels[featureKey],
             selectedData: getSelectedData(),
-            getTakenOptions: { excludeRace: true },
+            getTakenOptions: { excludeRace: true, allowed: allOptions },
             changeHandler: values => {
               const d = getSelectedData();
               d[featureKey] = values;

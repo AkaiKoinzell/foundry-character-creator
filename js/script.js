@@ -1,4 +1,6 @@
 import { handleError, renderTables } from './common.js';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 import { loadSpells, filterSpells, handleSpellcasting } from './spellcasting.js';
 import { convertRaceData } from './raceData.js';
 import { ARTISAN_TOOLS, MUSICAL_INSTRUMENTS, ALL_TOOLS, ALL_LANGUAGES, ALL_SKILLS, filterAvailableProficiencies } from './data/proficiencies.js';
@@ -387,21 +389,60 @@ function generateFinalJson() {
     variant_feature: variantFeature,
     variant_extra: variantExtra
   };
-  console.log("✅ JSON finale generato:");
+  console.log("✅ Dati finali raccolti:");
   console.log(JSON.stringify(character, null, 2));
-  const filename = character.name.replace(/[^a-z0-9]/gi, '_').toLowerCase() + "_character.json";
-  downloadJsonFile(filename, character);
-  alert("JSON generato e scaricato!");
+  generateFinalPdf(character);
 }
 
-function downloadJsonFile(filename, jsonData) {
-  const jsonBlob = new Blob([JSON.stringify(jsonData, null, 2)], { type: "application/json" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(jsonBlob);
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+async function generateFinalPdf(character) {
+  const doc = new jsPDF();
+  doc.setFontSize(16);
+  doc.text('Riepilogo Personaggio', 10, 10);
+  doc.setFontSize(12);
+  let y = 25;
+  doc.text(`Nome Utente: ${character.user_name}`, 10, y); y += 10;
+  doc.text(`Nome PG: ${character.name}`, 10, y); y += 10;
+  const classLine = character.subclass && character.subclass !== 'Nessuna'
+    ? `${character.class} (${character.subclass})`
+    : character.class;
+  doc.text(`Classe: ${classLine}`, 10, y); y += 10;
+  doc.text(`Razza: ${character.race}`, 10, y); y += 10;
+  doc.text(`Livello: ${character.level}`, 10, y); y += 10;
+  doc.text(`Provenienza: ${character.origin}`, 10, y); y += 10;
+  doc.text(`Età: ${character.age}`, 10, y); y += 10;
+  doc.text(`Lingue: ${(character.languages.selected || []).join(', ')}`, 10, y); y += 10;
+  const tools = [
+    ...(character.background_proficiencies.tools || []),
+    ...(character.tool_proficiency ? [character.tool_proficiency] : [])
+  ];
+  doc.text(`Strumenti: ${tools.join(', ')}`, 10, y); y += 10;
+  doc.text('Statistiche:', 10, y); y += 10;
+  Object.entries(character.stats).forEach(([stat, val]) => {
+    doc.text(`${stat}: ${val}`, 15, y);
+    y += 10;
+  });
+
+  const recapEl = document.getElementById('finalRecap');
+  if (recapEl) {
+    try {
+      const canvas = await html2canvas(recapEl);
+      const imgData = canvas.toDataURL('image/png');
+      const pdfWidth = doc.internal.pageSize.getWidth();
+      const imgProps = doc.getImageProperties(imgData);
+      const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      doc.addPage();
+      doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, imgHeight);
+    } catch (e) {
+      console.error('Errore generando l\'immagine del recap', e);
+    }
+  }
+
+  const filename = character.name.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '_character.pdf';
+  downloadPdfFile(doc, filename);
+}
+
+function downloadPdfFile(pdfDoc, filename) {
+  pdfDoc.save(filename);
 }
 
 // ==================== POINT BUY SYSTEM ====================
@@ -530,6 +571,7 @@ export {
   getTakenSelections,
   getTakenProficiencies,
   generateFinalJson,
+  generateFinalPdf,
   initializeValues,
   renderFinalRecap
 };

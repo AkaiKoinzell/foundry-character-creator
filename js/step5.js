@@ -57,7 +57,7 @@ function renderEquipment() {
     if (Array.isArray(classInfo.choices)) {
       classInfo.choices.forEach((choice, idx) => {
         const detail = document.createElement('details');
-        detail.className = 'feature-block needs-selection incomplete';
+        detail.className = 'feature-block needs-selection incomplete user-choice';
         detail.innerHTML = `<summary>${choice.label || 'Choose'}</summary>`;
         const options = [];
         (choice.options || []).forEach(opt => {
@@ -78,6 +78,7 @@ function renderEquipment() {
           const select = document.createElement('select');
           select.name = `equipChoice_${idx}`;
           select.id = `equipChoice_${idx}`;
+          select.className = 'form-control';
           const placeholder = document.createElement('option');
           placeholder.value = '';
           placeholder.textContent = '-- select --';
@@ -111,6 +112,7 @@ function renderEquipment() {
               detail.appendChild(input);
               detail.appendChild(lab);
               const select = document.createElement('select');
+              select.className = 'form-control';
               const placeholder = document.createElement('option');
               placeholder.value = '';
               placeholder.textContent = '-- select --';

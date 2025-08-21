@@ -42,15 +42,15 @@ export function renderProficiencyReplacements(
     getTakenOptions = {},
   } = {}
 ) {
-  if (!container || !Array.isArray(fixedList) || fixedList.length === 0) return [];
-  const { taken, conflicts } = getTakenProficiencies(type, fixedList, getTakenOptions);
-  if (!conflicts.length) return [];
-  const base = fixedList.filter(s => !conflicts.includes(s));
-  let opts = allOptions.filter(o => !taken.has(o.toLowerCase()));
-  if (opts.length === 0) {
-    const baseLower = base.map(b => b.toLowerCase());
-    opts = allOptions.filter(o => !baseLower.includes(o.toLowerCase()));
-  }
+    if (!container || !Array.isArray(fixedList) || fixedList.length === 0) return [];
+    const { owned, conflicts } = getTakenProficiencies(type, fixedList, getTakenOptions);
+    if (!conflicts.length) return [];
+    const base = fixedList.filter(s => !conflicts.some(c => c.key === s));
+    let opts = conflicts[0]?.replacementPool || [];
+    if (opts.length === 0) {
+      const baseLower = base.map(b => b.toLowerCase());
+      opts = allOptions.filter(o => !baseLower.includes(o.toLowerCase()));
+    }
   const si =
     startIndex !== undefined
       ? startIndex
@@ -61,14 +61,15 @@ export function renderProficiencyReplacements(
   const p = document.createElement('p');
   p.innerHTML = `<strong>${label} duplicate, scegli sostituti:</strong>`;
   container.appendChild(p);
-  conflicts.forEach((conflict, i) => {
-    const lab = document.createElement('label');
-    lab.textContent = `${conflict}: `;
-    const sel = document.createElement('select');
-    if (featureKey) {
-      sel.dataset.feature = featureKey;
-      sel.dataset.index = si + i;
-    }
+    conflicts.forEach((conflict, i) => {
+      const lab = document.createElement('label');
+      const sourceInfo = conflict.ownedFrom?.length ? ` (${conflict.ownedFrom.join(', ')})` : '';
+      lab.textContent = `${conflict.key}${sourceInfo}: `;
+      const sel = document.createElement('select');
+      if (featureKey) {
+        sel.dataset.feature = featureKey;
+        sel.dataset.index = si + i;
+      }
     if (selectClass) sel.className = selectClass;
     const def = document.createElement('option');
     def.value = '';

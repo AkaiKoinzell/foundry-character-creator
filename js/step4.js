@@ -67,11 +67,11 @@ function applyFeatAbilityChoices() {
 function renderDuplicateSelectors(type, detailsEl, baseList, allOptions) {
   const existing = detailsEl.querySelector(`.duplicate-${type}-choices`);
   if (existing) existing.remove();
-  // Temporarily clear background proficiencies to evaluate conflicts
-  window.backgroundData[type] = [];
-  const { taken, conflicts } = getTakenProficiencies(type, baseList);
-  // Restore original proficiencies for display
+  // Store current selections and evaluate conflicts excluding background picks
   window.backgroundData[type] = baseList.slice();
+  const { taken, conflicts } = getTakenProficiencies(type, baseList, {
+    excludeBackground: true,
+  });
   saveBackgroundData();
   if (type === 'skills') renderSkillSummary(window.backgroundData[type], detailsEl);
   if (conflicts.length === 0) {
@@ -102,7 +102,7 @@ function renderDuplicateSelectors(type, detailsEl, baseList, allOptions) {
       .filter(Boolean);
     window.backgroundData[type] = base.concat(chosen);
     saveBackgroundData();
-    if (type === 'skills') renderSkillSummary(window.backgroundData.skills, detailsEl);
+    if (type === 'skills') renderSkillSummary(window.backgroundData[type], detailsEl);
     if (chosen.length === conflicts.length) {
       renderDuplicateSelectors(type, detailsEl, window.backgroundData[type], allOptions);
       return;

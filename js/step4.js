@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         (data.skillChoices && data.skillChoices.options) ? data.skillChoices.options : ALL_SKILLS;
       if (data.skillChoices) {
         const num = data.skillChoices.choose || 0;
-        const taken = getTakenProficiencies('skills');
+        const taken = getTakenProficiencies('skills', undefined, { excludeBackground: true }, 'background');
         let opts = (data.skillChoices.options || []).filter(o => !taken.has(o.toLowerCase()));
         let note = '';
         if (opts.length === 0) {

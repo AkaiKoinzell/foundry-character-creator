@@ -1,25 +1,7 @@
-let currentStep = 1;
+import { DATA, CharacterState } from "./data.js";
+import { loadStep2 } from "./step2.js";
 
-// Global character data storing all user selections
-const characterData = {
-  name: "",
-  level: 1,
-  class: null,
-  race: null,
-  background: null,
-  skills: [],
-  tools: [],
-  languages: [],
-  equipment: [],
-  attributes: {
-    str: 8,
-    dex: 8,
-    con: 8,
-    int: 8,
-    wis: 8,
-    cha: 8,
-  },
-};
+let currentStep = 1;
 
 // full list of skills for replacement handling
 const ALL_SKILLS = [
@@ -85,8 +67,6 @@ function showStep(step) {
   currentStep = step;
 }
 
-const DATA = {};
-
 async function loadData() {
   const sources = {
     classes: "data/classes.json",
@@ -117,10 +97,6 @@ function populateSelect(id, dataKey) {
   }
 }
 
-function populateClassList() {
-  populateSelect("classSelect", "classes");
-}
-
 function populateRaceList() {
   populateSelect("raceSelect", "races");
 }
@@ -138,7 +114,7 @@ function getAllOptions(type) {
 
 function addUniqueProficiency(type, value, container) {
   if (!value) return;
-  const list = characterData[type];
+  const list = CharacterState[type];
   if (!list.includes(value)) {
     list.push(value);
     return;
@@ -170,76 +146,6 @@ function addUniqueProficiency(type, value, container) {
 
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-// --- Step 2: Class selection handlers ---
-let currentClassData = null;
-function handleClassChange() {
-  const sel = document.getElementById("classSelect");
-  const container = document.getElementById("classFeatures");
-  if (!sel || !sel.value) return;
-  fetch(sel.value)
-    .then((r) => r.json())
-    .then((data) => {
-      currentClassData = data;
-      container.innerHTML = "";
-      if (data.skill_proficiencies) {
-        const skillDiv = document.createElement("div");
-        skillDiv.innerHTML = `<p>Scegli ${data.skill_proficiencies.choose} competenze:</p>`;
-        data.skill_proficiencies.options.forEach((opt) => {
-          const lbl = document.createElement("label");
-          const cb = document.createElement("input");
-          cb.type = "checkbox";
-          cb.value = opt;
-          lbl.appendChild(cb);
-          lbl.append(` ${opt}`);
-          skillDiv.appendChild(lbl);
-        });
-        container.appendChild(skillDiv);
-      }
-      if (data.tool_proficiencies) {
-        const tools = Array.isArray(data.tool_proficiencies)
-          ? data.tool_proficiencies
-          : [];
-        if (tools.length) {
-          const toolDiv = document.createElement("div");
-          toolDiv.innerHTML = `<p>Strumenti: ${tools.join(", ")}</p>`;
-          container.appendChild(toolDiv);
-        }
-      }
-    });
-}
-
-function confirmClassSelection() {
-  if (!currentClassData) return;
-  const levelSel = document.getElementById("levelSelect");
-  const container = document.getElementById("classFeatures");
-  const checkboxes = container.querySelectorAll("input[type=checkbox]");
-  const chosen = Array.from(checkboxes)
-    .filter((cb) => cb.checked)
-    .map((cb) => cb.value);
-  if (
-    currentClassData.skill_proficiencies &&
-    chosen.length !== currentClassData.skill_proficiencies.choose
-  ) {
-    alert(
-      `Seleziona ${currentClassData.skill_proficiencies.choose} competenze di classe`
-    );
-    return;
-  }
-  characterData.level = parseInt(levelSel.value, 10);
-  characterData.class = currentClassData.name;
-  chosen.forEach((skill) =>
-    addUniqueProficiency("skills", skill, container)
-  );
-  if (Array.isArray(currentClassData.tool_proficiencies)) {
-    currentClassData.tool_proficiencies.forEach((tool) =>
-      addUniqueProficiency("tools", tool, container)
-    );
-  }
-  const btn3 = document.getElementById("btnStep3");
-  if (btn3) btn3.disabled = false;
-  showStep(3);
 }
 
 // --- Step 3: Race selection handlers ---
@@ -292,7 +198,7 @@ function handleRaceChange() {
 function confirmRaceSelection() {
   if (!currentRaceData) return;
   const container = document.getElementById("raceTraits");
-  characterData.race = currentRaceData.name;
+  CharacterState.race = currentRaceData.name;
   if (currentRaceData.skillProficiencies) {
     currentRaceData.skillProficiencies.forEach((obj) => {
       for (const k in obj)
@@ -364,7 +270,7 @@ function confirmBackgroundSelection() {
   const skillsDiv = document.getElementById("backgroundSkills");
   const toolsDiv = document.getElementById("backgroundTools");
   const langDiv = document.getElementById("backgroundLanguages");
-  characterData.background = currentBackgroundData.name;
+  CharacterState.background = currentBackgroundData.name;
   if (currentBackgroundData.skills) {
     currentBackgroundData.skills.forEach((s) =>
       addUniqueProficiency("skills", s, skillsDiv)
@@ -394,7 +300,10 @@ document.addEventListener("DOMContentLoaded", () => {
   for (let i = 1; i <= 7; i++) {
     const btn = document.getElementById(`btnStep${i}`);
     if (btn) {
-      btn.addEventListener("click", () => showStep(i));
+      btn.addEventListener("click", () => {
+        showStep(i);
+        if (i === 2) loadStep2();
+      });
     }
   }
 
@@ -407,11 +316,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadData()
     .then(() => {
-      populateClassList();
       populateRaceList();
       populateBackgroundList();
-      const classSel = document.getElementById("classSelect");
-      classSel?.addEventListener("change", handleClassChange);
       const raceSel = document.getElementById("raceSelect");
       raceSel?.addEventListener("change", handleRaceChange);
       const bgSel = document.getElementById("backgroundSelect");
@@ -419,9 +325,6 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .catch((err) => console.error(err));
 
-  document
-    .getElementById("confirmClassSelection")
-    ?.addEventListener("click", confirmClassSelection);
   document
     .getElementById("confirmRaceSelection")
     ?.addEventListener("click", confirmRaceSelection);

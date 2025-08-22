@@ -56,8 +56,13 @@ const ALL_TOOLS = [
 function showStep(step) {
   for (let i = 1; i <= 7; i++) {
     const el = document.getElementById(`step${i}`);
-    if (el) {
-      el.style.display = i === step ? "block" : "none";
+    if (!el) continue;
+    if (i === step) {
+      el.classList.remove('hidden');
+      el.style.display = 'block';
+    } else {
+      el.classList.add('hidden');
+      el.style.display = 'none';
     }
   }
   const bar = document.getElementById("progressBar");

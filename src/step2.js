@@ -51,9 +51,12 @@ function createAccordionItem(title, content, isChoice = false, description = '')
   return item;
 }
 
-function updateSkillSelectOptions(container) {
+function updateSkillSelectOptions(container = document) {
   const selects = container.querySelectorAll('select[data-type="skill"]');
   const taken = new Set(CharacterState.skills);
+  document.querySelectorAll('select[data-choice-type="skills"]').forEach(sel => {
+    if (sel.value) taken.add(sel.value);
+  });
   selects.forEach(sel => {
     if (sel.value) taken.add(sel.value);
   });
@@ -71,10 +74,19 @@ function updateSkillSelectOptions(container) {
 function updateChoiceSelectOptions(container, name, type) {
   const selects = container.querySelectorAll(`select[data-choice-name='${name}']`);
   const taken = new Set();
-  if (type === 'skills') CharacterState.skills.forEach(s => taken.add(s));
-  if (type === 'tools') CharacterState.tools.forEach(t => taken.add(t));
-  if (type === 'languages') CharacterState.languages.forEach(l => taken.add(l));
-  if (type === 'cantrips' && Array.isArray(CharacterState.cantrips)) {
+  if (type === 'skills') {
+    CharacterState.skills.forEach(s => taken.add(s));
+    document.querySelectorAll('select[data-type="skill"]').forEach(sel => {
+      if (sel.value) taken.add(sel.value);
+    });
+    document.querySelectorAll('select[data-choice-type="skills"]').forEach(sel => {
+      if (sel.dataset.choiceName !== name && sel.value) taken.add(sel.value);
+    });
+  } else if (type === 'tools') {
+    CharacterState.tools.forEach(t => taken.add(t));
+  } else if (type === 'languages') {
+    CharacterState.languages.forEach(l => taken.add(l));
+  } else if (type === 'cantrips' && Array.isArray(CharacterState.cantrips)) {
     CharacterState.cantrips.forEach(c => taken.add(c));
   }
   selects.forEach(sel => {
@@ -150,6 +162,15 @@ function renderClassFeatures(cls) {
       sel.addEventListener('change', () => {
         savedSelections.skills[i] = sel.value;
         updateSkillSelectOptions(container);
+        document
+          .querySelectorAll("select[data-choice-type='skills']")
+          .forEach(choiceSel => {
+            updateChoiceSelectOptions(
+              choiceSel.parentElement,
+              choiceSel.dataset.choiceName,
+              'skills'
+            );
+          });
       });
       container.appendChild(sel);
     }
@@ -217,6 +238,18 @@ function renderClassFeatures(cls) {
           savedSelections.choices[choiceId] = { option: sel.value, level: lvl };
           handleASISelection(sel, container, savedSelections.choices[choiceId]);
           updateChoiceSelectOptions(container, choice.name, choice.type);
+          if (choice.type === 'skills') {
+            updateSkillSelectOptions();
+            document
+              .querySelectorAll("select[data-choice-type='skills']")
+              .forEach(choiceSel => {
+                updateChoiceSelectOptions(
+                  choiceSel.parentElement,
+                  choiceSel.dataset.choiceName,
+                  'skills'
+                );
+              });
+          }
         });
         container.appendChild(sel);
         if (stored) {

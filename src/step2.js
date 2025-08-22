@@ -13,13 +13,13 @@ export function loadStep2() {
   const classListContainer = document.getElementById('classList');
   if (!classListContainer) return;
   classListContainer.innerHTML = '';
-
-  if (!DATA.classes) {
+  const classes = Array.isArray(DATA.classes) ? DATA.classes : [];
+  if (!classes.length) {
     console.error('Dati classi non disponibili.');
     return;
   }
 
-  DATA.classes.forEach(cls => {
+  classes.forEach(cls => {
     const classCard = document.createElement('div');
     classCard.className = 'class-card';
     if (CharacterState.class && CharacterState.class.name === cls.name) {

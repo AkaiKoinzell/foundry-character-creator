@@ -245,4 +245,18 @@ describe('character creation flow', () => {
     );
     expect(conflicts.map(c => c.key)).toEqual(['Perception']);
   });
+
+  test('class duplicates only block against class fixed', () => {
+    // Race already grants Stealth
+    applyStep('race', { proficiencies: { skills: ['Stealth'] } });
+    const classFixed = new Set(['perception']);
+    const { conflicts } = getTakenProficiencies(
+      'skills',
+      ['Stealth', 'Perception'],
+      {},
+      'class',
+      { classFixed }
+    );
+    expect(conflicts.map(c => c.key)).toEqual(['Perception']);
+  });
 });

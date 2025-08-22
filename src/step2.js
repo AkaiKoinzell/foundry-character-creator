@@ -241,6 +241,7 @@ function confirmClassSelection() {
   const features = document.getElementById('classFeatures');
   if (!features) return;
 
+  // reset skills then gather selections
   CharacterState.skills = [];
 
   const skillSelects = features.querySelectorAll('select[data-type="skill"]');
@@ -257,16 +258,38 @@ function confirmClassSelection() {
   }
 
   const choiceSelects = features.querySelectorAll('select[data-type="choice"]');
+  const abilityMap = {
+    Strength: 'str',
+    Dexterity: 'dex',
+    Constitution: 'con',
+    Intelligence: 'int',
+    Wisdom: 'wis',
+    Charisma: 'cha'
+  };
+
   if (choiceSelects.length) {
     if (!CharacterState.class) CharacterState.class = {};
     CharacterState.class.choiceSelections = {};
+
+    // remove previous ASI bonuses from attributes
+    const baseAttributes = { ...CharacterState.attributes };
+    if (CharacterState.class.asiBonuses) {
+      for (const [ability, bonus] of Object.entries(CharacterState.class.asiBonuses)) {
+        baseAttributes[ability] -= bonus;
+      }
+    }
+
+    const asiBonuses = { str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0 };
+
     choiceSelects.forEach(sel => {
       if (sel.value) {
         const name = sel.dataset.choiceName;
+        const saved = savedSelections.choices[sel.dataset.choiceId];
         if (!CharacterState.class.choiceSelections[name]) {
           CharacterState.class.choiceSelections[name] = [];
         }
         const entry = { option: sel.value };
+        if (saved?.level) entry.level = saved.level;
         const details = features.querySelectorAll(
           `select[data-parent='${sel.dataset.choiceId}']`
         );
@@ -279,8 +302,48 @@ function confirmClassSelection() {
           }
         });
         CharacterState.class.choiceSelections[name].push(entry);
+
+        // track ASI bonuses for attributes
+        if (entry.option === 'Increase one ability score by 2' && entry.abilities?.[0]) {
+          const key = abilityMap[entry.abilities[0]];
+          if (key) asiBonuses[key] += 2;
+        } else if (entry.option === 'Increase two ability scores by 1' && Array.isArray(entry.abilities)) {
+          entry.abilities.forEach(ab => {
+            const key = abilityMap[ab];
+            if (key) asiBonuses[key] += 1;
+          });
+        }
       }
     });
+
+    CharacterState.class.asiBonuses = asiBonuses;
+    for (const ability of Object.keys(baseAttributes)) {
+      CharacterState.attributes[ability] = baseAttributes[ability] + (asiBonuses[ability] || 0);
+    }
+  }
+
+  // store obtained features for the selected level
+  const cls = DATA.classes.find(c => c.name === CharacterState.class?.name);
+  if (cls) {
+    CharacterState.class.features = [];
+    for (let lvl = 1; lvl <= (CharacterState.level || 1); lvl++) {
+      const feats = cls.features_by_level?.[lvl] || [];
+      feats.forEach(f => {
+        CharacterState.class.features.push({ level: lvl, name: f.name, description: f.description || '' });
+      });
+    }
+    if (CharacterState.class.choiceSelections) {
+      for (const [name, entries] of Object.entries(CharacterState.class.choiceSelections)) {
+        entries.forEach(e => {
+          CharacterState.class.features.push({
+            level: e.level || null,
+            name: `${name}: ${e.option}`,
+            abilities: e.abilities,
+            feat: e.feat
+          });
+        });
+      }
+    }
   }
 
   logCharacterState();

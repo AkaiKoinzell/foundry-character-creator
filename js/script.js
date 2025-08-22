@@ -144,6 +144,7 @@ function getTakenSelections(type, opts = {}) {
     }
   }
 
+  console.debug(`[getTakenSelections] returning set for type=${type}:`, Array.from(taken));
   return taken;
 }
 
@@ -365,6 +366,7 @@ function gatherExtraSelections(data, context, level = 1) {
         if (key === 'Tool Proficiency') return; // tool choices handled in equipment
         const selected = (selectedData[key] || []).filter(v => v);
         let opts = choice.selection || choice.options || [];
+        console.debug('[gatherExtraSelections] opts before fallback/filter:', opts);
         console.debug('[gatherExtraSelections] raw options for', key, opts);
 
         if (key === 'Skill Proficiency') {

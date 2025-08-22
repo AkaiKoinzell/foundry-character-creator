@@ -115,6 +115,7 @@ export async function renderClassFeatures() {
             label,
             selectedData: getSelectedData(),
             getTakenOptions: { excludeClass: true },
+            phase: 'class',
             changeHandler: values => {
               const d = getSelectedData();
               d[featureKey] = values;
@@ -122,6 +123,7 @@ export async function renderClassFeatures() {
               setTimeout(render, 0);
             },
             source: 'class',
+            phaseContext: { classFixed: new Set(fixed.map(f => f.toLowerCase())) },
           }
         );
       };

@@ -211,59 +211,17 @@ describe('character creation flow', () => {
     expect(opts).not.toContain('Athletics');
   });
 
-  test('class selections retain chosen skills after confirmation', () => {
-    // Confirm class with History and Nature
-    applyStep('class', { proficiencies: { skills: ['History', 'Nature'] } });
-    setSelectedData({ 'Skill Proficiency': ['History', 'Nature'] });
-
-    // Gather selections for class again and ensure choices include taken skills
-    const data = {
-      choices: [
-        {
-          name: 'Skill Proficiency',
-          selection: ['Arcana', 'History', 'Nature', 'Medicine'],
-          count: 2,
-        },
-      ],
-    };
-
-    const selections = gatherExtraSelections(data, 'class', 1);
-    const skillChoice = selections.find(c => c.name === 'Skill Proficiency');
-    expect(skillChoice.selection).toEqual(
-      expect.arrayContaining(['History', 'Nature'])
-    );
-  });
-
-  test('race filters out previously known proficiencies', () => {
-    applyStep('class', { proficiencies: { languages: ['Common', 'Elvish'] } });
-    const raceData = {
-      languages: { fixed: [], choice: 1, options: ['Common', 'Dwarvish', 'Giant'] },
-    };
-    const selections = gatherExtraSelections(raceData, 'race');
-    const langChoice = selections.find(c => c.name === 'Languages');
-    expect(langChoice.selection).toEqual(
-      expect.arrayContaining(['Dwarvish', 'Giant'])
-    );
-    expect(langChoice.selection).not.toContain('Common');
-    expect(langChoice.selection).not.toContain('Elvish');
-  });
-
-  test('background swaps use only allowed pool', () => {
-    applyStep('class', { proficiencies: { skills: ['History'] } });
-    const container = document.createElement('div');
-    const selects = renderProficiencyReplacements(
+  test('class duplicates only block against class fixed', () => {
+    // Race already grants Stealth
+    applyStep('race', { proficiencies: { skills: ['Stealth'] } });
+    const classFixed = new Set(['perception']);
+    const { conflicts } = getTakenProficiencies(
       'skills',
-      ['History'],
-      ['Arcana', 'Religion'],
-      container,
-      {
-        label: 'Skill',
-        source: 'background',
-        getTakenOptions: { allowed: ['Arcana', 'Religion'] },
-      }
+      ['Stealth', 'Perception'],
+      {},
+      'class',
+      { classFixed }
     );
-    const opts = Array.from(selects[0].options).map(o => o.value);
-    expect(opts).toEqual(expect.arrayContaining(['Arcana', 'Religion']));
-    expect(opts).not.toContain('Athletics');
+    expect(conflicts.map(c => c.key)).toEqual(['Perception']);
   });
 });

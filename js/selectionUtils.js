@@ -40,12 +40,27 @@ export function renderProficiencyReplacements(
     selectClass = '',
     changeHandler,
     getTakenOptions = {},
+    phase = 'background',
+    phaseContext = {},
   } = {},
 ) {
   if (!container || !Array.isArray(fixedList) || fixedList.length === 0) return [];
-  const { owned, conflicts } = getTakenProficiencies(type, fixedList, getTakenOptions);
-  if (!conflicts.length) return [];
-  const base = fixedList.filter(s => !conflicts.some(c => c.key === s));
+  console.debug('[renderProficiencyReplacements] phase:', phase);
+  console.debug('[renderProficiencyReplacements] fixed list:', fixedList);
+  const { owned, conflicts } = getTakenProficiencies(
+    type,
+    fixedList,
+    getTakenOptions,
+    phase,
+    phaseContext
+  );
+  console.debug('[renderProficiencyReplacements] conflicts:', conflicts);
+  const filtered = phase === 'background'
+    ? conflicts.filter(c => c.reason === 'DUPLICATE')
+    : [];
+  console.debug('[renderProficiencyReplacements] filtered conflicts:', filtered);
+  if (!filtered.length) return [];
+  const base = fixedList.filter(s => !filtered.some(c => c.key === s));
   const baseLower = base.map(b => b.toLowerCase());
   let opts = (allOptions || []).filter(
     o => !owned.has(o.toLowerCase()) && !baseLower.includes(o.toLowerCase())
@@ -64,7 +79,7 @@ export function renderProficiencyReplacements(
   p.tabIndex = 0;
   p.innerHTML = `<strong>${label} duplicate, scegli sostituti:</strong>`;
   container.appendChild(p);
-  conflicts.forEach((conflict, i) => {
+  filtered.forEach((conflict, i) => {
     const lab = document.createElement('label');
     const sourceInfo = conflict.ownedFrom?.length
       ? ` (${conflict.ownedFrom.join(', ')})`

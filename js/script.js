@@ -178,7 +178,6 @@ function getTakenProficiencies(
   console.debug('[getTakenProficiencies] phase:', phase);
   console.debug('[getTakenProficiencies] incoming:', incoming);
   console.debug('[getTakenProficiencies] owned start:', Array.from(owned));
-
   // When called without incoming list, preserve previous behaviour of
   // returning just the owned set.
   if (!incoming) return owned;

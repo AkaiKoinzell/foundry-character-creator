@@ -1,4 +1,4 @@
-import { DATA, CharacterState } from "./data.js";
+import { DATA, CharacterState, loadClasses } from "./data.js";
 import { loadStep2 } from "./step2.js";
 
 let currentStep = 1;
@@ -69,20 +69,7 @@ function showStep(step) {
 
 async function loadData() {
   // Load each class file referenced in data/classes.json
-  const classIndexRes = await fetch("data/classes.json");
-  if (!classIndexRes.ok) {
-    throw new Error("Failed loading classes");
-  }
-  const classIndex = await classIndexRes.json();
-  DATA.classes = [];
-  for (const path of Object.values(classIndex.items || {})) {
-    const res = await fetch(path);
-    if (!res.ok) {
-      throw new Error(`Failed loading class at ${path}`);
-    }
-    const cls = await res.json();
-    DATA.classes.push(cls);
-  }
+  await loadClasses();
 
   // Retain existing logic for other data types
   const sources = {

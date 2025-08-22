@@ -78,10 +78,13 @@ function renderDuplicateSelectors(type, detailsEl, baseList, allOptions) {
   if (existing) existing.remove();
   // Store current selections and evaluate conflicts excluding background picks
   window.backgroundData[type] = baseList.slice();
-  const { owned, conflicts } = getTakenProficiencies(type, baseList, {
-    excludeBackground: true,
-    allowed: allOptions,
-  });
+  const { owned, conflicts } = getTakenProficiencies(
+    type,
+    baseList,
+    { excludeBackground: true },
+    'background',
+    { replacementPool: allOptions }
+  );
   saveBackgroundData();
   if (type === 'skills') renderSkillSummary(window.backgroundData[type], detailsEl);
   if (conflicts.length === 0) {
@@ -102,7 +105,9 @@ function renderDuplicateSelectors(type, detailsEl, baseList, allOptions) {
   renderProficiencyReplacements(type, baseList, allOptions, dupDiv, {
     label,
     selectClass,
-    getTakenOptions: { excludeBackground: true, allowed: allOptions },
+    getTakenOptions: { excludeBackground: true },
+    phase: 'background',
+    phaseContext: { replacementPool: allOptions },
     source: 'background',
     changeHandler: values => {
       const chosen = values.filter(Boolean);

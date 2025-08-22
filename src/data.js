@@ -21,6 +21,17 @@ export async function loadClasses() {
   }
 }
 
+/**
+ * Fetches feats list if not already loaded.
+ */
+export async function loadFeats() {
+  if (Array.isArray(DATA.feats) && DATA.feats.length) return;
+  const res = await fetch('data/feats.json');
+  if (!res.ok) throw new Error('Failed loading feats');
+  const json = await res.json();
+  DATA.feats = Object.keys(json.feats || {});
+}
+
 export const CharacterState = {
   name: "",
   level: 1,

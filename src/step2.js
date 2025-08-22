@@ -6,13 +6,89 @@ function createElement(tag, text) {
   return el;
 }
 
+function createAccordionItem(title, content, isChoice = false) {
+  const item = document.createElement('div');
+  item.className = 'accordion-item' + (isChoice ? ' user-choice' : '');
+
+  const header = document.createElement('button');
+  header.className = 'accordion-header';
+  header.textContent = title;
+  const body = document.createElement('div');
+  body.className = 'accordion-content';
+  if (typeof content === 'string') {
+    body.textContent = content;
+  } else {
+    body.appendChild(content);
+  }
+  header.addEventListener('click', () => {
+    header.classList.toggle('active');
+    body.classList.toggle('show');
+  });
+
+  item.appendChild(header);
+  item.appendChild(body);
+  return item;
+}
+
+function renderClassFeatures(cls) {
+  const featuresContainer = document.getElementById('classFeatures');
+  if (!featuresContainer) return;
+  featuresContainer.innerHTML = '';
+
+  const level = CharacterState.level || 1;
+
+  if (cls.skill_proficiencies?.options) {
+    const text = `scegli ${cls.skill_proficiencies.choose}: ${cls.skill_proficiencies.options.join(', ')}`;
+    featuresContainer.appendChild(
+      createAccordionItem('Competenze nelle abilità', text, true)
+    );
+  }
+
+  if (cls.tool_proficiencies?.options) {
+    const text = `scegli ${cls.tool_proficiencies.choose}: ${cls.tool_proficiencies.options.join(', ')}`;
+    featuresContainer.appendChild(
+      createAccordionItem('Competenze negli strumenti', text, true)
+    );
+  }
+
+  if (Array.isArray(cls.subclasses) && cls.subclasses.length) {
+    const text = `Scegli una sottoclasse: ${cls.subclasses.map(sc => sc.name).join(', ')}`;
+    featuresContainer.appendChild(
+      createAccordionItem('Sottoclasse', text, true)
+    );
+  }
+
+  for (let lvl = 1; lvl <= level; lvl++) {
+    const features = cls.features_by_level?.[lvl] || [];
+    features.forEach(f => {
+      featuresContainer.appendChild(
+        createAccordionItem(`Livello ${lvl}: ${f.name}`, f.description || '')
+      );
+    });
+
+    const levelChoices = (cls.choices || []).filter(c => c.level === lvl);
+    levelChoices.forEach(choice => {
+      const text = `${choice.description} Opzioni: ${choice.selection.join(', ')}`;
+      featuresContainer.appendChild(
+        createAccordionItem(
+          `Livello ${choice.level}: ${choice.name}`,
+          text,
+          true
+        )
+      );
+    });
+  }
+}
+
 /**
  * Inizializza lo Step 2: Selezione Classe
  */
 export async function loadStep2() {
   const classListContainer = document.getElementById('classList');
-  if (!classListContainer) return;
+  const featuresContainer = document.getElementById('classFeatures');
+  if (!classListContainer || !featuresContainer) return;
   classListContainer.innerHTML = '';
+  featuresContainer.innerHTML = '';
 
   // Ensure the class data has been loaded before rendering
   try {
@@ -28,12 +104,20 @@ export async function loadStep2() {
     return;
   }
 
+  if (CharacterState.class) {
+    classListContainer.classList.add('hidden');
+    featuresContainer.classList.remove('hidden');
+    const selected = classes.find(c => c.name === CharacterState.class.name);
+    if (selected) renderClassFeatures(selected);
+    return;
+  } else {
+    classListContainer.classList.remove('hidden');
+    featuresContainer.classList.add('hidden');
+  }
+
   classes.forEach(cls => {
     const classCard = document.createElement('div');
     classCard.className = 'class-card';
-    if (CharacterState.class && CharacterState.class.name === cls.name) {
-      classCard.classList.add('selected');
-    }
     classCard.addEventListener('click', () => showClassModal(cls));
 
     const title = createElement('h3', cls.name);

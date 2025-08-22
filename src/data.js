@@ -42,6 +42,8 @@ export const CharacterState = {
   tools: [],
   languages: [],
   equipment: [],
+  cantrips: [],
+  feats: [],
   attributes: {
     str: 8,
     dex: 8,

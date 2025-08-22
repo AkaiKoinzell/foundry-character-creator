@@ -40,3 +40,8 @@ export const CharacterState = {
     cha: 8,
   },
 };
+
+export function logCharacterState() {
+  // Log a cloned copy to avoid reactive updates in the console
+  console.log("CharacterState", JSON.parse(JSON.stringify(CharacterState)));
+}

@@ -51,6 +51,79 @@ function createAccordionItem(title, content, isChoice = false, description = '')
   return item;
 }
 
+function updateSkillSelectOptions(container) {
+  const selects = container.querySelectorAll('select[data-type="skill"]');
+  const taken = new Set(CharacterState.skills);
+  selects.forEach(sel => {
+    if (sel.value) taken.add(sel.value);
+  });
+  selects.forEach(sel => {
+    Array.from(sel.options).forEach(opt => {
+      if (opt.value && opt.value !== sel.value && taken.has(opt.value)) {
+        opt.disabled = true;
+      } else {
+        opt.disabled = false;
+      }
+    });
+  });
+}
+
+function updateChoiceSelectOptions(container, name, type) {
+  const selects = container.querySelectorAll(`select[data-choice-name='${name}']`);
+  const taken = new Set();
+  if (type === 'skills') CharacterState.skills.forEach(s => taken.add(s));
+  if (type === 'tools') CharacterState.tools.forEach(t => taken.add(t));
+  if (type === 'languages') CharacterState.languages.forEach(l => taken.add(l));
+  if (type === 'cantrips' && Array.isArray(CharacterState.cantrips)) {
+    CharacterState.cantrips.forEach(c => taken.add(c));
+  }
+  selects.forEach(sel => {
+    if (sel.value) taken.add(sel.value);
+  });
+  selects.forEach(sel => {
+    Array.from(sel.options).forEach(opt => {
+      if (opt.value && opt.value !== sel.value && taken.has(opt.value)) {
+        opt.disabled = true;
+      } else {
+        opt.disabled = false;
+      }
+    });
+  });
+}
+
+function getExistingFeats() {
+  const feats = new Set(CharacterState.feats || []);
+  if (CharacterState.class?.choiceSelections) {
+    Object.values(CharacterState.class.choiceSelections).forEach(entries => {
+      entries.forEach(e => {
+        if (e.feat) feats.add(e.feat);
+      });
+    });
+  }
+  Object.values(savedSelections.choices).forEach(c => {
+    if (c.feat) feats.add(c.feat);
+  });
+  return feats;
+}
+
+function updateFeatSelectOptions() {
+  const selects = document.querySelectorAll("select[data-type='asi-feat']");
+  const takenFromState = getExistingFeats();
+  selects.forEach(sel => {
+    const taken = new Set(takenFromState);
+    selects.forEach(other => {
+      if (other !== sel && other.value) taken.add(other.value);
+    });
+    Array.from(sel.options).forEach(opt => {
+      if (opt.value && opt.value !== sel.value && taken.has(opt.value)) {
+        opt.disabled = true;
+      } else {
+        opt.disabled = false;
+      }
+    });
+  });
+}
+
 function renderClassFeatures(cls) {
   const featuresContainer = document.getElementById('classFeatures');
   if (!featuresContainer) return;
@@ -76,9 +149,11 @@ function renderClassFeatures(cls) {
       sel.value = savedSelections.skills[i] || '';
       sel.addEventListener('change', () => {
         savedSelections.skills[i] = sel.value;
+        updateSkillSelectOptions(container);
       });
       container.appendChild(sel);
     }
+    updateSkillSelectOptions(container);
     featuresContainer.appendChild(
       createAccordionItem('Competenze nelle abilità', container, true)
     );
@@ -133,6 +208,7 @@ function renderClassFeatures(cls) {
         });
         sel.dataset.type = 'choice';
         sel.dataset.choiceName = choice.name;
+        sel.dataset.choiceType = choice.type || '';
         const choiceId = `${choice.name}-${lvl}-${i}`;
         sel.dataset.choiceId = choiceId;
         const stored = savedSelections.choices[choiceId];
@@ -140,12 +216,14 @@ function renderClassFeatures(cls) {
         sel.addEventListener('change', () => {
           savedSelections.choices[choiceId] = { option: sel.value, level: lvl };
           handleASISelection(sel, container, savedSelections.choices[choiceId]);
+          updateChoiceSelectOptions(container, choice.name, choice.type);
         });
         container.appendChild(sel);
         if (stored) {
           handleASISelection(sel, container, stored);
         }
       }
+      updateChoiceSelectOptions(container, choice.name, choice.type);
       featuresContainer.appendChild(
         createAccordionItem(
           `Livello ${choice.level}: ${choice.name}`,
@@ -179,14 +257,17 @@ function createAbilitySelect() {
   return sel;
 }
 
-function createFeatSelect() {
+function createFeatSelect(current = '') {
   const sel = document.createElement('select');
   sel.innerHTML = "<option value=''>Seleziona un talento</option>";
+  const taken = getExistingFeats();
   (DATA.feats || []).forEach(feat => {
-    const o = document.createElement('option');
-    o.value = feat;
-    o.textContent = feat;
-    sel.appendChild(o);
+    if (!taken.has(feat) || feat === current) {
+      const o = document.createElement('option');
+      o.value = feat;
+      o.textContent = feat;
+      sel.appendChild(o);
+    }
   });
   sel.dataset.type = 'asi-feat';
   return sel;
@@ -225,15 +306,17 @@ function handleASISelection(sel, container, saved = null) {
       container.appendChild(abilitySel);
     }
   } else if (sel.value === 'Feat') {
-    const featSel = createFeatSelect();
+    const featSel = createFeatSelect(entry?.feat || '');
     featSel.dataset.parent = sel.dataset.choiceId;
     featSel.value = entry?.feat || '';
     featSel.addEventListener('change', () => {
       const rec = savedSelections.choices[sel.dataset.choiceId] || { option: sel.value, level: entry?.level };
       rec.feat = featSel.value;
       savedSelections.choices[sel.dataset.choiceId] = rec;
+      updateFeatSelectOptions();
     });
     container.appendChild(featSel);
+    updateFeatSelectOptions();
   }
 }
 
@@ -271,6 +354,9 @@ function confirmClassSelection() {
     if (!CharacterState.class) CharacterState.class = {};
     CharacterState.class.choiceSelections = {};
 
+    if (!Array.isArray(CharacterState.feats)) CharacterState.feats = [];
+    if (!Array.isArray(CharacterState.cantrips)) CharacterState.cantrips = [];
+
     // remove previous ASI bonuses from attributes
     const baseAttributes = { ...CharacterState.attributes };
     if (CharacterState.class.asiBonuses) {
@@ -284,6 +370,7 @@ function confirmClassSelection() {
     choiceSelects.forEach(sel => {
       if (sel.value) {
         const name = sel.dataset.choiceName;
+        const type = sel.dataset.choiceType;
         const saved = savedSelections.choices[sel.dataset.choiceId];
         if (!CharacterState.class.choiceSelections[name]) {
           CharacterState.class.choiceSelections[name] = [];
@@ -303,6 +390,16 @@ function confirmClassSelection() {
         });
         CharacterState.class.choiceSelections[name].push(entry);
 
+        if (type === 'skills' && !CharacterState.skills.includes(sel.value)) {
+          CharacterState.skills.push(sel.value);
+        } else if (type === 'tools' && !CharacterState.tools.includes(sel.value)) {
+          CharacterState.tools.push(sel.value);
+        } else if (type === 'languages' && !CharacterState.languages.includes(sel.value)) {
+          CharacterState.languages.push(sel.value);
+        } else if (type === 'cantrips' && !CharacterState.cantrips.includes(sel.value)) {
+          CharacterState.cantrips.push(sel.value);
+        }
+
         // track ASI bonuses for attributes
         if (entry.option === 'Increase one ability score by 2' && entry.abilities?.[0]) {
           const key = abilityMap[entry.abilities[0]];
@@ -312,6 +409,10 @@ function confirmClassSelection() {
             const key = abilityMap[ab];
             if (key) asiBonuses[key] += 1;
           });
+        }
+
+        if (entry.feat && !CharacterState.feats.includes(entry.feat)) {
+          CharacterState.feats.push(entry.feat);
         }
       }
     });

@@ -68,7 +68,9 @@
       <!-- Step 2: Scelta della Classe, Sottoclasse e Livello -->
       <div id="step2" class="step hidden">
         <h2>Step 2: Scelta della Classe, Sottoclasse e Livello</h2>
-        <div class="form-group">
+        <div id="classList" class="class-list"></div>
+        <p id="selectedClass"></p>
+        <div id="levelContainer" class="form-group hidden">
           <label for="levelSelect">Livello del Personaggio:</label>
           <select id="levelSelect" class="form-control">
             <!-- Opzioni da 1 a 20 -->
@@ -94,8 +96,6 @@
             <option value="20">20</option>
           </select>
         </div>
-        <div id="classList" class="class-list"></div>
-        <p id="selectedClass"></p>
         <div id="classFeatures" class="accordion hidden"></div>
         <div id="classActions" class="form-group hidden">
           <button id="changeClassButton" class="btn">Cambia Classe</button>

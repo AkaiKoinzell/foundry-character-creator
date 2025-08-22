@@ -1,4 +1,4 @@
-import { DATA, CharacterState, loadClasses, logCharacterState } from './data.js';
+import { DATA, CharacterState, loadClasses, logCharacterState, loadFeats } from './data.js';
 
 function createElement(tag, text) {
   const el = document.createElement(tag);
@@ -75,14 +75,16 @@ function renderClassFeatures(cls) {
   }
 
   for (let lvl = 1; lvl <= level; lvl++) {
-    const features = cls.features_by_level?.[lvl] || [];
+    const levelChoices = (cls.choices || []).filter(c => c.level === lvl);
+    const features = (cls.features_by_level?.[lvl] || []).filter(
+      f => !levelChoices.some(c => c.name === f.name)
+    );
     features.forEach(f => {
       featuresContainer.appendChild(
         createAccordionItem(`Livello ${lvl}: ${f.name}`, f.description || '')
       );
     });
 
-    const levelChoices = (cls.choices || []).filter(c => c.level === lvl);
     levelChoices.forEach(choice => {
       const container = document.createElement('div');
       if (choice.description) {
@@ -102,6 +104,12 @@ function renderClassFeatures(cls) {
         });
         sel.dataset.type = 'choice';
         sel.dataset.choiceName = choice.name;
+        sel.dataset.choiceId = `${choice.name}-${lvl}-${i}`;
+        if (choice.name === 'Ability Score Improvement') {
+          sel.addEventListener('change', () =>
+            handleASISelection(sel, container)
+          );
+        }
         container.appendChild(sel);
       }
       featuresContainer.appendChild(
@@ -112,6 +120,63 @@ function renderClassFeatures(cls) {
         )
       );
     });
+  }
+}
+
+function createAbilitySelect() {
+  const abilities = [
+    'Strength',
+    'Dexterity',
+    'Constitution',
+    'Intelligence',
+    'Wisdom',
+    'Charisma',
+  ];
+  const sel = document.createElement('select');
+  sel.innerHTML = "<option value=''>Seleziona caratteristica</option>";
+  abilities.forEach(ab => {
+    const o = document.createElement('option');
+    o.value = ab;
+    o.textContent = ab;
+    sel.appendChild(o);
+  });
+  sel.dataset.type = 'asi-ability';
+  return sel;
+}
+
+function createFeatSelect() {
+  const sel = document.createElement('select');
+  sel.innerHTML = "<option value=''>Seleziona un talento</option>";
+  (DATA.feats || []).forEach(feat => {
+    const o = document.createElement('option');
+    o.value = feat;
+    o.textContent = feat;
+    sel.appendChild(o);
+  });
+  sel.dataset.type = 'asi-feat';
+  return sel;
+}
+
+function handleASISelection(sel, container) {
+  const existing = container.querySelectorAll(
+    `select[data-parent='${sel.dataset.choiceId}']`
+  );
+  existing.forEach(e => e.remove());
+
+  if (sel.value === 'Increase one ability score by 2') {
+    const abilitySel = createAbilitySelect();
+    abilitySel.dataset.parent = sel.dataset.choiceId;
+    container.appendChild(abilitySel);
+  } else if (sel.value === 'Increase two ability scores by 1') {
+    for (let j = 0; j < 2; j++) {
+      const abilitySel = createAbilitySelect();
+      abilitySel.dataset.parent = sel.dataset.choiceId;
+      container.appendChild(abilitySel);
+    }
+  } else if (sel.value === 'Feat') {
+    const featSel = createFeatSelect();
+    featSel.dataset.parent = sel.dataset.choiceId;
+    container.appendChild(featSel);
   }
 }
 
@@ -144,9 +209,19 @@ function confirmClassSelection() {
         if (!CharacterState.class.choiceSelections[name]) {
           CharacterState.class.choiceSelections[name] = [];
         }
-        if (!CharacterState.class.choiceSelections[name].includes(sel.value)) {
-          CharacterState.class.choiceSelections[name].push(sel.value);
-        }
+        const entry = { option: sel.value };
+        const details = features.querySelectorAll(
+          `select[data-parent='${sel.dataset.choiceId}']`
+        );
+        details.forEach(dsel => {
+          if (dsel.dataset.type === 'asi-ability' && dsel.value) {
+            entry.abilities = entry.abilities || [];
+            entry.abilities.push(dsel.value);
+          } else if (dsel.dataset.type === 'asi-feat' && dsel.value) {
+            entry.feat = dsel.value;
+          }
+        });
+        CharacterState.class.choiceSelections[name].push(entry);
       }
     });
   }
@@ -164,6 +239,7 @@ export async function loadStep2() {
   const classActions = document.getElementById('classActions');
   const changeClassBtn = document.getElementById('changeClassButton');
   const confirmClassBtn = document.getElementById('confirmClassButton');
+  const levelContainer = document.getElementById('levelContainer');
   const levelSelect = document.getElementById('levelSelect');
   if (!classListContainer || !featuresContainer) return;
   classListContainer.innerHTML = '';
@@ -172,6 +248,7 @@ export async function loadStep2() {
   // Ensure the class data has been loaded before rendering
   try {
     await loadClasses();
+    await loadFeats();
   } catch (err) {
     console.error('Dati classi non disponibili.', err);
     return;
@@ -200,6 +277,7 @@ export async function loadStep2() {
     classListContainer.classList.add('hidden');
     featuresContainer.classList.remove('hidden');
     classActions?.classList.remove('hidden');
+    levelContainer?.classList.remove('hidden');
     const selected = classes.find(c => c.name === CharacterState.class.name);
     if (selected) renderClassFeatures(selected);
     if (changeClassBtn) {
@@ -220,6 +298,7 @@ export async function loadStep2() {
     classListContainer.classList.remove('hidden');
     featuresContainer.classList.add('hidden');
     classActions?.classList.add('hidden');
+    levelContainer?.classList.add('hidden');
   }
 
   classes.forEach(cls => {
@@ -301,8 +380,7 @@ function selectClass(cls) {
     if (!confirmChange) return;
   }
 
-  const levelSelect = document.getElementById('levelSelect');
-  const level = levelSelect ? parseInt(levelSelect.value, 10) || 1 : 1;
+  const level = CharacterState.level || 1;
 
   CharacterState.level = level;
   CharacterState.class = {

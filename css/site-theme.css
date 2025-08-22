@@ -7,8 +7,8 @@
   --accent-color: #3498db;
   --accent-hover: #2a80b9;
   --text-color: #333;
-  --choice-color: #e67e22;
-  --choice-hover: #d35400;
+  --choice-color: var(--accent-color);
+  --choice-hover: var(--accent-hover);
 }
 
 body {

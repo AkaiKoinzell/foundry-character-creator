@@ -1,18 +1,39 @@
 import { DATA, CharacterState, loadClasses, logCharacterState, loadFeats } from './data.js';
 
+// Temporary store for user selections while editing class features
+const savedSelections = { skills: [], subclass: '', choices: {} };
+
+function trimSelections(maxLevel) {
+  Object.keys(savedSelections.choices).forEach(id => {
+    if (savedSelections.choices[id].level > maxLevel) {
+      delete savedSelections.choices[id];
+    }
+  });
+}
+
 function createElement(tag, text) {
   const el = document.createElement(tag);
   if (text) el.textContent = text;
   return el;
 }
 
-function createAccordionItem(title, content, isChoice = false) {
+function createAccordionItem(title, content, isChoice = false, description = '') {
   const item = document.createElement('div');
   item.className = 'accordion-item' + (isChoice ? ' user-choice' : '');
 
   const header = document.createElement('button');
   header.className = 'accordion-header';
-  header.textContent = title;
+  if (description) {
+    const titleSpan = document.createElement('span');
+    titleSpan.textContent = title;
+    const descSpan = document.createElement('small');
+    descSpan.textContent = ` - ${description}`;
+    header.appendChild(titleSpan);
+    header.appendChild(descSpan);
+  } else {
+    header.textContent = title;
+  }
+
   const body = document.createElement('div');
   body.className = 'accordion-content';
   if (typeof content === 'string') {
@@ -52,6 +73,10 @@ function renderClassFeatures(cls) {
         sel.appendChild(o);
       });
       sel.dataset.type = 'skill';
+      sel.value = savedSelections.skills[i] || '';
+      sel.addEventListener('change', () => {
+        savedSelections.skills[i] = sel.value;
+      });
       container.appendChild(sel);
     }
     featuresContainer.appendChild(
@@ -69,6 +94,10 @@ function renderClassFeatures(cls) {
       sel.appendChild(o);
     });
     sel.dataset.type = 'subclass';
+    sel.value = savedSelections.subclass || '';
+    sel.addEventListener('change', () => {
+      savedSelections.subclass = sel.value;
+    });
     featuresContainer.appendChild(
       createAccordionItem('Sottoclasse', sel, true)
     );
@@ -104,19 +133,25 @@ function renderClassFeatures(cls) {
         });
         sel.dataset.type = 'choice';
         sel.dataset.choiceName = choice.name;
-        sel.dataset.choiceId = `${choice.name}-${lvl}-${i}`;
-        if (choice.name === 'Ability Score Improvement') {
-          sel.addEventListener('change', () =>
-            handleASISelection(sel, container)
-          );
-        }
+        const choiceId = `${choice.name}-${lvl}-${i}`;
+        sel.dataset.choiceId = choiceId;
+        const stored = savedSelections.choices[choiceId];
+        if (stored) sel.value = stored.option;
+        sel.addEventListener('change', () => {
+          savedSelections.choices[choiceId] = { option: sel.value, level: lvl };
+          handleASISelection(sel, container, savedSelections.choices[choiceId]);
+        });
         container.appendChild(sel);
+        if (stored) {
+          handleASISelection(sel, container, stored);
+        }
       }
       featuresContainer.appendChild(
         createAccordionItem(
           `Livello ${choice.level}: ${choice.name}`,
           container,
-          true
+          true,
+          choice.description || ''
         )
       );
     });
@@ -157,25 +192,47 @@ function createFeatSelect() {
   return sel;
 }
 
-function handleASISelection(sel, container) {
+function handleASISelection(sel, container, saved = null) {
   const existing = container.querySelectorAll(
     `select[data-parent='${sel.dataset.choiceId}']`
   );
   existing.forEach(e => e.remove());
 
+  const entry = savedSelections.choices[sel.dataset.choiceId] || saved;
+
   if (sel.value === 'Increase one ability score by 2') {
     const abilitySel = createAbilitySelect();
     abilitySel.dataset.parent = sel.dataset.choiceId;
+    abilitySel.value = entry?.abilities?.[0] || '';
+    abilitySel.addEventListener('change', () => {
+      const rec = savedSelections.choices[sel.dataset.choiceId] || { option: sel.value, level: entry?.level };
+      rec.abilities = [abilitySel.value];
+      savedSelections.choices[sel.dataset.choiceId] = rec;
+    });
     container.appendChild(abilitySel);
   } else if (sel.value === 'Increase two ability scores by 1') {
     for (let j = 0; j < 2; j++) {
       const abilitySel = createAbilitySelect();
       abilitySel.dataset.parent = sel.dataset.choiceId;
+      abilitySel.value = entry?.abilities?.[j] || '';
+      abilitySel.addEventListener('change', () => {
+        const rec = savedSelections.choices[sel.dataset.choiceId] || { option: sel.value, level: entry?.level };
+        const abilities = rec.abilities || [];
+        abilities[j] = abilitySel.value;
+        rec.abilities = abilities;
+        savedSelections.choices[sel.dataset.choiceId] = rec;
+      });
       container.appendChild(abilitySel);
     }
   } else if (sel.value === 'Feat') {
     const featSel = createFeatSelect();
     featSel.dataset.parent = sel.dataset.choiceId;
+    featSel.value = entry?.feat || '';
+    featSel.addEventListener('change', () => {
+      const rec = savedSelections.choices[sel.dataset.choiceId] || { option: sel.value, level: entry?.level };
+      rec.feat = featSel.value;
+      savedSelections.choices[sel.dataset.choiceId] = rec;
+    });
     container.appendChild(featSel);
   }
 }
@@ -259,6 +316,7 @@ export async function loadStep2() {
     levelSelect.onchange = () => {
       const lvl = parseInt(levelSelect.value, 10) || 1;
       CharacterState.level = lvl;
+      trimSelections(lvl);
       if (CharacterState.class) {
         CharacterState.class.level = lvl;
         const cls = DATA.classes.find(c => c.name === CharacterState.class.name);
@@ -284,6 +342,9 @@ export async function loadStep2() {
       changeClassBtn.onclick = () => {
         CharacterState.class = null;
         CharacterState.skills = [];
+        savedSelections.skills = [];
+        savedSelections.subclass = '';
+        savedSelections.choices = {};
         const btnStep3 = document.getElementById('btnStep3');
         if (btnStep3) btnStep3.disabled = true;
         logCharacterState();
@@ -381,6 +442,10 @@ function selectClass(cls) {
   }
 
   const level = CharacterState.level || 1;
+
+  savedSelections.skills = [];
+  savedSelections.subclass = '';
+  savedSelections.choices = {};
 
   CharacterState.level = level;
   CharacterState.class = {

@@ -334,6 +334,8 @@ document.addEventListener("DOMContentLoaded", () => {
     .then(() => {
       populateRaceList();
       populateBackgroundList();
+      // Ensure class list is rendered once data becomes available
+      loadStep2();
       const raceSel = document.getElementById("raceSelect");
       raceSel?.addEventListener("change", handleRaceChange);
       const bgSel = document.getElementById("backgroundSelect");

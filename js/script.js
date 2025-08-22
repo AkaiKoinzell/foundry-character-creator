@@ -147,8 +147,15 @@ function getTakenSelections(type, opts = {}) {
   return taken;
 }
 
-// Utility reading CharacterState.proficiencies and reporting conflicts
-function getTakenProficiencies(type, incoming, opts = {}) {
+// Utility reading CharacterState.proficiencies and reporting conflicts.
+// Extended with phase awareness so class/race/background can behave differently.
+function getTakenProficiencies(
+  type,
+  incoming,
+  opts = {},
+  phase = 'background',
+  phaseContext = {}
+) {
   const {
     excludeRace = false,
     excludeClass = false,
@@ -161,32 +168,57 @@ function getTakenProficiencies(type, incoming, opts = {}) {
   if (excludeClass) entries = entries.filter(p => !p.sources.includes('class'));
   if (excludeBackground) entries = entries.filter(p => !p.sources.includes('background'));
 
-  const ownedExisting = new Set(entries.map(p => p.key.toLowerCase()));
-  if (!incoming) return ownedExisting;
+  // Build the owned set from state and any override supplied via phaseContext
+  const owned = new Set(entries.map(p => p.key.toLowerCase()));
+  if (phaseContext.owned) {
+    phaseContext.owned.forEach(o => owned.add(o.toLowerCase()));
+  }
 
-  const lowerIncoming = incoming.map(i => i.toLowerCase());
-  const ownedAll = new Set([...ownedExisting, ...lowerIncoming]);
+  // When called without incoming list, preserve previous behaviour of
+  // returning just the owned set.
+  if (!incoming) return owned;
 
-  const defaults = {
-    languages: ALL_LANGUAGES,
-    skills: ALL_SKILLS,
-    tools: ALL_TOOLS,
-  };
-  const pool = allowed || defaults[type] || [];
-  const replacementPool = pool.filter(o => !ownedAll.has(o.toLowerCase()));
+  const conflicts = [];
 
-  const conflicts = incoming
-    .filter(item => ownedExisting.has(item.toLowerCase()))
-    .map(item => {
-      const entry = entries.find(e => e.key.toLowerCase() === item.toLowerCase());
-      return {
-        key: item,
-        ownedFrom: entry ? [...entry.sources] : [],
-        replacementPool,
-      };
-    });
+  incoming.forEach(item => {
+    const lower = item.toLowerCase();
+    if (phase === 'class') {
+      // Only block duplicates against the class's fixed proficiencies
+      const classFixed = phaseContext.classFixed || new Set();
+      if (classFixed.has(lower)) {
+        conflicts.push({
+          key: item,
+          reason: 'DUPLICATE_CLASS_FIXED',
+          replacementPool: [],
+        });
+      }
+      owned.add(lower);
+      return;
+    }
 
-  return { owned: ownedAll, conflicts };
+    if (owned.has(lower)) {
+      const replacementPool = computeReplacementPool(
+        type,
+        allowed,
+        phase,
+        { ...phaseContext, owned }
+      );
+      conflicts.push({ key: item, reason: 'DUPLICATE', replacementPool });
+    } else {
+      owned.add(lower);
+    }
+  });
+
+  return { owned, conflicts };
+}
+
+function computeReplacementPool(type, allowed, phase, phaseContext) {
+  if (phase === 'background') {
+    const pool = phaseContext.replacementPool || allowed || [];
+    const owned = phaseContext.owned || new Set();
+    return pool.filter(p => !owned.has(p.toLowerCase()));
+  }
+  return [];
 }
 
 // Registry tracking current conflicts by a unique grant identifier
@@ -199,7 +231,8 @@ const conflictRegistry = {};
  */
 export function registerConflict(grantId, conflict) {
   if (!grantId || !conflict) return;
-  conflictRegistry[grantId] = { ...conflict };
+  // Ensure the reason (e.g., DUPLICATE_CLASS_FIXED) is preserved in the registry
+  conflictRegistry[grantId] = { ...conflict, reason: conflict.reason };
 }
 
 /**

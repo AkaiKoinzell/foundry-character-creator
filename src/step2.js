@@ -1,4 +1,4 @@
-import { DATA, CharacterState, loadClasses } from './data.js';
+import { DATA, CharacterState, loadClasses, logCharacterState } from './data.js';
 
 function createElement(tag, text) {
   const el = document.createElement(tag);
@@ -132,6 +132,7 @@ function confirmClassSelection() {
     });
   }
 
+  logCharacterState();
   alert('Classe confermata!');
 }
 
@@ -174,6 +175,7 @@ export async function loadStep2() {
         CharacterState.skills = [];
         const btnStep3 = document.getElementById('btnStep3');
         if (btnStep3) btnStep3.disabled = true;
+        logCharacterState();
         loadStep2();
       };
     }
@@ -288,6 +290,6 @@ function selectClass(cls) {
 
   const btnStep3 = document.getElementById('btnStep3');
   if (btnStep3) btnStep3.disabled = false;
-
+  logCharacterState();
   loadStep2();
 }

@@ -1,4 +1,4 @@
-import { DATA, CharacterState, loadClasses } from "./data.js";
+import { DATA, CharacterState, loadClasses, logCharacterState } from "./data.js";
 import { loadStep2 } from "./step2.js";
 
 let currentStep = 1;
@@ -124,6 +124,7 @@ function addUniqueProficiency(type, value, container) {
   const list = CharacterState[type];
   if (!list.includes(value)) {
     list.push(value);
+    logCharacterState();
     return;
   }
   // handle duplicate with replacement
@@ -144,6 +145,7 @@ function addUniqueProficiency(type, value, container) {
     if (sel.value && !list.includes(sel.value)) {
       list.push(sel.value);
       sel.disabled = true;
+      logCharacterState();
     }
   });
   label.appendChild(sel);
@@ -223,6 +225,7 @@ function confirmRaceSelection() {
   const btn4 = document.getElementById("btnStep4");
   if (btn4) btn4.disabled = false;
   showStep(4);
+  logCharacterState();
 }
 
 // --- Step 4: Background selection handlers ---
@@ -301,6 +304,7 @@ function confirmBackgroundSelection() {
     }
   }
   showStep(5);
+  logCharacterState();
 }
 
 document.addEventListener("DOMContentLoaded", () => {

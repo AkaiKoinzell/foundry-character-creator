@@ -39,6 +39,9 @@ function renderClassFeatures(cls) {
 
   if (cls.skill_proficiencies?.options) {
     const container = document.createElement('div');
+    const desc = document.createElement('p');
+    desc.textContent = `Scegli ${cls.skill_proficiencies.choose} abilità`;
+    container.appendChild(desc);
     for (let i = 0; i < cls.skill_proficiencies.choose; i++) {
       const sel = document.createElement('select');
       sel.innerHTML = "<option value=''>Seleziona</option>";
@@ -81,20 +84,30 @@ function renderClassFeatures(cls) {
 
     const levelChoices = (cls.choices || []).filter(c => c.level === lvl);
     levelChoices.forEach(choice => {
-      const sel = document.createElement('select');
-      sel.innerHTML = "<option value=''>Seleziona</option>";
-      choice.selection.forEach(opt => {
-        const o = document.createElement('option');
-        o.value = opt;
-        o.textContent = opt;
-        sel.appendChild(o);
-      });
-      sel.dataset.type = 'choice';
-      sel.dataset.choiceName = choice.name;
+      const container = document.createElement('div');
+      if (choice.description) {
+        const p = document.createElement('p');
+        p.textContent = choice.description;
+        container.appendChild(p);
+      }
+      const count = choice.count || 1;
+      for (let i = 0; i < count; i++) {
+        const sel = document.createElement('select');
+        sel.innerHTML = "<option value=''>Seleziona</option>";
+        choice.selection.forEach(opt => {
+          const o = document.createElement('option');
+          o.value = opt;
+          o.textContent = opt;
+          sel.appendChild(o);
+        });
+        sel.dataset.type = 'choice';
+        sel.dataset.choiceName = choice.name;
+        container.appendChild(sel);
+      }
       featuresContainer.appendChild(
         createAccordionItem(
           `Livello ${choice.level}: ${choice.name}`,
-          sel,
+          container,
           true
         )
       );
@@ -127,7 +140,13 @@ function confirmClassSelection() {
     CharacterState.class.choiceSelections = {};
     choiceSelects.forEach(sel => {
       if (sel.value) {
-        CharacterState.class.choiceSelections[sel.dataset.choiceName] = sel.value;
+        const name = sel.dataset.choiceName;
+        if (!CharacterState.class.choiceSelections[name]) {
+          CharacterState.class.choiceSelections[name] = [];
+        }
+        if (!CharacterState.class.choiceSelections[name].includes(sel.value)) {
+          CharacterState.class.choiceSelections[name].push(sel.value);
+        }
       }
     });
   }
@@ -145,6 +164,7 @@ export async function loadStep2() {
   const classActions = document.getElementById('classActions');
   const changeClassBtn = document.getElementById('changeClassButton');
   const confirmClassBtn = document.getElementById('confirmClassButton');
+  const levelSelect = document.getElementById('levelSelect');
   if (!classListContainer || !featuresContainer) return;
   classListContainer.innerHTML = '';
   featuresContainer.innerHTML = '';
@@ -155,6 +175,19 @@ export async function loadStep2() {
   } catch (err) {
     console.error('Dati classi non disponibili.', err);
     return;
+  }
+
+  if (levelSelect) {
+    levelSelect.value = CharacterState.level || '1';
+    levelSelect.onchange = () => {
+      const lvl = parseInt(levelSelect.value, 10) || 1;
+      CharacterState.level = lvl;
+      if (CharacterState.class) {
+        CharacterState.class.level = lvl;
+        const cls = DATA.classes.find(c => c.name === CharacterState.class.name);
+        if (cls) renderClassFeatures(cls);
+      }
+    };
   }
 
   const classes = Array.isArray(DATA.classes) ? DATA.classes : [];

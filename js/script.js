@@ -147,8 +147,15 @@ function getTakenSelections(type, opts = {}) {
   return taken;
 }
 
-// Utility reading CharacterState.proficiencies and reporting conflicts
-function getTakenProficiencies(type, incoming, opts = {}) {
+// Utility reading CharacterState.proficiencies and reporting conflicts.
+// Extended with phase awareness so class/race/background can behave differently.
+function getTakenProficiencies(
+  type,
+  incoming,
+  opts = {},
+  phase = 'background',
+  phaseContext = {}
+) {
   const {
     excludeRace = false,
     excludeClass = false,
@@ -161,32 +168,65 @@ function getTakenProficiencies(type, incoming, opts = {}) {
   if (excludeClass) entries = entries.filter(p => !p.sources.includes('class'));
   if (excludeBackground) entries = entries.filter(p => !p.sources.includes('background'));
 
-  const ownedExisting = new Set(entries.map(p => p.key.toLowerCase()));
-  if (!incoming) return ownedExisting;
+  // Build the owned set from state and any override supplied via phaseContext
+  const owned = new Set(entries.map(p => p.key.toLowerCase()));
+  if (phaseContext.owned) {
+    phaseContext.owned.forEach(o => owned.add(o.toLowerCase()));
+  }
 
-  const lowerIncoming = incoming.map(i => i.toLowerCase());
-  const ownedAll = new Set([...ownedExisting, ...lowerIncoming]);
+  // Debugging output to help trace duplicate handling across phases
+  console.debug('[getTakenProficiencies] phase:', phase);
+  console.debug('[getTakenProficiencies] incoming:', incoming);
+  console.debug('[getTakenProficiencies] owned start:', Array.from(owned));
 
-  const defaults = {
-    languages: ALL_LANGUAGES,
-    skills: ALL_SKILLS,
-    tools: ALL_TOOLS,
-  };
-  const pool = allowed || defaults[type] || [];
-  const replacementPool = pool.filter(o => !ownedAll.has(o.toLowerCase()));
+  // When called without incoming list, preserve previous behaviour of
+  // returning just the owned set.
+  if (!incoming) return owned;
 
-  const conflicts = incoming
-    .filter(item => ownedExisting.has(item.toLowerCase()))
-    .map(item => {
-      const entry = entries.find(e => e.key.toLowerCase() === item.toLowerCase());
-      return {
-        key: item,
-        ownedFrom: entry ? [...entry.sources] : [],
-        replacementPool,
-      };
-    });
+  const conflicts = [];
 
-  return { owned: ownedAll, conflicts };
+  incoming.forEach(item => {
+    const lower = item.toLowerCase();
+    if (phase === 'class') {
+      // Only block duplicates against the class's fixed proficiencies
+      const classFixed = phaseContext.classFixed || new Set();
+      if (classFixed.has(lower)) {
+        conflicts.push({
+          key: item,
+          reason: 'DUPLICATE_CLASS_FIXED',
+          replacementPool: [],
+        });
+      }
+      owned.add(lower);
+      return;
+    }
+
+    if (owned.has(lower)) {
+      const replacementPool = computeReplacementPool(
+        type,
+        allowed,
+        phase,
+        { ...phaseContext, owned }
+      );
+      conflicts.push({ key: item, reason: 'DUPLICATE', replacementPool });
+    } else {
+      owned.add(lower);
+    }
+  });
+
+  console.debug('[getTakenProficiencies] conflicts:', conflicts);
+  console.debug('[getTakenProficiencies] owned end:', Array.from(owned));
+
+  return { owned, conflicts };
+}
+
+function computeReplacementPool(type, allowed, phase, phaseContext) {
+  if (phase === 'background') {
+    const pool = phaseContext.replacementPool || allowed || [];
+    const owned = phaseContext.owned || new Set();
+    return pool.filter(p => !owned.has(p.toLowerCase()));
+  }
+  return [];
 }
 
 // Registry tracking current conflicts by a unique grant identifier
@@ -199,7 +239,8 @@ const conflictRegistry = {};
  */
 export function registerConflict(grantId, conflict) {
   if (!grantId || !conflict) return;
-  conflictRegistry[grantId] = { ...conflict };
+  // Ensure the reason (e.g., DUPLICATE_CLASS_FIXED) is preserved in the registry
+  conflictRegistry[grantId] = { ...conflict, reason: conflict.reason };
 }
 
 /**
@@ -297,25 +338,32 @@ function gatherExtraSelections(data, context, level = 1) {
     }
   } else if (context === "class") {
     const allChoices = data.choices || [];
+
+    // Class choices should present the full option list, only removing the
+    // class's own fixed proficiencies so the user doesn't pick them again.
+    const fixedSkills = new Set(
+      (window.currentClassData?.skill_proficiencies?.fixed || []).map(s => s.toLowerCase())
+    );
+    const fixedLangs = new Set(
+      (window.currentClassData?.language_proficiencies?.fixed || []).map(l => l.toLowerCase())
+    );
+
     allChoices.forEach(choice => {
       if (!choice.level || parseInt(choice.level) <= level) {
         const key = extraCategoryAliases[choice.name] || choice.name;
         if (key === 'Tool Proficiency') return; // tool choices handled in equipment
         const selected = (selectedData[key] || []).filter(v => v);
         let opts = choice.selection || choice.options || [];
-        let note = '';
-        const map = {
-          Languages: { type: 'languages', taken: takenLangs },
-          'Skill Proficiency': { type: 'skills', taken: takenSkills }
-        };
-        const info = map[key];
-        if (info) {
-          const res = filterAvailableProficiencies(info.type, opts, info.taken, selected);
-          opts = res.options;
-          note = res.note;
+        console.debug('[gatherExtraSelections] raw options for', key, opts);
+
+        if (key === 'Skill Proficiency') {
+          opts = opts.filter(o => !fixedSkills.has(o.toLowerCase()));
+        } else if (key === 'Languages') {
+          opts = opts.filter(o => !fixedLangs.has(o.toLowerCase()));
         }
-        const desc = note ? ((choice.description || '') + note) : choice.description;
-        selections.push({ ...choice, selection: opts, description: desc, selected });
+
+        console.debug('[gatherExtraSelections] filtered options for', key, opts);
+        selections.push({ ...choice, selection: opts, description: choice.description, selected });
       }
     });
   }

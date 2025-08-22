@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Character Creator - Foundry</title>
   <link rel="stylesheet" href="css/site-theme.css">
-  <script src="dist/bundle.js"></script>
   <style>
   #progressContainer {
     width: 100%;
@@ -27,7 +26,7 @@
 <body>
   <header class="banner">
     <h1>Character Creator - Foundry</h1>
-    <button id="resetButton" class="btn" onclick="resetForm()">Reset Character</button>
+    <button id="resetButton" class="btn">Reset Character</button>
   </header>
   <div class="section-divider"></div>
   <div id="progressContainer">
@@ -174,7 +173,7 @@
               <option value="wis">Saggezza</option>
               <option value="cha">Carisma</option>
             </select>
-            <button class="btn btn-primary" onclick="applyRacialBonuses()">Applica Bonus Razza</button>
+            <button class="btn btn-primary">Applica Bonus Razza</button>
           </div>
         </div>
         <table>
@@ -188,8 +187,8 @@
           <tr>
             <td>FOR</td>
             <td>
-              <button class="btn" onclick="adjustPoints('str', 'add')">+</button>
-              <button class="btn" onclick="adjustPoints('str', 'subtract')">-</button>
+              <button class="btn">+</button>
+              <button class="btn">-</button>
             </td>
             <td><span id="strPoints">8</span></td>
             <td><span id="strRaceModifier">0</span></td>
@@ -198,8 +197,8 @@
           <tr>
             <td>DES</td>
             <td>
-              <button class="btn" onclick="adjustPoints('dex', 'add')">+</button>
-              <button class="btn" onclick="adjustPoints('dex', 'subtract')">-</button>
+              <button class="btn">+</button>
+              <button class="btn">-</button>
             </td>
             <td><span id="dexPoints">8</span></td>
             <td><span id="dexRaceModifier">0</span></td>
@@ -208,8 +207,8 @@
           <tr>
             <td>COS</td>
             <td>
-              <button class="btn" onclick="adjustPoints('con', 'add')">+</button>
-              <button class="btn" onclick="adjustPoints('con', 'subtract')">-</button>
+              <button class="btn">+</button>
+              <button class="btn">-</button>
             </td>
             <td><span id="conPoints">8</span></td>
             <td><span id="conRaceModifier">0</span></td>
@@ -218,8 +217,8 @@
           <tr>
             <td>INT</td>
             <td>
-              <button class="btn" onclick="adjustPoints('int', 'add')">+</button>
-              <button class="btn" onclick="adjustPoints('int', 'subtract')">-</button>
+              <button class="btn">+</button>
+              <button class="btn">-</button>
             </td>
             <td><span id="intPoints">8</span></td>
             <td><span id="intRaceModifier">0</span></td>
@@ -228,8 +227,8 @@
           <tr>
             <td>SAG</td>
             <td>
-              <button class="btn" onclick="adjustPoints('wis', 'add')">+</button>
-              <button class="btn" onclick="adjustPoints('wis', 'subtract')">-</button>
+              <button class="btn">+</button>
+              <button class="btn">-</button>
             </td>
             <td><span id="wisPoints">8</span></td>
             <td><span id="wisRaceModifier">0</span></td>
@@ -238,8 +237,8 @@
           <tr>
             <td>CAR</td>
             <td>
-              <button class="btn" onclick="adjustPoints('cha', 'add')">+</button>
-              <button class="btn" onclick="adjustPoints('cha', 'subtract')">-</button>
+              <button class="btn">+</button>
+              <button class="btn">-</button>
             </td>
             <td><span id="chaPoints">8</span></td>
             <td><span id="chaRaceModifier">0</span></td>

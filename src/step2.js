@@ -1,4 +1,4 @@
-import { DATA, CharacterState } from './data.js';
+import { DATA, CharacterState, loadClasses } from './data.js';
 
 function createElement(tag, text) {
   const el = document.createElement(tag);
@@ -9,10 +9,19 @@ function createElement(tag, text) {
 /**
  * Inizializza lo Step 2: Selezione Classe
  */
-export function loadStep2() {
+export async function loadStep2() {
   const classListContainer = document.getElementById('classList');
   if (!classListContainer) return;
   classListContainer.innerHTML = '';
+
+  // Ensure the class data has been loaded before rendering
+  try {
+    await loadClasses();
+  } catch (err) {
+    console.error('Dati classi non disponibili.', err);
+    return;
+  }
+
   const classes = Array.isArray(DATA.classes) ? DATA.classes : [];
   if (!classes.length) {
     console.error('Dati classi non disponibili.');

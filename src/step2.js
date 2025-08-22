@@ -34,12 +34,17 @@ export async function loadStep2() {
     if (CharacterState.class && CharacterState.class.name === cls.name) {
       classCard.classList.add('selected');
     }
+    classCard.addEventListener('click', () => showClassModal(cls));
 
     const title = createElement('h3', cls.name);
     const desc = createElement('p', cls.description || 'Nessuna descrizione disponibile.');
 
     const detailsBtn = createElement('button', 'Dettagli');
-    detailsBtn.addEventListener('click', () => showClassModal(cls));
+    detailsBtn.className = 'btn btn-primary';
+    detailsBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      showClassModal(cls);
+    });
 
     classCard.appendChild(title);
     classCard.appendChild(desc);

@@ -174,6 +174,10 @@ function getTakenProficiencies(
     phaseContext.owned.forEach(o => owned.add(o.toLowerCase()));
   }
 
+  // Debugging output to help trace duplicate handling across phases
+  console.debug('[getTakenProficiencies] phase:', phase);
+  console.debug('[getTakenProficiencies] incoming:', incoming);
+  console.debug('[getTakenProficiencies] owned start:', Array.from(owned));
   // When called without incoming list, preserve previous behaviour of
   // returning just the owned set.
   if (!incoming) return owned;
@@ -208,6 +212,9 @@ function getTakenProficiencies(
       owned.add(lower);
     }
   });
+
+  console.debug('[getTakenProficiencies] conflicts:', conflicts);
+  console.debug('[getTakenProficiencies] owned end:', Array.from(owned));
 
   return { owned, conflicts };
 }
@@ -336,6 +343,7 @@ function gatherExtraSelections(data, context, level = 1) {
         if (key === 'Tool Proficiency') return; // tool choices handled in equipment
         const selected = (selectedData[key] || []).filter(v => v);
         let opts = choice.selection || choice.options || [];
+        console.debug('[gatherExtraSelections] raw options for', key, opts);
         let note = '';
         const map = {
           Languages: { type: 'languages', taken: takenLangs },
@@ -347,6 +355,7 @@ function gatherExtraSelections(data, context, level = 1) {
           opts = res.options;
           note = res.note;
         }
+        console.debug('[gatherExtraSelections] filtered options for', key, opts);
         const desc = note ? ((choice.description || '') + note) : choice.description;
         selections.push({ ...choice, selection: opts, description: desc, selected });
       }

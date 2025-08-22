@@ -45,6 +45,8 @@ export function renderProficiencyReplacements(
   } = {},
 ) {
   if (!container || !Array.isArray(fixedList) || fixedList.length === 0) return [];
+  console.debug('[renderProficiencyReplacements] phase:', phase);
+  console.debug('[renderProficiencyReplacements] fixed list:', fixedList);
   const { owned, conflicts } = getTakenProficiencies(
     type,
     fixedList,
@@ -52,9 +54,11 @@ export function renderProficiencyReplacements(
     phase,
     phaseContext
   );
+  console.debug('[renderProficiencyReplacements] conflicts:', conflicts);
   const filtered = phase === 'background'
     ? conflicts.filter(c => c.reason === 'DUPLICATE')
     : [];
+  console.debug('[renderProficiencyReplacements] filtered conflicts:', filtered);
   if (!filtered.length) return [];
   const base = fixedList.filter(s => !filtered.some(c => c.key === s));
   const baseLower = base.map(b => b.toLowerCase());

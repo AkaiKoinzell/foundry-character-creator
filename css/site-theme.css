@@ -93,6 +93,10 @@ label {
   margin-top: 10px;
 }
 
+.form-group {
+  margin-bottom: 15px;
+}
+
 .form-control {
   padding: 0.5rem;
   margin-top: 0.25rem;

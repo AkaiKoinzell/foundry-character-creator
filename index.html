@@ -48,87 +48,105 @@
     <!-- Step 1: Dati Iniziali -->
     <div id="step1" class="step active">
       <h2>Step 1: Dati Iniziali</h2>
-      <label for="userName">Nome Utente:</label>
-      <input type="text" id="userName" class="form-control" placeholder="Inserisci il tuo nome">
-      <br><br>
-      <label for="characterName">Nome del Personaggio:</label>
-      <input type="text" id="characterName" class="form-control" placeholder="Inserisci il nome del tuo personaggio">
-      <br><br>
-      <label for="origin">Provenienza:</label>
-      <input type="text" id="origin" class="form-control" placeholder="Inserisci la provenienza del personaggio">
-      <br><br>
-      <label for="age">Età:</label>
-      <input type="number" id="age" class="form-control" placeholder="Inserisci l'età del personaggio">
+      <div class="form-group">
+        <label for="userName">Nome Utente:</label>
+        <input type="text" id="userName" class="form-control" placeholder="Inserisci il tuo nome">
+      </div>
+      <div class="form-group">
+        <label for="characterName">Nome del Personaggio:</label>
+        <input type="text" id="characterName" class="form-control" placeholder="Inserisci il nome del tuo personaggio">
+      </div>
+      <div class="form-group">
+        <label for="origin">Provenienza:</label>
+        <input type="text" id="origin" class="form-control" placeholder="Inserisci la provenienza del personaggio">
+      </div>
+      <div class="form-group">
+        <label for="age">Età:</label>
+        <input type="number" id="age" class="form-control" placeholder="Inserisci l'età del personaggio">
+      </div>
     </div>
       <!-- Step 2: Scelta della Classe, Sottoclasse e Livello -->
       <div id="step2" class="step hidden">
         <h2>Step 2: Scelta della Classe, Sottoclasse e Livello</h2>
-        <label for="levelSelect">Livello del Personaggio:</label>
-        <select id="levelSelect" class="form-control">
-          <!-- Opzioni da 1 a 20 -->
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="7">7</option>
-          <option value="8">8</option>
-          <option value="9">9</option>
-          <option value="10">10</option>
-          <option value="11">11</option>
-          <option value="12">12</option>
-          <option value="13">13</option>
-          <option value="14">14</option>
-          <option value="15">15</option>
-          <option value="16">16</option>
-          <option value="17">17</option>
-          <option value="18">18</option>
-          <option value="19">19</option>
-          <option value="20">20</option>
-        </select>
-        <br>
+        <div class="form-group">
+          <label for="levelSelect">Livello del Personaggio:</label>
+          <select id="levelSelect" class="form-control">
+            <!-- Opzioni da 1 a 20 -->
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            <option value="17">17</option>
+            <option value="18">18</option>
+            <option value="19">19</option>
+            <option value="20">20</option>
+          </select>
+        </div>
         <div id="classList" class="class-list"></div>
-        <label for="classSelect" class="hidden">Classe:</label>
-        <select id="classSelect" class="form-control hidden">
-          <option value="">Seleziona una classe</option>
-        </select>
-        <br>
+        <div class="form-group">
+          <label for="classSelect" class="hidden">Classe:</label>
+          <select id="classSelect" class="form-control hidden">
+            <option value="">Seleziona una classe</option>
+          </select>
+        </div>
         <div id="classFeatures"></div>
         <div id="classExtrasAccordion" class="accordion hidden"></div>
-        <button id="confirmClassSelection" class="btn btn-primary">Seleziona Classe</button>
+        <div class="form-group">
+          <button id="confirmClassSelection" class="btn btn-primary">Seleziona Classe</button>
+        </div>
       </div>
       <!-- Step 3: Scelta della Razza -->
       <div id="step3" class="step hidden">
         <h2>Step 3: Scelta della Razza</h2>
         <div id="raceList" class="class-list"></div>
-        <label for="raceSelect" class="hidden">Razza:</label>
-        <select id="raceSelect" class="form-control hidden">
-          <option value="">Seleziona una razza</option>
-        </select>
-        <br>
+        <div class="form-group">
+          <label for="raceSelect" class="hidden">Razza:</label>
+          <select id="raceSelect" class="form-control hidden">
+            <option value="">Seleziona una razza</option>
+          </select>
+        </div>
         <div id="raceTraits"></div>
-        <button id="confirmRaceSelection" class="btn btn-primary">Seleziona Razza</button>
+        <div class="form-group">
+          <button id="confirmRaceSelection" class="btn btn-primary">Seleziona Razza</button>
+        </div>
       </div>
       <!-- Step 4: Background -->
       <div id="step4" class="step hidden">
         <h2>Step 4: Background</h2>
         <div id="backgroundList" class="class-list"></div>
-        <label for="backgroundSelect" class="hidden">Background:</label>
-        <select id="backgroundSelect" class="form-control hidden">
-          <option value="">Seleziona un background</option>
-        </select>
+        <div class="form-group">
+          <label for="backgroundSelect" class="hidden">Background:</label>
+          <select id="backgroundSelect" class="form-control hidden">
+            <option value="">Seleziona un background</option>
+          </select>
+        </div>
         <div id="backgroundSkills"></div>
         <div id="backgroundTools"></div>
         <div id="backgroundLanguages"></div>
         <div id="backgroundFeat"></div>
-        <button id="confirmBackgroundSelection" class="btn btn-primary">Seleziona Background</button>
+        <div class="form-group">
+          <button id="confirmBackgroundSelection" class="btn btn-primary">Seleziona Background</button>
+        </div>
       </div>
       <!-- Step 5: Equipment -->
       <div id="step5" class="step hidden">
         <h2>Step 5: Equipment</h2>
-        <div id="equipmentSelections"></div>
-        <button id="confirmEquipment" class="btn btn-primary">Confirm Equipment</button>
+        <div id="equipmentSelections" class="form-group"></div>
+        <div class="form-group">
+          <button id="confirmEquipment" class="btn btn-primary">Confirm Equipment</button>
+        </div>
       </div>
       <!-- Step 6: Sistema Point Buy -->
       <div id="step6" class="step hidden">
@@ -143,37 +161,45 @@
             <li>+1 a tre caratteristiche diverse</li>
           </ul>
           <div id="bonusRow">
-            <label for="racialBonus1">Bonus 1:</label>
-            <select id="racialBonus1" class="form-control">
-              <option value="">Seleziona</option>
-              <option value="str">Forza</option>
-              <option value="dex">Destrezza</option>
-              <option value="con">Costituzione</option>
-              <option value="int">Intelligenza</option>
-              <option value="wis">Saggezza</option>
-              <option value="cha">Carisma</option>
-            </select>
-            <label for="racialBonus2">Bonus 2:</label>
-            <select id="racialBonus2" class="form-control">
-              <option value="">Seleziona</option>
-              <option value="str">Forza</option>
-              <option value="dex">Destrezza</option>
-              <option value="con">Costituzione</option>
-              <option value="int">Intelligenza</option>
-              <option value="wis">Saggezza</option>
-              <option value="cha">Carisma</option>
-            </select>
-            <label for="racialBonus3">Bonus 3:</label>
-            <select id="racialBonus3" class="form-control">
-              <option value="">Seleziona</option>
-              <option value="str">Forza</option>
-              <option value="dex">Destrezza</option>
-              <option value="con">Costituzione</option>
-              <option value="int">Intelligenza</option>
-              <option value="wis">Saggezza</option>
-              <option value="cha">Carisma</option>
-            </select>
-            <button class="btn btn-primary">Applica Bonus Razza</button>
+            <div class="form-group">
+              <label for="racialBonus1">Bonus 1:</label>
+              <select id="racialBonus1" class="form-control">
+                <option value="">Seleziona</option>
+                <option value="str">Forza</option>
+                <option value="dex">Destrezza</option>
+                <option value="con">Costituzione</option>
+                <option value="int">Intelligenza</option>
+                <option value="wis">Saggezza</option>
+                <option value="cha">Carisma</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="racialBonus2">Bonus 2:</label>
+              <select id="racialBonus2" class="form-control">
+                <option value="">Seleziona</option>
+                <option value="str">Forza</option>
+                <option value="dex">Destrezza</option>
+                <option value="con">Costituzione</option>
+                <option value="int">Intelligenza</option>
+                <option value="wis">Saggezza</option>
+                <option value="cha">Carisma</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="racialBonus3">Bonus 3:</label>
+              <select id="racialBonus3" class="form-control">
+                <option value="">Seleziona</option>
+                <option value="str">Forza</option>
+                <option value="dex">Destrezza</option>
+                <option value="con">Costituzione</option>
+                <option value="int">Intelligenza</option>
+                <option value="wis">Saggezza</option>
+                <option value="cha">Carisma</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <button class="btn btn-primary">Applica Bonus Razza</button>
+            </div>
           </div>
         </div>
         <table>
@@ -255,9 +281,13 @@
       <!-- Step 7: Recap & Esportazione -->
       <div id="step7" class="step hidden">
         <h2>Step 7: Recap & Esportazione</h2>
-        <div id="finalRecap"></div>
-        <button id="generateJson" class="btn btn-primary">Genera JSON</button>
-        <button id="generatePdf" class="btn btn-primary">Genera PDF</button>
+        <div id="finalRecap" class="form-group"></div>
+        <div class="form-group">
+          <button id="generateJson" class="btn btn-primary">Genera JSON</button>
+        </div>
+        <div class="form-group">
+          <button id="generatePdf" class="btn btn-primary">Genera PDF</button>
+        </div>
       </div>
   </div>
 

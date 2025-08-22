@@ -199,6 +199,32 @@ describe('character creation flow', () => {
     expect(skillChoice.selection).not.toContain('Perception');
   });
 
+  test('class selection includes skills granted by race/background', () => {
+    applyStep('race', { proficiencies: { skills: ['Stealth'] } });
+    applyStep('background', { proficiencies: { skills: ['History'] } });
+
+    window.currentClassData = {
+      skill_proficiencies: { fixed: ['Perception'] },
+    };
+
+    const data = {
+      choices: [
+        {
+          name: 'Skill Proficiency',
+          selection: ['Stealth', 'History', 'Nature', 'Arcana', 'Perception'],
+          count: 2,
+        },
+      ],
+    };
+
+    const selections = gatherExtraSelections(data, 'class', 1);
+    const skillChoice = selections.find(c => c.name === 'Skill Proficiency');
+    expect(skillChoice.selection).toEqual(
+      expect.arrayContaining(['Stealth', 'History', 'Nature', 'Arcana'])
+    );
+    expect(skillChoice.selection).not.toContain('Perception');
+  });
+
   test('race filters out previously known proficiencies', () => {
     applyStep('class', { proficiencies: { languages: ['Common', 'Elvish'] } });
     const raceData = {

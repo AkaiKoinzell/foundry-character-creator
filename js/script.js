@@ -295,8 +295,22 @@ function gatherExtraSelections(data, context, level = 1) {
   } else {
     exclusion = {};
   }
+  let fixedSkills;
+  if (context === 'class') {
+    fixedSkills = new Set(
+      (window.currentClassData?.skill_proficiencies?.fixed || []).map(s =>
+        s.toLowerCase()
+      )
+    );
+  }
   const takenLangs = getTakenProficiencies('languages', undefined, exclusion);
-  const takenSkills = getTakenProficiencies('skills', undefined, exclusion);
+  const takenSkills = getTakenProficiencies(
+    'skills',
+    undefined,
+    exclusion,
+    context === 'class' ? 'class' : undefined,
+    context === 'class' ? { classFixed: fixedSkills } : undefined
+  );
   const takenTools = getTakenProficiencies('tools', undefined, exclusion);
 
   if (context === "race") {
@@ -341,9 +355,6 @@ function gatherExtraSelections(data, context, level = 1) {
 
     // Class choices should present the full option list, only removing the
     // class's own fixed proficiencies so the user doesn't pick them again.
-    const fixedSkills = new Set(
-      (window.currentClassData?.skill_proficiencies?.fixed || []).map(s => s.toLowerCase())
-    );
     const fixedLangs = new Set(
       (window.currentClassData?.language_proficiencies?.fixed || []).map(l => l.toLowerCase())
     );

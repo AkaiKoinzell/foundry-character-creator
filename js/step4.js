@@ -39,6 +39,20 @@ function renderSkillSummary(skills, container) {
   summary.innerHTML = `<strong>Abilità:</strong> ${skills.join(', ')}`;
 }
 
+function renderToolSummary(tools, container) {
+  let summary = container.querySelector('.tool-summary');
+  if (!tools || tools.length === 0) {
+    if (summary) summary.remove();
+    return;
+  }
+  if (!summary) {
+    summary = document.createElement('p');
+    summary.className = 'tool-summary';
+    container.appendChild(summary);
+  }
+  summary.innerHTML = `<strong>Strumenti:</strong> ${tools.join(', ')}`;
+}
+
 function makeAccordion(div) {
   convertDetailsToAccordion(div);
   div.classList.add('accordion');
@@ -163,15 +177,53 @@ document.addEventListener("DOMContentLoaded", async () => {
       skillDetails.className = "feature-block";
       skillDetails.innerHTML = "<summary>Abilità</summary>";
       backgroundData.skills = Array.isArray(data.skills) ? data.skills.slice() : [];
+      // Handle fixed skills and tools that are already owned
+      const takenSkillsSet = getTakenProficiencies('skills', undefined, { excludeBackground: true }, 'background');
+      const takenToolsSet = getTakenProficiencies('tools', undefined, { excludeBackground: true }, 'background');
+
+      // Process fixed skills
+      const grantedSkills = (data.skills || []).filter(s => !takenSkillsSet.has(s.toLowerCase()));
+      const conflictingSkills = (data.skills || []).filter(s => takenSkillsSet.has(s.toLowerCase()));
+
+      backgroundData.skills = grantedSkills.slice();
+
+      if (conflictingSkills.length > 0) {
+        const p = document.createElement("p");
+        p.innerHTML = `<strong>Sostituisci ${conflictingSkills.length} abilità già ottenute:</strong>`;
+        skillDetails.appendChild(p);
+        const replacementPool = ALL_SKILLS.filter(
+          s => !takenSkillsSet.has(s.toLowerCase()) && !grantedSkills.includes(s)
+        );
+        buildChoiceSelectors(
+          skillDetails,
+          conflictingSkills.length,
+          replacementPool,
+          "backgroundSkillConflictChoice",
+          () => {
+            const chosen = Array.from(
+              document.querySelectorAll(".backgroundSkillConflictChoice")
+            )
+              .map(s => s.value)
+              .filter(Boolean);
+            backgroundData.skills = grantedSkills.concat(chosen);
+            saveBackgroundData();
+            renderSkillSummary(backgroundData.skills, skillDetails);
+          }
+        );
+      }
+
       const skillOptions =
         (data.skillChoices && data.skillChoices.options) ? data.skillChoices.options : ALL_SKILLS;
       if (data.skillChoices) {
         const num = data.skillChoices.choose || 0;
-        const taken = getTakenProficiencies('skills', undefined, { excludeBackground: true }, 'background');
-        let opts = (data.skillChoices.options || []).filter(o => !taken.has(o.toLowerCase()));
+        let opts = (data.skillChoices.options || []).filter(
+          o => !takenSkillsSet.has(o.toLowerCase()) && !backgroundData.skills.includes(o)
+        );
         let note = '';
         if (opts.length === 0) {
-          opts = ALL_SKILLS.filter(o => !taken.has(o.toLowerCase()));
+          opts = ALL_SKILLS.filter(
+            o => !takenSkillsSet.has(o.toLowerCase()) && !backgroundData.skills.includes(o)
+          );
           note = ' (tutte le abilità disponibili)';
         }
         const p = document.createElement("p");
@@ -186,66 +238,107 @@ document.addEventListener("DOMContentLoaded", async () => {
             const chosen = Array.from(document.querySelectorAll(".backgroundSkillChoice"))
               .map(s => s.value)
               .filter(Boolean);
-            backgroundData.skills = (data.skills || []).concat(chosen);
-            renderDuplicateSelectors('skills', skillDetails, backgroundData.skills, skillOptions);
+            const base = backgroundData.skills.slice();
+            backgroundData.skills = base.concat(chosen);
+            saveBackgroundData();
             renderSkillSummary(backgroundData.skills, skillDetails);
           }
         );
       }
       skillDiv.appendChild(skillDetails);
-      renderDuplicateSelectors('skills', skillDetails, backgroundData.skills, skillOptions);
       renderSkillSummary(backgroundData.skills, skillDetails);
       makeAccordion(skillDiv);
 
       const toolDiv = document.getElementById("backgroundTools");
       toolDiv.innerHTML = "";
-      const toolDetails = document.createElement("details");
-      toolDetails.className = "feature-block";
-      toolDetails.innerHTML = "<summary>Strumenti</summary>";
-      backgroundData.tools = Array.isArray(data.tools) ? data.tools.slice() : [];
-      if (Array.isArray(data.tools) && data.tools.length > 0) {
-        const p = document.createElement("p");
-        p.innerHTML = `<strong>Strumenti:</strong> ${data.tools.join(", ")}`;
-        toolDetails.appendChild(p);
-      }
+      if (data.tools && Array.isArray(data.tools)) {
+        const toolDetails = document.createElement("details");
+        toolDetails.className = "feature-block";
+        toolDetails.innerHTML = "<summary>Strumenti</summary>";
+
+        const grantedTools = data.tools.filter(t => !takenToolsSet.has(t.toLowerCase()));
+        const conflictingTools = data.tools.filter(t => takenToolsSet.has(t.toLowerCase()));
+
+        backgroundData.tools = grantedTools.slice();
+
+        if (conflictingTools.length > 0) {
+          const p = document.createElement("p");
+          p.innerHTML = `<strong>Sostituisci ${conflictingTools.length} strumenti già ottenuti:</strong>`;
+          toolDetails.appendChild(p);
+          const replacementPool = ALL_TOOLS.filter(
+            t => !takenToolsSet.has(t.toLowerCase()) && !grantedTools.includes(t)
+          );
+          buildChoiceSelectors(
+            toolDetails,
+            conflictingTools.length,
+            replacementPool,
+            "backgroundToolConflictChoice",
+            () => {
+              const chosen = Array.from(
+                document.querySelectorAll(".backgroundToolConflictChoice")
+              )
+                .map(s => s.value)
+                .filter(Boolean);
+              backgroundData.tools = grantedTools.concat(chosen);
+              saveBackgroundData();
+              renderToolSummary(backgroundData.tools, toolDetails);
+            }
+          );
+        }
+
         const toolChangeHandler = () => {
           const chosen = Array.from(document.querySelectorAll(".backgroundToolChoice"))
             .map(s => s.value)
             .filter(Boolean);
-          const base = Array.isArray(data.tools) ? data.tools.slice() : [];
+          const base = backgroundData.tools.slice();
           backgroundData.tools = base.concat(chosen);
-          renderDuplicateSelectors('tools', toolDetails, backgroundData.tools, ALL_TOOLS);
+          saveBackgroundData();
+          renderToolSummary(backgroundData.tools, toolDetails);
         };
-      const takenTools = getTakenProficiencies('tools');
-      if (data.tools && data.tools.choose) {
-        const num = data.tools.choose;
-        let opts = (data.tools.options || []).filter(o => !takenTools.has(o.toLowerCase()));
-        let note = '';
-        if (opts.length === 0) {
-          opts = ALL_TOOLS.filter(o => !takenTools.has(o.toLowerCase()));
-          note = ' (tutti gli strumenti disponibili)';
+
+        if (data.tools.choose) {
+          const num = data.tools.choose;
+          let opts = (data.tools.options || []).filter(
+            o => !takenToolsSet.has(o.toLowerCase()) && !backgroundData.tools.includes(o)
+          );
+          let note = '';
+          if (opts.length === 0) {
+            opts = ALL_TOOLS.filter(
+              o => !takenToolsSet.has(o.toLowerCase()) && !backgroundData.tools.includes(o)
+            );
+            note = ' (tutti gli strumenti disponibili)';
+          }
+          const p = document.createElement("p");
+          p.innerHTML = `<strong>Scegli ${num} strumento${note}:</strong>`;
+          toolDetails.appendChild(p);
+          buildChoiceSelectors(toolDetails, num, opts, "backgroundToolChoice", toolChangeHandler);
         }
-        const p = document.createElement("p");
-        p.innerHTML = `<strong>Scegli ${num} strumento${note}:</strong>`;
-        toolDetails.appendChild(p);
-        buildChoiceSelectors(toolDetails, num, opts, "backgroundToolChoice", toolChangeHandler);
-      }
-      if (data.toolChoices) {
-        const num = data.toolChoices.choose || 0;
-        let opts = (data.toolChoices.options || []).filter(o => !takenTools.has(o.toLowerCase()));
-        let note = '';
-        if (opts.length === 0) {
-          opts = ALL_TOOLS.filter(o => !takenTools.has(o.toLowerCase()));
-          note = ' (tutti gli strumenti disponibili)';
+
+        if (data.toolChoices) {
+          const num = data.toolChoices.choose || 0;
+          let opts = (data.toolChoices.options || []).filter(
+            o => !takenToolsSet.has(o.toLowerCase()) && !backgroundData.tools.includes(o)
+          );
+          let note = '';
+          if (opts.length === 0) {
+            opts = ALL_TOOLS.filter(
+              o => !takenToolsSet.has(o.toLowerCase()) && !backgroundData.tools.includes(o)
+            );
+            note = ' (tutti gli strumenti disponibili)';
+          }
+          const p = document.createElement("p");
+          p.innerHTML = `<strong>Scegli ${num} strumento${note}:</strong>`;
+          toolDetails.appendChild(p);
+          buildChoiceSelectors(toolDetails, num, opts, "backgroundToolChoice", toolChangeHandler);
         }
-        const p = document.createElement("p");
-        p.innerHTML = `<strong>Scegli ${num} strumento${note}:</strong>`;
-        toolDetails.appendChild(p);
-        buildChoiceSelectors(toolDetails, num, opts, "backgroundToolChoice", toolChangeHandler);
-      }
+
         toolDiv.appendChild(toolDetails);
-        renderDuplicateSelectors('tools', toolDetails, backgroundData.tools, ALL_TOOLS);
+        renderToolSummary(backgroundData.tools, toolDetails);
         makeAccordion(toolDiv);
+      } else {
+        backgroundData.tools = [];
+        saveBackgroundData();
+      }
 
       const langDiv = document.getElementById("backgroundLanguages");
       langDiv.innerHTML = "";

@@ -178,6 +178,27 @@ describe('character creation flow', () => {
     );
   });
 
+  test('class choices omit class fixed proficiencies', () => {
+    window.currentClassData = {
+      skill_proficiencies: { fixed: ['Perception'] },
+    };
+    const data = {
+      choices: [
+        {
+          name: 'Skill Proficiency',
+          selection: ['Perception', 'Stealth', 'Athletics'],
+          count: 1,
+        },
+      ],
+    };
+    const selections = gatherExtraSelections(data, 'class', 1);
+    const skillChoice = selections.find(c => c.name === 'Skill Proficiency');
+    expect(skillChoice.selection).toEqual(
+      expect.arrayContaining(['Stealth', 'Athletics'])
+    );
+    expect(skillChoice.selection).not.toContain('Perception');
+  });
+
   test('race filters out previously known proficiencies', () => {
     applyStep('class', { proficiencies: { languages: ['Common', 'Elvish'] } });
     const raceData = {
@@ -209,6 +230,20 @@ describe('character creation flow', () => {
     const opts = Array.from(selects[0].options).map(o => o.value);
     expect(opts).toEqual(expect.arrayContaining(['Arcana', 'Religion']));
     expect(opts).not.toContain('Athletics');
+  });
+
+  test('class duplicates only block against class fixed', () => {
+    // Race already grants Stealth
+    applyStep('race', { proficiencies: { skills: ['Stealth'] } });
+    const classFixed = new Set(['perception']);
+    const { conflicts } = getTakenProficiencies(
+      'skills',
+      ['Stealth', 'Perception'],
+      {},
+      'class',
+      { classFixed }
+    );
+    expect(conflicts.map(c => c.key)).toEqual(['Perception']);
   });
 
   test('class duplicates only block against class fixed', () => {

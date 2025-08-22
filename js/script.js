@@ -178,6 +178,7 @@ function getTakenProficiencies(
   console.debug('[getTakenProficiencies] phase:', phase);
   console.debug('[getTakenProficiencies] incoming:', incoming);
   console.debug('[getTakenProficiencies] owned start:', Array.from(owned));
+
   // When called without incoming list, preserve previous behaviour of
   // returning just the owned set.
   if (!incoming) return owned;
@@ -337,6 +338,16 @@ function gatherExtraSelections(data, context, level = 1) {
     }
   } else if (context === "class") {
     const allChoices = data.choices || [];
+
+    // Class choices should present the full option list, only removing the
+    // class's own fixed proficiencies so the user doesn't pick them again.
+    const fixedSkills = new Set(
+      (window.currentClassData?.skill_proficiencies?.fixed || []).map(s => s.toLowerCase())
+    );
+    const fixedLangs = new Set(
+      (window.currentClassData?.language_proficiencies?.fixed || []).map(l => l.toLowerCase())
+    );
+
     allChoices.forEach(choice => {
       if (!choice.level || parseInt(choice.level) <= level) {
         const key = extraCategoryAliases[choice.name] || choice.name;
@@ -344,20 +355,15 @@ function gatherExtraSelections(data, context, level = 1) {
         const selected = (selectedData[key] || []).filter(v => v);
         let opts = choice.selection || choice.options || [];
         console.debug('[gatherExtraSelections] raw options for', key, opts);
-        let note = '';
-        const map = {
-          Languages: { type: 'languages', taken: takenLangs },
-          'Skill Proficiency': { type: 'skills', taken: takenSkills }
-        };
-        const info = map[key];
-        if (info) {
-          const res = filterAvailableProficiencies(info.type, opts, info.taken, selected);
-          opts = res.options;
-          note = res.note;
+
+        if (key === 'Skill Proficiency') {
+          opts = opts.filter(o => !fixedSkills.has(o.toLowerCase()));
+        } else if (key === 'Languages') {
+          opts = opts.filter(o => !fixedLangs.has(o.toLowerCase()));
         }
+
         console.debug('[gatherExtraSelections] filtered options for', key, opts);
-        const desc = note ? ((choice.description || '') + note) : choice.description;
-        selections.push({ ...choice, selection: opts, description: desc, selected });
+        selections.push({ ...choice, selection: opts, description: choice.description, selected });
       }
     });
   }

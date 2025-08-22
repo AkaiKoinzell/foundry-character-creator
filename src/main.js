@@ -68,8 +68,24 @@ function showStep(step) {
 }
 
 async function loadData() {
+  // Load each class file referenced in data/classes.json
+  const classIndexRes = await fetch("data/classes.json");
+  if (!classIndexRes.ok) {
+    throw new Error("Failed loading classes");
+  }
+  const classIndex = await classIndexRes.json();
+  DATA.classes = [];
+  for (const path of Object.values(classIndex.items || {})) {
+    const res = await fetch(path);
+    if (!res.ok) {
+      throw new Error(`Failed loading class at ${path}`);
+    }
+    const cls = await res.json();
+    DATA.classes.push(cls);
+  }
+
+  // Retain existing logic for other data types
   const sources = {
-    classes: "data/classes.json",
     races: "data/races.json",
     backgrounds: "data/backgrounds.json",
     languages: "data/languages.json",

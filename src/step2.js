@@ -14,7 +14,7 @@ export function loadStep2() {
   if (!classListContainer) return;
   classListContainer.innerHTML = '';
 
-  if (!DATA.classes || !Array.isArray(DATA.classes)) {
+  if (!DATA.classes) {
     console.error('Dati classi non disponibili.');
     return;
   }

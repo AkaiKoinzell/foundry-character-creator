@@ -50,7 +50,6 @@ const ALL_TOOLS = [
   "Navigator's Tools",
   "Poisoner's Kit",
   "Thieves' Tools",
-  "Musical Instrument",
 ];
 
 function showStep(step) {

@@ -38,23 +38,36 @@ function renderClassFeatures(cls) {
   const level = CharacterState.level || 1;
 
   if (cls.skill_proficiencies?.options) {
-    const text = `scegli ${cls.skill_proficiencies.choose}: ${cls.skill_proficiencies.options.join(', ')}`;
+    const container = document.createElement('div');
+    for (let i = 0; i < cls.skill_proficiencies.choose; i++) {
+      const sel = document.createElement('select');
+      sel.innerHTML = "<option value=''>Seleziona</option>";
+      cls.skill_proficiencies.options.forEach(opt => {
+        const o = document.createElement('option');
+        o.value = opt;
+        o.textContent = opt;
+        sel.appendChild(o);
+      });
+      sel.dataset.type = 'skill';
+      container.appendChild(sel);
+    }
     featuresContainer.appendChild(
-      createAccordionItem('Competenze nelle abilità', text, true)
-    );
-  }
-
-  if (cls.tool_proficiencies?.options) {
-    const text = `scegli ${cls.tool_proficiencies.choose}: ${cls.tool_proficiencies.options.join(', ')}`;
-    featuresContainer.appendChild(
-      createAccordionItem('Competenze negli strumenti', text, true)
+      createAccordionItem('Competenze nelle abilità', container, true)
     );
   }
 
   if (Array.isArray(cls.subclasses) && cls.subclasses.length) {
-    const text = `Scegli una sottoclasse: ${cls.subclasses.map(sc => sc.name).join(', ')}`;
+    const sel = document.createElement('select');
+    sel.innerHTML = "<option value=''>Seleziona</option>";
+    cls.subclasses.forEach(sc => {
+      const o = document.createElement('option');
+      o.value = sc.name;
+      o.textContent = sc.name;
+      sel.appendChild(o);
+    });
+    sel.dataset.type = 'subclass';
     featuresContainer.appendChild(
-      createAccordionItem('Sottoclasse', text, true)
+      createAccordionItem('Sottoclasse', sel, true)
     );
   }
 
@@ -68,16 +81,58 @@ function renderClassFeatures(cls) {
 
     const levelChoices = (cls.choices || []).filter(c => c.level === lvl);
     levelChoices.forEach(choice => {
-      const text = `${choice.description} Opzioni: ${choice.selection.join(', ')}`;
+      const sel = document.createElement('select');
+      sel.innerHTML = "<option value=''>Seleziona</option>";
+      choice.selection.forEach(opt => {
+        const o = document.createElement('option');
+        o.value = opt;
+        o.textContent = opt;
+        sel.appendChild(o);
+      });
+      sel.dataset.type = 'choice';
+      sel.dataset.choiceName = choice.name;
       featuresContainer.appendChild(
         createAccordionItem(
           `Livello ${choice.level}: ${choice.name}`,
-          text,
+          sel,
           true
         )
       );
     });
   }
+}
+
+function confirmClassSelection() {
+  const features = document.getElementById('classFeatures');
+  if (!features) return;
+
+  CharacterState.skills = [];
+
+  const skillSelects = features.querySelectorAll('select[data-type="skill"]');
+  skillSelects.forEach(sel => {
+    if (sel.value && !CharacterState.skills.includes(sel.value)) {
+      CharacterState.skills.push(sel.value);
+    }
+  });
+
+  const subclassSel = features.querySelector('select[data-type="subclass"]');
+  if (subclassSel && subclassSel.value) {
+    if (!CharacterState.class) CharacterState.class = {};
+    CharacterState.class.subclass = subclassSel.value;
+  }
+
+  const choiceSelects = features.querySelectorAll('select[data-type="choice"]');
+  if (choiceSelects.length) {
+    if (!CharacterState.class) CharacterState.class = {};
+    CharacterState.class.choiceSelections = {};
+    choiceSelects.forEach(sel => {
+      if (sel.value) {
+        CharacterState.class.choiceSelections[sel.dataset.choiceName] = sel.value;
+      }
+    });
+  }
+
+  alert('Classe confermata!');
 }
 
 /**
@@ -86,6 +141,9 @@ function renderClassFeatures(cls) {
 export async function loadStep2() {
   const classListContainer = document.getElementById('classList');
   const featuresContainer = document.getElementById('classFeatures');
+  const classActions = document.getElementById('classActions');
+  const changeClassBtn = document.getElementById('changeClassButton');
+  const confirmClassBtn = document.getElementById('confirmClassButton');
   if (!classListContainer || !featuresContainer) return;
   classListContainer.innerHTML = '';
   featuresContainer.innerHTML = '';
@@ -107,12 +165,26 @@ export async function loadStep2() {
   if (CharacterState.class) {
     classListContainer.classList.add('hidden');
     featuresContainer.classList.remove('hidden');
+    classActions?.classList.remove('hidden');
     const selected = classes.find(c => c.name === CharacterState.class.name);
     if (selected) renderClassFeatures(selected);
+    if (changeClassBtn) {
+      changeClassBtn.onclick = () => {
+        CharacterState.class = null;
+        CharacterState.skills = [];
+        const btnStep3 = document.getElementById('btnStep3');
+        if (btnStep3) btnStep3.disabled = true;
+        loadStep2();
+      };
+    }
+    if (confirmClassBtn) {
+      confirmClassBtn.onclick = confirmClassSelection;
+    }
     return;
   } else {
     classListContainer.classList.remove('hidden');
     featuresContainer.classList.add('hidden');
+    classActions?.classList.add('hidden');
   }
 
   classes.forEach(cls => {
@@ -167,14 +239,6 @@ function showClassModal(cls) {
       createElement('p', `Armature: ${cls.armor_proficiencies.join(', ')}`)
     );
   }
-  if (cls.tool_proficiencies) {
-    const toolText = Array.isArray(cls.tool_proficiencies)
-      ? cls.tool_proficiencies.join(', ')
-      : cls.tool_proficiencies.options
-          ? `scegli ${cls.tool_proficiencies.choose}: ${cls.tool_proficiencies.options.join(', ')}`
-          : '';
-    if (toolText) details.appendChild(createElement('p', `Strumenti: ${toolText}`));
-  }
   if (cls.skill_proficiencies) {
     let skillText = '';
     if (cls.skill_proficiencies.options) {
@@ -211,7 +275,6 @@ function selectClass(cls) {
     level,
     fixed_proficiencies: cls.language_proficiencies?.fixed || [],
     skill_choices: cls.skill_proficiencies || [],
-    tool_choices: cls.tool_proficiencies || [],
     spellcasting: cls.spellcasting || {}
   };
 

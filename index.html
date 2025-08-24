@@ -69,7 +69,7 @@
       <div id="step2" class="step hidden">
         <h2>Step 2: Scelta della Classe, Sottoclasse e Livello</h2>
         <div id="classList" class="class-list"></div>
-        <p id="selectedClass"></p>
+        <div id="selectedClasses"></div>
         <div id="levelContainer" class="form-group hidden">
           <label for="levelSelect">Livello del Personaggio:</label>
           <select id="levelSelect" class="form-control">
@@ -293,6 +293,14 @@
       <span id="closeClassModal" class="close">&times;</span>
       <div id="classModalDetails"></div>
       <button id="addClassButton" class="btn btn-primary">Aggiungi Classe</button>
+    </div>
+  </div>
+
+  <!-- Modal per la selezione di una nuova classe -->
+  <div id="classSelectionModal" class="modal hidden">
+    <div class="modal-content">
+      <span id="closeClassSelectionModal" class="close">&times;</span>
+      <div id="classSelectionList"></div>
     </div>
   </div>
 

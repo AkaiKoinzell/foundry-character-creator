@@ -1,7 +1,9 @@
-import { DATA, CharacterState, loadClasses, logCharacterState, loadFeats } from './data.js';
+import { DATA, CharacterState, loadClasses, logCharacterState, loadFeats, totalLevel } from './data.js';
 
 // Temporary store for user selections while editing class features
 const savedSelections = { skills: [], subclass: '', choices: {} };
+
+let currentClass = null;
 
 function trimSelections(maxLevel) {
   Object.keys(savedSelections.choices).forEach(id => {
@@ -105,13 +107,15 @@ function updateChoiceSelectOptions(container, name, type) {
 
 function getExistingFeats() {
   const feats = new Set(CharacterState.feats || []);
-  if (CharacterState.class?.choiceSelections) {
-    Object.values(CharacterState.class.choiceSelections).forEach(entries => {
-      entries.forEach(e => {
-        if (e.feat) feats.add(e.feat);
+  (CharacterState.classes || []).forEach(cls => {
+    if (cls.choiceSelections) {
+      Object.values(cls.choiceSelections).forEach(entries => {
+        entries.forEach(e => {
+          if (e.feat) feats.add(e.feat);
+        });
       });
-    });
-  }
+    }
+  });
   Object.values(savedSelections.choices).forEach(c => {
     if (c.feat) feats.add(c.feat);
   });
@@ -141,7 +145,7 @@ function renderClassFeatures(cls) {
   if (!featuresContainer) return;
   featuresContainer.innerHTML = '';
 
-  const level = CharacterState.level || 1;
+  const level = currentClass?.level || 1;
 
   if (cls.skill_proficiencies?.options) {
     const container = document.createElement('div');
@@ -355,22 +359,20 @@ function handleASISelection(sel, container, saved = null) {
 
 function confirmClassSelection() {
   const features = document.getElementById('classFeatures');
-  if (!features) return;
-
-  // reset skills then gather selections
-  CharacterState.skills = [];
+  if (!features || !currentClass) return;
 
   const skillSelects = features.querySelectorAll('select[data-type="skill"]');
+  currentClass.skills = [];
   skillSelects.forEach(sel => {
-    if (sel.value && !CharacterState.skills.includes(sel.value)) {
-      CharacterState.skills.push(sel.value);
+    if (sel.value) {
+      if (!currentClass.skills.includes(sel.value)) currentClass.skills.push(sel.value);
+      if (!CharacterState.skills.includes(sel.value)) CharacterState.skills.push(sel.value);
     }
   });
 
   const subclassSel = features.querySelector('select[data-type="subclass"]');
   if (subclassSel && subclassSel.value) {
-    if (!CharacterState.class) CharacterState.class = {};
-    CharacterState.class.subclass = subclassSel.value;
+    currentClass.subclass = subclassSel.value;
   }
 
   const choiceSelects = features.querySelectorAll('select[data-type="choice"]');
@@ -380,23 +382,14 @@ function confirmClassSelection() {
     Constitution: 'con',
     Intelligence: 'int',
     Wisdom: 'wis',
-    Charisma: 'cha'
+    Charisma: 'cha',
   };
 
   if (choiceSelects.length) {
-    if (!CharacterState.class) CharacterState.class = {};
-    CharacterState.class.choiceSelections = {};
+    currentClass.choiceSelections = {};
 
     if (!Array.isArray(CharacterState.feats)) CharacterState.feats = [];
     if (!Array.isArray(CharacterState.cantrips)) CharacterState.cantrips = [];
-
-    // remove previous ASI bonuses from attributes
-    const baseAttributes = { ...CharacterState.attributes };
-    if (CharacterState.class.asiBonuses) {
-      for (const [ability, bonus] of Object.entries(CharacterState.class.asiBonuses)) {
-        baseAttributes[ability] -= bonus;
-      }
-    }
 
     const asiBonuses = { str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0 };
 
@@ -405,8 +398,8 @@ function confirmClassSelection() {
         const name = sel.dataset.choiceName;
         const type = sel.dataset.choiceType;
         const saved = savedSelections.choices[sel.dataset.choiceId];
-        if (!CharacterState.class.choiceSelections[name]) {
-          CharacterState.class.choiceSelections[name] = [];
+        if (!currentClass.choiceSelections[name]) {
+          currentClass.choiceSelections[name] = [];
         }
         const entry = { option: sel.value };
         if (saved?.level) entry.level = saved.level;
@@ -421,7 +414,7 @@ function confirmClassSelection() {
             entry.feat = dsel.value;
           }
         });
-        CharacterState.class.choiceSelections[name].push(entry);
+        currentClass.choiceSelections[name].push(entry);
 
         if (type === 'skills' && !CharacterState.skills.includes(sel.value)) {
           CharacterState.skills.push(sel.value);
@@ -433,7 +426,6 @@ function confirmClassSelection() {
           CharacterState.cantrips.push(sel.value);
         }
 
-        // track ASI bonuses for attributes
         if (entry.option === 'Increase one ability score by 2' && entry.abilities?.[0]) {
           const key = abilityMap[entry.abilities[0]];
           if (key) asiBonuses[key] += 2;
@@ -450,38 +442,48 @@ function confirmClassSelection() {
       }
     });
 
-    CharacterState.class.asiBonuses = asiBonuses;
-    for (const ability of Object.keys(baseAttributes)) {
-      CharacterState.attributes[ability] = baseAttributes[ability] + (asiBonuses[ability] || 0);
+    currentClass.asiBonuses = asiBonuses;
+    for (const ability of Object.keys(CharacterState.attributes)) {
+      CharacterState.attributes[ability] =
+        (CharacterState.attributes[ability] || 0) + (asiBonuses[ability] || 0);
     }
   }
 
-  // store obtained features for the selected level
-  const cls = DATA.classes.find(c => c.name === CharacterState.class?.name);
+  const cls = DATA.classes.find(c => c.name === currentClass.name);
   if (cls) {
-    CharacterState.class.features = [];
-    for (let lvl = 1; lvl <= (CharacterState.level || 1); lvl++) {
+    currentClass.features = [];
+    for (let lvl = 1; lvl <= (currentClass.level || 1); lvl++) {
       const feats = cls.features_by_level?.[lvl] || [];
       feats.forEach(f => {
-        CharacterState.class.features.push({ level: lvl, name: f.name, description: f.description || '' });
+        currentClass.features.push({
+          level: lvl,
+          name: f.name,
+          description: f.description || '',
+        });
       });
     }
-    if (CharacterState.class.choiceSelections) {
-      for (const [name, entries] of Object.entries(CharacterState.class.choiceSelections)) {
+    if (currentClass.choiceSelections) {
+      for (const [name, entries] of Object.entries(currentClass.choiceSelections)) {
         entries.forEach(e => {
-          CharacterState.class.features.push({
+          currentClass.features.push({
             level: e.level || null,
             name: `${name}: ${e.option}`,
             abilities: e.abilities,
-            feat: e.feat
+            feat: e.feat,
           });
         });
       }
     }
   }
 
+  CharacterState.classes.push(currentClass);
   logCharacterState();
   alert('Classe confermata!');
+  currentClass = null;
+  savedSelections.skills = [];
+  savedSelections.subclass = '';
+  savedSelections.choices = {};
+  loadStep2();
 }
 
 /**
@@ -491,10 +493,10 @@ export async function loadStep2() {
   const classListContainer = document.getElementById('classList');
   const featuresContainer = document.getElementById('classFeatures');
   const classActions = document.getElementById('classActions');
-  const changeClassBtn = document.getElementById('changeClassButton');
   const confirmClassBtn = document.getElementById('confirmClassButton');
   const levelContainer = document.getElementById('levelContainer');
   const levelSelect = document.getElementById('levelSelect');
+  const summary = document.getElementById('selectedClass');
   if (!classListContainer || !featuresContainer) return;
   classListContainer.innerHTML = '';
   featuresContainer.innerHTML = '';
@@ -508,46 +510,34 @@ export async function loadStep2() {
     return;
   }
 
-  if (levelSelect) {
-    levelSelect.value = CharacterState.level || '1';
-    levelSelect.onchange = () => {
-      const lvl = parseInt(levelSelect.value, 10) || 1;
-      CharacterState.level = lvl;
-      trimSelections(lvl);
-      if (CharacterState.class) {
-        CharacterState.class.level = lvl;
-        const cls = DATA.classes.find(c => c.name === CharacterState.class.name);
-        if (cls) renderClassFeatures(cls);
-      }
-    };
+  if (summary) {
+    if (CharacterState.classes.length) {
+      const text = CharacterState.classes
+        .map(c => `${c.name} ${c.level}`)
+        .join(', ');
+      summary.textContent = `Classi selezionate: ${text} (Totale livello ${totalLevel()})`;
+    } else {
+      summary.textContent = '';
+    }
   }
 
-  const classes = Array.isArray(DATA.classes) ? DATA.classes : [];
-  if (!classes.length) {
-    console.error('Dati classi non disponibili.');
-    return;
-  }
-
-  if (CharacterState.class) {
+  if (currentClass) {
     classListContainer.classList.add('hidden');
     featuresContainer.classList.remove('hidden');
     classActions?.classList.remove('hidden');
     levelContainer?.classList.remove('hidden');
-    const selected = classes.find(c => c.name === CharacterState.class.name);
-    if (selected) renderClassFeatures(selected);
-    if (changeClassBtn) {
-      changeClassBtn.onclick = () => {
-        CharacterState.class = null;
-        CharacterState.skills = [];
-        savedSelections.skills = [];
-        savedSelections.subclass = '';
-        savedSelections.choices = {};
-        const btnStep3 = document.getElementById('btnStep3');
-        if (btnStep3) btnStep3.disabled = true;
-        logCharacterState();
-        loadStep2();
+    if (levelSelect) {
+      levelSelect.value = currentClass.level || '1';
+      levelSelect.onchange = () => {
+        const lvl = parseInt(levelSelect.value, 10) || 1;
+        currentClass.level = lvl;
+        trimSelections(lvl);
+        const cls = DATA.classes.find(c => c.name === currentClass.name);
+        if (cls) renderClassFeatures(cls);
       };
     }
+    const cls = DATA.classes.find(c => c.name === currentClass.name);
+    if (cls) renderClassFeatures(cls);
     if (confirmClassBtn) {
       confirmClassBtn.onclick = confirmClassSelection;
     }
@@ -559,7 +549,14 @@ export async function loadStep2() {
     levelContainer?.classList.add('hidden');
   }
 
+  const classes = Array.isArray(DATA.classes) ? DATA.classes : [];
+  if (!classes.length) {
+    console.error('Dati classi non disponibili.');
+    return;
+  }
+  const taken = new Set(CharacterState.classes.map(c => c.name));
   classes.forEach(cls => {
+    if (taken.has(cls.name)) return;
     const classCard = document.createElement('div');
     classCard.className = 'class-card';
     classCard.addEventListener('click', () => showClassModal(cls));
@@ -633,33 +630,20 @@ function showClassModal(cls) {
  * Salva la classe selezionata nel CharacterState
  */
 function selectClass(cls) {
-  if (CharacterState.class && CharacterState.class.name !== cls.name) {
-    const confirmChange = confirm('Sei sicuro di voler cambiare classe?');
-    if (!confirmChange) return;
-  }
-
-  const level = CharacterState.level || 1;
-
   savedSelections.skills = [];
   savedSelections.subclass = '';
   savedSelections.choices = {};
 
-  CharacterState.level = level;
-  CharacterState.class = {
+  currentClass = {
     name: cls.name,
-    level,
+    level: 1,
     fixed_proficiencies: cls.language_proficiencies?.fixed || [],
     skill_choices: cls.skill_proficiencies || [],
-    spellcasting: cls.spellcasting || {}
+    spellcasting: cls.spellcasting || {},
   };
 
   const modal = document.getElementById('classModal');
   modal?.classList.add('hidden');
-
-  const confirmation = document.getElementById('selectedClass');
-  if (confirmation) {
-    confirmation.textContent = `Classe selezionata: ${cls.name}`;
-  }
 
   const btnStep3 = document.getElementById('btnStep3');
   if (btnStep3) btnStep3.disabled = false;

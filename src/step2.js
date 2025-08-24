@@ -357,7 +357,7 @@ function handleASISelection(sel, container, saved = null) {
   }
 }
 
-function confirmClassSelection() {
+function confirmClassSelection(silent = false) {
   const features = document.getElementById('classFeatures');
   if (!features || !currentClass) return;
 
@@ -478,7 +478,7 @@ function confirmClassSelection() {
 
   CharacterState.classes.push(currentClass);
   logCharacterState();
-  alert('Classe confermata!');
+  if (!silent) alert('Classe confermata!');
   currentClass = null;
   savedSelections.skills = [];
   savedSelections.subclass = '';
@@ -497,6 +497,8 @@ export async function loadStep2() {
   const levelContainer = document.getElementById('levelContainer');
   const levelSelect = document.getElementById('levelSelect');
   const summary = document.getElementById('selectedClass');
+  const addClassPrompt = document.getElementById('addClassPrompt');
+  const addClassLink = document.getElementById('addClassLink');
   if (!classListContainer || !featuresContainer) return;
   classListContainer.innerHTML = '';
   featuresContainer.innerHTML = '';
@@ -526,6 +528,13 @@ export async function loadStep2() {
     featuresContainer.classList.remove('hidden');
     classActions?.classList.remove('hidden');
     levelContainer?.classList.remove('hidden');
+    addClassPrompt?.classList.remove('hidden');
+    if (addClassLink) {
+      addClassLink.onclick = e => {
+        e.preventDefault();
+        confirmClassSelection(true);
+      };
+    }
     if (levelSelect) {
       levelSelect.value = currentClass.level || '1';
       levelSelect.onchange = () => {
@@ -547,6 +556,7 @@ export async function loadStep2() {
     featuresContainer.classList.add('hidden');
     classActions?.classList.add('hidden');
     levelContainer?.classList.add('hidden');
+    addClassPrompt?.classList.add('hidden');
   }
 
   const classes = Array.isArray(DATA.classes) ? DATA.classes : [];

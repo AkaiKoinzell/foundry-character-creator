@@ -34,8 +34,7 @@ export async function loadFeats() {
 
 export const CharacterState = {
   name: "",
-  level: 1,
-  class: null,
+  classes: [],
   race: null,
   background: null,
   skills: [],
@@ -53,6 +52,13 @@ export const CharacterState = {
     cha: 8,
   },
 };
+
+export function totalLevel() {
+  return (CharacterState.classes || []).reduce(
+    (sum, cls) => sum + (cls.level || 0),
+    0
+  );
+}
 
 export function logCharacterState() {
   // Log a cloned copy to avoid reactive updates in the console

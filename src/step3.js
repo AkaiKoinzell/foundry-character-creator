@@ -166,17 +166,65 @@ function addUniqueProficiency(type, value, container) {
   container.appendChild(msg);
 }
 
-function renderBaseRaces() {
+function createRaceCard(race, onSelect, displayName = race.name) {
+  const card = document.createElement('div');
+  card.className = 'class-card';
+
+  const title = document.createElement('h3');
+  title.textContent = displayName;
+  card.appendChild(title);
+
+  const shortDesc = (race.entries || []).find((e) => typeof e === 'string');
+  if (shortDesc) {
+    const p = document.createElement('p');
+    p.textContent = shortDesc;
+    card.appendChild(p);
+  }
+
+  const traits = (race.entries || [])
+    .filter((e) => e.name)
+    .map((e) => e.name)
+    .slice(0, 3);
+  if (traits.length) {
+    const ul = document.createElement('ul');
+    traits.forEach((t) => {
+      const li = document.createElement('li');
+      li.textContent = t;
+      ul.appendChild(li);
+    });
+    card.appendChild(ul);
+  }
+
+  const detailsBtn = document.createElement('button');
+  detailsBtn.className = 'btn btn-primary';
+  detailsBtn.textContent = 'Details';
+  detailsBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    showRaceModal(race);
+  });
+  card.appendChild(detailsBtn);
+
+  card.addEventListener('click', onSelect);
+
+  return card;
+}
+
+async function renderBaseRaces() {
   const container = document.getElementById('raceList');
   if (!container) return;
   container.innerHTML = '';
-  Object.keys(DATA.races).forEach((base) => {
-    const card = document.createElement('div');
-    card.className = 'class-card';
-    card.textContent = base;
-    card.addEventListener('click', () => selectBaseRace(base));
-    container.appendChild(card);
-  });
+  await Promise.all(
+    Object.entries(DATA.races).map(async ([base, subs]) => {
+      let race = { name: base };
+      const path = subs[0]?.path;
+      if (path) {
+        const data = await fetchJsonWithRetry(path, `race at ${path}`);
+        race = { ...data, name: base };
+      }
+      const card = createRaceCard(race, () => selectBaseRace(base));
+      container.appendChild(card);
+    })
+  );
 }
 
 async function selectBaseRace(base) {
@@ -199,31 +247,7 @@ async function renderSubraceCards(base) {
   await Promise.all(
     subraces.map(async ({ name, path }) => {
       const race = await fetchJsonWithRetry(path, `race at ${path}`);
-      const card = document.createElement('div');
-      card.className = 'class-card';
-      const h3 = document.createElement('h3');
-      h3.textContent = name;
-      card.appendChild(h3);
-      const shortDesc = (race.entries || []).find((e) => typeof e === 'string');
-      if (shortDesc) {
-        const p = document.createElement('p');
-        p.textContent = shortDesc;
-        card.appendChild(p);
-      }
-      const traits = (race.entries || [])
-        .filter((e) => e.name)
-        .map((e) => e.name)
-        .slice(0, 3);
-      if (traits.length) {
-        const ul = document.createElement('ul');
-        traits.forEach((t) => {
-          const li = document.createElement('li');
-          li.textContent = t;
-          ul.appendChild(li);
-        });
-        card.appendChild(ul);
-      }
-      card.addEventListener('click', async () => {
+      const card = createRaceCard(race, async () => {
         currentRaceData = race;
         pendingRaceChoices.subrace = race.name;
         container
@@ -232,7 +256,6 @@ async function renderSubraceCards(base) {
         card.classList.add('selected');
         await renderCurrentRaceTraits();
         validateRaceChoices();
-        showRaceModal(race);
       });
       container.appendChild(card);
     })
@@ -487,7 +510,7 @@ export async function loadStep3(force = false) {
   const container = document.getElementById('raceList');
   if (!container) return;
   if (container.childElementCount && !force) return;
-  renderBaseRaces();
+  await renderBaseRaces();
 
   const btn = document.getElementById('confirmRaceSelection');
   btn?.addEventListener('click', confirmRaceSelection);

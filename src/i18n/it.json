@@ -15,6 +15,7 @@
   "subclass": "Sottoclasse",
   "skillProficiencies": "Competenze nelle abilità",
   "selectedClasses": "Classi selezionate: {classes} (Totale livello {level})",
+  "proficiencyBonus": "Bonus di competenza: +{value}",
   "edit": "Modifica",
   "remove": "Rimuovi",
   "selectAbility": "Seleziona caratteristica",

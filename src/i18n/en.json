@@ -15,6 +15,7 @@
   "subclass": "Subclass",
   "skillProficiencies": "Skill Proficiencies",
   "selectedClasses": "Selected classes: {classes} (Total level {level})",
+  "proficiencyBonus": "Proficiency bonus: +{value}",
   "edit": "Edit",
   "remove": "Remove",
   "selectAbility": "Select ability",

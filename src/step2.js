@@ -544,9 +544,23 @@ function editClass(index) {
 }
 
 function removeClass(index) {
-  CharacterState.classes.splice(index, 1);
+  const classes = CharacterState.classes || [];
+  if (index < 0 || index >= classes.length) return;
+
+  // Warn the user if removing a class could invalidate choices made in later steps
+  if (typeof window !== 'undefined') {
+    const step = window.currentStep || 2;
+    if (step > 2 && typeof window.confirm === 'function') {
+      const proceed = window.confirm(
+        'Removing this class may reset selections made in later steps. Continue?'
+      );
+      if (!proceed) return;
+    }
+  }
+
+  classes.splice(index, 1);
   rebuildFromClasses();
-  loadStep2(false);
+  renderSelectedClasses();
 }
 
 function renderSelectedClasses() {

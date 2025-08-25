@@ -13,6 +13,78 @@ const savedSelections = { skills: [], subclass: '', choices: {} };
 
 let currentClass = null;
 
+// Snapshot of the character's proficiencies and abilities before any class
+// data is applied. This allows us to cleanly rebuild the derived state when a
+// class is edited or removed.
+const baseState = {
+  initialized: false,
+  skills: [],
+  tools: [],
+  languages: [],
+  cantrips: [],
+  feats: [],
+  abilities: {},
+};
+
+function initBaseState() {
+  if (baseState.initialized) return;
+  baseState.skills = [...CharacterState.system.skills];
+  baseState.tools = [...CharacterState.system.tools];
+  baseState.languages = [...CharacterState.system.traits.languages.value];
+  baseState.cantrips = Array.isArray(CharacterState.system.spells.cantrips)
+    ? [...CharacterState.system.spells.cantrips]
+    : [];
+  baseState.feats = Array.isArray(CharacterState.feats)
+    ? [...CharacterState.feats]
+    : [];
+  for (const [ab, obj] of Object.entries(CharacterState.system.abilities)) {
+    baseState.abilities[ab] = obj.value || 0;
+  }
+  baseState.initialized = true;
+}
+
+function rebuildFromClasses() {
+  initBaseState();
+  const skills = new Set(baseState.skills);
+  const tools = new Set(baseState.tools);
+  const languages = new Set(baseState.languages);
+  const cantrips = new Set(baseState.cantrips);
+  const feats = new Set(baseState.feats);
+  const abilities = { ...baseState.abilities };
+
+  (CharacterState.classes || []).forEach(cls => {
+    (cls.skills || []).forEach(s => skills.add(s));
+    if (Array.isArray(cls.fixed_proficiencies)) {
+      cls.fixed_proficiencies.forEach(l => languages.add(l));
+    }
+    if (cls.choiceSelections) {
+      Object.values(cls.choiceSelections).forEach(entries => {
+        entries.forEach(e => {
+          if (e.type === 'skills') skills.add(e.option);
+          else if (e.type === 'tools') tools.add(e.option);
+          else if (e.type === 'languages') languages.add(e.option);
+          else if (e.type === 'cantrips') cantrips.add(e.option);
+          if (e.feat) feats.add(e.feat);
+        });
+      });
+    }
+    const bonuses = cls.asiBonuses || {};
+    for (const ab of Object.keys(abilities)) {
+      abilities[ab] += bonuses[ab] || 0;
+    }
+  });
+
+  CharacterState.system.skills = Array.from(skills);
+  CharacterState.system.tools = Array.from(tools);
+  CharacterState.system.traits.languages.value = Array.from(languages);
+  CharacterState.system.spells.cantrips = Array.from(cantrips);
+  CharacterState.feats = Array.from(feats);
+  for (const [ab, val] of Object.entries(abilities)) {
+    CharacterState.system.abilities[ab].value = val;
+  }
+  updateSpellSlots();
+}
+
 function trimSelections(maxLevel) {
   Object.keys(savedSelections.choices).forEach(id => {
     if (savedSelections.choices[id].level > maxLevel) {
@@ -376,12 +448,61 @@ function handleASISelection(sel, container, saved = null) {
   }
 }
 
-function renderSavedClass(cls) {
+function editClass(index) {
+  const cls = CharacterState.classes.splice(index, 1)[0];
+  if (!cls) return;
+  rebuildFromClasses();
+  savedSelections.skills = [...(cls.skills || [])];
+  savedSelections.subclass = cls.subclass || '';
+  savedSelections.choices = {};
+  if (cls.choiceSelections) {
+    for (const [name, entries] of Object.entries(cls.choiceSelections)) {
+      entries.forEach((e, i) => {
+        const lvl = e.level || 1;
+        const id = `${name}-${lvl}-${i}`;
+        savedSelections.choices[id] = {
+          option: e.option,
+          level: lvl,
+          abilities: e.abilities,
+          feat: e.feat,
+        };
+      });
+    }
+  }
+  currentClass = {
+    name: cls.name,
+    level: cls.level,
+    skill_choices: cls.skill_choices,
+    fixed_proficiencies: cls.fixed_proficiencies,
+    spellcasting: cls.spellcasting,
+  };
+  loadStep2();
+}
+
+function removeClass(index) {
+  CharacterState.classes.splice(index, 1);
+  rebuildFromClasses();
+  loadStep2();
+}
+
+function renderSavedClass(cls, index) {
   const wrapper = document.createElement('div');
   wrapper.className = 'saved-class';
+  const header = document.createElement('div');
   const title = document.createElement('h3');
   title.textContent = `${cls.name} (Livello ${cls.level})`;
-  wrapper.appendChild(title);
+  header.appendChild(title);
+  const actions = document.createElement('div');
+  const editBtn = createElement('button', 'Edit');
+  editBtn.className = 'btn btn-primary';
+  editBtn.addEventListener('click', () => editClass(index));
+  const removeBtn = createElement('button', 'Remove');
+  removeBtn.className = 'btn btn-danger';
+  removeBtn.addEventListener('click', () => removeClass(index));
+  actions.appendChild(editBtn);
+  actions.appendChild(removeBtn);
+  header.appendChild(actions);
+  wrapper.appendChild(header);
   const accordion = document.createElement('div');
   accordion.className = 'accordion';
   (cls.features || []).forEach(f => {
@@ -407,8 +528,8 @@ function renderSelectedClasses() {
       )
     );
   }
-  CharacterState.classes.forEach(cls => {
-    container.appendChild(renderSavedClass(cls));
+  CharacterState.classes.forEach((cls, idx) => {
+    container.appendChild(renderSavedClass(cls, idx));
   });
 }
 
@@ -482,7 +603,7 @@ function confirmClassSelection(silent = false) {
         if (!currentClass.choiceSelections[name]) {
           currentClass.choiceSelections[name] = [];
         }
-        const entry = { option: sel.value };
+        const entry = { option: sel.value, type };
         if (saved?.level) entry.level = saved.level;
         const details = features.querySelectorAll(
           `select[data-parent='${sel.dataset.choiceId}']`
@@ -562,7 +683,7 @@ function confirmClassSelection(silent = false) {
   }
 
   CharacterState.classes.push(currentClass);
-  updateSpellSlots();
+  rebuildFromClasses();
   logCharacterState();
   if (!silent) alert('Classe confermata!');
   currentClass = null;
@@ -586,6 +707,7 @@ export async function loadStep2() {
   const addClassLink = document.getElementById('addClassLink');
   const changeClassBtn = document.getElementById('changeClassButton');
   if (!classListContainer || !featuresContainer) return;
+  initBaseState();
   classListContainer.innerHTML = '';
   featuresContainer.innerHTML = '';
 

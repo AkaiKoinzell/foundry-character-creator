@@ -780,14 +780,6 @@ export async function loadStep2(refresh = true) {
 
   renderSelectedClasses();
 
-  // Hide advanced sections unless a class is being edited/added
-  featuresContainer.classList.add('hidden');
-  classActions?.classList.add('hidden');
-  levelContainer?.classList.add('hidden');
-  confirmClassBtn?.classList.add('hidden');
-  changeClassBtn?.classList.add('hidden');
-  addClassPrompt?.classList.add('hidden');
-
   if (currentClass) {
     classListContainer.classList.add('hidden');
     selectedClassesContainer?.classList.add('hidden');
@@ -824,6 +816,14 @@ export async function loadStep2(refresh = true) {
     }
     return;
   }
+
+  // Hide advanced sections when no class is being edited/added
+  featuresContainer.classList.add('hidden');
+  classActions?.classList.add('hidden');
+  levelContainer?.classList.add('hidden');
+  confirmClassBtn?.classList.add('hidden');
+  changeClassBtn?.classList.add('hidden');
+  addClassPrompt?.classList.add('hidden');
 
   // Show either the class selection list or the already selected classes
   classListContainer.classList.toggle('hidden', CharacterState.classes.length !== 0);
@@ -940,6 +940,14 @@ function selectClass(cls) {
 
   const modal = document.getElementById('classModal');
   modal?.classList.add('hidden');
+
+  // Reveal advanced class editing sections
+  const features = document.getElementById('classFeatures');
+  const levelContainer = document.getElementById('levelContainer');
+  const classActions = document.getElementById('classActions');
+  features?.classList.remove('hidden');
+  levelContainer?.classList.remove('hidden');
+  classActions?.classList.remove('hidden');
 
   const btnStep3 = document.getElementById('btnStep3');
   if (btnStep3) btnStep3.disabled = false;

@@ -7,6 +7,7 @@ import {
   totalLevel,
   updateSpellSlots,
 } from './data.js';
+import { t } from './i18n.js';
 
 // Temporary store for user selections while editing class features
 const savedSelections = { skills: [], subclass: '', choices: {} };
@@ -235,17 +236,17 @@ function renderClassFeatures(cls) {
   const level = currentClass?.level || 1;
 
   const header = document.createElement('h3');
-  header.textContent = `${cls.name} (Livello ${level})`;
+  header.textContent = `${cls.name} (${t('level')} ${level})`;
   featuresContainer.appendChild(header);
 
   if (cls.skill_proficiencies?.options) {
     const container = document.createElement('div');
     const desc = document.createElement('p');
-    desc.textContent = `Scegli ${cls.skill_proficiencies.choose} abilità`;
+    desc.textContent = t('chooseSkills', { count: cls.skill_proficiencies.choose });
     container.appendChild(desc);
     for (let i = 0; i < cls.skill_proficiencies.choose; i++) {
       const sel = document.createElement('select');
-      sel.innerHTML = "<option value=''>Seleziona</option>";
+      sel.innerHTML = `<option value=''>${t('select')}</option>`;
       cls.skill_proficiencies.options.forEach(opt => {
         const o = document.createElement('option');
         o.value = opt;
@@ -271,13 +272,13 @@ function renderClassFeatures(cls) {
     }
     updateSkillSelectOptions(container);
     featuresContainer.appendChild(
-      createAccordionItem('Competenze nelle abilità', container, true)
+      createAccordionItem(t('skillProficiencies'), container, true)
     );
   }
 
   if (Array.isArray(cls.subclasses) && cls.subclasses.length) {
     const sel = document.createElement('select');
-    sel.innerHTML = "<option value=''>Seleziona</option>";
+    sel.innerHTML = `<option value=''>${t('select')}</option>`;
     cls.subclasses.forEach(sc => {
       const o = document.createElement('option');
       o.value = sc.name;
@@ -290,7 +291,7 @@ function renderClassFeatures(cls) {
       savedSelections.subclass = sel.value;
     });
     featuresContainer.appendChild(
-      createAccordionItem('Sottoclasse', sel, true)
+      createAccordionItem(t('subclass'), sel, true)
     );
   }
 
@@ -301,7 +302,7 @@ function renderClassFeatures(cls) {
     );
     features.forEach(f => {
       featuresContainer.appendChild(
-        createAccordionItem(`Livello ${lvl}: ${f.name}`, f.description || '')
+        createAccordionItem(`${t('level')} ${lvl}: ${f.name}`, f.description || '')
       );
     });
 
@@ -315,7 +316,7 @@ function renderClassFeatures(cls) {
       const count = choice.count || 1;
       for (let i = 0; i < count; i++) {
         const sel = document.createElement('select');
-        sel.innerHTML = "<option value=''>Seleziona</option>";
+        sel.innerHTML = `<option value=''>${t('select')}</option>`;
         choice.selection.forEach(opt => {
           const o = document.createElement('option');
           o.value = opt;
@@ -354,7 +355,7 @@ function renderClassFeatures(cls) {
       updateChoiceSelectOptions(container, choice.name, choice.type);
       featuresContainer.appendChild(
         createAccordionItem(
-          `Livello ${choice.level}: ${choice.name}`,
+          `${t('level')} ${choice.level}: ${choice.name}`,
           container,
           true,
           choice.description || ''
@@ -374,7 +375,7 @@ function createAbilitySelect() {
     'Charisma',
   ];
   const sel = document.createElement('select');
-  sel.innerHTML = "<option value=''>Seleziona caratteristica</option>";
+  sel.innerHTML = `<option value=''>${t('selectAbility')}</option>`;
   abilities.forEach(ab => {
     const o = document.createElement('option');
     o.value = ab;
@@ -387,7 +388,7 @@ function createAbilitySelect() {
 
 function createFeatSelect(current = '') {
   const sel = document.createElement('select');
-  sel.innerHTML = "<option value=''>Seleziona un talento</option>";
+  sel.innerHTML = `<option value=''>${t('selectFeat')}</option>`;
   const taken = getExistingFeats();
   (DATA.feats || []).forEach(feat => {
     if (!taken.has(feat) || feat === current) {
@@ -490,13 +491,13 @@ function renderSavedClass(cls, index) {
   wrapper.className = 'saved-class';
   const header = document.createElement('div');
   const title = document.createElement('h3');
-  title.textContent = `${cls.name} (Livello ${cls.level})`;
+  title.textContent = `${cls.name} (${t('level')} ${cls.level})`;
   header.appendChild(title);
   const actions = document.createElement('div');
-  const editBtn = createElement('button', 'Edit');
+  const editBtn = createElement('button', t('edit'));
   editBtn.className = 'btn btn-primary';
   editBtn.addEventListener('click', () => editClass(index));
-  const removeBtn = createElement('button', 'Remove');
+  const removeBtn = createElement('button', t('remove'));
   removeBtn.className = 'btn btn-danger';
   removeBtn.addEventListener('click', () => removeClass(index));
   actions.appendChild(editBtn);
@@ -506,8 +507,8 @@ function renderSavedClass(cls, index) {
   const accordion = document.createElement('div');
   accordion.className = 'accordion';
   (cls.features || []).forEach(f => {
-    const t = f.level ? `Livello ${f.level}: ${f.name}` : f.name;
-    accordion.appendChild(createAccordionItem(t, f.description || ''));
+    const titleStr = f.level ? `${t('level')} ${f.level}: ${f.name}` : f.name;
+    accordion.appendChild(createAccordionItem(titleStr, f.description || ''));
   });
   wrapper.appendChild(accordion);
   return wrapper;
@@ -524,7 +525,7 @@ function renderSelectedClasses() {
     container.appendChild(
       createElement(
         'p',
-        `Classi selezionate: ${summaryText} (Totale livello ${totalLevel()})`
+        t('selectedClasses', { classes: summaryText, level: totalLevel() })
       )
     );
   }

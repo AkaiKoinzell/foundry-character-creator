@@ -8,6 +8,7 @@ import {
 } from "./data.js";
 import { loadStep2 } from "./step2.js";
 import { exportFoundryActor } from "./export.js";
+import { t, initI18n } from "./i18n.js";
 
 let currentStep = 1;
 
@@ -148,9 +149,12 @@ function addUniqueProficiency(type, value, container) {
   // handle duplicate with replacement
   const msg = document.createElement("div");
   const label = document.createElement("label");
-  label.textContent = `Hai già ${value}. Scegli un'altra ${type.slice(0, -1)}:`;
+  label.textContent = t("duplicateProficiency", {
+    value,
+    type: t(type.slice(0, -1)),
+  });
   const sel = document.createElement("select");
-  sel.innerHTML = "<option value=''>Seleziona</option>";
+  sel.innerHTML = `<option value=''>${t("select")}</option>`;
   getAllOptions(type)
     .filter((opt) => !list.includes(opt))
     .forEach((opt) => {
@@ -187,14 +191,14 @@ function renderFinalRecap() {
   // Resources ---------------------------------------------------------------
   const resSection = document.createElement("div");
   const resTitle = document.createElement("h3");
-  resTitle.textContent = "Resources";
+  resTitle.textContent = t("resources");
   resSection.appendChild(resTitle);
   ["primary", "secondary", "tertiary"].forEach((key) => {
     const res = CharacterState.system.resources[key];
     const row = document.createElement("div");
 
     const labelInput = document.createElement("input");
-    labelInput.placeholder = "Label";
+    labelInput.placeholder = t("label");
     labelInput.value = res.label || "";
     labelInput.addEventListener("input", () => {
       res.label = labelInput.value;
@@ -262,7 +266,7 @@ function renderFinalRecap() {
   // Spell slots ------------------------------------------------------------
   const spellSection = document.createElement("div");
   const spellTitle = document.createElement("h3");
-  spellTitle.textContent = "Spell Slots";
+  spellTitle.textContent = t("spellSlots");
   spellSection.appendChild(spellTitle);
   for (let i = 1; i <= 9; i++) {
     const slot = CharacterState.system.spells[`spell${i}`];
@@ -275,7 +279,11 @@ function renderFinalRecap() {
     });
     row.appendChild(dec);
     const span = document.createElement("span");
-    span.textContent = `Level ${i}: ${slot.value}/${slot.max}`;
+    span.textContent = t("levelEntry", {
+      level: i,
+      value: slot.value,
+      max: slot.max,
+    });
     span.style.margin = "0 4px";
     row.appendChild(span);
     const inc = document.createElement("button");
@@ -297,7 +305,10 @@ function renderFinalRecap() {
   });
   pactRow.appendChild(pactDec);
   const pactSpan = document.createElement("span");
-  pactSpan.textContent = `Pact: ${pact.value}/${pact.max}`;
+  pactSpan.textContent = t("pactEntry", {
+    value: pact.value,
+    max: pact.max,
+  });
   pactSpan.style.margin = "0 4px";
   pactRow.appendChild(pactSpan);
   const pactInc = document.createElement("button");
@@ -341,7 +352,7 @@ function handleRaceChange() {
         });
         if (raceSkills.length) {
           const p = document.createElement("p");
-          p.textContent = `Competenze: ${raceSkills.join(", ")}`;
+          p.textContent = `${t("skills")}: ${raceSkills.join(", ")}`;
           container.appendChild(p);
         }
       }
@@ -352,7 +363,7 @@ function handleRaceChange() {
         });
         if (raceLang.length) {
           const p = document.createElement("p");
-          p.textContent = `Lingue: ${raceLang.join(", ")}`;
+          p.textContent = `${t("languages")}: ${raceLang.join(", ")}`;
           container.appendChild(p);
         }
       }
@@ -400,23 +411,23 @@ function handleBackgroundChange() {
       langDiv.innerHTML = "";
       if (data.skills && data.skills.length) {
         const p = document.createElement("p");
-        p.textContent = `Competenze: ${data.skills.join(", ")}`;
+        p.textContent = `${t("skills")}: ${data.skills.join(", ")}`;
         skillsDiv.appendChild(p);
       }
       if (data.tools && data.tools.length) {
         const p = document.createElement("p");
-        p.textContent = `Strumenti: ${data.tools.join(", ")}`;
+        p.textContent = `${t("tools")}: ${data.tools.join(", ")}`;
         toolsDiv.appendChild(p);
       }
       if (data.languages) {
         if (Array.isArray(data.languages) && data.languages.length) {
           const p = document.createElement("p");
-          p.textContent = `Lingue: ${data.languages.join(", ")}`;
+          p.textContent = `${t("languages")}: ${data.languages.join(", ")}`;
           langDiv.appendChild(p);
         } else if (data.languages.choose) {
           for (let i = 0; i < data.languages.choose; i++) {
             const selLang = document.createElement("select");
-            selLang.innerHTML = "<option value=''>Seleziona lingua</option>";
+            selLang.innerHTML = `<option value=''>${t("selectLanguage")}</option>`;
             (DATA.languages || []).forEach((l) => {
               const o = document.createElement("option");
               o.value = l;
@@ -462,7 +473,8 @@ function confirmBackgroundSelection() {
   logCharacterState();
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  await initI18n();
   for (let i = 1; i <= 7; i++) {
     const btn = document.getElementById(`btnStep${i}`);
     if (btn) {

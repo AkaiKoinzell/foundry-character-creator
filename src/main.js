@@ -2,6 +2,7 @@ import {
   DATA,
   CharacterState,
   loadClasses,
+  fetchJsonWithRetry,
   logCharacterState,
   adjustResource,
   updateSpellSlots,
@@ -93,11 +94,7 @@ async function loadData() {
   };
 
   for (const [key, path] of Object.entries(sources)) {
-    const res = await fetch(path);
-    if (!res.ok) {
-      throw new Error(`Failed loading ${key}`);
-    }
-    const json = await res.json();
+    const json = await fetchJsonWithRetry(path, key);
     DATA[key] = json.items || json.languages;
   }
 }

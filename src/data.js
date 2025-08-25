@@ -1,6 +1,28 @@
 export const DATA = {};
 
 /**
+ * Helper to fetch JSON resources with retry and user-friendly error messages.
+ * @param {string} url - The resource URL
+ * @param {string} resourceName - Name displayed to the user
+ * @returns {Promise<any>} Parsed JSON response
+ */
+export async function fetchJsonWithRetry(url, resourceName) {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Failed loading ${resourceName}`);
+    return await res.json();
+  } catch (err) {
+    console.error(err);
+    const retry = window.confirm(
+      `Unable to load ${resourceName}. Would you like to retry?`
+    );
+    if (retry) return fetchJsonWithRetry(url, resourceName);
+    window.alert(`Data for ${resourceName} could not be loaded.`);
+    throw err;
+  }
+}
+
+/**
  * Fetches class data from the JSON index if it hasn't been loaded yet.
  * The resulting array of class objects is stored on `DATA.classes`.
  */
@@ -8,16 +30,11 @@ export async function loadClasses() {
   // Avoid re-fetching if classes are already present
   if (Array.isArray(DATA.classes) && DATA.classes.length) return;
 
-  const indexRes = await fetch('data/classes.json');
-  if (!indexRes.ok) throw new Error('Failed loading classes');
-  const index = await indexRes.json();
+  const index = await fetchJsonWithRetry('data/classes.json', 'class index');
 
   DATA.classes = await Promise.all(
     Object.values(index.items || {}).map((path) =>
-      fetch(path).then((res) => {
-        if (!res.ok) throw new Error(`Failed loading class at ${path}`);
-        return res.json();
-      })
+      fetchJsonWithRetry(path, `class at ${path}`)
     )
   );
 }
@@ -27,9 +44,7 @@ export async function loadClasses() {
  */
 export async function loadFeats() {
   if (Array.isArray(DATA.feats) && DATA.feats.length) return;
-  const res = await fetch('data/feats.json');
-  if (!res.ok) throw new Error('Failed loading feats');
-  const json = await res.json();
+  const json = await fetchJsonWithRetry('data/feats.json', 'feats');
   DATA.feats = Object.keys(json.feats || {});
 }
 

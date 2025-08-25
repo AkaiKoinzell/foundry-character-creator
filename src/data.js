@@ -1,5 +1,8 @@
 export const DATA = {};
 
+// Maximum total level a character can reach
+export const MAX_CHARACTER_LEVEL = 20;
+
 /**
  * Helper to fetch JSON resources with retry and user-friendly error messages.
  * @param {string} url - The resource URL

@@ -52,7 +52,7 @@ describe("exportFoundryActor", () => {
           spell7: { value: 0, max: 0 },
           spell8: { value: 0, max: 0 },
           spell9: { value: 0, max: 0 },
-          pact: { value: 0, max: 0 },
+          pact: { value: 0, max: 0, level: 0 },
         },
         tools: [],
       },

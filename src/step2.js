@@ -53,9 +53,17 @@ function createAccordionItem(title, content, isChoice = false, description = '')
   return item;
 }
 
+function getProficiencyList(type) {
+  if (type === 'skills') return CharacterState.system.skills;
+  if (type === 'tools') return CharacterState.system.tools;
+  if (type === 'languages') return CharacterState.system.traits.languages.value;
+  if (type === 'cantrips') return CharacterState.system.spells.cantrips;
+  return [];
+}
+
 function updateSkillSelectOptions(container = document) {
   const selects = container.querySelectorAll('select[data-type="skill"]');
-  const taken = new Set(CharacterState.skills);
+  const taken = new Set(CharacterState.system.skills);
   document.querySelectorAll('select[data-choice-type="skills"]').forEach(sel => {
     if (sel.value) taken.add(sel.value);
   });
@@ -77,7 +85,7 @@ function updateChoiceSelectOptions(container, name, type) {
   const selects = container.querySelectorAll(`select[data-choice-name='${name}']`);
   const taken = new Set();
   if (type === 'skills') {
-    CharacterState.skills.forEach(s => taken.add(s));
+    getProficiencyList('skills').forEach(s => taken.add(s));
     document.querySelectorAll('select[data-type="skill"]').forEach(sel => {
       if (sel.value) taken.add(sel.value);
     });
@@ -85,11 +93,11 @@ function updateChoiceSelectOptions(container, name, type) {
       if (sel.dataset.choiceName !== name && sel.value) taken.add(sel.value);
     });
   } else if (type === 'tools') {
-    CharacterState.tools.forEach(t => taken.add(t));
+    getProficiencyList('tools').forEach(t => taken.add(t));
   } else if (type === 'languages') {
-    CharacterState.languages.forEach(l => taken.add(l));
-  } else if (type === 'cantrips' && Array.isArray(CharacterState.cantrips)) {
-    CharacterState.cantrips.forEach(c => taken.add(c));
+    getProficiencyList('languages').forEach(l => taken.add(l));
+  } else if (type === 'cantrips' && Array.isArray(CharacterState.system.spells.cantrips)) {
+    getProficiencyList('cantrips').forEach(c => taken.add(c));
   }
   selects.forEach(sel => {
     if (sel.value) taken.add(sel.value);
@@ -429,7 +437,8 @@ function confirmClassSelection(silent = false) {
   skillSelects.forEach(sel => {
     if (sel.value) {
       if (!currentClass.skills.includes(sel.value)) currentClass.skills.push(sel.value);
-      if (!CharacterState.skills.includes(sel.value)) CharacterState.skills.push(sel.value);
+      const skillList = getProficiencyList('skills');
+      if (!skillList.includes(sel.value)) skillList.push(sel.value);
     }
   });
 
@@ -452,7 +461,8 @@ function confirmClassSelection(silent = false) {
     currentClass.choiceSelections = {};
 
     if (!Array.isArray(CharacterState.feats)) CharacterState.feats = [];
-    if (!Array.isArray(CharacterState.cantrips)) CharacterState.cantrips = [];
+    if (!Array.isArray(CharacterState.system.spells.cantrips))
+      CharacterState.system.spells.cantrips = [];
 
     const asiBonuses = { str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0 };
 
@@ -479,14 +489,18 @@ function confirmClassSelection(silent = false) {
         });
         currentClass.choiceSelections[name].push(entry);
 
-        if (type === 'skills' && !CharacterState.skills.includes(sel.value)) {
-          CharacterState.skills.push(sel.value);
-        } else if (type === 'tools' && !CharacterState.tools.includes(sel.value)) {
-          CharacterState.tools.push(sel.value);
-        } else if (type === 'languages' && !CharacterState.languages.includes(sel.value)) {
-          CharacterState.languages.push(sel.value);
-        } else if (type === 'cantrips' && !CharacterState.cantrips.includes(sel.value)) {
-          CharacterState.cantrips.push(sel.value);
+        if (type === 'skills') {
+          const list = getProficiencyList('skills');
+          if (!list.includes(sel.value)) list.push(sel.value);
+        } else if (type === 'tools') {
+          const list = getProficiencyList('tools');
+          if (!list.includes(sel.value)) list.push(sel.value);
+        } else if (type === 'languages') {
+          const list = getProficiencyList('languages');
+          if (!list.includes(sel.value)) list.push(sel.value);
+        } else if (type === 'cantrips') {
+          const list = getProficiencyList('cantrips');
+          if (!list.includes(sel.value)) list.push(sel.value);
         }
 
         if (entry.option === 'Increase one ability score by 2' && entry.abilities?.[0]) {
@@ -506,9 +520,9 @@ function confirmClassSelection(silent = false) {
     });
 
     currentClass.asiBonuses = asiBonuses;
-    for (const ability of Object.keys(CharacterState.attributes)) {
-      CharacterState.attributes[ability] =
-        (CharacterState.attributes[ability] || 0) + (asiBonuses[ability] || 0);
+    for (const ability of Object.keys(CharacterState.system.abilities)) {
+      const abil = CharacterState.system.abilities[ability];
+      abil.value = (abil.value || 0) + (asiBonuses[ability] || 0);
     }
   }
 

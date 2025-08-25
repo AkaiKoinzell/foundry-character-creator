@@ -119,9 +119,18 @@ function getAllOptions(type) {
   return [];
 }
 
+function getProficiencyList(type) {
+  if (type === "skills") return CharacterState.system.skills;
+  if (type === "tools") return CharacterState.system.tools;
+  if (type === "languages")
+    return CharacterState.system.traits.languages.value;
+  if (type === "cantrips") return CharacterState.system.spells.cantrips;
+  return [];
+}
+
 function addUniqueProficiency(type, value, container) {
   if (!value) return;
-  const list = CharacterState[type];
+  const list = getProficiencyList(type);
   if (!list.includes(value)) {
     list.push(value);
     logCharacterState();
@@ -207,7 +216,7 @@ function handleRaceChange() {
 function confirmRaceSelection() {
   if (!currentRaceData) return;
   const container = document.getElementById("raceTraits");
-  CharacterState.race = currentRaceData.name;
+  CharacterState.system.details.race = currentRaceData.name;
   if (currentRaceData.skillProficiencies) {
     currentRaceData.skillProficiencies.forEach((obj) => {
       for (const k in obj)
@@ -280,7 +289,7 @@ function confirmBackgroundSelection() {
   const skillsDiv = document.getElementById("backgroundSkills");
   const toolsDiv = document.getElementById("backgroundTools");
   const langDiv = document.getElementById("backgroundLanguages");
-  CharacterState.background = currentBackgroundData.name;
+  CharacterState.system.details.background = currentBackgroundData.name;
   if (currentBackgroundData.skills) {
     currentBackgroundData.skills.forEach((s) =>
       addUniqueProficiency("skills", s, skillsDiv)

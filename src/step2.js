@@ -142,16 +142,20 @@ function getProficiencyList(type) {
   return [];
 }
 
-function updateSkillSelectOptions(container = document) {
-  const selects = container.querySelectorAll('select[data-type="skill"]');
+// Cached references to skill-related select elements
+const skillSelects = [];
+const skillChoiceSelects = [];
+const skillChoiceSelectMap = new Map();
+
+function updateSkillSelectOptions(skillSelectsList, choiceSkillSelectsList = []) {
   const taken = new Set(CharacterState.system.skills);
-  document.querySelectorAll('select[data-choice-type="skills"]').forEach(sel => {
+  choiceSkillSelectsList.forEach(sel => {
     if (sel.value) taken.add(sel.value);
   });
-  selects.forEach(sel => {
+  skillSelectsList.forEach(sel => {
     if (sel.value) taken.add(sel.value);
   });
-  selects.forEach(sel => {
+  skillSelectsList.forEach(sel => {
     Array.from(sel.options).forEach(opt => {
       if (opt.value && opt.value !== sel.value && taken.has(opt.value)) {
         opt.disabled = true;
@@ -162,16 +166,20 @@ function updateSkillSelectOptions(container = document) {
   });
 }
 
-function updateChoiceSelectOptions(container, name, type) {
-  const selects = container.querySelectorAll(`select[data-choice-name='${name}']`);
+function updateChoiceSelectOptions(
+  selects,
+  type,
+  skillSelectsList = [],
+  allSkillChoiceSelects = []
+) {
   const taken = new Set();
   if (type === 'skills') {
     getProficiencyList('skills').forEach(s => taken.add(s));
-    document.querySelectorAll('select[data-type="skill"]').forEach(sel => {
+    skillSelectsList.forEach(sel => {
       if (sel.value) taken.add(sel.value);
     });
-    document.querySelectorAll('select[data-choice-type="skills"]').forEach(sel => {
-      if (sel.dataset.choiceName !== name && sel.value) taken.add(sel.value);
+    allSkillChoiceSelects.forEach(sel => {
+      if (!selects.includes(sel) && sel.value) taken.add(sel.value);
     });
   } else if (type === 'tools') {
     getProficiencyList('tools').forEach(t => taken.add(t));
@@ -235,6 +243,11 @@ function renderClassFeatures(cls) {
   featuresContainer.innerHTML = '';
   const level = currentClass?.level || 1;
 
+  // reset cached selects
+  skillSelects.length = 0;
+  skillChoiceSelects.length = 0;
+  skillChoiceSelectMap.clear();
+
   const header = document.createElement('h3');
   header.textContent = `${cls.name} (${t('level')} ${level})`;
   featuresContainer.appendChild(header);
@@ -255,22 +268,17 @@ function renderClassFeatures(cls) {
       });
       sel.dataset.type = 'skill';
       sel.value = savedSelections.skills[i] || '';
+      skillSelects.push(sel);
       sel.addEventListener('change', () => {
         savedSelections.skills[i] = sel.value;
-        updateSkillSelectOptions(container);
-        document
-          .querySelectorAll("select[data-choice-type='skills']")
-          .forEach(choiceSel => {
-            updateChoiceSelectOptions(
-              choiceSel.parentElement,
-              choiceSel.dataset.choiceName,
-              'skills'
-            );
-          });
+        updateSkillSelectOptions(skillSelects, skillChoiceSelects);
+        skillChoiceSelectMap.forEach(selects => {
+          updateChoiceSelectOptions(selects, 'skills', skillSelects, skillChoiceSelects);
+        });
       });
       container.appendChild(sel);
     }
-    updateSkillSelectOptions(container);
+    updateSkillSelectOptions(skillSelects, skillChoiceSelects);
     featuresContainer.appendChild(
       createAccordionItem(t('skillProficiencies'), container, true)
     );
@@ -314,6 +322,7 @@ function renderClassFeatures(cls) {
         container.appendChild(p);
       }
       const count = choice.count || 1;
+      const choiceSelects = [];
       for (let i = 0; i < count; i++) {
         const sel = document.createElement('select');
         sel.innerHTML = `<option value=''>${t('select')}</option>`;
@@ -330,21 +339,29 @@ function renderClassFeatures(cls) {
         sel.dataset.choiceId = choiceId;
         const stored = savedSelections.choices[choiceId];
         if (stored) sel.value = stored.option;
+        choiceSelects.push(sel);
+        if (choice.type === 'skills') {
+          skillChoiceSelects.push(sel);
+        }
         sel.addEventListener('change', () => {
           savedSelections.choices[choiceId] = { option: sel.value, level: lvl };
           handleASISelection(sel, container, savedSelections.choices[choiceId]);
-          updateChoiceSelectOptions(container, choice.name, choice.type);
+          updateChoiceSelectOptions(
+            choiceSelects,
+            choice.type,
+            skillSelects,
+            skillChoiceSelects
+          );
           if (choice.type === 'skills') {
-            updateSkillSelectOptions();
-            document
-              .querySelectorAll("select[data-choice-type='skills']")
-              .forEach(choiceSel => {
-                updateChoiceSelectOptions(
-                  choiceSel.parentElement,
-                  choiceSel.dataset.choiceName,
-                  'skills'
-                );
-              });
+            updateSkillSelectOptions(skillSelects, skillChoiceSelects);
+            skillChoiceSelectMap.forEach(selects => {
+              updateChoiceSelectOptions(
+                selects,
+                'skills',
+                skillSelects,
+                skillChoiceSelects
+              );
+            });
           }
         });
         container.appendChild(sel);
@@ -352,7 +369,25 @@ function renderClassFeatures(cls) {
           handleASISelection(sel, container, stored);
         }
       }
-      updateChoiceSelectOptions(container, choice.name, choice.type);
+      if (choice.type === 'skills') {
+        skillChoiceSelectMap.set(choice.name, choiceSelects);
+        updateSkillSelectOptions(skillSelects, skillChoiceSelects);
+        skillChoiceSelectMap.forEach(selects => {
+          updateChoiceSelectOptions(
+            selects,
+            'skills',
+            skillSelects,
+            skillChoiceSelects
+          );
+        });
+      } else {
+        updateChoiceSelectOptions(
+          choiceSelects,
+          choice.type,
+          skillSelects,
+          skillChoiceSelects
+        );
+      }
       featuresContainer.appendChild(
         createAccordionItem(
           `${t('level')} ${choice.level}: ${choice.name}`,
@@ -874,3 +909,5 @@ function selectClass(cls) {
   logCharacterState();
   loadStep2();
 }
+
+export { updateSkillSelectOptions, updateChoiceSelectOptions };

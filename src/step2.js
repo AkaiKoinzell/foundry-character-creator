@@ -1,4 +1,12 @@
-import { DATA, CharacterState, loadClasses, logCharacterState, loadFeats, totalLevel } from './data.js';
+import {
+  DATA,
+  CharacterState,
+  loadClasses,
+  logCharacterState,
+  loadFeats,
+  totalLevel,
+  updateSpellSlots,
+} from './data.js';
 
 // Temporary store for user selections while editing class features
 const savedSelections = { skills: [], subclass: '', choices: {} };
@@ -554,6 +562,7 @@ function confirmClassSelection(silent = false) {
   }
 
   CharacterState.classes.push(currentClass);
+  updateSpellSlots();
   logCharacterState();
   if (!silent) alert('Classe confermata!');
   currentClass = null;

@@ -37,9 +37,9 @@ describe("exportFoundryActor", () => {
           languages: { value: [] },
         },
         resources: {
-          primary: { value: 0, max: 0 },
-          secondary: { value: 0, max: 0 },
-          tertiary: { value: 0, max: 0 },
+          primary: { value: 0, max: 0, sr: false, lr: false, label: "" },
+          secondary: { value: 0, max: 0, sr: false, lr: false, label: "" },
+          tertiary: { value: 0, max: 0, sr: false, lr: false, label: "" },
         },
         spells: {
           cantrips: [],

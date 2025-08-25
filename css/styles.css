@@ -43,4 +43,9 @@ body {
   details.needs-selection.incomplete > summary {
     color: #e74c3c;
   }
+
+select.missing,
+input.missing {
+  border: 2px solid #e74c3c;
+}
   

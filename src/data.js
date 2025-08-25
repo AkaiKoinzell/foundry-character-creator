@@ -115,10 +115,12 @@ export const CharacterState = {
 };
 
 export function totalLevel() {
-  return (CharacterState.classes || []).reduce(
-    (sum, cls) => sum + (cls.level || 0),
+  const sum = (CharacterState.classes || []).reduce(
+    (acc, cls) => acc + (cls.level || 0),
     0
   );
+  // Clamp to the maximum allowed level to prevent runaway totals
+  return Math.min(sum, MAX_CHARACTER_LEVEL);
 }
 
 // --- Helper utilities ----------------------------------------------------

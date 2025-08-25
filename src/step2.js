@@ -28,7 +28,6 @@ let currentClass = null;
 // data is applied. This allows us to cleanly rebuild the derived state when a
 // class is edited or removed.
 const baseState = {
-  initialized: false,
   skills: [],
   tools: [],
   languages: [],
@@ -37,8 +36,7 @@ const baseState = {
   abilities: {},
 };
 
-function initBaseState() {
-  if (baseState.initialized) return;
+function refreshBaseState() {
   baseState.skills = [...CharacterState.system.skills];
   baseState.tools = [...CharacterState.system.tools];
   baseState.languages = [...CharacterState.system.traits.languages.value];
@@ -51,11 +49,9 @@ function initBaseState() {
   for (const [ab, obj] of Object.entries(CharacterState.system.abilities)) {
     baseState.abilities[ab] = obj.value || 0;
   }
-  baseState.initialized = true;
 }
 
 function rebuildFromClasses() {
-  initBaseState();
   const skills = new Set(baseState.skills);
   const tools = new Set(baseState.tools);
   const languages = new Set(baseState.languages);
@@ -536,13 +532,13 @@ function editClass(index) {
     fixed_proficiencies: cls.fixed_proficiencies,
     spellcasting: cls.spellcasting,
   };
-  loadStep2();
+  loadStep2(false);
 }
 
 function removeClass(index) {
   CharacterState.classes.splice(index, 1);
   rebuildFromClasses();
-  loadStep2();
+  loadStep2(false);
 }
 
 function renderSavedClass(cls, index) {
@@ -751,13 +747,13 @@ function confirmClassSelection(silent = false) {
   savedSelections.skills = [];
   savedSelections.subclass = '';
   savedSelections.choices = {};
-  loadStep2();
+  loadStep2(false);
 }
 
 /**
  * Inizializza lo Step 2: Selezione Classe
  */
-export async function loadStep2() {
+export async function loadStep2(refresh = true) {
   const classListContainer = document.getElementById('classList');
   const featuresContainer = document.getElementById('classFeatures');
   const classActions = document.getElementById('classActions');
@@ -768,7 +764,7 @@ export async function loadStep2() {
   const addClassLink = document.getElementById('addClassLink');
   const changeClassBtn = document.getElementById('changeClassButton');
   if (!classListContainer || !featuresContainer) return;
-  initBaseState();
+  if (refresh) refreshBaseState();
   classListContainer.innerHTML = '';
   featuresContainer.innerHTML = '';
 
@@ -935,11 +931,13 @@ function selectClass(cls) {
   const btnStep3 = document.getElementById('btnStep3');
   if (btnStep3) btnStep3.disabled = false;
   logCharacterState();
-  loadStep2();
+  loadStep2(false);
 }
 
 export {
   updateSkillSelectOptions,
   updateChoiceSelectOptions,
   validateTotalLevel,
+  refreshBaseState,
+  rebuildFromClasses,
 };

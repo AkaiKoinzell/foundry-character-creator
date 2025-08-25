@@ -12,6 +12,15 @@ import { t } from './i18n.js';
 // Temporary store for user selections while editing class features
 const savedSelections = { skills: [], subclass: '', choices: {} };
 
+const abilityMap = {
+  Strength: 'str',
+  Dexterity: 'dex',
+  Constitution: 'con',
+  Intelligence: 'int',
+  Wisdom: 'wis',
+  Charisma: 'cha',
+};
+
 let currentClass = null;
 
 // Snapshot of the character's proficiencies and abilities before any class
@@ -92,6 +101,18 @@ function trimSelections(maxLevel) {
       delete savedSelections.choices[id];
     }
   });
+}
+
+function validateTotalLevel(pendingClass) {
+  const pending = pendingClass?.level || 0;
+  const existing = totalLevel();
+  if (existing + pending > 20) {
+    const allowed = 20 - existing;
+    if (pendingClass) pendingClass.level = allowed;
+    if (typeof alert !== 'undefined') alert('Total level cannot exceed 20');
+    return false;
+  }
+  return true;
 }
 
 function createElement(tag, text) {
@@ -613,14 +634,6 @@ function confirmClassSelection(silent = false) {
   }
 
   const choiceSelects = features.querySelectorAll('select[data-type="choice"]');
-  const abilityMap = {
-    Strength: 'str',
-    Dexterity: 'dex',
-    Constitution: 'con',
-    Intelligence: 'int',
-    Wisdom: 'wis',
-    Charisma: 'cha',
-  };
 
   if (choiceSelects.length) {
     currentClass.choiceSelections = {};
@@ -718,6 +731,7 @@ function confirmClassSelection(silent = false) {
     }
   }
 
+  if (!validateTotalLevel(currentClass)) return;
   CharacterState.classes.push(currentClass);
   rebuildFromClasses();
   logCharacterState();
@@ -778,7 +792,10 @@ export async function loadStep2() {
       levelSelect.onchange = () => {
         const lvl = parseInt(levelSelect.value, 10) || 1;
         currentClass.level = lvl;
-        trimSelections(lvl);
+        if (!validateTotalLevel(currentClass)) {
+          levelSelect.value = currentClass.level;
+        }
+        trimSelections(currentClass.level);
         const cls = DATA.classes.find(c => c.name === currentClass.name);
         if (cls) renderClassFeatures(cls);
       };
@@ -910,4 +927,8 @@ function selectClass(cls) {
   loadStep2();
 }
 
-export { updateSkillSelectOptions, updateChoiceSelectOptions };
+export {
+  updateSkillSelectOptions,
+  updateChoiceSelectOptions,
+  validateTotalLevel,
+};

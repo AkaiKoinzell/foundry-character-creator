@@ -29,6 +29,7 @@ describe("exportFoundryActor", () => {
           hp: { value: 10, max: 10 },
           init: { value: 0 },
           prof: 2,
+          movement: { walk: 30 },
         },
         details: { background: "", race: "", alignment: "" },
         traits: {

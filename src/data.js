@@ -73,6 +73,7 @@ export const CharacterState = {
       hp: { value: 1, max: 1 },
       init: { value: 0 },
       prof: 2,
+      movement: { walk: 30 },
     },
     details: {
       background: "",

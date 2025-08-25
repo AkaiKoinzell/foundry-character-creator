@@ -213,6 +213,8 @@ async function renderBaseRaces() {
   const container = document.getElementById('raceList');
   if (!container) return;
   container.innerHTML = '';
+  const changeBtn = document.getElementById('changeRace');
+  changeBtn?.classList.add('hidden');
   await Promise.all(
     Object.entries(DATA.races).map(async ([base, subs]) => {
       let race = { name: base };
@@ -243,6 +245,8 @@ async function renderSubraceCards(base) {
   const container = document.getElementById('raceList');
   if (!container) return;
   container.innerHTML = '';
+  const changeBtn = document.getElementById('changeRace');
+  changeBtn?.classList.remove('hidden');
   const subraces = DATA.races[base] || [];
   await Promise.all(
     subraces.map(async ({ name, path }) => {
@@ -514,4 +518,16 @@ export async function loadStep3(force = false) {
 
   const btn = document.getElementById('confirmRaceSelection');
   btn?.addEventListener('click', confirmRaceSelection);
+  const changeBtn = document.getElementById('changeRace');
+  changeBtn?.addEventListener('click', async () => {
+    selectedBaseRace = '';
+    currentRaceData = null;
+    pendingRaceChoices.subrace = '';
+    pendingRaceChoices.languages = [];
+    pendingRaceChoices.spells = [];
+    const traits = document.getElementById('raceTraits');
+    if (traits) traits.innerHTML = '';
+    await renderBaseRaces();
+    validateRaceChoices();
+  });
 }

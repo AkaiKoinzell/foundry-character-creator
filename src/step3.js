@@ -12,9 +12,57 @@ import { showStep } from './main.js';
 let selectedBaseRace = '';
 let currentRaceData = null;
 const pendingRaceChoices = {
+  subrace: '',
   languages: [],
   spells: [],
 };
+
+function validateRaceChoices() {
+  const btn = document.getElementById('confirmRaceSelection');
+  const allSelects = [
+    ...pendingRaceChoices.languages,
+    ...pendingRaceChoices.spells,
+  ];
+
+  allSelects.forEach((sel) => {
+    sel.classList.remove('missing', 'duplicate');
+    sel.removeAttribute('title');
+  });
+
+  const missing = allSelects.filter((s) => !s.value);
+  missing.forEach((s) => {
+    s.classList.add('missing');
+    s.title = 'Selection required';
+  });
+
+  const counts = {};
+  allSelects.forEach((s) => {
+    if (s.value) counts[s.value] = (counts[s.value] || 0) + 1;
+  });
+  const duplicates = allSelects.filter(
+    (s) => s.value && counts[s.value] > 1
+  );
+  duplicates.forEach((s) => {
+    s.classList.add('duplicate');
+    s.title = 'Selections must be unique';
+  });
+
+  const valid =
+    missing.length === 0 &&
+    duplicates.length === 0 &&
+    !!pendingRaceChoices.subrace;
+
+  const errors = [];
+  if (!pendingRaceChoices.subrace) errors.push('Select a subrace');
+  if (missing.length) errors.push('Complete all selections');
+  if (duplicates.length) errors.push('Choose unique options');
+
+  if (btn) {
+    btn.disabled = !valid;
+    btn.title = valid ? '' : errors.join('. ');
+  }
+  return valid;
+}
 
 const ALL_SKILLS = [
   'Acrobatics',
@@ -134,11 +182,13 @@ function renderBaseRaces() {
 async function selectBaseRace(base) {
   selectedBaseRace = base;
   currentRaceData = null;
+  pendingRaceChoices.subrace = '';
+  pendingRaceChoices.languages = [];
+  pendingRaceChoices.spells = [];
   const traits = document.getElementById('raceTraits');
   if (traits) traits.innerHTML = '';
-  const btn = document.getElementById('confirmRaceSelection');
-  if (btn) btn.disabled = true;
   await renderSubraceCards(base);
+  validateRaceChoices();
 }
 
 async function renderSubraceCards(base) {
@@ -175,13 +225,13 @@ async function renderSubraceCards(base) {
       }
       card.addEventListener('click', async () => {
         currentRaceData = race;
+        pendingRaceChoices.subrace = race.name;
         container
           .querySelectorAll('.class-card')
           .forEach((c) => c.classList.remove('selected'));
         card.classList.add('selected');
         await renderCurrentRaceTraits();
-        const btn = document.getElementById('confirmRaceSelection');
-        if (btn) btn.disabled = false;
+        validateRaceChoices();
         showRaceModal(race);
       });
       container.appendChild(card);
@@ -248,6 +298,7 @@ async function renderCurrentRaceTraits() {
             sel.appendChild(o);
           });
         sel.dataset.type = 'choice';
+        sel.addEventListener('change', validateRaceChoices);
         container.appendChild(sel);
         pendingRaceChoices.languages.push(sel);
       }
@@ -313,12 +364,14 @@ async function renderCurrentRaceTraits() {
             sel.appendChild(o);
           });
           sel.dataset.type = 'choice';
+          sel.addEventListener('change', validateRaceChoices);
           container.appendChild(sel);
           pendingRaceChoices.spells.push(sel);
         }
       });
     }
   }
+  validateRaceChoices();
 }
 
 function showRaceModal(race) {
@@ -353,17 +406,8 @@ function showRaceModal(race) {
 
 function confirmRaceSelection() {
   if (!currentRaceData || !selectedBaseRace) return;
+  if (!validateRaceChoices()) return;
   const container = document.getElementById('raceTraits');
-  const allSelects = [
-    ...pendingRaceChoices.languages,
-    ...pendingRaceChoices.spells,
-  ];
-  const missing = allSelects.filter((s) => !s.value);
-  if (missing.length) {
-    missing.forEach((s) => s.classList.add('missing'));
-    alert('Please complete all required selections.');
-    return;
-  }
 
   CharacterState.system.details.race = selectedBaseRace;
   CharacterState.system.details.subrace = currentRaceData.name;

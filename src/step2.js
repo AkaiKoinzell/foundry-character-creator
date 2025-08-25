@@ -24,6 +24,8 @@ const abilityMap = {
 };
 
 let currentClass = null;
+// Track which class is being edited so we can reinsert it at the same index
+let editingIndex = -1;
 
 // Snapshot of the character's proficiencies and abilities before any class
 // data is applied. This allows us to cleanly rebuild the derived state when a
@@ -507,8 +509,12 @@ function handleASISelection(sel, container, saved = null) {
 }
 
 function editClass(index) {
+  // Remember which class is being edited so we can place it back
+  editingIndex = index;
+  // Remove the class from the state and capture its data
   const cls = CharacterState.classes.splice(index, 1)[0];
   if (!cls) return;
+  // Rebuild state from remaining classes so we have a clean base
   rebuildFromClasses();
   savedSelections.skills = [...(cls.skills || [])];
   savedSelections.subclass = cls.subclass || '';
@@ -805,11 +811,17 @@ function confirmClassSelection(silent = false) {
     }
   }
 
-  CharacterState.classes.push(currentClass);
+  // Reinsert the updated class at its original index (or append if new)
+  if (editingIndex >= 0) {
+    CharacterState.classes.splice(editingIndex, 0, currentClass);
+  } else {
+    CharacterState.classes.push(currentClass);
+  }
   rebuildFromClasses();
   logCharacterState();
   if (!silent) alert('Classe confermata!');
   currentClass = null;
+  editingIndex = -1;
   savedSelections.skills = [];
   savedSelections.subclass = '';
   savedSelections.choices = {};

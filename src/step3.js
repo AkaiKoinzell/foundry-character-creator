@@ -11,6 +11,10 @@ import { showStep } from './main.js';
 
 let selectedBaseRace = '';
 let currentRaceData = null;
+const pendingRaceChoices = {
+  languages: [],
+  spells: [],
+};
 
 const ALL_SKILLS = [
   'Acrobatics',
@@ -150,6 +154,8 @@ async function handleSubraceChange(e) {
   if (!path || !container) return;
   currentRaceData = await fetchJsonWithRetry(path, `race at ${path}`);
   container.innerHTML = '';
+  pendingRaceChoices.languages = [];
+  pendingRaceChoices.spells = [];
   if (currentRaceData.entries) {
     const ul = document.createElement('ul');
     currentRaceData.entries.forEach((e) => {
@@ -174,13 +180,104 @@ async function handleSubraceChange(e) {
   }
   if (currentRaceData.languageProficiencies) {
     const raceLang = [];
+    let pendingLang = 0;
     currentRaceData.languageProficiencies.forEach((obj) => {
-      for (const k in obj) if (obj[k]) raceLang.push(capitalize(k));
+      for (const k in obj) {
+        if (k === 'anyStandard') pendingLang += obj[k];
+        else if (obj[k]) raceLang.push(capitalize(k));
+      }
     });
     if (raceLang.length) {
       const p = document.createElement('p');
       p.textContent = `${t('languages')}: ${raceLang.join(', ')}`;
       container.appendChild(p);
+    }
+    if (pendingLang > 0) {
+      const known = new Set([
+        ...CharacterState.system.traits.languages.value,
+        ...raceLang,
+      ]);
+      for (let i = 0; i < pendingLang; i++) {
+        const sel = document.createElement('select');
+        sel.innerHTML = `<option value=''>${t('select')}</option>`;
+        (DATA.languages || [])
+          .filter((l) => !known.has(l))
+          .forEach((l) => {
+            const o = document.createElement('option');
+            o.value = l;
+            o.textContent = l;
+            sel.appendChild(o);
+          });
+        sel.dataset.type = 'choice';
+        container.appendChild(sel);
+        pendingRaceChoices.languages.push(sel);
+      }
+    }
+  }
+
+  if (currentRaceData.additionalSpells) {
+    const choices = [];
+    const walk = (node) => {
+      if (!node) return;
+      if (Array.isArray(node)) node.forEach(walk);
+      else if (typeof node === 'object') {
+        if (node.choose) choices.push(node.choose);
+        Object.values(node).forEach(walk);
+      }
+    };
+    walk(currentRaceData.additionalSpells);
+    if (choices.length) {
+      if (!DATA.spells) {
+        const spells = await fetchJsonWithRetry('data/spells.json', 'spells');
+        DATA.spells = spells;
+      }
+      const SCHOOL_MAP = {
+        A: 'Abjuration',
+        C: 'Conjuration',
+        D: 'Divination',
+        E: 'Enchantment',
+        I: 'Illusion',
+        N: 'Necromancy',
+        T: 'Transmutation',
+        V: 'Evocation',
+      };
+      choices.forEach((choice) => {
+        let opts = [];
+        let count = 1;
+        if (typeof choice === 'string') {
+          opts = (DATA.spells || [])
+            .filter((sp) => {
+              return choice.split('|').every((cond) => {
+                const [key, val] = cond.split('=');
+                if (key === 'level') return sp.level === parseInt(val, 10);
+                if (key === 'school') {
+                  const schools = val
+                    .split(';')
+                    .map((s) => SCHOOL_MAP[s] || s);
+                  return schools.includes(sp.school);
+                }
+                return true;
+              });
+            })
+            .map((sp) => sp.name);
+        } else if (Array.isArray(choice.from)) {
+          opts = choice.from;
+          if (choice.count) count = choice.count;
+        }
+        for (let i = 0; i < count; i++) {
+          const sel = document.createElement('select');
+          sel.innerHTML = `<option value=''>${t('select')}</option>`;
+          opts.forEach((sp) => {
+            const o = document.createElement('option');
+            o.value = sp;
+            o.textContent = sp;
+            sel.appendChild(o);
+          });
+          sel.dataset.type = 'choice';
+          container.appendChild(sel);
+          pendingRaceChoices.spells.push(sel);
+        }
+      });
     }
   }
 }
@@ -188,6 +285,17 @@ async function handleSubraceChange(e) {
 function confirmRaceSelection() {
   if (!currentRaceData || !selectedBaseRace) return;
   const container = document.getElementById('raceTraits');
+  const allSelects = [
+    ...pendingRaceChoices.languages,
+    ...pendingRaceChoices.spells,
+  ];
+  const missing = allSelects.filter((s) => !s.value);
+  if (missing.length) {
+    missing.forEach((s) => s.classList.add('missing'));
+    alert('Please complete all required selections.');
+    return;
+  }
+
   CharacterState.system.details.race = selectedBaseRace;
   CharacterState.system.details.subrace = currentRaceData.name;
 
@@ -238,9 +346,21 @@ function confirmRaceSelection() {
   if (currentRaceData.languageProficiencies) {
     currentRaceData.languageProficiencies.forEach((obj) => {
       for (const k in obj)
-        if (obj[k]) addUniqueProficiency('languages', capitalize(k), container);
+        if (k !== 'anyStandard' && obj[k])
+          addUniqueProficiency('languages', capitalize(k), container);
     });
   }
+  pendingRaceChoices.languages.forEach((sel) => {
+    addUniqueProficiency('languages', sel.value, container);
+    sel.disabled = true;
+  });
+  pendingRaceChoices.spells.forEach((sel) => {
+    addUniqueProficiency('cantrips', sel.value, container);
+    sel.disabled = true;
+  });
+
+  pendingRaceChoices.languages = [];
+  pendingRaceChoices.spells = [];
   refreshBaseState();
   rebuildFromClasses();
   const btn4 = document.getElementById('btnStep4');
@@ -261,9 +381,5 @@ export async function loadStep3(force = false) {
   sel?.classList.add('hidden');
 
   const btn = document.getElementById('confirmRaceSelection');
-  btn?.addEventListener('click', () => {
-    confirmRaceSelection();
-    const btn4 = document.getElementById('btnStep4');
-    if (btn4) btn4.disabled = false;
-  });
+  btn?.addEventListener('click', confirmRaceSelection);
 }

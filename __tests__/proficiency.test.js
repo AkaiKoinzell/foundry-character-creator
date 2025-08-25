@@ -22,4 +22,13 @@ describe('updateProficiencyBonus', () => {
     updateProficiencyBonus();
     expect(CharacterState.system.attributes.prof).toBe(expected);
   });
+
+  test('uses sum of multiclass levels', () => {
+    CharacterState.classes = [
+      { level: 2 },
+      { level: 3 },
+    ];
+    updateProficiencyBonus();
+    expect(CharacterState.system.attributes.prof).toBe(3);
+  });
 });

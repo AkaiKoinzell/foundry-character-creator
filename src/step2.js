@@ -677,6 +677,59 @@ function showClassSelectionModal() {
   }
 }
 
+function classHasPendingChoices(cls) {
+  const clsDef = DATA.classes.find(c => c.name === cls.name);
+  if (!clsDef) return false;
+
+  if (clsDef.skill_proficiencies?.options) {
+    const required = clsDef.skill_proficiencies.choose || 0;
+    if ((cls.skills || []).length < required) return true;
+  }
+
+  if (Array.isArray(clsDef.subclasses) && clsDef.subclasses.length && !cls.subclass) {
+    return true;
+  }
+
+  const choices = (clsDef.choices || []).filter(c => c.level <= (cls.level || 1));
+  for (const choice of choices) {
+    const needed = choice.count || 1;
+    const selections = cls.choiceSelections?.[choice.name] || [];
+    if (selections.length < needed) return true;
+    if (selections.some(s => !s.option)) return true;
+    if (choice.type === 'asi') {
+      for (const sel of selections) {
+        if (
+          sel.option === 'Increase one ability score by 2' &&
+          !(sel.abilities && sel.abilities.length)
+        )
+          return true;
+        if (
+          sel.option === 'Increase two ability scores by 1' &&
+          (!sel.abilities || sel.abilities.length !== 2)
+        )
+          return true;
+        if (sel.option === 'Feat' && !sel.feat) return true;
+      }
+    }
+  }
+  return false;
+}
+
+function updateStep2Completion() {
+  const btnStep3 = document.getElementById('btnStep3');
+  const progressBar = document.getElementById('progressBar');
+
+  const incomplete =
+    currentClass != null ||
+    (CharacterState.classes || []).some(classHasPendingChoices);
+
+  if (btnStep3) btnStep3.disabled = incomplete;
+  if (progressBar) {
+    const width = (incomplete ? 1 : 2) / 6 * 100;
+    progressBar.style.width = `${width}%`;
+  }
+}
+
 function confirmClassSelection(silent = false) {
   const features = document.getElementById('classFeatures');
   if (!features || !currentClass) return;
@@ -849,6 +902,7 @@ function confirmClassSelection(silent = false) {
   savedSelections.subclass = '';
   savedSelections.choices = {};
   loadStep2(false);
+  updateStep2Completion();
 }
 
 /**
@@ -880,6 +934,7 @@ export async function loadStep2(refresh = true) {
   }
 
   renderSelectedClasses();
+  updateStep2Completion();
 
   if (currentClass) {
     classListContainer.classList.add('hidden');
@@ -1049,11 +1104,9 @@ function selectClass(cls) {
   features?.classList.remove('hidden');
   levelContainer?.classList.remove('hidden');
   classActions?.classList.remove('hidden');
-
-  const btnStep3 = document.getElementById('btnStep3');
-  if (btnStep3) btnStep3.disabled = false;
   logCharacterState();
   loadStep2(false);
+  updateStep2Completion();
 }
 
 export {

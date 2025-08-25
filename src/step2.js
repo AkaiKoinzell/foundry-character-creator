@@ -876,20 +876,22 @@ function showClassModal(cls) {
 
   details.innerHTML = '';
 
-  const title = createElement('h2', cls.name);
-  const desc = createElement('p', cls.description || 'Nessuna descrizione disponibile.');
+  // Title and description
+  details.appendChild(createElement('h2', cls.name));
+  details.appendChild(
+    createElement('p', cls.description || 'Nessuna descrizione disponibile.')
+  );
 
-  details.appendChild(title);
-  details.appendChild(desc);
-
-  if (cls.weapon_proficiencies) {
-    details.appendChild(
-      createElement('p', `Armi: ${cls.weapon_proficiencies.join(', ')}`)
+  // Proficiency information
+  const profList = document.createElement('ul');
+  if (Array.isArray(cls.armor_proficiencies) && cls.armor_proficiencies.length) {
+    profList.appendChild(
+      createElement('li', `Armature: ${cls.armor_proficiencies.join(', ')}`)
     );
   }
-  if (cls.armor_proficiencies) {
-    details.appendChild(
-      createElement('p', `Armature: ${cls.armor_proficiencies.join(', ')}`)
+  if (Array.isArray(cls.weapon_proficiencies) && cls.weapon_proficiencies.length) {
+    profList.appendChild(
+      createElement('li', `Armi: ${cls.weapon_proficiencies.join(', ')}`)
     );
   }
   if (cls.skill_proficiencies) {
@@ -899,10 +901,20 @@ function showClassModal(cls) {
     } else if (cls.skill_proficiencies.fixed) {
       skillText = cls.skill_proficiencies.fixed.join(', ');
     }
-    if (skillText) details.appendChild(createElement('p', `Abilità: ${skillText}`));
+    if (skillText) {
+      profList.appendChild(createElement('li', `Abilità: ${skillText}`));
+    }
+  }
+  if (profList.childNodes.length) {
+    const profHeader = createElement('h3', 'Proficienze');
+    details.appendChild(profHeader);
+    details.appendChild(profList);
   }
 
-  addBtn.onclick = () => selectClass(cls);
+  addBtn.onclick = () => {
+    selectClass(cls);
+    modal.classList.add('hidden');
+  };
   modal.classList.remove('hidden');
 
   if (closeBtn) {

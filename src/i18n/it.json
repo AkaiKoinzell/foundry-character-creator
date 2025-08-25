@@ -5,7 +5,7 @@
   "label": "Etichetta",
   "spellSlots": "Slot Incantesimo",
   "levelEntry": "Livello {level}: {value}/{max}",
-  "pactEntry": "Patto: {value}/{max}",
+  "pactEntry": "Patto (Livello {level}): {value}/{max}",
   "skills": "Competenze",
   "tools": "Strumenti",
   "languages": "Lingue",

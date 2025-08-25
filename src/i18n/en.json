@@ -5,7 +5,7 @@
   "label": "Label",
   "spellSlots": "Spell Slots",
   "levelEntry": "Level {level}: {value}/{max}",
-  "pactEntry": "Pact: {value}/{max}",
+  "pactEntry": "Pact (Level {level}): {value}/{max}",
   "skills": "Skills",
   "tools": "Tools",
   "languages": "Languages",

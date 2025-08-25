@@ -100,7 +100,7 @@ export const CharacterState = {
       spell7: { value: 0, max: 0 },
       spell8: { value: 0, max: 0 },
       spell9: { value: 0, max: 0 },
-      pact: { value: 0, max: 0 },
+      pact: { value: 0, max: 0, level: 0 },
     },
     tools: [],
   },
@@ -218,6 +218,7 @@ export function updateSpellSlots() {
 
   const pact = PACT_MAGIC[Math.min(pactLevel, 20)] || { slots: 0, level: 0 };
   CharacterState.system.spells.pact.max = pact.slots;
+  CharacterState.system.spells.pact.level = pact.level;
   CharacterState.system.spells.pact.value = Math.min(
     CharacterState.system.spells.pact.value,
     pact.slots

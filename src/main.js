@@ -305,6 +305,7 @@ function renderFinalRecap() {
   pactSpan.textContent = t("pactEntry", {
     value: pact.value,
     max: pact.max,
+    level: pact.level,
   });
   pactSpan.style.margin = "0 4px";
   pactRow.appendChild(pactSpan);

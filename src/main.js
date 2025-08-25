@@ -372,6 +372,49 @@ function confirmRaceSelection() {
   if (!currentRaceData) return;
   const container = document.getElementById("raceTraits");
   CharacterState.system.details.race = currentRaceData.name;
+
+  // Persist size
+  const sizeMap = { T: "tiny", S: "sm", M: "med", L: "lg", H: "huge", G: "grg" };
+  if (currentRaceData.size) {
+    const sz = Array.isArray(currentRaceData.size)
+      ? currentRaceData.size[0]
+      : currentRaceData.size;
+    CharacterState.system.traits.size =
+      sizeMap[sz] || CharacterState.system.traits.size;
+  }
+
+  // Persist movement speeds
+  const move = CharacterState.system.attributes.movement || {};
+  const speed = currentRaceData.speed;
+  if (typeof speed === "number") move.walk = speed;
+  else if (speed && typeof speed === "object") {
+    if (typeof speed.walk === "number") move.walk = speed.walk;
+    ["burrow", "climb", "fly", "swim"].forEach((t) => {
+      const val = speed[t];
+      if (typeof val === "number") move[t] = val;
+      else if (val === true && typeof move.walk === "number") move[t] = move.walk;
+    });
+  }
+  CharacterState.system.attributes.movement = move;
+
+  // Apply ability score bonuses
+  if (Array.isArray(currentRaceData.ability)) {
+    currentRaceData.ability.forEach((obj) => {
+      for (const [ab, val] of Object.entries(obj)) {
+        if (typeof val === "number" && CharacterState.system.abilities[ab]) {
+          const abil = CharacterState.system.abilities[ab];
+          abil.value = (abil.value || 0) + val;
+        }
+      }
+    });
+  }
+
+  // Persist darkvision and trait tags
+  if (currentRaceData.darkvision)
+    CharacterState.system.traits.senses.darkvision = currentRaceData.darkvision;
+  if (currentRaceData.traitTags)
+    CharacterState.system.traits.traitTags = [...currentRaceData.traitTags];
+
   if (currentRaceData.skillProficiencies) {
     currentRaceData.skillProficiencies.forEach((obj) => {
       for (const k in obj)

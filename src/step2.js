@@ -6,6 +6,7 @@ import {
   loadFeats,
   totalLevel,
   updateSpellSlots,
+  updateProficiencyBonus,
 } from './data.js';
 import { t } from './i18n.js';
 
@@ -93,6 +94,8 @@ function rebuildFromClasses() {
     CharacterState.system.abilities[ab].value = val;
   }
   updateSpellSlots();
+  updateProficiencyBonus();
+  renderSelectedClasses();
 }
 
 function trimSelections(maxLevel) {
@@ -582,6 +585,14 @@ function renderSelectedClasses() {
       createElement(
         'p',
         t('selectedClasses', { classes: summaryText, level: totalLevel() })
+      )
+    );
+    container.appendChild(
+      createElement(
+        'p',
+        t('proficiencyBonus', {
+          value: CharacterState.system.attributes.prof,
+        })
       )
     );
   }

@@ -225,6 +225,20 @@ export function updateSpellSlots() {
 }
 
 /**
+ * Update the proficiency bonus based on total character level.
+ * Levels 1-4: +2, 5-8: +3, 9-12: +4, 13-16: +5, 17+: +6.
+ */
+export function updateProficiencyBonus() {
+  const level = totalLevel();
+  let prof = 2;
+  if (level >= 17) prof = 6;
+  else if (level >= 13) prof = 5;
+  else if (level >= 9) prof = 4;
+  else if (level >= 5) prof = 3;
+  CharacterState.system.attributes.prof = prof;
+}
+
+/**
  * Increment or decrement one of the resource pools.
  * @param {string} key - One of `primary`, `secondary` or `tertiary`.
  * @param {number} delta - Amount to change the resource by.

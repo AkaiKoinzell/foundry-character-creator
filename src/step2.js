@@ -727,13 +727,18 @@ function classHasPendingChoices(cls) {
 
 function updateStep2Completion() {
   const btnStep3 = document.getElementById('btnStep3');
+  const btnStep4 = document.getElementById('btnStep4');
   const progressBar = document.getElementById('progressBar');
 
   const incomplete =
     currentClass != null ||
     (CharacterState.classes || []).some(classHasPendingChoices);
+  const hasClass = (CharacterState.classes || []).length > 0;
 
   if (btnStep3) btnStep3.disabled = incomplete;
+  if (btnStep4)
+    btnStep4.disabled =
+      incomplete || !hasClass || !CharacterState.system.details.race;
   if (progressBar) {
     const width = (incomplete ? 1 : 2) / 6 * 100;
     progressBar.style.width = `${width}%`;

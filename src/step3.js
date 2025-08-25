@@ -20,6 +20,7 @@ const pendingRaceChoices = {
 
 function validateRaceChoices() {
   const btn = document.getElementById('confirmRaceSelection');
+  const btn4 = document.getElementById('btnStep4');
   const allSelects = [
     ...pendingRaceChoices.languages,
     ...pendingRaceChoices.spells,
@@ -66,6 +67,7 @@ function validateRaceChoices() {
     btn.disabled = !valid;
     btn.title = valid ? '' : errors.join('. ');
   }
+  if (btn4) btn4.disabled = true;
   return valid;
 }
 
@@ -519,6 +521,10 @@ export async function loadStep3(force = false) {
     pendingRaceChoices.subrace = '';
     pendingRaceChoices.languages = [];
     pendingRaceChoices.spells = [];
+    if (CharacterState.system?.details) {
+      CharacterState.system.details.race = '';
+      CharacterState.system.details.subrace = '';
+    }
     const traits = document.getElementById('raceTraits');
     if (traits) traits.innerHTML = '';
     const list = document.getElementById('raceList');

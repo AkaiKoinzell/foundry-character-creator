@@ -131,28 +131,67 @@ function renderBaseRaces() {
   });
 }
 
-function selectBaseRace(base) {
+async function selectBaseRace(base) {
   selectedBaseRace = base;
-  const select = document.getElementById('raceSelect');
+  currentRaceData = null;
   const traits = document.getElementById('raceTraits');
   if (traits) traits.innerHTML = '';
-  if (select) {
-    select.classList.remove('hidden');
-    select.innerHTML = `<option value="">${t('select')}</option>`;
-    DATA.races[base].forEach(({ name, path }) => {
-      const opt = document.createElement('option');
-      opt.value = path;
-      opt.textContent = name;
-      select.appendChild(opt);
-    });
-  }
+  const btn = document.getElementById('confirmRaceSelection');
+  if (btn) btn.disabled = true;
+  await renderSubraceCards(base);
 }
 
-async function handleSubraceChange(e) {
-  const path = e.target.value;
+async function renderSubraceCards(base) {
+  const container = document.getElementById('raceList');
+  if (!container) return;
+  container.innerHTML = '';
+  const subraces = DATA.races[base] || [];
+  await Promise.all(
+    subraces.map(async ({ name, path }) => {
+      const race = await fetchJsonWithRetry(path, `race at ${path}`);
+      const card = document.createElement('div');
+      card.className = 'class-card';
+      const h3 = document.createElement('h3');
+      h3.textContent = name;
+      card.appendChild(h3);
+      const shortDesc = (race.entries || []).find((e) => typeof e === 'string');
+      if (shortDesc) {
+        const p = document.createElement('p');
+        p.textContent = shortDesc;
+        card.appendChild(p);
+      }
+      const traits = (race.entries || [])
+        .filter((e) => e.name)
+        .map((e) => e.name)
+        .slice(0, 3);
+      if (traits.length) {
+        const ul = document.createElement('ul');
+        traits.forEach((t) => {
+          const li = document.createElement('li');
+          li.textContent = t;
+          ul.appendChild(li);
+        });
+        card.appendChild(ul);
+      }
+      card.addEventListener('click', async () => {
+        currentRaceData = race;
+        container
+          .querySelectorAll('.class-card')
+          .forEach((c) => c.classList.remove('selected'));
+        card.classList.add('selected');
+        await renderCurrentRaceTraits();
+        const btn = document.getElementById('confirmRaceSelection');
+        if (btn) btn.disabled = false;
+        showRaceModal(race);
+      });
+      container.appendChild(card);
+    })
+  );
+}
+
+async function renderCurrentRaceTraits() {
   const container = document.getElementById('raceTraits');
-  if (!path || !container) return;
-  currentRaceData = await fetchJsonWithRetry(path, `race at ${path}`);
+  if (!currentRaceData || !container) return;
   container.innerHTML = '';
   pendingRaceChoices.languages = [];
   pendingRaceChoices.spells = [];
@@ -282,6 +321,36 @@ async function handleSubraceChange(e) {
   }
 }
 
+function showRaceModal(race) {
+  const modal = document.getElementById('raceModal');
+  const details = document.getElementById('raceModalDetails');
+  const closeBtn = document.getElementById('closeRaceModal');
+  if (!modal || !details) return;
+  details.innerHTML = `<h2>${race.name}</h2>`;
+  (race.entries || []).forEach((entry) => {
+    if (typeof entry === 'string') {
+      const p = document.createElement('p');
+      p.textContent = entry;
+      details.appendChild(p);
+    } else if (entry.name) {
+      const h3 = document.createElement('h3');
+      h3.textContent = entry.name;
+      details.appendChild(h3);
+      (entry.entries || []).forEach((sub) => {
+        if (typeof sub === 'string') {
+          const p = document.createElement('p');
+          p.textContent = sub;
+          details.appendChild(p);
+        }
+      });
+    }
+  });
+  modal.classList.remove('hidden');
+  closeBtn?.addEventListener('click', () => modal.classList.add('hidden'), {
+    once: true,
+  });
+}
+
 function confirmRaceSelection() {
   if (!currentRaceData || !selectedBaseRace) return;
   const container = document.getElementById('raceTraits');
@@ -375,10 +444,6 @@ export async function loadStep3(force = false) {
   if (!container) return;
   if (container.childElementCount && !force) return;
   renderBaseRaces();
-
-  const sel = document.getElementById('raceSelect');
-  sel?.addEventListener('change', handleSubraceChange);
-  sel?.classList.add('hidden');
 
   const btn = document.getElementById('confirmRaceSelection');
   btn?.addEventListener('click', confirmRaceSelection);

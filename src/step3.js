@@ -69,7 +69,40 @@ function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+function createAccordionItem(title, content, isChoice = false, description = '') {
+  const item = document.createElement('div');
+  item.className = 'accordion-item' + (isChoice ? ' user-choice' : '');
 
+  const header = document.createElement('button');
+  header.className = 'accordion-header';
+  if (description) {
+    const titleSpan = document.createElement('span');
+    titleSpan.textContent = title;
+    const descSpan = document.createElement('small');
+    descSpan.textContent = ` - ${description}`;
+    header.appendChild(titleSpan);
+    header.appendChild(descSpan);
+  } else {
+    header.textContent = title;
+  }
+
+  const body = document.createElement('div');
+  body.className = 'accordion-content';
+  if (typeof content === 'string') {
+    body.textContent = content;
+  } else {
+    body.appendChild(content);
+  }
+
+  header.addEventListener('click', () => {
+    header.classList.toggle('active');
+    body.classList.toggle('show');
+  });
+
+  item.appendChild(header);
+  item.appendChild(body);
+  return item;
+}
 
 function createRaceCard(race, onSelect, displayName = race.name) {
   const card = document.createElement('div');
@@ -116,10 +149,14 @@ function createRaceCard(race, onSelect, displayName = race.name) {
 
 async function renderBaseRaces() {
   const container = document.getElementById('raceList');
+  const features = document.getElementById('raceFeatures');
   if (!container) return;
   container.innerHTML = '';
   const changeBtn = document.getElementById('changeRace');
   changeBtn?.classList.add('hidden');
+  features?.classList.add('hidden');
+  if (features) features.innerHTML = '<div id="raceTraits"></div>';
+  container.classList.remove('hidden');
   await Promise.all(
     Object.entries(DATA.races).map(async ([base, subs]) => {
       let race = { name: base };
@@ -142,6 +179,10 @@ async function selectBaseRace(base) {
   pendingRaceChoices.spells = [];
   const traits = document.getElementById('raceTraits');
   if (traits) traits.innerHTML = '';
+  const features = document.getElementById('raceFeatures');
+  features?.classList.add('hidden');
+  const list = document.getElementById('raceList');
+  list?.classList.remove('hidden');
   await renderSubraceCards(base);
   validateRaceChoices();
 }
@@ -159,44 +200,52 @@ async function renderSubraceCards(base) {
       const card = createRaceCard(race, async () => {
         currentRaceData = race;
         pendingRaceChoices.subrace = race.name;
-        container
-          .querySelectorAll('.class-card')
-          .forEach((c) => c.classList.remove('selected'));
-        card.classList.add('selected');
-        await renderCurrentRaceTraits();
+        await renderSelectedRace();
+        container.classList.add('hidden');
+        const features = document.getElementById('raceFeatures');
+        features?.classList.remove('hidden');
         validateRaceChoices();
       });
       container.appendChild(card);
     })
   );
 }
-
-async function renderCurrentRaceTraits() {
-  const container = document.getElementById('raceTraits');
-  if (!currentRaceData || !container) return;
-  container.innerHTML = '';
+async function renderSelectedRace() {
+  const accordion = document.getElementById('raceFeatures');
+  if (!currentRaceData || !accordion) return;
+  accordion.innerHTML = '';
   pendingRaceChoices.languages = [];
   pendingRaceChoices.spells = [];
+
+  const header = document.createElement('h3');
+  header.textContent = currentRaceData.name;
+  accordion.appendChild(header);
+
   if (currentRaceData.entries) {
-    const ul = document.createElement('ul');
     currentRaceData.entries.forEach((e) => {
       if (e.name) {
-        const li = document.createElement('li');
-        li.textContent = e.name;
-        ul.appendChild(li);
+        const body = document.createElement('div');
+        (e.entries || []).forEach((sub) => {
+          if (typeof sub === 'string') {
+            const p = document.createElement('p');
+            p.textContent = sub;
+            body.appendChild(p);
+          }
+        });
+        accordion.appendChild(createAccordionItem(e.name, body));
       }
     });
-    container.appendChild(ul);
   }
+
   if (currentRaceData.skillProficiencies) {
     const raceSkills = [];
     currentRaceData.skillProficiencies.forEach((obj) => {
       for (const k in obj) if (obj[k]) raceSkills.push(capitalize(k));
     });
     if (raceSkills.length) {
-      const p = document.createElement('p');
-      p.textContent = `${t('skills')}: ${raceSkills.join(', ')}`;
-      container.appendChild(p);
+      accordion.appendChild(
+        createAccordionItem(`${t('skills')}`, raceSkills.join(', '))
+      );
     }
   }
   if (currentRaceData.languageProficiencies) {
@@ -208,32 +257,38 @@ async function renderCurrentRaceTraits() {
         else if (obj[k]) raceLang.push(capitalize(k));
       }
     });
-    if (raceLang.length) {
-      const p = document.createElement('p');
-      p.textContent = `${t('languages')}: ${raceLang.join(', ')}`;
-      container.appendChild(p);
-    }
-    if (pendingLang > 0) {
-      const known = new Set([
-        ...CharacterState.system.traits.languages.value,
-        ...raceLang,
-      ]);
-      for (let i = 0; i < pendingLang; i++) {
-        const sel = document.createElement('select');
-        sel.innerHTML = `<option value=''>${t('select')}</option>`;
-        (DATA.languages || [])
-          .filter((l) => !known.has(l))
-          .forEach((l) => {
-            const o = document.createElement('option');
-            o.value = l;
-            o.textContent = l;
-            sel.appendChild(o);
-          });
-        sel.dataset.type = 'choice';
-        sel.addEventListener('change', validateRaceChoices);
-        container.appendChild(sel);
-        pendingRaceChoices.languages.push(sel);
+    if (raceLang.length || pendingLang > 0) {
+      const langContent = document.createElement('div');
+      if (raceLang.length) {
+        const p = document.createElement('p');
+        p.textContent = raceLang.join(', ');
+        langContent.appendChild(p);
       }
+      if (pendingLang > 0) {
+        const known = new Set([
+          ...CharacterState.system.traits.languages.value,
+          ...raceLang,
+        ]);
+        for (let i = 0; i < pendingLang; i++) {
+          const sel = document.createElement('select');
+          sel.innerHTML = `<option value=''>${t('select')}</option>`;
+          (DATA.languages || [])
+            .filter((l) => !known.has(l))
+            .forEach((l) => {
+              const o = document.createElement('option');
+              o.value = l;
+              o.textContent = l;
+              sel.appendChild(o);
+            });
+          sel.dataset.type = 'choice';
+          sel.addEventListener('change', validateRaceChoices);
+          langContent.appendChild(sel);
+          pendingRaceChoices.languages.push(sel);
+        }
+      }
+      accordion.appendChild(
+        createAccordionItem(t('languages'), langContent, pendingLang > 0)
+      );
     }
   }
 
@@ -263,6 +318,7 @@ async function renderCurrentRaceTraits() {
         T: 'Transmutation',
         V: 'Evocation',
       };
+      const spellContent = document.createElement('div');
       choices.forEach((choice) => {
         let opts = [];
         let count = 1;
@@ -297,12 +353,17 @@ async function renderCurrentRaceTraits() {
           });
           sel.dataset.type = 'choice';
           sel.addEventListener('change', validateRaceChoices);
-          container.appendChild(sel);
+          spellContent.appendChild(sel);
           pendingRaceChoices.spells.push(sel);
         }
       });
+      accordion.appendChild(createAccordionItem('Spells', spellContent, true));
     }
   }
+
+  const traitsDiv = document.createElement('div');
+  traitsDiv.id = 'raceTraits';
+  accordion.appendChild(traitsDiv);
   validateRaceChoices();
 }
 
@@ -432,6 +493,10 @@ export async function loadStep3(force = false) {
     pendingRaceChoices.spells = [];
     const traits = document.getElementById('raceTraits');
     if (traits) traits.innerHTML = '';
+    const list = document.getElementById('raceList');
+    const features = document.getElementById('raceFeatures');
+    list?.classList.remove('hidden');
+    features?.classList.add('hidden');
     await renderBaseRaces();
     validateRaceChoices();
   });

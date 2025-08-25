@@ -482,7 +482,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (btn) {
       btn.addEventListener("click", () => {
         showStep(i);
-        if (i === 2) loadStep2();
+        if (i === 2) loadStep2(true);
       });
     }
   }

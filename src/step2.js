@@ -755,6 +755,7 @@ function confirmClassSelection(silent = false) {
  */
 export async function loadStep2(refresh = true) {
   const classListContainer = document.getElementById('classList');
+  const selectedClassesContainer = document.getElementById('selectedClasses');
   const featuresContainer = document.getElementById('classFeatures');
   const classActions = document.getElementById('classActions');
   const confirmClassBtn = document.getElementById('confirmClassButton');
@@ -779,8 +780,17 @@ export async function loadStep2(refresh = true) {
 
   renderSelectedClasses();
 
+  // Hide advanced sections unless a class is being edited/added
+  featuresContainer.classList.add('hidden');
+  classActions?.classList.add('hidden');
+  levelContainer?.classList.add('hidden');
+  confirmClassBtn?.classList.add('hidden');
+  changeClassBtn?.classList.add('hidden');
+  addClassPrompt?.classList.add('hidden');
+
   if (currentClass) {
     classListContainer.classList.add('hidden');
+    selectedClassesContainer?.classList.add('hidden');
     featuresContainer.classList.remove('hidden');
     classActions?.classList.remove('hidden');
     levelContainer?.classList.remove('hidden');
@@ -815,20 +825,11 @@ export async function loadStep2(refresh = true) {
     return;
   }
 
-  if (CharacterState.classes.length) {
-    classListContainer.classList.add('hidden');
-    featuresContainer.classList.add('hidden');
-    levelContainer?.classList.add('hidden');
-    confirmClassBtn?.classList.add('hidden');
-    changeClassBtn?.classList.add('hidden');
-    classActions?.classList.remove('hidden');
-    addClassPrompt?.classList.remove('hidden');
-    if (addClassLink) {
-      addClassLink.onclick = e => {
-        e.preventDefault();
-        showClassSelectionModal();
-      };
-    }
+  // Show either the class selection list or the already selected classes
+  classListContainer.classList.toggle('hidden', CharacterState.classes.length !== 0);
+  selectedClassesContainer?.classList.toggle('hidden', CharacterState.classes.length === 0);
+
+  if (CharacterState.classes.length !== 0) {
     return;
   }
 

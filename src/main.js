@@ -8,6 +8,7 @@ import {
   updateSpellSlots,
 } from "./data.js";
 import { loadStep2, rebuildFromClasses, refreshBaseState } from "./step2.js";
+import { loadStep3 } from "./step3.js";
 import { exportFoundryActor } from "./export.js";
 import { t, initI18n } from "./i18n.js";
 
@@ -88,7 +89,6 @@ async function loadData() {
 
   // Retain existing logic for other data types
   const sources = {
-    races: "data/races.json",
     backgrounds: "data/backgrounds.json",
     languages: "data/languages.json",
   };
@@ -109,10 +109,6 @@ function populateSelect(id, dataKey) {
     opt.textContent = name;
     sel.appendChild(opt);
   }
-}
-
-function populateRaceList() {
-  populateSelect("raceSelect", "races");
 }
 
 function populateBackgroundList() {
@@ -321,122 +317,6 @@ function renderFinalRecap() {
   container.appendChild(spellSection);
 }
 
-// --- Step 3: Race selection handlers ---
-let currentRaceData = null;
-function handleRaceChange() {
-  const sel = document.getElementById("raceSelect");
-  const container = document.getElementById("raceTraits");
-  if (!sel || !sel.value) return;
-  fetch(sel.value)
-    .then((r) => r.json())
-    .then((data) => {
-      currentRaceData = data;
-      container.innerHTML = "";
-      if (data.entries) {
-        const ul = document.createElement("ul");
-        data.entries.forEach((e) => {
-          if (e.name) {
-            const li = document.createElement("li");
-            li.textContent = e.name;
-            ul.appendChild(li);
-          }
-        });
-        container.appendChild(ul);
-      }
-      if (data.skillProficiencies) {
-        const raceSkills = [];
-        data.skillProficiencies.forEach((obj) => {
-          for (const k in obj) if (obj[k]) raceSkills.push(capitalize(k));
-        });
-        if (raceSkills.length) {
-          const p = document.createElement("p");
-          p.textContent = `${t("skills")}: ${raceSkills.join(", ")}`;
-          container.appendChild(p);
-        }
-      }
-      if (data.languageProficiencies) {
-        const raceLang = [];
-        data.languageProficiencies.forEach((obj) => {
-          for (const k in obj) if (obj[k]) raceLang.push(capitalize(k));
-        });
-        if (raceLang.length) {
-          const p = document.createElement("p");
-          p.textContent = `${t("languages")}: ${raceLang.join(", ")}`;
-          container.appendChild(p);
-        }
-      }
-    });
-}
-
-function confirmRaceSelection() {
-  if (!currentRaceData) return;
-  const container = document.getElementById("raceTraits");
-  CharacterState.system.details.race = currentRaceData.name;
-
-  // Persist size
-  const sizeMap = { T: "tiny", S: "sm", M: "med", L: "lg", H: "huge", G: "grg" };
-  if (currentRaceData.size) {
-    const sz = Array.isArray(currentRaceData.size)
-      ? currentRaceData.size[0]
-      : currentRaceData.size;
-    CharacterState.system.traits.size =
-      sizeMap[sz] || CharacterState.system.traits.size;
-  }
-
-  // Persist movement speeds
-  const move = CharacterState.system.attributes.movement || {};
-  const speed = currentRaceData.speed;
-  if (typeof speed === "number") move.walk = speed;
-  else if (speed && typeof speed === "object") {
-    if (typeof speed.walk === "number") move.walk = speed.walk;
-    ["burrow", "climb", "fly", "swim"].forEach((t) => {
-      const val = speed[t];
-      if (typeof val === "number") move[t] = val;
-      else if (val === true && typeof move.walk === "number") move[t] = move.walk;
-    });
-  }
-  CharacterState.system.attributes.movement = move;
-
-  // Apply ability score bonuses
-  if (Array.isArray(currentRaceData.ability)) {
-    currentRaceData.ability.forEach((obj) => {
-      for (const [ab, val] of Object.entries(obj)) {
-        if (typeof val === "number" && CharacterState.system.abilities[ab]) {
-          const abil = CharacterState.system.abilities[ab];
-          abil.value = (abil.value || 0) + val;
-        }
-      }
-    });
-  }
-
-  // Persist darkvision and trait tags
-  if (currentRaceData.darkvision)
-    CharacterState.system.traits.senses.darkvision = currentRaceData.darkvision;
-  if (currentRaceData.traitTags)
-    CharacterState.system.traits.traitTags = [...currentRaceData.traitTags];
-
-  if (currentRaceData.skillProficiencies) {
-    currentRaceData.skillProficiencies.forEach((obj) => {
-      for (const k in obj)
-        if (obj[k])
-          addUniqueProficiency("skills", capitalize(k), container);
-    });
-  }
-  if (currentRaceData.languageProficiencies) {
-    currentRaceData.languageProficiencies.forEach((obj) => {
-      for (const k in obj)
-        if (obj[k])
-          addUniqueProficiency("languages", capitalize(k), container);
-    });
-  }
-  refreshBaseState();
-  rebuildFromClasses();
-  const btn4 = document.getElementById("btnStep4");
-  if (btn4) btn4.disabled = false;
-  showStep(4);
-  logCharacterState();
-}
-
 // --- Step 4: Background selection handlers ---
 let currentBackgroundData = null;
 function handleBackgroundChange() {
@@ -526,6 +406,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       btn.addEventListener("click", () => {
         showStep(i);
         if (i === 2) loadStep2(true);
+        if (i === 3) loadStep3(true);
       });
     }
   }
@@ -539,20 +420,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   loadData()
     .then(() => {
-      populateRaceList();
       populateBackgroundList();
-      // Ensure class list is rendered once data becomes available
+      // Ensure class list and races are rendered once data becomes available
       loadStep2();
-      const raceSel = document.getElementById("raceSelect");
-      raceSel?.addEventListener("change", handleRaceChange);
+      loadStep3();
       const bgSel = document.getElementById("backgroundSelect");
       bgSel?.addEventListener("change", handleBackgroundChange);
     })
     .catch((err) => console.error(err));
 
-  document
-    .getElementById("confirmRaceSelection")
-    ?.addEventListener("click", confirmRaceSelection);
   document
     .getElementById("confirmBackgroundSelection")
     ?.addEventListener("click", confirmBackgroundSelection);

@@ -7,6 +7,7 @@ import {
   totalLevel,
   updateSpellSlots,
   updateProficiencyBonus,
+  MAX_CHARACTER_LEVEL,
 } from './data.js';
 import { t } from './i18n.js';
 
@@ -105,10 +106,11 @@ function trimSelections(maxLevel) {
 function validateTotalLevel(pendingClass) {
   const pending = pendingClass?.level || 0;
   const existing = totalLevel();
-  if (existing + pending > 20) {
-    const allowed = 20 - existing;
+  if (existing + pending > MAX_CHARACTER_LEVEL) {
+    const allowed = MAX_CHARACTER_LEVEL - existing;
     if (pendingClass) pendingClass.level = allowed;
-    if (typeof alert !== 'undefined') alert('Total level cannot exceed 20');
+    if (typeof alert !== 'undefined')
+      alert(`Total level cannot exceed ${MAX_CHARACTER_LEVEL}`);
     return false;
   }
   return true;
@@ -625,7 +627,54 @@ function confirmClassSelection(silent = false) {
   const features = document.getElementById('classFeatures');
   if (!features || !currentClass) return;
 
+  // Validate level boundaries
+  const level = parseInt(currentClass.level, 10) || 0;
+  if (level < 1) {
+    if (!silent) alert('Class level must be at least 1');
+    return;
+  }
+  if (totalLevel() + level > MAX_CHARACTER_LEVEL) {
+    if (!silent)
+      alert(`Total level cannot exceed ${MAX_CHARACTER_LEVEL}`);
+    return;
+  }
+
+  // Clear previous highlights
+  features.querySelectorAll('select').forEach(sel => {
+    sel.classList.remove('missing');
+    sel.style.border = '';
+  });
+
+  // Gather selects for validation and later processing
   const skillSelects = features.querySelectorAll('select[data-type="skill"]');
+  const subclassSel = features.querySelector('select[data-type="subclass"]');
+  const choiceSelects = features.querySelectorAll('select[data-type="choice"]');
+  const missing = [];
+
+  skillSelects.forEach(sel => {
+    if (!sel.value) missing.push(sel);
+  });
+  if (subclassSel && !subclassSel.value) missing.push(subclassSel);
+  choiceSelects.forEach(sel => {
+    if (!sel.value) missing.push(sel);
+    const details = features.querySelectorAll(
+      `select[data-parent='${sel.dataset.choiceId}']`
+    );
+    details.forEach(dsel => {
+      if (!dsel.value) missing.push(dsel);
+    });
+  });
+
+  if (missing.length) {
+    missing.forEach(el => {
+      el.classList.add('missing');
+      el.style.border = '2px solid red';
+    });
+    if (!silent) alert('Please complete all required selections.');
+    return;
+  }
+
+  // Persist skill selections
   currentClass.skills = [];
   skillSelects.forEach(sel => {
     if (sel.value) {
@@ -635,13 +684,11 @@ function confirmClassSelection(silent = false) {
     }
   });
 
-  const subclassSel = features.querySelector('select[data-type="subclass"]');
   if (subclassSel && subclassSel.value) {
     currentClass.subclass = subclassSel.value;
   }
 
-  const choiceSelects = features.querySelectorAll('select[data-type="choice"]');
-
+  // Handle generic choice selections (skills, tools, languages, ASI/feat, spells)
   if (choiceSelects.length) {
     currentClass.choiceSelections = {};
 
@@ -652,55 +699,56 @@ function confirmClassSelection(silent = false) {
     const asiBonuses = { str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0 };
 
     choiceSelects.forEach(sel => {
-      if (sel.value) {
-        const name = sel.dataset.choiceName;
-        const type = sel.dataset.choiceType;
-        const saved = savedSelections.choices[sel.dataset.choiceId];
-        if (!currentClass.choiceSelections[name]) {
-          currentClass.choiceSelections[name] = [];
+      const name = sel.dataset.choiceName;
+      const type = sel.dataset.choiceType;
+      const saved = savedSelections.choices[sel.dataset.choiceId];
+      if (!currentClass.choiceSelections[name]) {
+        currentClass.choiceSelections[name] = [];
+      }
+      const entry = { option: sel.value, type };
+      if (saved?.level) entry.level = saved.level;
+      const details = features.querySelectorAll(
+        `select[data-parent='${sel.dataset.choiceId}']`
+      );
+      details.forEach(dsel => {
+        if (dsel.dataset.type === 'asi-ability' && dsel.value) {
+          entry.abilities = entry.abilities || [];
+          entry.abilities.push(dsel.value);
+        } else if (dsel.dataset.type === 'asi-feat' && dsel.value) {
+          entry.feat = dsel.value;
         }
-        const entry = { option: sel.value, type };
-        if (saved?.level) entry.level = saved.level;
-        const details = features.querySelectorAll(
-          `select[data-parent='${sel.dataset.choiceId}']`
-        );
-        details.forEach(dsel => {
-          if (dsel.dataset.type === 'asi-ability' && dsel.value) {
-            entry.abilities = entry.abilities || [];
-            entry.abilities.push(dsel.value);
-          } else if (dsel.dataset.type === 'asi-feat' && dsel.value) {
-            entry.feat = dsel.value;
-          }
+      });
+      currentClass.choiceSelections[name].push(entry);
+
+      if (type === 'skills') {
+        const list = getProficiencyList('skills');
+        if (!list.includes(sel.value)) list.push(sel.value);
+      } else if (type === 'tools') {
+        const list = getProficiencyList('tools');
+        if (!list.includes(sel.value)) list.push(sel.value);
+      } else if (type === 'languages') {
+        const list = getProficiencyList('languages');
+        if (!list.includes(sel.value)) list.push(sel.value);
+      } else if (type === 'cantrips') {
+        const list = getProficiencyList('cantrips');
+        if (!list.includes(sel.value)) list.push(sel.value);
+      }
+
+      if (entry.option === 'Increase one ability score by 2' && entry.abilities?.[0]) {
+        const key = abilityMap[entry.abilities[0]];
+        if (key) asiBonuses[key] += 2;
+      } else if (
+        entry.option === 'Increase two ability scores by 1' &&
+        Array.isArray(entry.abilities)
+      ) {
+        entry.abilities.forEach(ab => {
+          const key = abilityMap[ab];
+          if (key) asiBonuses[key] += 1;
         });
-        currentClass.choiceSelections[name].push(entry);
+      }
 
-        if (type === 'skills') {
-          const list = getProficiencyList('skills');
-          if (!list.includes(sel.value)) list.push(sel.value);
-        } else if (type === 'tools') {
-          const list = getProficiencyList('tools');
-          if (!list.includes(sel.value)) list.push(sel.value);
-        } else if (type === 'languages') {
-          const list = getProficiencyList('languages');
-          if (!list.includes(sel.value)) list.push(sel.value);
-        } else if (type === 'cantrips') {
-          const list = getProficiencyList('cantrips');
-          if (!list.includes(sel.value)) list.push(sel.value);
-        }
-
-        if (entry.option === 'Increase one ability score by 2' && entry.abilities?.[0]) {
-          const key = abilityMap[entry.abilities[0]];
-          if (key) asiBonuses[key] += 2;
-        } else if (entry.option === 'Increase two ability scores by 1' && Array.isArray(entry.abilities)) {
-          entry.abilities.forEach(ab => {
-            const key = abilityMap[ab];
-            if (key) asiBonuses[key] += 1;
-          });
-        }
-
-        if (entry.feat && !CharacterState.feats.includes(entry.feat)) {
-          CharacterState.feats.push(entry.feat);
-        }
+      if (entry.feat && !CharacterState.feats.includes(entry.feat)) {
+        CharacterState.feats.push(entry.feat);
       }
     });
 
@@ -738,7 +786,6 @@ function confirmClassSelection(silent = false) {
     }
   }
 
-  if (!validateTotalLevel(currentClass)) return;
   CharacterState.classes.push(currentClass);
   rebuildFromClasses();
   logCharacterState();

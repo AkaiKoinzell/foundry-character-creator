@@ -48,4 +48,8 @@ select.missing,
 input.missing {
   border: 2px solid #e74c3c;
 }
+
+select.duplicate {
+  border: 2px solid #e67e22;
+}
   

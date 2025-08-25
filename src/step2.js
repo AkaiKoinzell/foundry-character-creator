@@ -524,6 +524,16 @@ function handleASISelection(sel, container, saved = null) {
 }
 
 function editClass(index) {
+  if (
+    typeof window !== 'undefined' &&
+    typeof window.confirm === 'function'
+  ) {
+    const proceed = window.confirm(
+      'Editing this class will remove any spells, feats, or other choices gained from it. Continue?'
+    );
+    if (!proceed) return;
+  }
+
   // Remember which class is being edited so we can place it back
   editingIndex = index;
   // Remove the class from the state and capture its data
@@ -562,20 +572,20 @@ function removeClass(index) {
   const classes = CharacterState.classes || [];
   if (index < 0 || index >= classes.length) return;
 
-  // Warn the user if removing a class could invalidate choices made in later steps
-  if (typeof window !== 'undefined') {
-    const step = window.currentStep || 2;
-    if (step > 2 && typeof window.confirm === 'function') {
-      const proceed = window.confirm(
-        'Removing this class may reset selections made in later steps. Continue?'
-      );
-      if (!proceed) return;
-    }
+  if (
+    typeof window !== 'undefined' &&
+    typeof window.confirm === 'function'
+  ) {
+    const proceed = window.confirm(
+      'Removing this class will also remove any spells, feats, or other choices derived from it. Continue?'
+    );
+    if (!proceed) return;
   }
 
   classes.splice(index, 1);
   rebuildFromClasses();
   renderSelectedClasses();
+  updateStep2Completion();
 }
 
 function renderSelectedClasses() {
@@ -920,7 +930,6 @@ export async function loadStep2(refresh = true) {
   const addClassLink = document.getElementById('addClassLink');
   const changeClassBtn = document.getElementById('changeClassButton');
   if (!classListContainer || !featuresContainer) return;
-  if (refresh) refreshBaseState();
   classListContainer.innerHTML = '';
   featuresContainer.innerHTML = '';
 
@@ -933,6 +942,8 @@ export async function loadStep2(refresh = true) {
     return;
   }
 
+  if (refresh) refreshBaseState();
+  // Rebuild the selected classes list from the current character state
   renderSelectedClasses();
   updateStep2Completion();
 

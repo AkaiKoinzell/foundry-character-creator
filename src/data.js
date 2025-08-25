@@ -79,6 +79,7 @@ export const CharacterState = {
   classes: [],
   feats: [],
   equipment: [],
+  raceChoices: { spells: [] },
   system: {
     abilities: {
       str: { value: 8 },

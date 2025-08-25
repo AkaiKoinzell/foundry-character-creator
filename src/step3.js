@@ -40,8 +40,12 @@ function validateRaceChoices() {
   allSelects.forEach((s) => {
     if (s.value) counts[s.value] = (counts[s.value] || 0) + 1;
   });
+  const existingCantrips = new Set([
+    ...(CharacterState.system.spells?.cantrips || []),
+    ...(CharacterState.raceChoices?.spells || []),
+  ]);
   const duplicates = allSelects.filter(
-    (s) => s.value && counts[s.value] > 1
+    (s) => s.value && (counts[s.value] > 1 || existingCantrips.has(s.value))
   );
   duplicates.forEach((s) => {
     s.classList.add('duplicate');
@@ -319,6 +323,30 @@ async function renderSelectedRace() {
         V: 'Evocation',
       };
       const spellContent = document.createElement('div');
+
+      function updateSpellSelects() {
+        const chosen = new Set([
+          ...(CharacterState.system.spells?.cantrips || []),
+          ...(CharacterState.raceChoices?.spells || []),
+          ...pendingRaceChoices.spells
+            .map((s) => s.value)
+            .filter((v) => v),
+        ]);
+        pendingRaceChoices.spells.forEach((sel) => {
+          const opts = JSON.parse(sel.dataset.opts || '[]');
+          const current = sel.value;
+          sel.innerHTML = `<option value=''>${t('select')}</option>`;
+          opts.forEach((sp) => {
+            if (sp !== current && chosen.has(sp)) return;
+            const o = document.createElement('option');
+            o.value = sp;
+            o.textContent = sp;
+            sel.appendChild(o);
+          });
+          sel.value = current;
+        });
+      }
+
       choices.forEach((choice) => {
         let opts = [];
         let count = 1;
@@ -344,19 +372,18 @@ async function renderSelectedRace() {
         }
         for (let i = 0; i < count; i++) {
           const sel = document.createElement('select');
-          sel.innerHTML = `<option value=''>${t('select')}</option>`;
-          opts.forEach((sp) => {
-            const o = document.createElement('option');
-            o.value = sp;
-            o.textContent = sp;
-            sel.appendChild(o);
-          });
           sel.dataset.type = 'choice';
-          sel.addEventListener('change', validateRaceChoices);
+          sel.dataset.opts = JSON.stringify(opts);
+          sel.addEventListener('change', () => {
+            updateSpellSelects();
+            validateRaceChoices();
+          });
           spellContent.appendChild(sel);
           pendingRaceChoices.spells.push(sel);
         }
       });
+
+      updateSpellSelects();
       accordion.appendChild(createAccordionItem('Spells', spellContent, true));
     }
   }
@@ -462,6 +489,7 @@ function confirmRaceSelection() {
   });
   pendingRaceChoices.spells.forEach((sel) => {
     addUniqueProficiency('cantrips', sel.value, container);
+    CharacterState.raceChoices.spells.push(sel.value);
     sel.disabled = true;
   });
 

@@ -109,7 +109,7 @@ function validateTotalLevel(pendingClass) {
   const pending = pendingClass?.level || 0;
   const existing = totalLevel();
   if (existing + pending > MAX_CHARACTER_LEVEL) {
-    const allowed = MAX_CHARACTER_LEVEL - existing;
+    const allowed = Math.max(0, MAX_CHARACTER_LEVEL - existing);
     if (pendingClass) pendingClass.level = allowed;
     if (typeof alert !== 'undefined')
       alert(`Total level cannot exceed ${MAX_CHARACTER_LEVEL}`);
@@ -172,21 +172,32 @@ const skillChoiceSelects = [];
 const skillChoiceSelectMap = new Map();
 
 function updateSkillSelectOptions(skillSelectsList, choiceSkillSelectsList = []) {
-  const taken = new Set(CharacterState.system.skills);
-  choiceSkillSelectsList.forEach(sel => {
-    if (sel.value) taken.add(sel.value);
-  });
-  skillSelectsList.forEach(sel => {
-    if (sel.value) taken.add(sel.value);
-  });
+  // Track how many times each skill is already known/selected
+  const counts = new Map();
+  const add = val => {
+    if (!val) return;
+    counts.set(val, (counts.get(val) || 0) + 1);
+  };
+
+  CharacterState.system.skills.forEach(add);
+  choiceSkillSelectsList.forEach(sel => add(sel.value));
+  skillSelectsList.forEach(sel => add(sel.value));
+
   skillSelectsList.forEach(sel => {
     Array.from(sel.options).forEach(opt => {
-      if (opt.value && opt.value !== sel.value && taken.has(opt.value)) {
-        opt.disabled = true;
-      } else {
-        opt.disabled = false;
-      }
+      if (!opt.value) return;
+      const count = counts.get(opt.value) || 0;
+      const isCurrent = sel.value === opt.value;
+      // Disable options if already taken elsewhere or from state
+      opt.disabled = !isCurrent && count > 0;
     });
+
+    // If current selection conflicts with known skill, clear it
+    const currentCount = counts.get(sel.value) || 0;
+    if (sel.value && currentCount > 1) {
+      sel.value = '';
+      sel.dispatchEvent(new Event('change'));
+    }
   });
 }
 
@@ -196,33 +207,37 @@ function updateChoiceSelectOptions(
   skillSelectsList = [],
   allSkillChoiceSelects = []
 ) {
-  const taken = new Set();
+  const counts = new Map();
+  const add = val => {
+    if (!val) return;
+    counts.set(val, (counts.get(val) || 0) + 1);
+  };
+
   if (type === 'skills') {
-    getProficiencyList('skills').forEach(s => taken.add(s));
-    skillSelectsList.forEach(sel => {
-      if (sel.value) taken.add(sel.value);
-    });
+    getProficiencyList('skills').forEach(add);
+    skillSelectsList.forEach(sel => add(sel.value));
     allSkillChoiceSelects.forEach(sel => {
-      if (!selects.includes(sel) && sel.value) taken.add(sel.value);
+      if (!selects.includes(sel)) add(sel.value);
     });
-  } else if (type === 'tools') {
-    getProficiencyList('tools').forEach(t => taken.add(t));
-  } else if (type === 'languages') {
-    getProficiencyList('languages').forEach(l => taken.add(l));
-  } else if (type === 'cantrips' && Array.isArray(CharacterState.system.spells.cantrips)) {
-    getProficiencyList('cantrips').forEach(c => taken.add(c));
+  } else {
+    getProficiencyList(type).forEach(add);
   }
-  selects.forEach(sel => {
-    if (sel.value) taken.add(sel.value);
-  });
+
+  selects.forEach(sel => add(sel.value));
+
   selects.forEach(sel => {
     Array.from(sel.options).forEach(opt => {
-      if (opt.value && opt.value !== sel.value && taken.has(opt.value)) {
-        opt.disabled = true;
-      } else {
-        opt.disabled = false;
-      }
+      if (!opt.value) return;
+      const count = counts.get(opt.value) || 0;
+      const isCurrent = sel.value === opt.value;
+      opt.disabled = !isCurrent && count > 0;
     });
+
+    const currentCount = counts.get(sel.value) || 0;
+    if (sel.value && currentCount > 1) {
+      sel.value = '';
+      sel.dispatchEvent(new Event('change'));
+    }
   });
 }
 
@@ -672,16 +687,11 @@ function confirmClassSelection(silent = false) {
     if (!silent) alert('Class level must be at least 1');
     return;
   }
-  if (totalLevel() + level > MAX_CHARACTER_LEVEL) {
-    if (!silent)
-      alert(`Total level cannot exceed ${MAX_CHARACTER_LEVEL}`);
-    return;
-  }
+  if (!validateTotalLevel(currentClass)) return;
 
   // Clear previous highlights
   features.querySelectorAll('select').forEach(sel => {
     sel.classList.remove('missing');
-    sel.style.border = '';
   });
 
   // Gather selects for validation and later processing
@@ -707,7 +717,6 @@ function confirmClassSelection(silent = false) {
   if (missing.length) {
     missing.forEach(el => {
       el.classList.add('missing');
-      el.style.border = '2px solid red';
     });
     if (!silent) alert('Please complete all required selections.');
     return;

@@ -51,6 +51,28 @@ export async function loadFeats() {
   DATA.feats = Object.keys(json.feats || {});
 }
 
+/**
+ * Fetches race data and groups variants by their base race name.
+ */
+export async function loadRaces() {
+  if (DATA.races && Object.keys(DATA.races).length) return;
+
+  const index = await fetchJsonWithRetry('data/races.json', 'race index');
+  const entries = index.items || {};
+  const groups = {};
+
+  await Promise.all(
+    Object.values(entries).map(async (path) => {
+      const race = await fetchJsonWithRetry(path, `race at ${path}`);
+      const base = race.raceName || race.name;
+      if (!groups[base]) groups[base] = [];
+      groups[base].push({ name: race.name, path });
+    })
+  );
+
+  DATA.races = groups;
+}
+
 export const CharacterState = {
   name: "",
   type: "character",
@@ -78,6 +100,7 @@ export const CharacterState = {
     details: {
       background: "",
       race: "",
+      subrace: "",
       alignment: "",
     },
     traits: {

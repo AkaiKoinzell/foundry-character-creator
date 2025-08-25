@@ -1,5 +1,6 @@
 import { DATA, CharacterState, loadClasses, logCharacterState } from "./data.js";
 import { loadStep2 } from "./step2.js";
+import { exportFoundryActor } from "./export.js";
 
 let currentStep = 1;
 
@@ -353,6 +354,19 @@ document.addEventListener("DOMContentLoaded", () => {
   document
     .getElementById("confirmBackgroundSelection")
     ?.addEventListener("click", confirmBackgroundSelection);
+
+  document.getElementById("downloadJson")?.addEventListener("click", () => {
+    const actor = exportFoundryActor(CharacterState);
+    const blob = new Blob([JSON.stringify(actor, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${CharacterState.name || "character"}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
 });
 
 export { showStep, loadData };

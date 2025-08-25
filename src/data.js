@@ -12,13 +12,14 @@ export async function loadClasses() {
   if (!indexRes.ok) throw new Error('Failed loading classes');
   const index = await indexRes.json();
 
-  DATA.classes = [];
-  for (const path of Object.values(index.items || {})) {
-    const res = await fetch(path);
-    if (!res.ok) throw new Error(`Failed loading class at ${path}`);
-    const cls = await res.json();
-    DATA.classes.push(cls);
-  }
+  DATA.classes = await Promise.all(
+    Object.values(index.items || {}).map((path) =>
+      fetch(path).then((res) => {
+        if (!res.ok) throw new Error(`Failed loading class at ${path}`);
+        return res.json();
+      })
+    )
+  );
 }
 
 /**

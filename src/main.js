@@ -7,7 +7,7 @@ import {
   adjustResource,
   updateSpellSlots,
 } from "./data.js";
-import { loadStep2 } from "./step2.js";
+import { loadStep2, rebuildFromClasses, refreshBaseState } from "./step2.js";
 import { exportFoundryActor } from "./export.js";
 import { t, initI18n } from "./i18n.js";
 
@@ -386,6 +386,8 @@ function confirmRaceSelection() {
           addUniqueProficiency("languages", capitalize(k), container);
     });
   }
+  refreshBaseState();
+  rebuildFromClasses();
   const btn4 = document.getElementById("btnStep4");
   if (btn4) btn4.disabled = false;
   showStep(4);
@@ -467,6 +469,8 @@ function confirmBackgroundSelection() {
       );
     }
   }
+  refreshBaseState();
+  rebuildFromClasses();
   showStep(5);
   logCharacterState();
 }

@@ -543,41 +543,14 @@ function removeClass(index) {
   loadStep2(false);
 }
 
-function renderSavedClass(cls, index) {
-  const wrapper = document.createElement('div');
-  wrapper.className = 'saved-class';
-  const header = document.createElement('div');
-  const title = document.createElement('h3');
-  title.textContent = `${cls.name} (${t('level')} ${cls.level})`;
-  header.appendChild(title);
-  const actions = document.createElement('div');
-  const editBtn = createElement('button', t('edit'));
-  editBtn.className = 'btn btn-primary';
-  editBtn.addEventListener('click', () => editClass(index));
-  const removeBtn = createElement('button', t('remove'));
-  removeBtn.className = 'btn btn-danger';
-  removeBtn.addEventListener('click', () => removeClass(index));
-  actions.appendChild(editBtn);
-  actions.appendChild(removeBtn);
-  header.appendChild(actions);
-  wrapper.appendChild(header);
-  const accordion = document.createElement('div');
-  accordion.className = 'accordion';
-  (cls.features || []).forEach(f => {
-    const titleStr = f.level ? `${t('level')} ${f.level}: ${f.name}` : f.name;
-    accordion.appendChild(createAccordionItem(titleStr, f.description || ''));
-  });
-  wrapper.appendChild(accordion);
-  return wrapper;
-}
-
 function renderSelectedClasses() {
   const container = document.getElementById('selectedClasses');
   if (!container) return;
   container.innerHTML = '';
-  if (CharacterState.classes.length) {
-    const summaryText = CharacterState.classes
-      .map(c => `${c.name} ${c.level}`)
+  const classes = CharacterState.classes || [];
+  if (classes.length) {
+    const summaryText = classes
+      .map(c => `${c.name} (${t('level')} ${c.level})`)
       .join(', ');
     container.appendChild(
       createElement(
@@ -586,17 +559,57 @@ function renderSelectedClasses() {
       )
     );
     container.appendChild(
-      createElement(
-        'p',
+      createElement('p',
         t('proficiencyBonus', {
           value: CharacterState.system.attributes.prof,
         })
       )
     );
   }
-  CharacterState.classes.forEach((cls, idx) => {
-    container.appendChild(renderSavedClass(cls, idx));
+
+  classes.forEach((cls, index) => {
+    const card = document.createElement('div');
+    card.className = 'saved-class';
+
+    const header = document.createElement('div');
+    const title = document.createElement('h3');
+    title.textContent = `${cls.name} (${t('level')} ${cls.level})`;
+    header.appendChild(title);
+
+    const actions = document.createElement('div');
+    const editBtn = createElement('button', t('edit'));
+    editBtn.className = 'btn btn-primary';
+    editBtn.addEventListener('click', () => editClass(index));
+    const removeBtn = createElement('button', t('remove'));
+    removeBtn.className = 'btn btn-danger';
+    removeBtn.addEventListener('click', () => removeClass(index));
+    actions.appendChild(editBtn);
+    actions.appendChild(removeBtn);
+
+    header.appendChild(actions);
+    card.appendChild(header);
+
+    const accordion = document.createElement('div');
+    accordion.className = 'accordion';
+    (cls.features || []).forEach(f => {
+      const titleStr = f.level ? `${t('level')} ${f.level}: ${f.name}` : f.name;
+      accordion.appendChild(createAccordionItem(titleStr, f.description || ''));
+    });
+    card.appendChild(accordion);
+
+    container.appendChild(card);
   });
+
+  const addLink = document.createElement('a');
+  addLink.href = '#';
+  addLink.textContent = 'Add another class?';
+  addLink.addEventListener('click', e => {
+    e.preventDefault();
+    showClassSelectionModal();
+  });
+  const linkWrapper = document.createElement('p');
+  linkWrapper.appendChild(addLink);
+  container.appendChild(linkWrapper);
 }
 
 function showClassSelectionModal() {

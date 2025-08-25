@@ -9,9 +9,9 @@ import {
 } from "./data.js";
 import { loadStep2, rebuildFromClasses, refreshBaseState } from "./step2.js";
 import { loadStep3 } from "./step3.js";
+import { loadStep4 } from "./step4.js";
 import { exportFoundryActor } from "./export.js";
 import { t, initI18n } from "./i18n.js";
-import { addUniqueProficiency } from "./proficiency.js";
 
 let currentStep = 1;
 
@@ -50,24 +50,6 @@ async function loadData() {
     DATA[key] = json.items || json.languages;
   }
 }
-
-function populateSelect(id, dataKey) {
-  const sel = document.getElementById(id);
-  const entries = DATA[dataKey];
-  if (!sel || !entries) return;
-  for (const [name, value] of Object.entries(entries)) {
-    const opt = document.createElement("option");
-    opt.value = value;
-    opt.textContent = name;
-    sel.appendChild(opt);
-  }
-}
-
-function populateBackgroundList() {
-  populateSelect("backgroundSelect", "backgrounds");
-}
-
-
 
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -218,87 +200,6 @@ function renderFinalRecap() {
   container.appendChild(spellSection);
 }
 
-// --- Step 4: Background selection handlers ---
-let currentBackgroundData = null;
-function handleBackgroundChange() {
-  const sel = document.getElementById("backgroundSelect");
-  const skillsDiv = document.getElementById("backgroundSkills");
-  const toolsDiv = document.getElementById("backgroundTools");
-  const langDiv = document.getElementById("backgroundLanguages");
-  if (!sel || !sel.value) return;
-  fetch(sel.value)
-    .then((r) => r.json())
-    .then((data) => {
-      currentBackgroundData = data;
-      skillsDiv.innerHTML = "";
-      toolsDiv.innerHTML = "";
-      langDiv.innerHTML = "";
-      if (data.skills && data.skills.length) {
-        const p = document.createElement("p");
-        p.textContent = `${t("skills")}: ${data.skills.join(", ")}`;
-        skillsDiv.appendChild(p);
-      }
-      if (data.tools && data.tools.length) {
-        const p = document.createElement("p");
-        p.textContent = `${t("tools")}: ${data.tools.join(", ")}`;
-        toolsDiv.appendChild(p);
-      }
-      if (data.languages) {
-        if (Array.isArray(data.languages) && data.languages.length) {
-          const p = document.createElement("p");
-          p.textContent = `${t("languages")}: ${data.languages.join(", ")}`;
-          langDiv.appendChild(p);
-        } else if (data.languages.choose) {
-          for (let i = 0; i < data.languages.choose; i++) {
-            const selLang = document.createElement("select");
-            selLang.innerHTML = `<option value=''>${t("selectLanguage")}</option>`;
-            (DATA.languages || []).forEach((l) => {
-              const o = document.createElement("option");
-              o.value = l;
-              o.textContent = l;
-              selLang.appendChild(o);
-            });
-            langDiv.appendChild(selLang);
-          }
-        }
-      }
-    });
-}
-
-function confirmBackgroundSelection() {
-  if (!currentBackgroundData) return;
-  const skillsDiv = document.getElementById("backgroundSkills");
-  const toolsDiv = document.getElementById("backgroundTools");
-  const langDiv = document.getElementById("backgroundLanguages");
-  CharacterState.system.details.background = currentBackgroundData.name;
-  if (currentBackgroundData.skills) {
-    currentBackgroundData.skills.forEach((s) =>
-      addUniqueProficiency("skills", s, skillsDiv)
-    );
-  }
-  if (currentBackgroundData.tools) {
-    currentBackgroundData.tools.forEach((t) =>
-      addUniqueProficiency("tools", t, toolsDiv)
-    );
-  }
-  if (currentBackgroundData.languages) {
-    if (Array.isArray(currentBackgroundData.languages)) {
-      currentBackgroundData.languages.forEach((l) =>
-        addUniqueProficiency("languages", l, langDiv)
-      );
-    } else if (currentBackgroundData.languages.choose) {
-      const selects = langDiv.querySelectorAll("select");
-      selects.forEach((s) =>
-        addUniqueProficiency("languages", s.value, langDiv)
-      );
-    }
-  }
-  refreshBaseState();
-  rebuildFromClasses();
-  showStep(5);
-  logCharacterState();
-}
-
 document.addEventListener("DOMContentLoaded", async () => {
   await initI18n();
   for (let i = 1; i <= 7; i++) {
@@ -308,6 +209,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         showStep(i);
         if (i === 2) loadStep2(true);
         if (i === 3) loadStep3(true);
+        if (i === 4) loadStep4(true);
       });
     }
   }
@@ -321,18 +223,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   loadData()
     .then(() => {
-      populateBackgroundList();
-      // Ensure class list and races are rendered once data becomes available
+      // Ensure class list, races and backgrounds are rendered once data becomes available
       loadStep2();
       loadStep3();
-      const bgSel = document.getElementById("backgroundSelect");
-      bgSel?.addEventListener("change", handleBackgroundChange);
+      loadStep4();
     })
     .catch((err) => console.error(err));
-
-  document
-    .getElementById("confirmBackgroundSelection")
-    ?.addEventListener("click", confirmBackgroundSelection);
 
   document.getElementById("downloadJson")?.addEventListener("click", () => {
     const actor = exportFoundryActor(CharacterState);

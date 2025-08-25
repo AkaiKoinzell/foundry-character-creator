@@ -618,9 +618,13 @@ function showClassSelectionModal() {
   const closeBtn = document.getElementById('closeClassSelectionModal');
   if (!modal || !list) return;
   list.innerHTML = '';
-  const taken = new Set(CharacterState.classes.map(c => c.name));
+  // Filter out classes that are already part of the character's build
+  const taken = new Set((CharacterState.classes || []).map(c => c.name));
+
   (DATA.classes || []).forEach(cls => {
     if (taken.has(cls.name)) return;
+
+    // Each remaining class is rendered as a clickable button
     const btn = document.createElement('button');
     btn.className = 'btn btn-primary';
     btn.textContent = cls.name;
@@ -630,6 +634,8 @@ function showClassSelectionModal() {
     });
     list.appendChild(btn);
   });
+
+  // Reveal the modal and wire up the close action
   modal.classList.remove('hidden');
   if (closeBtn) {
     closeBtn.onclick = () => modal.classList.add('hidden');

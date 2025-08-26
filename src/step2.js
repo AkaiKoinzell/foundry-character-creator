@@ -875,6 +875,9 @@ function selectClass(cls) {
   modal?.classList.add('hidden');
   rebuildFromClasses();
   renderSelectedClasses();
+  document.getElementById('classList')?.classList.add('hidden');
+  document.getElementById('selectedClasses')?.classList.remove('hidden');
+  loadStep2(false);
   updateStep2Completion();
 }
 

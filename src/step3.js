@@ -18,6 +18,8 @@ const pendingRaceChoices = {
   spells: [],
 };
 
+let raceRenderSeq = 0;
+
 function validateRaceChoices() {
   const btn = document.getElementById('confirmRaceSelection');
   const btn4 = document.getElementById('btnStep4');
@@ -154,6 +156,7 @@ function createRaceCard(race, onSelect, displayName = race.name) {
 }
 
 async function renderBaseRaces(search = '') {
+  const seq = ++raceRenderSeq;
   const container = document.getElementById('raceList');
   const features = document.getElementById('raceFeatures');
   if (!container) return;
@@ -164,21 +167,21 @@ async function renderBaseRaces(search = '') {
   if (features) features.innerHTML = '<div id="raceTraits"></div>';
   container.classList.remove('hidden');
   const term = (search || '').toLowerCase();
-  await Promise.all(
-    Object.entries(DATA.races).map(async ([base, subs]) => {
-      const baseMatch = base.toLowerCase().includes(term);
-      const subMatch = subs.some((s) => s.name.toLowerCase().includes(term));
-      if (term && !baseMatch && !subMatch) return;
-      let race = { name: base };
-      const path = subs[0]?.path;
-      if (path) {
-        const data = await fetchJsonWithRetry(path, `race at ${path}`);
-        race = { ...data, name: base };
-      }
-      const card = createRaceCard(race, () => selectBaseRace(base));
-      container.appendChild(card);
-    })
-  );
+  for (const [base, subs] of Object.entries(DATA.races)) {
+    const baseMatch = base.toLowerCase().includes(term);
+    const subMatch = subs.some((s) => s.name.toLowerCase().includes(term));
+    if (term && !baseMatch && !subMatch) continue;
+    let race = { name: base };
+    const path = subs[0]?.path;
+    if (path) {
+      const data = await fetchJsonWithRetry(path, `race at ${path}`);
+      race = { ...data, name: base };
+    }
+    if (seq !== raceRenderSeq) return;
+    const card = createRaceCard(race, () => selectBaseRace(base));
+    if (seq !== raceRenderSeq) return;
+    container.appendChild(card);
+  }
 }
 
 async function selectBaseRace(base) {
@@ -200,6 +203,7 @@ async function selectBaseRace(base) {
 }
 
 async function renderSubraceCards(base, search = '') {
+  const seq = ++raceRenderSeq;
   const container = document.getElementById('raceList');
   if (!container) return;
   container.innerHTML = '';
@@ -207,22 +211,22 @@ async function renderSubraceCards(base, search = '') {
   changeBtn?.classList.remove('hidden');
   const subraces = DATA.races[base] || [];
   const term = (search || '').toLowerCase();
-  await Promise.all(
-    subraces.map(async ({ name, path }) => {
-      const race = await fetchJsonWithRetry(path, `race at ${path}`);
-      if (!race.name.toLowerCase().includes(term)) return;
-      const card = createRaceCard(race, async () => {
-        currentRaceData = race;
-        pendingRaceChoices.subrace = race.name;
-        await renderSelectedRace();
-        container.classList.add('hidden');
-        const features = document.getElementById('raceFeatures');
-        features?.classList.remove('hidden');
-        validateRaceChoices();
-      });
-      container.appendChild(card);
-    })
-  );
+  for (const { name, path } of subraces) {
+    const race = await fetchJsonWithRetry(path, `race at ${path}`);
+    if (!race.name.toLowerCase().includes(term)) continue;
+    if (seq !== raceRenderSeq) return;
+    const card = createRaceCard(race, async () => {
+      currentRaceData = race;
+      pendingRaceChoices.subrace = race.name;
+      await renderSelectedRace();
+      container.classList.add('hidden');
+      const features = document.getElementById('raceFeatures');
+      features?.classList.remove('hidden');
+      validateRaceChoices();
+    });
+    if (seq !== raceRenderSeq) return;
+    container.appendChild(card);
+  }
 }
 async function renderSelectedRace() {
   const accordion = document.getElementById('raceFeatures');

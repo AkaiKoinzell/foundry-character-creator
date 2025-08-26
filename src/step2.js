@@ -756,29 +756,45 @@ export async function loadStep2(refresh = true) {
     console.error('Dati classi non disponibili.');
     return;
   }
-  const taken = new Set(CharacterState.classes.map(c => c.name));
-  classes.forEach(cls => {
-    if (taken.has(cls.name)) return;
-    const classCard = document.createElement('div');
-    classCard.className = 'class-card';
-    classCard.addEventListener('click', () => showClassModal(cls));
+  const searchInput = document.getElementById('classSearch');
+  function renderClassCards(query = '') {
+    classListContainer.innerHTML = '';
+    const taken = new Set(CharacterState.classes.map(c => c.name));
+    classes
+      .filter(
+        cls =>
+          !taken.has(cls.name) &&
+          cls.name.toLowerCase().includes(query.toLowerCase())
+      )
+      .forEach(cls => {
+        const classCard = document.createElement('div');
+        classCard.className = 'class-card';
+        classCard.addEventListener('click', () => showClassModal(cls));
 
-    const title = createElement('h3', cls.name);
-    const desc = createElement('p', cls.description || 'Nessuna descrizione disponibile.');
+        const title = createElement('h3', cls.name);
+        const desc = createElement(
+          'p',
+          cls.description || 'Nessuna descrizione disponibile.'
+        );
 
-    const detailsBtn = createElement('button', 'Dettagli');
-    detailsBtn.className = 'btn btn-primary';
-    detailsBtn.addEventListener('click', e => {
-      e.stopPropagation();
-      showClassModal(cls);
-    });
+        const detailsBtn = createElement('button', 'Dettagli');
+        detailsBtn.className = 'btn btn-primary';
+        detailsBtn.addEventListener('click', e => {
+          e.stopPropagation();
+          showClassModal(cls);
+        });
 
-    classCard.appendChild(title);
-    classCard.appendChild(desc);
-    classCard.appendChild(detailsBtn);
+        classCard.appendChild(title);
+        classCard.appendChild(desc);
+        classCard.appendChild(detailsBtn);
 
-    classListContainer.appendChild(classCard);
-  });
+        classListContainer.appendChild(classCard);
+      });
+  }
+  searchInput?.addEventListener('input', () =>
+    renderClassCards(searchInput.value)
+  );
+  renderClassCards();
 }
 
 /**

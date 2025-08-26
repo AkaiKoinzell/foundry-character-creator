@@ -1,6 +1,7 @@
 {
-	"name": "Goblin",
-	"source": "MPMM",
+        "name": "Goblin",
+        "raceName": "Goblin",
+        "source": "MPMM",
 	"page": 20,
 	"lineage": "VRGR",
 	"creatureTypes": [

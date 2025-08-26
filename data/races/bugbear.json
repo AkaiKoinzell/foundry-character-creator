@@ -1,6 +1,7 @@
 {
-	"name": "Bugbear",
-	"source": "MPMM",
+        "name": "Bugbear",
+        "raceName": "Bugbear",
+        "source": "MPMM",
 	"page": 8,
 	"lineage": "VRGR",
 	"creatureTypes": [

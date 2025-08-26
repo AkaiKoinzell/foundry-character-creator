@@ -1,6 +1,7 @@
 {
-	"name": "Aarakocra",
-	"source": "MPMM",
+        "name": "Aarakocra",
+        "raceName": "Aarakocra",
+        "source": "MPMM",
 	"page": 5,
 	"lineage": "VRGR",
 	"size": [

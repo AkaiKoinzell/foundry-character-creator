@@ -1,6 +1,7 @@
 {
-	"name": "Githyanki",
-	"source": "MPMM",
+        "name": "Githyanki",
+        "raceName": "Gith",
+        "source": "MPMM",
 	"page": 18,
 	"lineage": "VRGR",
 	"size": [

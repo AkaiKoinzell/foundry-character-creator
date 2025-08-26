@@ -1,6 +1,7 @@
 {
-	"name": "Dhampir",
-	"source": "VRGR",
+        "name": "Dhampir",
+        "raceName": "Dhampir",
+        "source": "VRGR",
 	"page": 16,
 	"lineage": "VRGR",
 	"size": [

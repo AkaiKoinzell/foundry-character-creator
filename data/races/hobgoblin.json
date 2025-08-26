@@ -1,6 +1,7 @@
 {
-	"name": "Hobgoblin",
-	"source": "MPMM",
+        "name": "Hobgoblin",
+        "raceName": "Hobgoblin",
+        "source": "MPMM",
 	"page": 23,
 	"lineage": "VRGR",
 	"creatureTypes": [

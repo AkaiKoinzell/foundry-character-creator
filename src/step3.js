@@ -394,6 +394,7 @@ async function renderSelectedRace() {
         pendingRaceChoices.spells.forEach((sel) => {
           const opts = JSON.parse(sel.dataset.opts || '[]');
           const current = sel.value;
+          if (current) chosen.delete(current);
           sel.innerHTML = `<option value=''>${t('select')}</option>`;
           opts.forEach((sp) => {
             if (sp !== current && chosen.has(sp)) return;
@@ -403,6 +404,7 @@ async function renderSelectedRace() {
             sel.appendChild(o);
           });
           sel.value = current;
+          if (current) chosen.add(current);
         });
       }
 

@@ -1,6 +1,7 @@
 {
-	"name": "Githzerai",
-	"source": "MPMM",
+        "name": "Githzerai",
+        "raceName": "Gith",
+        "source": "MPMM",
 	"page": 19,
 	"lineage": "VRGR",
 	"size": [

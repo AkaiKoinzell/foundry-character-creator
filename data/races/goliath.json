@@ -1,6 +1,7 @@
 {
-	"name": "Goliath",
-	"source": "MPMM",
+        "name": "Goliath",
+        "raceName": "Goliath",
+        "source": "MPMM",
 	"page": 21,
 	"reprintedAs": [
 		"Goliath|XPHB"

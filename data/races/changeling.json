@@ -1,6 +1,7 @@
 {
-	"name": "Changeling",
-	"source": "MPMM",
+        "name": "Changeling",
+        "raceName": "Changeling",
+        "source": "MPMM",
 	"page": 10,
 	"lineage": "VRGR",
 	"creatureTypes": [

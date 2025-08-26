@@ -1,6 +1,7 @@
 {
-	"name": "Firbolg",
-	"source": "MPMM",
+        "name": "Firbolg",
+        "raceName": "Firbolg",
+        "source": "MPMM",
 	"page": 15,
 	"lineage": "VRGR",
 	"size": [

@@ -1,6 +1,7 @@
 {
-	"name": "Fairy",
-	"source": "MPMM",
+        "name": "Fairy",
+        "raceName": "Fairy",
+        "source": "MPMM",
 	"page": 14,
 	"lineage": "VRGR",
 	"creatureTypes": [

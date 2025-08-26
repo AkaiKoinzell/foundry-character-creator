@@ -1,6 +1,7 @@
 {
-	"name": "Centaur",
-	"source": "MPMM",
+        "name": "Centaur",
+        "raceName": "Centaur",
+        "source": "MPMM",
 	"page": 9,
 	"lineage": "VRGR",
 	"creatureTypes": [

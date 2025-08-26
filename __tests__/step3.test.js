@@ -77,5 +77,28 @@ describe('race search behavior', () => {
       expect.arrayContaining(['Elf (Eladrin)', 'Elf (Wood)'])
     );
   });
+
+  test('quick successive searches do not render duplicate cards', async () => {
+    DATA.races = {
+      Elf: [{ name: 'Elf (Eladrin)', path: 'eladrin' }],
+      Dwarf: [{ name: 'Dwarf (Hill)', path: 'dwarfHill' }],
+    };
+    const resolvers = {};
+    mockFetch.mockImplementation(
+      (p) =>
+        new Promise((resolve) => {
+          resolvers[p] = resolve;
+        })
+    );
+    const p1 = renderBaseRaces('Elf');
+    const p2 = renderBaseRaces('Dwarf');
+    resolvers['dwarfHill']({ name: 'Dwarf (Hill)', entries: [] });
+    await p2;
+    resolvers['eladrin']({ name: 'Elf (Eladrin)', entries: [] });
+    await p1;
+    const cards = document.querySelectorAll('#raceList .class-card');
+    expect(cards).toHaveLength(1);
+    expect(cards[0].querySelector('h3').textContent).toBe('Dwarf');
+  });
 });
 

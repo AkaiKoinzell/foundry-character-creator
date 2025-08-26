@@ -417,6 +417,15 @@ async function renderSelectedRace() {
                     .map((s) => SCHOOL_MAP[s] || s);
                   return schools.includes(sp.school);
                 }
+                if (key === 'class') {
+                  const classes = val
+                    .split(';')
+                    .map((c) => capitalize(c.trim()))
+                    .filter((c) => c);
+                  return classes.some((c) =>
+                    (sp.spell_list || []).includes(c)
+                  );
+                }
                 return true;
               });
             })

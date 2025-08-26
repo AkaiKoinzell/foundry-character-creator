@@ -22,13 +22,26 @@
 		"mature": 12,
 		"max": 60
 	},
-	"languageProficiencies": [
-		{
-			"common": true,
-			"auran": true
+"languageProficiencies": [
+{
+"common": true,
+"auran": true
 		}
 	],
-	"entries": [
+	"skillProficiencies": [
+		{
+			"choose": {
+				"from": [
+"acrobatics",
+"deception",
+"stealth",
+"sleight of hand"
+],
+				"count": 2
+}
+}
+],
+"entries": [
 		{
 			"name": "Expert Forgery",
 			"type": "entries",

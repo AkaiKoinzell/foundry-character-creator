@@ -44,12 +44,14 @@ function createAccordionItem(title, content, isChoice = false) {
   return item;
 }
 
-export function renderBackgroundList() {
+export function renderBackgroundList(query = '') {
   const container = document.getElementById('backgroundList');
   if (!container) return;
   container.innerHTML = '';
   const entries = DATA.backgrounds || {};
+  const term = query.toLowerCase();
   for (const [name, bg] of Object.entries(entries)) {
+    if (!name.toLowerCase().includes(term)) continue;
     const card = document.createElement('div');
     card.className = 'class-card';
     card.addEventListener('click', () => selectBackground(bg));
@@ -273,9 +275,13 @@ function confirmBackgroundSelection() {
 
 export function loadStep4(force = false) {
   const container = document.getElementById('backgroundList');
+  const searchInput = document.getElementById('backgroundSearch');
   if (!container) return;
   if (container.childElementCount && !force) return;
-  renderBackgroundList();
+  renderBackgroundList(searchInput?.value);
+  searchInput?.addEventListener('input', (e) => {
+    renderBackgroundList(e.target.value);
+  });
   const btn = document.getElementById('confirmBackgroundSelection');
   btn?.addEventListener('click', confirmBackgroundSelection);
   btn?.setAttribute('disabled', 'true');

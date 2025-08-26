@@ -22,13 +22,27 @@
 		"mature": 18,
 		"max": 100
 	},
-	"languageProficiencies": [
-		{
-			"common": true,
-			"leonin": true
+"languageProficiencies": [
+{
+"common": true,
+"leonin": true
 		}
 	],
-	"entries": [
+	"skillProficiencies": [
+		{
+			"choose": {
+				"from": [
+"athletics",
+"intimidation",
+"perception",
+"stealth",
+"survival"
+],
+				"count": 1
+}
+}
+],
+"entries": [
 		{
 			"name": "Claws",
 			"type": "entries",

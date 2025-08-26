@@ -25,13 +25,27 @@
 		"mature": 14,
 		"max": 60
 	},
-	"languageProficiencies": [
-		{
-			"common": true,
-			"draconic": true
+"languageProficiencies": [
+{
+"common": true,
+"draconic": true
 		}
 	],
-	"entries": [
+	"skillProficiencies": [
+		{
+			"choose": {
+				"from": [
+"animal handling",
+"nature",
+"perception",
+"stealth",
+"survival"
+],
+				"count": 2
+}
+}
+],
+"entries": [
 		{
 			"name": "Bite",
 			"type": "entries",

@@ -28,50 +28,31 @@
 			"perception": true
 		}
 	],
-	"additionalSpells": [
-		{
-			"known": {
-				"1": [
-					"dancing lights#c"
-				]
-			},
-			"ability": {
-				"choose": [
-					"int",
-					"wis",
-					"cha"
-				]
-			}
-		},
-		{
-			"known": {
-				"1": [
-					"light#c"
-				]
-			},
-			"ability": {
-				"choose": [
-					"int",
-					"wis",
-					"cha"
-				]
-			}
-		},
-		{
-			"known": {
-				"1": [
-					"sacred flame#c"
-				]
-			},
-			"ability": {
-				"choose": [
-					"int",
-					"wis",
-					"cha"
-				]
-			}
-		}
-	],
+"additionalSpells": [
+{
+"ability": {
+"choose": [
+"int",
+"wis",
+"cha"
+]
+},
+"known": {
+"1": [
+{
+"choose": {
+"from": [
+"dancing lights#c",
+"light#c",
+"sacred flame#c"
+],
+"count": 1
+}
+}
+]
+}
+}
+],
 	"entries": [
 		{
 			"type": "entries",

@@ -2,11 +2,16 @@ export function exportFoundryActor(state) {
   const clone = (v) => JSON.parse(JSON.stringify(v));
   const actor = {
     name: state.name,
+    playerName: state.playerName,
     type: state.type,
     system: clone(state.system),
     items: [],
     prototypeToken: clone(state.prototypeToken),
   };
+
+  if (!actor.system.details) actor.system.details = {};
+  actor.system.details.origin = state.system?.details?.origin || "";
+  actor.system.details.age = state.system?.details?.age ?? 0;
 
   (state.classes || []).forEach((cls) => {
     actor.items.push({

@@ -97,6 +97,7 @@ export async function loadRaces() {
 }
 
 export const CharacterState = {
+  playerName: "",
   name: "",
   type: "character",
   classes: [],
@@ -126,6 +127,8 @@ export const CharacterState = {
       race: "",
       subrace: "",
       alignment: "",
+      origin: "",
+      age: 0,
     },
     traits: {
       size: "med",

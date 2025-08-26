@@ -16,6 +16,7 @@ const pendingRaceChoices = {
   subrace: '',
   languages: [],
   spells: [],
+  abilities: [],
 };
 
 let raceRenderSeq = 0;
@@ -26,6 +27,7 @@ function validateRaceChoices() {
   const allSelects = [
     ...pendingRaceChoices.languages,
     ...pendingRaceChoices.spells,
+    ...pendingRaceChoices.abilities,
   ];
 
   allSelects.forEach((sel) => {
@@ -195,6 +197,7 @@ async function selectBaseRace(base) {
   pendingRaceChoices.subrace = '';
   pendingRaceChoices.languages = [];
   pendingRaceChoices.spells = [];
+  pendingRaceChoices.abilities = [];
   const traits = document.getElementById('raceTraits');
   if (traits) traits.innerHTML = '';
   const features = document.getElementById('raceFeatures');
@@ -239,6 +242,7 @@ async function renderSelectedRace() {
   accordion.innerHTML = '';
   pendingRaceChoices.languages = [];
   pendingRaceChoices.spells = [];
+  pendingRaceChoices.abilities = [];
 
   const header = document.createElement('h3');
   header.textContent = currentRaceData.name;
@@ -281,6 +285,10 @@ async function renderSelectedRace() {
       }
     });
     if (raceLang.length || pendingLang > 0) {
+      if (pendingLang > 0 && (!DATA.languages || !DATA.languages.length)) {
+        const langs = await fetchJsonWithRetry('data/languages.json', 'languages');
+        DATA.languages = langs.languages || langs;
+      }
       const langContent = document.createElement('div');
       if (raceLang.length) {
         const p = document.createElement('p');
@@ -304,6 +312,7 @@ async function renderSelectedRace() {
               sel.appendChild(o);
             });
           sel.dataset.type = 'choice';
+          sel.dataset.choice = 'language';
           sel.addEventListener('change', validateRaceChoices);
           langContent.appendChild(sel);
           pendingRaceChoices.languages.push(sel);
@@ -316,12 +325,39 @@ async function renderSelectedRace() {
   }
 
   if (currentRaceData.additionalSpells) {
+    let abilityOpts = null;
+    if (Array.isArray(currentRaceData.additionalSpells)) {
+      currentRaceData.additionalSpells.forEach((obj) => {
+        if (obj.ability?.choose) abilityOpts = obj.ability.choose;
+      });
+    }
+
+    if (abilityOpts) {
+      const abilityContent = document.createElement('div');
+      const sel = document.createElement('select');
+      sel.innerHTML = `<option value=''>${t('select')}</option>`;
+      abilityOpts.forEach((ab) => {
+        const o = document.createElement('option');
+        o.value = ab;
+        o.textContent = ab.toUpperCase();
+        sel.appendChild(o);
+      });
+      sel.dataset.type = 'choice';
+      sel.dataset.choice = 'ability';
+      sel.addEventListener('change', validateRaceChoices);
+      abilityContent.appendChild(sel);
+      pendingRaceChoices.abilities.push(sel);
+      accordion.appendChild(
+        createAccordionItem('Spell Ability', abilityContent, true)
+      );
+    }
+
     const choices = [];
     const walk = (node) => {
       if (!node) return;
       if (Array.isArray(node)) node.forEach(walk);
       else if (typeof node === 'object') {
-        if (node.choose) choices.push(node.choose);
+        if (node.choose && !Array.isArray(node.choose)) choices.push(node.choose);
         Object.values(node).forEach(walk);
       }
     };
@@ -504,6 +540,8 @@ function confirmRaceSelection() {
   }
   pendingRaceChoices.languages.forEach((sel) => {
     addUniqueProficiency('languages', sel.value, container);
+    if (!CharacterState.system.traits.languages.value.includes(sel.value))
+      CharacterState.system.traits.languages.value.push(sel.value);
     sel.disabled = true;
   });
   pendingRaceChoices.spells.forEach((sel) => {
@@ -511,9 +549,14 @@ function confirmRaceSelection() {
     CharacterState.raceChoices.spells.push(sel.value);
     sel.disabled = true;
   });
+  pendingRaceChoices.abilities.forEach((sel) => {
+    CharacterState.raceChoices.spellAbility = sel.value;
+    sel.disabled = true;
+  });
 
   pendingRaceChoices.languages = [];
   pendingRaceChoices.spells = [];
+  pendingRaceChoices.abilities = [];
   refreshBaseState();
   rebuildFromClasses();
   const btn4 = document.getElementById('btnStep4');
@@ -545,6 +588,7 @@ export async function loadStep3(force = false) {
     pendingRaceChoices.subrace = '';
     pendingRaceChoices.languages = [];
     pendingRaceChoices.spells = [];
+    pendingRaceChoices.abilities = [];
     if (CharacterState.system?.details) {
       CharacterState.system.details.race = '';
       CharacterState.system.details.subrace = '';

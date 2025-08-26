@@ -78,4 +78,19 @@ describe('duplicate selection prevention', () => {
       choiceSelect1.querySelector("option[value='Acrobatics']").disabled
     ).toBe(false);
   });
+
+  test('selecting two different skills keeps both selections', () => {
+    const skillSelect1 = createSelect(['Acrobatics', 'Athletics']);
+    const skillSelect2 = createSelect(['Acrobatics', 'Athletics']);
+    skillSelect1.value = 'Acrobatics';
+    const skillSelects = [skillSelect1, skillSelect2];
+
+    updateSkillSelectOptions(skillSelects);
+
+    skillSelect2.value = 'Athletics';
+    updateSkillSelectOptions(skillSelects);
+
+    expect(skillSelect1.value).toBe('Acrobatics');
+    expect(skillSelect2.value).toBe('Athletics');
+  });
 });

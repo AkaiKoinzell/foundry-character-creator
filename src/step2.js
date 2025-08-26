@@ -157,10 +157,23 @@ function updateSkillSelectOptions(skillSelectsList, choiceSkillSelectsList = [])
     if (!val) return;
     counts.set(val, (counts.get(val) || 0) + 1);
   };
+  const subtract = val => {
+    if (!val) return;
+    const newCount = (counts.get(val) || 0) - 1;
+    if (newCount <= 0) counts.delete(val);
+    else counts.set(val, newCount);
+  };
 
+  // Start from the character's known skills
   CharacterState.system.skills.forEach(add);
-  choiceSkillSelectsList.forEach(sel => add(sel.value));
+
+  // Remove the current class's selections before recounting
+  skillSelectsList.forEach(sel => subtract(sel.value));
+  choiceSkillSelectsList.forEach(sel => subtract(sel.value));
+
+  // Add the current selections back once to track duplicates correctly
   skillSelectsList.forEach(sel => add(sel.value));
+  choiceSkillSelectsList.forEach(sel => add(sel.value));
 
   skillSelectsList.forEach(sel => {
     Array.from(sel.options).forEach(opt => {

@@ -294,7 +294,8 @@ function renderClassFeatures(cls) {
   if (cls.skill_proficiencies?.options) {
     const container = document.createElement('div');
     const desc = document.createElement('p');
-    desc.textContent = t('chooseSkills', { count: cls.skill_proficiencies.choose });
+    desc.textContent =
+      `${t('skillProficiencyExplanation')} ${t('chooseSkills', { count: cls.skill_proficiencies.choose })}`;
     container.appendChild(desc);
     for (let i = 0; i < cls.skill_proficiencies.choose; i++) {
       const sel = document.createElement('select');
@@ -324,6 +325,11 @@ function renderClassFeatures(cls) {
   }
 
   if (Array.isArray(cls.subclasses) && cls.subclasses.length) {
+    const container = document.createElement('div');
+    const desc = document.createElement('p');
+    desc.textContent = t('chooseSubclass');
+    container.appendChild(desc);
+
     const sel = document.createElement('select');
     sel.innerHTML = `<option value=''>${t('select')}</option>`;
     cls.subclasses.forEach(sc => {
@@ -337,8 +343,9 @@ function renderClassFeatures(cls) {
     sel.addEventListener('change', () => {
       savedSelections.subclass = sel.value;
     });
+    container.appendChild(sel);
     featuresContainer.appendChild(
-      createAccordionItem(t('subclass'), sel, true)
+      createAccordionItem(t('subclass'), container, true)
     );
   }
 
@@ -355,11 +362,11 @@ function renderClassFeatures(cls) {
 
     levelChoices.forEach(choice => {
       const container = document.createElement('div');
-      if (choice.description) {
-        const p = document.createElement('p');
-        p.textContent = choice.description;
-        container.appendChild(p);
-      }
+      const description = choice.description || t('choiceDescriptionDefault');
+      choice.description = description;
+      const p = document.createElement('p');
+      p.textContent = description;
+      container.appendChild(p);
       const count = choice.count || 1;
       const choiceSelects = [];
       for (let i = 0; i < count; i++) {
@@ -432,7 +439,7 @@ function renderClassFeatures(cls) {
           `${t('level')} ${choice.level}: ${choice.name}`,
           container,
           true,
-          choice.description || ''
+          description
         )
       );
     });

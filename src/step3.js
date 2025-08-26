@@ -120,11 +120,14 @@ function createRaceCard(race, onSelect, displayName = race.name) {
   title.textContent = displayName;
   card.appendChild(title);
 
+  const details = document.createElement('div');
+  details.className = 'race-details hidden';
+
   const shortDesc = (race.entries || []).find((e) => typeof e === 'string');
   if (shortDesc) {
     const p = document.createElement('p');
     p.textContent = shortDesc;
-    card.appendChild(p);
+    details.appendChild(p);
   }
 
   const traits = (race.entries || [])
@@ -138,15 +141,17 @@ function createRaceCard(race, onSelect, displayName = race.name) {
       li.textContent = t;
       ul.appendChild(li);
     });
-    card.appendChild(ul);
+    details.appendChild(ul);
   }
+
+  card.appendChild(details);
 
   const detailsBtn = document.createElement('button');
   detailsBtn.className = 'btn btn-primary';
   detailsBtn.textContent = 'Details';
   detailsBtn.addEventListener('click', (e) => {
     e.stopPropagation();
-    showRaceModal(race);
+    details.classList.toggle('hidden');
   });
   card.appendChild(detailsBtn);
 

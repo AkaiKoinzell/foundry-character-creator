@@ -102,3 +102,29 @@ describe('race search behavior', () => {
   });
 });
 
+describe('race card details toggle', () => {
+  beforeEach(() => {
+    document.body.innerHTML = `
+      <div id="raceList"></div>
+    `;
+    DATA.races = {
+      Elf: [{ name: 'Elf', path: 'elfPath' }],
+    };
+    mockFetch.mockImplementation(() =>
+      Promise.resolve({
+        name: 'Elf',
+        entries: ['A nimble folk.', { name: 'Keen Senses' }],
+      })
+    );
+  });
+
+  test('details are hidden and toggle on click', async () => {
+    await renderBaseRaces();
+    const card = document.querySelector('#raceList .class-card');
+    const details = card.querySelector('.race-details');
+    expect(details.classList.contains('hidden')).toBe(true);
+    card.querySelector('button').click();
+    expect(details.classList.contains('hidden')).toBe(false);
+  });
+});
+

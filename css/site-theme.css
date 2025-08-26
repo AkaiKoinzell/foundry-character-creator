@@ -339,3 +339,7 @@ th {
 .class-card button {
   margin-top: 10px;
 }
+
+.race-details.hidden {
+  display: none;
+}

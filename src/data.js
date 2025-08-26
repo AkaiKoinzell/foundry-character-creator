@@ -52,6 +52,29 @@ export async function loadFeats() {
 }
 
 /**
+ * Fetches background data from the JSON index and stores full objects
+ * keyed by their background name on `DATA.backgrounds`.
+ */
+export async function loadBackgrounds() {
+  if (DATA.backgrounds && Object.keys(DATA.backgrounds).length) return;
+
+  const index = await fetchJsonWithRetry(
+    'data/backgrounds.json',
+    'background index'
+  );
+  const entries = index.items || {};
+  DATA.backgrounds = {};
+
+  await Promise.all(
+    Object.entries(entries).map(async ([name, path]) => {
+      const bg = await fetchJsonWithRetry(path, `background at ${path}`);
+      if (!bg.name) bg.name = name;
+      DATA.backgrounds[name] = bg;
+    })
+  );
+}
+
+/**
  * Fetches race data and groups variants by their base race name.
  */
 export async function loadRaces() {

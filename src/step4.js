@@ -1,7 +1,6 @@
 import {
   DATA,
   CharacterState,
-  fetchJsonWithRetry,
   logCharacterState
 } from './data.js';
 import { refreshBaseState, rebuildFromClasses, updateChoiceSelectOptions } from './step2.js';
@@ -51,18 +50,18 @@ export function renderBackgroundList() {
   if (!container) return;
   container.innerHTML = '';
   const entries = DATA.backgrounds || {};
-  for (const [name, path] of Object.entries(entries)) {
+  for (const [name, bg] of Object.entries(entries)) {
     const card = document.createElement('div');
     card.className = 'class-card';
-    card.addEventListener('click', () => selectBackground(path));
+    card.addEventListener('click', () => selectBackground(bg));
     const title = createElement('h3', name);
     card.appendChild(title);
     container.appendChild(card);
   }
 }
 
-async function selectBackground(path) {
-  currentBackgroundData = await fetchJsonWithRetry(path, `background at ${path}`);
+function selectBackground(bg) {
+  currentBackgroundData = bg;
   const list = document.getElementById('backgroundList');
   list?.classList.add('hidden');
 

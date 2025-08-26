@@ -35,7 +35,7 @@
   <!-- Navigazione a step -->
   <nav>
     <button id="btnStep1" class="btn">Step 1: Dati Iniziali</button>
-    <button id="btnStep2" class="btn">Step 2: Classe & Livello</button>
+    <button id="btnStep2" class="btn" disabled>Step 2: Classe & Livello</button>
     <button id="btnStep3" class="btn" disabled>Step 3: Razza</button>
     <button id="btnStep4" class="btn" disabled>Step 4: Background</button>
     <button id="btnStep5" class="btn">Step 5: Equipment</button>
@@ -44,8 +44,10 @@
   </nav>
   <div class="section-divider"></div>
   <!-- Container degli step -->
-  <div id="stepContainer">
-    <!-- Step 1: Dati Iniziali -->
+  <div id="stepNav">
+    <button id="prevStep" class="arrow-btn">&#8592;</button>
+    <div id="stepContainer">
+      <!-- Step 1: Dati Iniziali -->
     <div id="step1" class="step active">
       <h2>Step 1: Dati Iniziali</h2>
       <div class="form-group">
@@ -282,6 +284,8 @@
           <button id="generatePdf" class="btn btn-primary">Genera PDF</button>
         </div>
       </div>
+    </div>
+    <button id="nextStep" class="arrow-btn" disabled>&#8594;</button>
   </div>
 
   <!-- Modal per i dettagli della classe -->

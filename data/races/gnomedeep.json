@@ -1,8 +1,9 @@
 {
-	"name": "Deep Gnome",
-	"source": "MPMM",
-	"page": 11,
-	"lineage": "VRGR",
+        "name": "Deep Gnome",
+        "raceName": "Gnome",
+        "source": "MPMM",
+        "page": 11,
+        "lineage": "VRGR",
 	"creatureTypes": [
 		"humanoid"
 	],

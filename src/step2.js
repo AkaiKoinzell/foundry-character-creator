@@ -723,6 +723,7 @@ function updateStep2Completion() {
 export async function loadStep2(refresh = true) {
   const classListContainer = document.getElementById('classList');
   const selectedClassesContainer = document.getElementById('selectedClasses');
+  const searchInput = document.getElementById('classSearch');
   if (!classListContainer || !selectedClassesContainer) return;
   classListContainer.innerHTML = '';
   selectedClassesContainer.innerHTML = '';
@@ -744,6 +745,7 @@ export async function loadStep2(refresh = true) {
   // Show either the class selection list or the already selected classes
   classListContainer.classList.toggle('hidden', CharacterState.classes.length !== 0);
   selectedClassesContainer?.classList.toggle('hidden', CharacterState.classes.length === 0);
+  searchInput?.classList.toggle('hidden', CharacterState.classes.length !== 0);
 
   if (CharacterState.classes.length !== 0) {
     return;
@@ -754,7 +756,6 @@ export async function loadStep2(refresh = true) {
     console.error('Dati classi non disponibili.');
     return;
   }
-  const searchInput = document.getElementById('classSearch');
   function renderClassCards(query = '') {
     classListContainer.innerHTML = '';
     const taken = new Set(CharacterState.classes.map(c => c.name));
@@ -873,6 +874,7 @@ function selectClass(cls) {
   modal?.classList.add('hidden');
   rebuildFromClasses();
   document.getElementById('classList')?.classList.add('hidden');
+  document.getElementById('classSearch')?.classList.add('hidden');
   document.getElementById('selectedClasses')?.classList.remove('hidden');
   loadStep2(false);
   updateStep2Completion();

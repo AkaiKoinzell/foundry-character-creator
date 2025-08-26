@@ -87,7 +87,6 @@ function rebuildFromClasses() {
   }
   updateSpellSlots();
   updateProficiencyBonus();
-  renderSelectedClasses();
 }
 
 function validateTotalLevel(pendingClass) {
@@ -407,7 +406,6 @@ function renderClassEditor(cls, index) {
     }
     compileClassFeatures(cls);
     rebuildFromClasses();
-    renderSelectedClasses();
     updateStep2Completion();
   });
   card.appendChild(levelSel);
@@ -874,7 +872,6 @@ function selectClass(cls) {
   const modal = document.getElementById('classModal');
   modal?.classList.add('hidden');
   rebuildFromClasses();
-  renderSelectedClasses();
   document.getElementById('classList')?.classList.add('hidden');
   document.getElementById('selectedClasses')?.classList.remove('hidden');
   loadStep2(false);

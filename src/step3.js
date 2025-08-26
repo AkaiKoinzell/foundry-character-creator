@@ -505,18 +505,23 @@ function confirmRaceSelection() {
       sizeMap[sz] || CharacterState.system.traits.size;
   }
 
-  const move = CharacterState.system.attributes.movement || {};
+  const move = { ...(CharacterState.system.attributes.movement || {}) };
   const speed = currentRaceData.speed;
   if (typeof speed === 'number') move.walk = speed;
   else if (speed && typeof speed === 'object') {
     if (typeof speed.walk === 'number') move.walk = speed.walk;
-    ['burrow', 'climb', 'fly', 'swim'].forEach((t) => {
+    ['burrow', 'climb', 'swim'].forEach((t) => {
       const val = speed[t];
       if (typeof val === 'number') move[t] = val;
       else if (val === true && typeof move.walk === 'number') move[t] = move.walk;
     });
+    if (speed.fly === true && typeof move.walk === 'number') move.fly = move.walk;
+    else if (typeof speed.fly === 'number') move.fly = speed.fly;
   }
-  CharacterState.system.attributes.movement = move;
+  CharacterState.system.attributes.movement = {
+    ...CharacterState.system.attributes.movement,
+    ...move,
+  };
 
   if (Array.isArray(currentRaceData.ability)) {
     currentRaceData.ability.forEach((obj) => {

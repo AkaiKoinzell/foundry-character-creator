@@ -65,6 +65,7 @@ function selectBackground(bg) {
   currentBackgroundData = bg;
   const list = document.getElementById('backgroundList');
   list?.classList.add('hidden');
+  document.getElementById('backgroundSearch')?.classList.add('hidden');
 
   let features = document.getElementById('backgroundFeatures');
   if (!features) {
@@ -277,6 +278,11 @@ export function loadStep4(force = false) {
   const container = document.getElementById('backgroundList');
   const searchInput = document.getElementById('backgroundSearch');
   if (!container) return;
+  if (force) {
+    container.classList.remove('hidden');
+    searchInput?.classList.remove('hidden');
+    document.getElementById('backgroundFeatures')?.classList.add('hidden');
+  }
   if (container.childElementCount && !force) return;
   renderBackgroundList(searchInput?.value);
   searchInput?.addEventListener('input', (e) => {

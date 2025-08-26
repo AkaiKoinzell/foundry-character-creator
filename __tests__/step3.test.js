@@ -180,3 +180,63 @@ describe('Aarakocra selections', () => {
   });
 });
 
+describe('High Elf cantrip choices', () => {
+  beforeEach(() => {
+    document.body.innerHTML = `
+      <div id="raceList"></div>
+      <div id="raceFeatures"></div>
+      <button id="confirmRaceSelection"></button>
+    `;
+    DATA.races = {
+      Elf: [{ name: 'Elf (High)', path: 'elfHigh' }],
+    };
+    DATA.spells = [
+      {
+        name: 'Fire Bolt',
+        level: 0,
+        school: 'Evocation',
+        spell_list: ['Wizard', 'Sorcerer'],
+      },
+      {
+        name: 'Sacred Flame',
+        level: 0,
+        school: 'Evocation',
+        spell_list: ['Cleric'],
+      },
+      {
+        name: 'Mage Hand',
+        level: 0,
+        school: 'Conjuration',
+        spell_list: ['Wizard'],
+      },
+      {
+        name: 'Magic Missile',
+        level: 1,
+        school: 'Evocation',
+        spell_list: ['Wizard'],
+      },
+    ];
+    const race = {
+      name: 'Elf (High)',
+      entries: [],
+      additionalSpells: [
+        { ability: 'int', known: { 1: { _: [{ choose: 'level=0|class=Wizard' }] } } },
+      ],
+    };
+    mockFetch.mockImplementation((p) => {
+      if (p === 'elfHigh') return Promise.resolve(race);
+      return Promise.resolve({});
+    });
+  });
+
+  test('only wizard cantrips are offered', async () => {
+    await selectBaseRace('Elf');
+    const card = document.querySelector('#raceList .class-card');
+    card.click();
+    await new Promise((r) => setTimeout(r, 0));
+    const sel = document.querySelector('#raceFeatures select');
+    const values = [...sel.options].map((o) => o.value).filter((v) => v);
+    expect(values).toEqual(['Fire Bolt', 'Mage Hand']);
+  });
+});
+

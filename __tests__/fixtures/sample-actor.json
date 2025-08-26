@@ -1,5 +1,6 @@
 {
   "name": "Hero",
+  "playerName": "Alice",
   "type": "character",
   "system": {
     "abilities": {
@@ -19,7 +20,7 @@
       "prof": 2,
       "movement": { "walk": 30 }
     },
-    "details": { "background": "", "race": "", "alignment": "" },
+    "details": { "background": "", "race": "", "alignment": "", "origin": "Earth", "age": 30 },
     "traits": {
       "size": "med",
       "senses": { "darkvision": 0 },

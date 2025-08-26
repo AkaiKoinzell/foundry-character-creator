@@ -239,6 +239,39 @@ document.addEventListener("DOMContentLoaded", async () => {
     a.click();
     URL.revokeObjectURL(url);
   });
+
+  // Step 1 inputs ----------------------------------------------------------
+  const userNameEl = document.getElementById("userName");
+  if (userNameEl) {
+    userNameEl.addEventListener("input", () => {
+      CharacterState.playerName = userNameEl.value;
+    });
+  }
+
+  const characterNameEl = document.getElementById("characterName");
+  if (characterNameEl) {
+    characterNameEl.addEventListener("input", () => {
+      CharacterState.name = characterNameEl.value;
+      CharacterState.prototypeToken.name = characterNameEl.value;
+    });
+  }
+
+  const originEl = document.getElementById("origin");
+  if (originEl) {
+    originEl.addEventListener("input", () => {
+      CharacterState.system.details.origin = originEl.value;
+    });
+  }
+
+  const ageEl = document.getElementById("age");
+  if (ageEl) {
+    const handler = () => {
+      const v = parseInt(ageEl.value, 10);
+      CharacterState.system.details.age = Number.isNaN(v) ? 0 : v;
+    };
+    ageEl.addEventListener("input", handler);
+    ageEl.addEventListener("change", handler);
+  }
 });
 
 export { showStep, loadData };

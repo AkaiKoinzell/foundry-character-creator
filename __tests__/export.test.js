@@ -8,6 +8,7 @@ const template = JSON.parse(
 describe("exportFoundryActor", () => {
   test("matches sample template", () => {
     const state = {
+      playerName: "Alice",
       name: "Hero",
       type: "character",
       classes: [{ name: "Fighter", level: 1 }],
@@ -31,7 +32,7 @@ describe("exportFoundryActor", () => {
           prof: 2,
           movement: { walk: 30 },
         },
-        details: { background: "", race: "", alignment: "" },
+        details: { background: "", race: "", alignment: "", origin: "Earth", age: 30 },
         traits: {
           size: "med",
           senses: { darkvision: 0 },

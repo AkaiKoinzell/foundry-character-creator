@@ -232,6 +232,7 @@ async function renderSubraceCards(base, search = '') {
       pendingRaceChoices.subrace = race.name;
       await renderSelectedRace();
       container.classList.add('hidden');
+      document.getElementById('raceSearch')?.classList.add('hidden');
       const features = document.getElementById('raceFeatures');
       features?.classList.remove('hidden');
       validateRaceChoices();
@@ -619,6 +620,7 @@ export async function loadStep3(force = false) {
     const features = document.getElementById('raceFeatures');
     list?.classList.remove('hidden');
     features?.classList.add('hidden');
+    searchInput?.classList.remove('hidden');
     await renderBaseRaces(searchInput?.value);
     validateRaceChoices();
   });

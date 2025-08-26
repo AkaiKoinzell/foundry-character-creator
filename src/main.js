@@ -16,25 +16,33 @@ import { t, initI18n } from "./i18n.js";
 
 let currentStep = 1;
 
-function showStep(step) {
-  for (let i = 1; i <= 7; i++) {
-    const el = document.getElementById(`step${i}`);
-    if (!el) continue;
-    if (i === step) {
-      el.classList.remove('hidden');
-      el.style.display = 'block';
-    } else {
-      el.classList.add('hidden');
-      el.style.display = 'none';
+  function showStep(step) {
+    for (let i = 1; i <= 7; i++) {
+      const el = document.getElementById(`step${i}`);
+      if (!el) continue;
+      if (i === step) {
+        el.classList.remove('hidden');
+        el.style.display = 'block';
+      } else {
+        el.classList.add('hidden');
+        el.style.display = 'none';
+      }
+    }
+    const bar = document.getElementById("progressBar");
+    if (bar) {
+      bar.style.width = `${((step - 1) / 6) * 100}%`;
+    }
+    currentStep = step;
+    if (step === 7) renderFinalRecap();
+
+    const prevBtn = document.getElementById("prevStep");
+    if (prevBtn) prevBtn.disabled = step <= 1;
+
+    const nextBtn = document.getElementById("nextStep");
+    if (nextBtn && step !== 1) {
+      nextBtn.disabled = step >= 7;
     }
   }
-  const bar = document.getElementById("progressBar");
-  if (bar) {
-    bar.style.width = `${((step - 1) / 6) * 100}%`;
-  }
-  currentStep = step;
-  if (step === 7) renderFinalRecap();
-}
 
 async function loadData() {
   // Load class and background data
@@ -211,12 +219,29 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  const resetBtn = document.getElementById("resetButton");
-  if (resetBtn) {
-    resetBtn.addEventListener("click", () => location.reload());
-  }
+    const resetBtn = document.getElementById("resetButton");
+    if (resetBtn) {
+      resetBtn.addEventListener("click", () => location.reload());
+    }
+    const nextArrow = document.getElementById("nextStep");
+    if (nextArrow) {
+      nextArrow.addEventListener("click", () => {
+        if (!nextArrow.disabled) {
+          showStep(currentStep + 1);
+        }
+      });
+    }
 
-  showStep(currentStep);
+    const prevArrow = document.getElementById("prevStep");
+    if (prevArrow) {
+      prevArrow.addEventListener("click", () => {
+        if (currentStep > 1) {
+          showStep(currentStep - 1);
+        }
+      });
+    }
+
+    showStep(currentStep);
 
   loadData()
     .then(() => {
@@ -240,38 +265,60 @@ document.addEventListener("DOMContentLoaded", async () => {
     URL.revokeObjectURL(url);
   });
 
-  // Step 1 inputs ----------------------------------------------------------
-  const userNameEl = document.getElementById("userName");
-  if (userNameEl) {
-    userNameEl.addEventListener("input", () => {
-      CharacterState.playerName = userNameEl.value;
-    });
-  }
+    // Step 1 inputs ----------------------------------------------------------
+    const userNameEl = document.getElementById("userName");
+    const characterNameEl = document.getElementById("characterName");
+    const originEl = document.getElementById("origin");
+    const ageEl = document.getElementById("age");
 
-  const characterNameEl = document.getElementById("characterName");
-  if (characterNameEl) {
-    characterNameEl.addEventListener("input", () => {
-      CharacterState.name = characterNameEl.value;
-      CharacterState.prototypeToken.name = characterNameEl.value;
-    });
-  }
+    function validateStep1() {
+      const userNameValid = !!userNameEl?.value?.trim();
+      const characterNameValid = !!characterNameEl?.value?.trim();
+      const originValid = !!originEl?.value?.trim();
+      const ageVal = ageEl?.value?.trim() ?? "";
+      const ageValid = ageVal !== "" && !Number.isNaN(parseInt(ageVal, 10));
+      const allValid =
+        userNameValid && characterNameValid && originValid && ageValid;
 
-  const originEl = document.getElementById("origin");
-  if (originEl) {
-    originEl.addEventListener("input", () => {
-      CharacterState.system.details.origin = originEl.value;
-    });
-  }
+      const step2Btn = document.getElementById("btnStep2");
+      const nextBtn = document.getElementById("nextStep");
+      if (step2Btn) step2Btn.disabled = !allValid;
+      if (nextBtn) nextBtn.disabled = !allValid;
+    }
 
-  const ageEl = document.getElementById("age");
-  if (ageEl) {
-    const handler = () => {
-      const v = parseInt(ageEl.value, 10);
-      CharacterState.system.details.age = Number.isNaN(v) ? 0 : v;
-    };
-    ageEl.addEventListener("input", handler);
-    ageEl.addEventListener("change", handler);
-  }
+    if (userNameEl) {
+      userNameEl.addEventListener("input", () => {
+        CharacterState.playerName = userNameEl.value;
+        validateStep1();
+      });
+    }
+
+    if (characterNameEl) {
+      characterNameEl.addEventListener("input", () => {
+        CharacterState.name = characterNameEl.value;
+        CharacterState.prototypeToken.name = characterNameEl.value;
+        validateStep1();
+      });
+    }
+
+    if (originEl) {
+      originEl.addEventListener("input", () => {
+        CharacterState.system.details.origin = originEl.value;
+        validateStep1();
+      });
+    }
+
+    if (ageEl) {
+      const handler = () => {
+        const v = parseInt(ageEl.value, 10);
+        CharacterState.system.details.age = Number.isNaN(v) ? 0 : v;
+        validateStep1();
+      };
+      ageEl.addEventListener("input", handler);
+      ageEl.addEventListener("change", handler);
+    }
+
+    validateStep1();
 });
 
 export { showStep, loadData };

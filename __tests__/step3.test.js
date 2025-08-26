@@ -240,3 +240,58 @@ describe('High Elf cantrip choices', () => {
   });
 });
 
+describe('cantrip selection persistence', () => {
+  beforeEach(() => {
+    document.body.innerHTML = `
+      <div id="raceList"></div>
+      <div id="raceFeatures"></div>
+      <button id="confirmRaceSelection"></button>
+    `;
+    DATA.races = {
+      Elf: [{ name: 'Elf (High)', path: 'elfHigh' }],
+    };
+    DATA.spells = [
+      {
+        name: 'Fire Bolt',
+        level: 0,
+        school: 'Evocation',
+        spell_list: ['Wizard'],
+      },
+      {
+        name: 'Mage Hand',
+        level: 0,
+        school: 'Conjuration',
+        spell_list: ['Wizard'],
+      },
+    ];
+    const race = {
+      name: 'Elf (High)',
+      entries: [],
+      additionalSpells: [
+        { choose: 'level=0|class=Wizard' },
+        { choose: 'level=0|class=Wizard' },
+      ],
+    };
+    mockFetch.mockImplementation((p) => {
+      if (p === 'elfHigh') return Promise.resolve(race);
+      return Promise.resolve({});
+    });
+  });
+
+  test('selecting multiple cantrips retains earlier selections', async () => {
+    await selectBaseRace('Elf');
+    const card = document.querySelector('#raceList .class-card');
+    card.click();
+    await new Promise((r) => setTimeout(r, 0));
+    const selects = document.querySelectorAll('#raceFeatures select');
+    const [sel1, sel2] = selects;
+    sel1.value = 'Fire Bolt';
+    sel1.dispatchEvent(new Event('change'));
+    sel2.value = 'Mage Hand';
+    sel2.dispatchEvent(new Event('change'));
+    await new Promise((r) => setTimeout(r, 0));
+    expect(sel1.value).toBe('Fire Bolt');
+    expect(sel2.value).toBe('Mage Hand');
+  });
+});
+

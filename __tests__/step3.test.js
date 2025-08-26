@@ -63,7 +63,7 @@ describe('race search behavior', () => {
     await renderBaseRaces('Eladrin');
     const cards = document.querySelectorAll('#raceList .class-card');
     expect(cards).toHaveLength(1);
-    expect(cards[0].querySelector('h3').textContent).toBe('Elf');
+    expect(cards[0].querySelector('h3').textContent).toBe('Elf (2)');
   });
 
   test('selecting base race clears search and shows all subraces', async () => {
@@ -98,7 +98,7 @@ describe('race search behavior', () => {
     await p1;
     const cards = document.querySelectorAll('#raceList .class-card');
     expect(cards).toHaveLength(1);
-    expect(cards[0].querySelector('h3').textContent).toBe('Dwarf');
+    expect(cards[0].querySelector('h3').textContent).toBe('Dwarf (1)');
   });
 });
 

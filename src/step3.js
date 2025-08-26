@@ -185,7 +185,11 @@ async function renderBaseRaces(search = '') {
       race = { ...data, name: base };
     }
     if (seq !== raceRenderSeq) return;
-    const card = createRaceCard(race, () => selectBaseRace(base));
+    const card = createRaceCard(
+      race,
+      () => selectBaseRace(base),
+      `${base} (${subs.length})`
+    );
     if (seq !== raceRenderSeq) return;
     container.appendChild(card);
   }

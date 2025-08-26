@@ -207,10 +207,11 @@
 			}
 		}
 	],
-	"languageProficiencies": [
-		{
-			"common": true,
-			"anyStandard": 1
-		}
-	]
+        "languageProficiencies": [
+                {
+                        "common": true,
+                        "anyStandard": 1
+                }
+        ],
+        "raceName": "Dragonborn"
 }

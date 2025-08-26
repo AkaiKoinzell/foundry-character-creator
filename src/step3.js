@@ -153,7 +153,7 @@ function createRaceCard(race, onSelect, displayName = race.name) {
   return card;
 }
 
-async function renderBaseRaces() {
+async function renderBaseRaces(search = '') {
   const container = document.getElementById('raceList');
   const features = document.getElementById('raceFeatures');
   if (!container) return;
@@ -163,6 +163,7 @@ async function renderBaseRaces() {
   features?.classList.add('hidden');
   if (features) features.innerHTML = '<div id="raceTraits"></div>';
   container.classList.remove('hidden');
+  const term = (search || '').toLowerCase();
   await Promise.all(
     Object.entries(DATA.races).map(async ([base, subs]) => {
       let race = { name: base };
@@ -171,6 +172,7 @@ async function renderBaseRaces() {
         const data = await fetchJsonWithRetry(path, `race at ${path}`);
         race = { ...data, name: base };
       }
+      if (!race.name.toLowerCase().includes(term)) return;
       const card = createRaceCard(race, () => selectBaseRace(base));
       container.appendChild(card);
     })
@@ -189,20 +191,23 @@ async function selectBaseRace(base) {
   features?.classList.add('hidden');
   const list = document.getElementById('raceList');
   list?.classList.remove('hidden');
-  await renderSubraceCards(base);
+  const search = document.getElementById('raceSearch')?.value;
+  await renderSubraceCards(base, search);
   validateRaceChoices();
 }
 
-async function renderSubraceCards(base) {
+async function renderSubraceCards(base, search = '') {
   const container = document.getElementById('raceList');
   if (!container) return;
   container.innerHTML = '';
   const changeBtn = document.getElementById('changeRace');
   changeBtn?.classList.remove('hidden');
   const subraces = DATA.races[base] || [];
+  const term = (search || '').toLowerCase();
   await Promise.all(
     subraces.map(async ({ name, path }) => {
       const race = await fetchJsonWithRetry(path, `race at ${path}`);
+      if (!race.name.toLowerCase().includes(term)) return;
       const card = createRaceCard(race, async () => {
         currentRaceData = race;
         pendingRaceChoices.subrace = race.name;
@@ -508,9 +513,16 @@ function confirmRaceSelection() {
 export async function loadStep3(force = false) {
   await loadRaces();
   const container = document.getElementById('raceList');
+  const searchInput = document.getElementById('raceSearch');
   if (!container) return;
   if (container.childElementCount && !force) return;
-  await renderBaseRaces();
+  await renderBaseRaces(searchInput?.value);
+
+  searchInput?.addEventListener('input', async (e) => {
+    const term = e.target.value;
+    if (selectedBaseRace) await renderSubraceCards(selectedBaseRace, term);
+    else await renderBaseRaces(term);
+  });
 
   const btn = document.getElementById('confirmRaceSelection');
   btn?.addEventListener('click', confirmRaceSelection);
@@ -531,7 +543,7 @@ export async function loadStep3(force = false) {
     const features = document.getElementById('raceFeatures');
     list?.classList.remove('hidden');
     features?.classList.add('hidden');
-    await renderBaseRaces();
+    await renderBaseRaces(searchInput?.value);
     validateRaceChoices();
   });
 }

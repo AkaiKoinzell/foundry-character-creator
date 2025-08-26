@@ -48,6 +48,8 @@ export function renderBackgroundList(query = '') {
   const container = document.getElementById('backgroundList');
   if (!container) return;
   container.innerHTML = '';
+  const changeBtn = document.getElementById('changeBackground');
+  changeBtn?.classList.add('hidden');
   const entries = DATA.backgrounds || {};
   const term = query.toLowerCase();
   for (const [name, bg] of Object.entries(entries)) {
@@ -66,6 +68,7 @@ function selectBackground(bg) {
   const list = document.getElementById('backgroundList');
   list?.classList.add('hidden');
   document.getElementById('backgroundSearch')?.classList.add('hidden');
+  document.getElementById('changeBackground')?.classList.remove('hidden');
 
   let features = document.getElementById('backgroundFeatures');
   if (!features) {
@@ -291,5 +294,24 @@ export function loadStep4(force = false) {
   const btn = document.getElementById('confirmBackgroundSelection');
   btn?.addEventListener('click', confirmBackgroundSelection);
   btn?.setAttribute('disabled', 'true');
+
+  const changeBtn = document.getElementById('changeBackground');
+  changeBtn?.addEventListener('click', () => {
+    currentBackgroundData = null;
+    pendingSelections.skills = [];
+    pendingSelections.tools = [];
+    pendingSelections.languages = [];
+    pendingSelections.feat = null;
+    const list = document.getElementById('backgroundList');
+    list?.classList.remove('hidden');
+    const search = document.getElementById('backgroundSearch');
+    search?.classList.remove('hidden');
+    const features = document.getElementById('backgroundFeatures');
+    if (features) {
+      features.classList.add('hidden');
+      features.innerHTML = '';
+    }
+    renderBackgroundList(search?.value);
+  });
 }
 

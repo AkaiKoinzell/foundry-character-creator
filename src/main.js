@@ -6,6 +6,7 @@ import {
   logCharacterState,
   adjustResource,
   updateSpellSlots,
+  loadBackgrounds,
 } from "./data.js";
 import { loadStep2, rebuildFromClasses, refreshBaseState } from "./step2.js";
 import { loadStep3 } from "./step3.js";
@@ -36,19 +37,15 @@ function showStep(step) {
 }
 
 async function loadData() {
-  // Load each class file referenced in data/classes.json
-  await loadClasses();
+  // Load class and background data
+  await Promise.all([loadClasses(), loadBackgrounds()]);
 
-  // Retain existing logic for other data types
-  const sources = {
-    backgrounds: "data/backgrounds.json",
-    languages: "data/languages.json",
-  };
-
-  for (const [key, path] of Object.entries(sources)) {
-    const json = await fetchJsonWithRetry(path, key);
-    DATA[key] = json.items || json.languages;
-  }
+  // Load languages separately
+  const langJson = await fetchJsonWithRetry(
+    "data/languages.json",
+    "languages"
+  );
+  DATA.languages = langJson.languages;
 }
 
 function capitalize(str) {

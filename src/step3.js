@@ -166,13 +166,15 @@ async function renderBaseRaces(search = '') {
   const term = (search || '').toLowerCase();
   await Promise.all(
     Object.entries(DATA.races).map(async ([base, subs]) => {
+      const baseMatch = base.toLowerCase().includes(term);
+      const subMatch = subs.some((s) => s.name.toLowerCase().includes(term));
+      if (term && !baseMatch && !subMatch) return;
       let race = { name: base };
       const path = subs[0]?.path;
       if (path) {
         const data = await fetchJsonWithRetry(path, `race at ${path}`);
         race = { ...data, name: base };
       }
-      if (!race.name.toLowerCase().includes(term)) return;
       const card = createRaceCard(race, () => selectBaseRace(base));
       container.appendChild(card);
     })
@@ -191,8 +193,9 @@ async function selectBaseRace(base) {
   features?.classList.add('hidden');
   const list = document.getElementById('raceList');
   list?.classList.remove('hidden');
-  const search = document.getElementById('raceSearch')?.value;
-  await renderSubraceCards(base, search);
+  const searchInput = document.getElementById('raceSearch');
+  if (searchInput) searchInput.value = '';
+  await renderSubraceCards(base);
   validateRaceChoices();
 }
 
@@ -547,3 +550,5 @@ export async function loadStep3(force = false) {
     validateRaceChoices();
   });
 }
+
+export { renderBaseRaces, selectBaseRace };

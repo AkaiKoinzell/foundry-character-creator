@@ -6,7 +6,6 @@ import {
 import { refreshBaseState, rebuildFromClasses, updateChoiceSelectOptions } from './step2.js';
 import { t } from './i18n.js';
 import { showStep } from './main.js';
-import { addUniqueProficiency } from './proficiency.js';
 
 let currentBackgroundData = null;
 const pendingSelections = {
@@ -233,39 +232,35 @@ function validateBackgroundChoices() {
 function confirmBackgroundSelection() {
   if (!currentBackgroundData) return;
   if (!validateBackgroundChoices()) return;
-  const container = document.getElementById('backgroundFeatures');
 
   CharacterState.system.details.background = currentBackgroundData.name;
 
-  (currentBackgroundData.skills || []).forEach((s) =>
-    addUniqueProficiency('skills', s, container)
-  );
-  if (Array.isArray(currentBackgroundData.tools)) {
-    currentBackgroundData.tools.forEach((t) =>
-      addUniqueProficiency('tools', t, container)
-    );
-  }
-  if (Array.isArray(currentBackgroundData.languages)) {
-    currentBackgroundData.languages.forEach((l) =>
-      addUniqueProficiency('languages', l, container)
-    );
-  }
+  const skillSet = new Set(CharacterState.system.skills);
+  (currentBackgroundData.skills || []).forEach((s) => skillSet.add(s));
+  pendingSelections.skills.forEach((sel) => skillSet.add(sel.value));
+  CharacterState.system.skills = Array.from(skillSet);
 
-  pendingSelections.skills.forEach((sel) =>
-    addUniqueProficiency('skills', sel.value, container)
-  );
-  pendingSelections.tools.forEach((sel) =>
-    addUniqueProficiency('tools', sel.value, container)
-  );
-  pendingSelections.languages.forEach((sel) =>
-    addUniqueProficiency('languages', sel.value, container)
-  );
+  const toolSet = new Set(CharacterState.system.tools);
+  if (Array.isArray(currentBackgroundData.tools)) {
+    currentBackgroundData.tools.forEach((t) => toolSet.add(t));
+  }
+  pendingSelections.tools.forEach((sel) => toolSet.add(sel.value));
+  CharacterState.system.tools = Array.from(toolSet);
+
+  const langSet = new Set(CharacterState.system.traits.languages.value);
+  if (Array.isArray(currentBackgroundData.languages)) {
+    currentBackgroundData.languages.forEach((l) => langSet.add(l));
+  }
+  pendingSelections.languages.forEach((sel) => langSet.add(sel.value));
+  CharacterState.system.traits.languages.value = Array.from(langSet);
+
   if (pendingSelections.feat && pendingSelections.feat.value) {
-    CharacterState.feats = CharacterState.feats || [];
-    if (!CharacterState.feats.includes(pendingSelections.feat.value))
-      CharacterState.feats.push(pendingSelections.feat.value);
+    const featSet = new Set(CharacterState.feats || []);
+    featSet.add(pendingSelections.feat.value);
+    CharacterState.feats = Array.from(featSet);
     pendingSelections.feat.disabled = true;
   }
+
   [...pendingSelections.skills, ...pendingSelections.tools, ...pendingSelections.languages].forEach(
     (sel) => (sel.disabled = true)
   );

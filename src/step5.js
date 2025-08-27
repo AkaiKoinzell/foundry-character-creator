@@ -4,7 +4,6 @@ import { showStep } from './main.js';
 import { createAccordionItem } from './ui-helpers.js';
 
 let equipmentData = null;
-let currentClass = '';
 let choiceBlocks = [];
 
 const SIMPLE_WEAPONS = DATA.simpleWeapons || [
@@ -138,12 +137,19 @@ function buildChoiceBlock(choice, idx) {
   return null;
 }
 
-function renderEquipmentForClass(className) {
+function getCurrentClass() {
+  const sel = document.getElementById('classSelect');
+  return sel?.value || CharacterState.classes[0]?.name || '';
+}
+
+function renderEquipmentForClass() {
   const container = document.getElementById('equipmentSelections');
   if (!container) return;
   const existingAcc = container.querySelector('.accordion');
   if (existingAcc) existingAcc.remove();
   choiceBlocks = [];
+
+  const className = getCurrentClass();
 
   const accordion = document.createElement('div');
   accordion.className = 'accordion';
@@ -157,7 +163,17 @@ function renderEquipmentForClass(className) {
   });
   accordion.appendChild(createAccordionItem(t('standardGear'), stdList));
 
-  const clsData = equipmentData.classes?.[className] || {};
+  const clsData = equipmentData.classes?.[className];
+  if (!clsData) {
+    console.warn(`Missing equipment mapping for class: ${className}`);
+    const msg = document.createElement('div');
+    msg.textContent = `No equipment mapping found for ${className}.`;
+    accordion.appendChild(msg);
+    container.appendChild(accordion);
+    validateEquipmentSelections();
+    return;
+  }
+
   if (clsData.fixed && clsData.fixed.length) {
     const fxList = document.createElement('ul');
     clsData.fixed.forEach((item) => {
@@ -230,7 +246,7 @@ function confirmEquipment() {
   if (!validateEquipmentSelections()) return;
   const selections = [];
   selections.push(...(equipmentData.standard || []));
-  const clsData = equipmentData.classes?.[currentClass] || {};
+  const clsData = equipmentData.classes?.[getCurrentClass()] || {};
   if (clsData.fixed) selections.push(...clsData.fixed);
   choiceBlocks.forEach((b) => selections.push(...b.getValue()));
   CharacterState.equipment = selections;
@@ -248,25 +264,25 @@ export async function loadStep5(force = false) {
   if (force) container.innerHTML = '';
   if (!force && container.querySelector('.accordion')) return;
 
-  currentClass = CharacterState.classes[0]?.name || '';
-  if (!currentClass) return;
+  const initialClass = CharacterState.classes[0]?.name || '';
+  if (!initialClass) return;
 
   if ((CharacterState.classes || []).length > 1) {
     const sel = document.createElement('select');
+    sel.id = 'classSelect';
     (CharacterState.classes || []).forEach((cls) => {
       const opt = document.createElement('option');
       opt.value = cls.name;
       opt.textContent = cls.name;
       sel.appendChild(opt);
     });
-    sel.value = currentClass;
+    sel.value = initialClass;
     sel.addEventListener('change', () => {
-      currentClass = sel.value;
-      renderEquipmentForClass(currentClass);
+      renderEquipmentForClass();
     });
     container.appendChild(sel);
   }
 
-  renderEquipmentForClass(currentClass);
+  renderEquipmentForClass();
   confirmBtn.addEventListener('click', confirmEquipment);
 }

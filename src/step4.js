@@ -1,13 +1,15 @@
 import {
   DATA,
   CharacterState,
-  logCharacterState
+  logCharacterState,
+  fetchJsonWithRetry
 } from './data.js';
 import { refreshBaseState, rebuildFromClasses, updateChoiceSelectOptions } from './step2.js';
 import { t } from './i18n.js';
 import { showStep } from './main.js';
 import { loadStep5 } from './step5.js';
 import { createElement, createAccordionItem } from './ui-helpers.js';
+import { addUniqueProficiency } from './proficiency.js';
 
 let currentBackgroundData = null;
 const pendingSelections = {
@@ -283,30 +285,52 @@ function validateBackgroundChoices() {
   return allValid;
 }
 
-function confirmBackgroundSelection() {
+async function confirmBackgroundSelection() {
   if (!currentBackgroundData) return;
   if (!validateBackgroundChoices()) return;
 
+  const container = document.getElementById('backgroundFeatures');
   CharacterState.system.details.background = currentBackgroundData.name;
 
-  const skillSet = new Set(CharacterState.system.skills);
-  (currentBackgroundData.skills || []).forEach((s) => skillSet.add(s));
-  pendingSelections.skills.forEach((sel) => skillSet.add(sel.value));
-  CharacterState.system.skills = Array.from(skillSet);
+  const replacements = [];
 
-  const toolSet = new Set(CharacterState.system.tools);
+  (currentBackgroundData.skills || []).forEach((s) => {
+    const sel = addUniqueProficiency('skills', s, container);
+    if (sel) replacements.push(sel);
+  });
+  pendingSelections.skills.forEach((sel) => {
+    const repl = addUniqueProficiency('skills', sel.value, container);
+    if (repl) replacements.push(repl);
+    sel.disabled = true;
+  });
+
   if (Array.isArray(currentBackgroundData.tools)) {
-    currentBackgroundData.tools.forEach((t) => toolSet.add(t));
+    currentBackgroundData.tools.forEach((t) => {
+      const sel = addUniqueProficiency('tools', t, container);
+      if (sel) replacements.push(sel);
+    });
   }
-  pendingSelections.tools.forEach((sel) => toolSet.add(sel.value));
-  CharacterState.system.tools = Array.from(toolSet);
+  pendingSelections.tools.forEach((sel) => {
+    const repl = addUniqueProficiency('tools', sel.value, container);
+    if (repl) replacements.push(repl);
+    sel.disabled = true;
+  });
 
-  const langSet = new Set(CharacterState.system.traits.languages.value);
-  if (Array.isArray(currentBackgroundData.languages)) {
-    currentBackgroundData.languages.forEach((l) => langSet.add(l));
+  if (!Array.isArray(DATA.languages) || !DATA.languages.length) {
+    const langs = await fetchJsonWithRetry('data/languages.json', 'languages');
+    DATA.languages = langs.languages || langs;
   }
-  pendingSelections.languages.forEach((sel) => langSet.add(sel.value));
-  CharacterState.system.traits.languages.value = Array.from(langSet);
+  if (Array.isArray(currentBackgroundData.languages)) {
+    currentBackgroundData.languages.forEach((l) => {
+      const sel = addUniqueProficiency('languages', l, container);
+      if (sel) replacements.push(sel);
+    });
+  }
+  pendingSelections.languages.forEach((sel) => {
+    const repl = addUniqueProficiency('languages', sel.value, container);
+    if (repl) replacements.push(repl);
+    sel.disabled = true;
+  });
 
   if (pendingSelections.feat && pendingSelections.feat.value) {
     const featSet = new Set(CharacterState.feats || []);
@@ -315,15 +339,34 @@ function confirmBackgroundSelection() {
     pendingSelections.feat.disabled = true;
   }
 
-  [...pendingSelections.skills, ...pendingSelections.tools, ...pendingSelections.languages].forEach(
-    (sel) => (sel.disabled = true)
-  );
+  pendingSelections.skills = [];
+  pendingSelections.tools = [];
+  pendingSelections.languages = [];
+  pendingSelections.feat = null;
 
   refreshBaseState();
   rebuildFromClasses();
-  logCharacterState();
-  showStep(5);
-  loadStep5(true);
+
+  const finalize = () => {
+    logCharacterState();
+    showStep(5);
+    loadStep5(true);
+  };
+
+  if (replacements.length) {
+    const btn = document.getElementById('confirmBackgroundSelection');
+    if (btn) btn.disabled = true;
+    const check = () => {
+      if (replacements.every((s) => s.value)) {
+        replacements.forEach((s) => s.removeEventListener('change', check));
+        finalize();
+      }
+    };
+    replacements.forEach((s) => s.addEventListener('change', check));
+    return;
+  }
+
+  finalize();
 }
 
 export function loadStep4(force = false) {

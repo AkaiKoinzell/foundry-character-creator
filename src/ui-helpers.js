@@ -1,15 +1,24 @@
+export function createElement(tag, text) {
+  const el = document.createElement(tag);
+  if (text) el.textContent = text;
+  return el;
+}
+
 export function createAccordionItem(title, content, isChoice = false, description = '') {
   const item = document.createElement('div');
   item.className = 'accordion-item' + (isChoice ? ' user-choice' : '');
 
   const header = document.createElement('button');
   header.className = 'accordion-header';
-  header.textContent = title;
 
-  const desc = description ? document.createElement('div') : null;
-  if (desc) {
-    desc.className = 'accordion-description';
-    desc.textContent = description;
+  if (description) {
+    const titleSpan = document.createElement('span');
+    titleSpan.textContent = title;
+    const descSpan = document.createElement('small');
+    descSpan.textContent = ` - ${description}`;
+    header.append(titleSpan, descSpan);
+  } else {
+    header.textContent = title;
   }
 
   const body = document.createElement('div');
@@ -22,8 +31,6 @@ export function createAccordionItem(title, content, isChoice = false, descriptio
     body.classList.toggle('show');
   });
 
-  item.appendChild(header);
-  if (desc) item.appendChild(desc);
-  item.appendChild(body);
+  item.append(header, body);
   return item;
 }

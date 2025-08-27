@@ -11,6 +11,7 @@ import {
 import { loadStep2, rebuildFromClasses, refreshBaseState } from "./step2.js";
 import { loadStep3 } from "./step3.js";
 import { loadStep4 } from "./step4.js";
+import { loadStep5 } from "./step5.js";
 import { exportFoundryActor } from "./export.js";
 import { t, initI18n } from "./i18n.js";
 
@@ -215,6 +216,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (i === 2) loadStep2(true);
         if (i === 3) loadStep3(true);
         if (i === 4) loadStep4(true);
+        if (i === 5) loadStep5(true);
       });
     }
   }
@@ -249,6 +251,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       loadStep2();
       loadStep3();
       loadStep4();
+      loadStep5();
     })
     .catch((err) => console.error(err));
 

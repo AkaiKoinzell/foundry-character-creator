@@ -86,6 +86,7 @@ function selectBackground(bg) {
     features.className = 'accordion';
     list?.after(features);
   }
+  features.classList.remove('hidden');
   features.innerHTML = '';
 
   pendingSelections.skills = [];

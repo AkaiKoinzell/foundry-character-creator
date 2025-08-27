@@ -58,3 +58,35 @@ describe('change background button', () => {
   });
 });
 
+describe('renderBackgroundList description and details', () => {
+  beforeEach(() => {
+    document.body.innerHTML = `
+      <input id="backgroundSearch" />
+      <div id="backgroundList"></div>
+      <button id="confirmBackgroundSelection"></button>
+      <button id="changeBackground" class="hidden"></button>
+    `;
+    DATA.backgrounds = {
+      Acolyte: {
+        name: 'Acolyte',
+        description: 'Devout servant',
+        skills: ['Insight'],
+        languages: [],
+        featOptions: [],
+      },
+    };
+  });
+
+  test('shows description and toggles details', () => {
+    loadStep4();
+    const card = document.querySelector('#backgroundList .class-card');
+    const desc = card.querySelector('p');
+    expect(desc.textContent).toBe('Devout servant');
+    const detailsBtn = card.querySelector('button');
+    expect(detailsBtn).not.toBeNull();
+    detailsBtn.click();
+    const detailsDiv = card.querySelector('.race-details');
+    expect(detailsDiv.classList.contains('hidden')).toBe(false);
+  });
+});
+

@@ -59,6 +59,43 @@ export function renderBackgroundList(query = '') {
     card.addEventListener('click', () => selectBackground(bg));
     const title = createElement('h3', name);
     card.appendChild(title);
+
+    const descText =
+      bg.short || bg.description || bg.summary || bg.desc || '';
+    if (descText) card.appendChild(createElement('p', descText));
+
+    const details = document.createElement('div');
+    details.className = 'race-details hidden';
+    if (bg.skills && bg.skills.length)
+      details.appendChild(
+        createElement('p', `${t('skills')}: ${bg.skills.join(', ')}`)
+      );
+    if (Array.isArray(bg.tools) && bg.tools.length)
+      details.appendChild(
+        createElement('p', `${t('tools')}: ${bg.tools.join(', ')}`)
+      );
+    if (Array.isArray(bg.languages) && bg.languages.length)
+      details.appendChild(
+        createElement('p', `${t('languages')}: ${bg.languages.join(', ')}`)
+      );
+    if (bg.featOptions && bg.featOptions.length)
+      details.appendChild(
+        createElement(
+          'p',
+          `${t('featOptions') || 'Feat Options'}: ${bg.featOptions.join(', ')}`
+        )
+      );
+    if (details.childElementCount) {
+      card.appendChild(details);
+      const detailsBtn = document.createElement('button');
+      detailsBtn.className = 'btn btn-primary';
+      detailsBtn.textContent = t('details') || 'Details';
+      detailsBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        details.classList.toggle('hidden');
+      });
+      card.appendChild(detailsBtn);
+    }
     container.appendChild(card);
   }
 }

@@ -26,5 +26,10 @@
   "skill": "skill",
   "tool": "tool",
   "language": "language",
-  "cantrip": "cantrip"
+  "cantrip": "cantrip",
+  "confirmEquipment": "Confirm Equipment",
+  "standardGear": "Standard Gear",
+  "fixedItems": "Fixed Items",
+  "upgradeOptions": "Upgrade Options",
+  "selectSimpleWeapon": "Select simple weapon"
 }

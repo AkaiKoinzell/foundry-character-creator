@@ -26,5 +26,10 @@
   "skill": "abilità",
   "tool": "strumento",
   "language": "lingua",
-  "cantrip": "trucchetto"
+  "cantrip": "trucchetto",
+  "confirmEquipment": "Conferma equipaggiamento",
+  "standardGear": "Equipaggiamento standard",
+  "fixedItems": "Oggetti fissi",
+  "upgradeOptions": "Opzioni di potenziamento",
+  "selectSimpleWeapon": "Scegli arma semplice"
 }

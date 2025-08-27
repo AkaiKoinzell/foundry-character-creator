@@ -50,19 +50,49 @@ export const ALL_TOOLS = [
   "Thieves' Tools",
 ];
 
+// musical instrument options used when replacing duplicates
+export const ALL_INSTRUMENTS = [
+  'Bagpipes',
+  'Drum',
+  'Dulcimer',
+  'Flute',
+  'Horn',
+  'Lute',
+  'Lyre',
+  'Pan Flute',
+  'Shawm',
+  'Viol',
+];
+
+// Track pending replacement selects by proficiency type so steps can
+// verify that all duplicates have been resolved before advancing.
+const pendingSelects = {};
+
 export function getProficiencyList(type) {
   if (type === 'skills') return CharacterState.system.skills;
   if (type === 'tools') return CharacterState.system.tools;
+  if (type === 'instruments') return CharacterState.system.tools;
   if (type === 'languages') return CharacterState.system.traits.languages.value;
   if (type === 'cantrips') return CharacterState.system.spells.cantrips;
+  if (type === 'feats') return CharacterState.feats;
   return [];
 }
 
 export function getAllOptions(type) {
   if (type === 'skills') return ALL_SKILLS;
   if (type === 'tools') return ALL_TOOLS;
+  if (type === 'instruments') return ALL_INSTRUMENTS;
   if (type === 'languages') return DATA.languages || [];
+  if (type === 'feats') return DATA.feats || [];
   return [];
+}
+
+export function pendingReplacements(type) {
+  if (type) return pendingSelects[type]?.size || 0;
+  return Object.values(pendingSelects).reduce(
+    (acc, set) => acc + (set?.size || 0),
+    0,
+  );
 }
 
 export function addUniqueProficiency(type, value, container) {
@@ -89,10 +119,14 @@ export function addUniqueProficiency(type, value, container) {
       o.textContent = opt;
       sel.appendChild(o);
     });
+  // Track this select as a pending replacement until a new value is chosen
+  const pending = (pendingSelects[type] = pendingSelects[type] || new Set());
+  pending.add(sel);
   sel.addEventListener('change', () => {
     if (sel.value && !list.includes(sel.value)) {
       list.push(sel.value);
       sel.disabled = true;
+      pending.delete(sel);
       logCharacterState();
     }
   });

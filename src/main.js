@@ -34,6 +34,7 @@ let currentStep = 1;
       bar.style.width = `${((step - 1) / 6) * 100}%`;
     }
     currentStep = step;
+    if (step === 5) loadStep5(true);
     if (step === 7) renderFinalRecap();
 
     const prevBtn = document.getElementById("prevStep");

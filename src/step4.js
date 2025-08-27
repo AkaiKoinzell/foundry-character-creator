@@ -6,6 +6,7 @@ import {
 import { refreshBaseState, rebuildFromClasses, updateChoiceSelectOptions } from './step2.js';
 import { t } from './i18n.js';
 import { showStep } from './main.js';
+import { loadStep5 } from './step5.js';
 import { createElement, createAccordionItem } from './ui-helpers.js';
 
 let currentBackgroundData = null;
@@ -285,6 +286,7 @@ function confirmBackgroundSelection() {
   rebuildFromClasses();
   logCharacterState();
   showStep(5);
+  loadStep5(true);
 }
 
 export function loadStep4(force = false) {

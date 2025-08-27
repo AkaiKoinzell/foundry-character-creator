@@ -66,12 +66,12 @@ export function getAllOptions(type) {
 }
 
 export function addUniqueProficiency(type, value, container) {
-  if (!value) return;
+  if (!value) return null;
   const list = getProficiencyList(type);
   if (!list.includes(value)) {
     list.push(value);
     logCharacterState();
-    return;
+    return null;
   }
   const msg = document.createElement('div');
   const label = document.createElement('label');
@@ -99,5 +99,6 @@ export function addUniqueProficiency(type, value, container) {
   label.appendChild(sel);
   msg.appendChild(label);
   container.appendChild(msg);
+  return sel;
 }
 

@@ -512,27 +512,35 @@ function confirmRaceSelection() {
   if (currentRaceData.traitTags)
     CharacterState.system.traits.traitTags = [...currentRaceData.traitTags];
 
+  const replacements = [];
   if (currentRaceData.skillProficiencies) {
     currentRaceData.skillProficiencies.forEach((obj) => {
       for (const k in obj)
-        if (obj[k]) addUniqueProficiency('skills', capitalize(k), container);
+        if (obj[k]) {
+          const sel = addUniqueProficiency('skills', capitalize(k), container);
+          if (sel) replacements.push(sel);
+        }
     });
   }
   if (currentRaceData.languageProficiencies) {
     currentRaceData.languageProficiencies.forEach((obj) => {
       for (const k in obj)
-        if (k !== 'anyStandard' && obj[k])
-          addUniqueProficiency('languages', capitalize(k), container);
+        if (k !== 'anyStandard' && obj[k]) {
+          const sel = addUniqueProficiency('languages', capitalize(k), container);
+          if (sel) replacements.push(sel);
+        }
     });
   }
   pendingRaceChoices.languages.forEach((sel) => {
-    addUniqueProficiency('languages', sel.value, container);
+    const repl = addUniqueProficiency('languages', sel.value, container);
+    if (repl) replacements.push(repl);
     if (!CharacterState.system.traits.languages.value.includes(sel.value))
       CharacterState.system.traits.languages.value.push(sel.value);
     sel.disabled = true;
   });
   pendingRaceChoices.spells.forEach((sel) => {
-    addUniqueProficiency('cantrips', sel.value, container);
+    const repl = addUniqueProficiency('cantrips', sel.value, container);
+    if (repl) replacements.push(repl);
     CharacterState.raceChoices.spells.push(sel.value);
     sel.disabled = true;
   });
@@ -547,9 +555,25 @@ function confirmRaceSelection() {
   refreshBaseState();
   rebuildFromClasses();
   const btn4 = document.getElementById('btnStep4');
-  if (btn4) btn4.disabled = false;
-  logCharacterState();
-  showStep(4);
+  const confirmBtn = document.getElementById('confirmRaceSelection');
+  const finalize = () => {
+    if (btn4) btn4.disabled = false;
+    if (confirmBtn) confirmBtn.disabled = false;
+    logCharacterState();
+    showStep(4);
+  };
+  if (replacements.length) {
+    if (confirmBtn) confirmBtn.disabled = true;
+    const check = () => {
+      if (replacements.every((s) => s.value)) {
+        replacements.forEach((s) => s.removeEventListener('change', check));
+        finalize();
+      }
+    };
+    replacements.forEach((s) => s.addEventListener('change', check));
+    return;
+  }
+  finalize();
 }
 
 export async function loadStep3(force = false) {
@@ -592,4 +616,4 @@ export async function loadStep3(force = false) {
   });
 }
 
-export { renderBaseRaces, selectBaseRace };
+export { renderBaseRaces, selectBaseRace, confirmRaceSelection };

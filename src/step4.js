@@ -16,6 +16,12 @@ const pendingSelections = {
   languages: [],
   feat: null
 };
+const choiceAccordions = {
+  skills: null,
+  tools: null,
+  languages: null,
+  feat: null
+};
 
 export function renderBackgroundList(query = '') {
   const container = document.getElementById('backgroundList');
@@ -94,6 +100,10 @@ function selectBackground(bg) {
   pendingSelections.tools = [];
   pendingSelections.languages = [];
   pendingSelections.feat = null;
+  choiceAccordions.skills = null;
+  choiceAccordions.tools = null;
+  choiceAccordions.languages = null;
+  choiceAccordions.feat = null;
 
   // Details summary
   const details = document.createElement('div');
@@ -128,9 +138,9 @@ function selectBackground(bg) {
   features.appendChild(createAccordionItem(t('details') || 'Details', details));
 
   // Choices --------------------------------------------------
-  const choices = document.createElement('div');
 
   if (currentBackgroundData.skillChoices?.choose) {
+    const wrapper = document.createElement('div');
     for (let i = 0; i < currentBackgroundData.skillChoices.choose; i++) {
       const sel = document.createElement('select');
       sel.innerHTML = `<option value=''>${t('selectSkill') || 'Select skill'}</option>`;
@@ -145,14 +155,22 @@ function selectBackground(bg) {
         validateBackgroundChoices();
       });
       pendingSelections.skills.push(sel);
-      choices.appendChild(sel);
+      wrapper.appendChild(sel);
     }
     updateChoiceSelectOptions(pendingSelections.skills, 'skills');
+    const acc = createAccordionItem(t('skills'), wrapper, true);
+    acc.classList.add('needs-selection');
+    features.appendChild(acc);
+    choiceAccordions.skills = acc;
   }
 
-  const toolData = currentBackgroundData.toolChoices ||
-    (currentBackgroundData.tools && !Array.isArray(currentBackgroundData.tools) ? currentBackgroundData.tools : null);
+  const toolData =
+    currentBackgroundData.toolChoices ||
+    (currentBackgroundData.tools && !Array.isArray(currentBackgroundData.tools)
+      ? currentBackgroundData.tools
+      : null);
   if (toolData?.choose) {
+    const wrapper = document.createElement('div');
     for (let i = 0; i < toolData.choose; i++) {
       const sel = document.createElement('select');
       sel.innerHTML = `<option value=''>${t('selectTool') || 'Select tool'}</option>`;
@@ -167,9 +185,13 @@ function selectBackground(bg) {
         validateBackgroundChoices();
       });
       pendingSelections.tools.push(sel);
-      choices.appendChild(sel);
+      wrapper.appendChild(sel);
     }
     updateChoiceSelectOptions(pendingSelections.tools, 'tools');
+    const acc = createAccordionItem(t('tools'), wrapper, true);
+    acc.classList.add('needs-selection');
+    features.appendChild(acc);
+    choiceAccordions.tools = acc;
   }
 
   if (
@@ -177,6 +199,7 @@ function selectBackground(bg) {
     !Array.isArray(currentBackgroundData.languages) &&
     currentBackgroundData.languages.choose
   ) {
+    const wrapper = document.createElement('div');
     const langOpts = currentBackgroundData.languages.options?.length
       ? currentBackgroundData.languages.options
       : DATA.languages || [];
@@ -194,12 +217,17 @@ function selectBackground(bg) {
         validateBackgroundChoices();
       });
       pendingSelections.languages.push(sel);
-      choices.appendChild(sel);
+      wrapper.appendChild(sel);
     }
     updateChoiceSelectOptions(pendingSelections.languages, 'languages');
+    const acc = createAccordionItem(t('languages'), wrapper, true);
+    acc.classList.add('needs-selection');
+    features.appendChild(acc);
+    choiceAccordions.languages = acc;
   }
 
   if (currentBackgroundData.featOptions && currentBackgroundData.featOptions.length) {
+    const wrapper = document.createElement('div');
     const sel = document.createElement('select');
     sel.innerHTML = `<option value=''>${t('selectFeat') || 'Select feat'}</option>`;
     currentBackgroundData.featOptions.forEach((f) => {
@@ -222,28 +250,37 @@ function selectBackground(bg) {
     });
     sel.addEventListener('change', validateBackgroundChoices);
     pendingSelections.feat = sel;
-    choices.appendChild(sel);
+    wrapper.appendChild(sel);
+    const acc = createAccordionItem(t('feat') || 'Feat', wrapper, true);
+    acc.classList.add('needs-selection');
+    features.appendChild(acc);
+    choiceAccordions.feat = acc;
   }
-
-  if (choices.childElementCount)
-    features.appendChild(
-      createAccordionItem(t('yourChoices') || 'Your Choices', choices, true)
-    );
 
   validateBackgroundChoices();
 }
 
 function validateBackgroundChoices() {
   const btn = document.getElementById('confirmBackgroundSelection');
-  const all = [
-    ...pendingSelections.skills,
-    ...pendingSelections.tools,
-    ...pendingSelections.languages,
-  ];
-  if (pendingSelections.feat) all.push(pendingSelections.feat);
-  const valid = all.every((s) => !s || s.value);
-  if (btn) btn.disabled = !valid;
-  return valid;
+  const skillValid = pendingSelections.skills.every((s) => s.value);
+  if (choiceAccordions.skills)
+    choiceAccordions.skills.classList.toggle('incomplete', !skillValid);
+
+  const toolValid = pendingSelections.tools.every((s) => s.value);
+  if (choiceAccordions.tools)
+    choiceAccordions.tools.classList.toggle('incomplete', !toolValid);
+
+  const langValid = pendingSelections.languages.every((s) => s.value);
+  if (choiceAccordions.languages)
+    choiceAccordions.languages.classList.toggle('incomplete', !langValid);
+
+  const featValid = pendingSelections.feat ? !!pendingSelections.feat.value : true;
+  if (choiceAccordions.feat)
+    choiceAccordions.feat.classList.toggle('incomplete', !featValid);
+
+  const allValid = skillValid && toolValid && langValid && featValid;
+  if (btn) btn.disabled = !allValid;
+  return allValid;
 }
 
 function confirmBackgroundSelection() {

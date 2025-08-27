@@ -8,6 +8,7 @@ import { CharacterState } from '../src/data.js';
 describe('duplicate selection prevention', () => {
   beforeEach(() => {
     CharacterState.system.skills = [];
+    CharacterState.system.spells.cantrips = [];
   });
 
   function createSelect(options) {
@@ -92,5 +93,27 @@ describe('duplicate selection prevention', () => {
 
     expect(skillSelect1.value).toBe('Acrobatics');
     expect(skillSelect2.value).toBe('Athletics');
+  });
+
+  test('selecting two different cantrips keeps both selections and disables them elsewhere', () => {
+    CharacterState.system.spells.cantrips = ['Fire Bolt'];
+    const cantripSelect1 = createSelect(['Fire Bolt', 'Light']);
+    const cantripSelect2 = createSelect(['Fire Bolt', 'Light']);
+    cantripSelect1.value = 'Fire Bolt';
+    const selects = [cantripSelect1, cantripSelect2];
+
+    updateChoiceSelectOptions(selects, 'cantrips');
+
+    cantripSelect2.value = 'Light';
+    updateChoiceSelectOptions(selects, 'cantrips');
+
+    expect(cantripSelect1.value).toBe('Fire Bolt');
+    expect(cantripSelect2.value).toBe('Light');
+    expect(
+      cantripSelect1.querySelector("option[value='Light']").disabled
+    ).toBe(true);
+    expect(
+      cantripSelect2.querySelector("option[value='Fire Bolt']").disabled
+    ).toBe(true);
   });
 });

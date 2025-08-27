@@ -165,6 +165,12 @@ function updateChoiceSelectOptions(
     if (!val) return;
     counts.set(val, (counts.get(val) || 0) + 1);
   };
+  const subtract = val => {
+    if (!val) return;
+    const newCount = (counts.get(val) || 0) - 1;
+    if (newCount <= 0) counts.delete(val);
+    else counts.set(val, newCount);
+  };
 
   if (type === 'skills') {
     getProficiencyList('skills').forEach(add);
@@ -176,6 +182,10 @@ function updateChoiceSelectOptions(
     getProficiencyList(type).forEach(add);
   }
 
+  // Remove the current selections before recounting
+  selects.forEach(sel => subtract(sel.value));
+
+  // Add the current selections back once to track duplicates correctly
   selects.forEach(sel => add(sel.value));
 
   selects.forEach(sel => {
@@ -186,8 +196,8 @@ function updateChoiceSelectOptions(
       opt.disabled = !isCurrent && count > 0;
     });
 
-    const currentCount = counts.get(sel.value) || 0;
-    if (sel.value && currentCount > 1) {
+    const currentCount = (counts.get(sel.value) || 0) - 1;
+    if (sel.value && currentCount > 0) {
       sel.value = '';
       sel.dispatchEvent(new Event('change'));
     }

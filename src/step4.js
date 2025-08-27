@@ -6,6 +6,7 @@ import {
 import { refreshBaseState, rebuildFromClasses, updateChoiceSelectOptions } from './step2.js';
 import { t } from './i18n.js';
 import { showStep } from './main.js';
+import { createElement, createAccordionItem } from './ui-helpers.js';
 
 let currentBackgroundData = null;
 const pendingSelections = {
@@ -14,35 +15,6 @@ const pendingSelections = {
   languages: [],
   feat: null
 };
-
-function createElement(tag, text) {
-  const el = document.createElement(tag);
-  if (text) el.textContent = text;
-  return el;
-}
-
-function createAccordionItem(title, content, isChoice = false) {
-  const item = document.createElement('div');
-  item.className = 'accordion-item' + (isChoice ? ' user-choice' : '');
-
-  const header = document.createElement('button');
-  header.className = 'accordion-header';
-  header.textContent = title;
-
-  const body = document.createElement('div');
-  body.className = 'accordion-content';
-  if (typeof content === 'string') body.textContent = content;
-  else body.appendChild(content);
-
-  header.addEventListener('click', () => {
-    header.classList.toggle('active');
-    body.classList.toggle('show');
-  });
-
-  item.appendChild(header);
-  item.appendChild(body);
-  return item;
-}
 
 export function renderBackgroundList(query = '') {
   const container = document.getElementById('backgroundList');

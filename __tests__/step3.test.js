@@ -5,6 +5,7 @@ import { jest } from '@jest/globals';
 
 const mockFetch = jest.fn();
 const mockLoadRaces = jest.fn().mockResolvedValue();
+const mockShowStep = jest.fn();
 
 jest.unstable_mockModule('../src/data.js', () => ({
   DATA: { races: {}, languages: [] },
@@ -33,8 +34,12 @@ jest.unstable_mockModule('../src/step2.js', () => ({
   loadStep2: jest.fn(),
 }));
 
-const { renderBaseRaces, selectBaseRace } = await import('../src/step3.js');
-const { DATA } = await import('../src/data.js');
+jest.unstable_mockModule('../src/main.js', () => ({
+  showStep: mockShowStep,
+}));
+
+const { renderBaseRaces, selectBaseRace, confirmRaceSelection } = await import('../src/step3.js');
+const { DATA, CharacterState } = await import('../src/data.js');
 
 describe('race search behavior', () => {
   beforeEach(() => {
@@ -292,6 +297,45 @@ describe('cantrip selection persistence', () => {
     await new Promise((r) => setTimeout(r, 0));
     expect(sel1.value).toBe('Fire Bolt');
     expect(sel2.value).toBe('Mage Hand');
+  });
+});
+
+describe('duplicate proficiency replacement', () => {
+  beforeEach(async () => {
+    document.body.innerHTML = `
+      <div id="raceList"></div>
+      <div id="raceFeatures"></div>
+      <div id="raceTraits"></div>
+      <button id="confirmRaceSelection"></button>
+      <button id="btnStep4"></button>
+    `;
+    DATA.races = {
+      Elf: [{ name: 'Elf (High)', path: 'elfHigh' }],
+    };
+    DATA.languages = ['Common', 'Dwarvish'];
+    CharacterState.system.traits.languages.value = ['Elvish'];
+    const race = {
+      name: 'Elf (High)',
+      entries: [],
+      languageProficiencies: [{ elvish: true }],
+    };
+    mockFetch.mockImplementation((p) => Promise.resolve(race));
+    await selectBaseRace('Elf');
+    document.querySelector('#raceList .class-card').click();
+    await new Promise((r) => setTimeout(r, 0));
+  });
+
+  test('waits for replacement selections before proceeding', () => {
+    confirmRaceSelection();
+    const btn = document.getElementById('confirmRaceSelection');
+    const repl = document.querySelector('#raceTraits select');
+    expect(btn.disabled).toBe(true);
+    expect(mockShowStep).not.toHaveBeenCalled();
+    expect(repl).toBeTruthy();
+    repl.value = 'Common';
+    repl.dispatchEvent(new Event('change'));
+    expect(btn.disabled).toBe(false);
+    expect(mockShowStep).toHaveBeenCalledWith(4);
   });
 });
 

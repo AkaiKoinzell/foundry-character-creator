@@ -9,6 +9,7 @@ import { refreshBaseState, rebuildFromClasses } from './step2.js';
 import { t } from './i18n.js';
 import { showStep } from './main.js';
 import { addUniqueProficiency } from './proficiency.js';
+import { createAccordionItem } from './ui-helpers.js';
 
 let selectedBaseRace = '';
 let currentRaceData = null;
@@ -77,41 +78,6 @@ function validateRaceChoices() {
 
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-function createAccordionItem(title, content, isChoice = false, description = '') {
-  const item = document.createElement('div');
-  item.className = 'accordion-item' + (isChoice ? ' user-choice' : '');
-
-  const header = document.createElement('button');
-  header.className = 'accordion-header';
-  if (description) {
-    const titleSpan = document.createElement('span');
-    titleSpan.textContent = title;
-    const descSpan = document.createElement('small');
-    descSpan.textContent = ` - ${description}`;
-    header.appendChild(titleSpan);
-    header.appendChild(descSpan);
-  } else {
-    header.textContent = title;
-  }
-
-  const body = document.createElement('div');
-  body.className = 'accordion-content';
-  if (typeof content === 'string') {
-    body.textContent = content;
-  } else {
-    body.appendChild(content);
-  }
-
-  header.addEventListener('click', () => {
-    header.classList.toggle('active');
-    body.classList.toggle('show');
-  });
-
-  item.appendChild(header);
-  item.appendChild(body);
-  return item;
 }
 
 function createRaceCard(race, onSelect, displayName = race.name) {

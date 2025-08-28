@@ -495,6 +495,7 @@ function confirmRaceSelection() {
     ...CharacterState.system.attributes.movement,
     ...move,
   };
+  CharacterState.raceChoices.movement = move;
 
   if (Array.isArray(currentRaceData.ability)) {
     currentRaceData.ability.forEach((obj) => {
@@ -517,8 +518,16 @@ function confirmRaceSelection() {
     currentRaceData.skillProficiencies.forEach((obj) => {
       for (const k in obj)
         if (obj[k]) {
-          const sel = addUniqueProficiency('skills', capitalize(k), container);
-          if (sel) replacements.push(sel);
+          const val = capitalize(k);
+          const sel = addUniqueProficiency('skills', val, container);
+          if (sel) {
+            sel.dataset.proftype = 'skills';
+            replacements.push(sel);
+          } else {
+            CharacterState.raceChoices.skills =
+              CharacterState.raceChoices.skills || [];
+            CharacterState.raceChoices.skills.push(val);
+          }
         }
     });
   }
@@ -526,16 +535,30 @@ function confirmRaceSelection() {
     currentRaceData.languageProficiencies.forEach((obj) => {
       for (const k in obj)
         if (k !== 'anyStandard' && obj[k]) {
-          const sel = addUniqueProficiency('languages', capitalize(k), container);
-          if (sel) replacements.push(sel);
+          const val = capitalize(k);
+          const sel = addUniqueProficiency('languages', val, container);
+          if (sel) {
+            sel.dataset.proftype = 'languages';
+            replacements.push(sel);
+          } else {
+            CharacterState.raceChoices.languages =
+              CharacterState.raceChoices.languages || [];
+            CharacterState.raceChoices.languages.push(val);
+          }
         }
     });
   }
   pendingRaceChoices.languages.forEach((sel) => {
     const repl = addUniqueProficiency('languages', sel.value, container);
-    if (repl) replacements.push(repl);
+    if (repl) {
+      repl.dataset.proftype = 'languages';
+      replacements.push(repl);
+    }
     if (!CharacterState.system.traits.languages.value.includes(sel.value))
       CharacterState.system.traits.languages.value.push(sel.value);
+    CharacterState.raceChoices.languages =
+      CharacterState.raceChoices.languages || [];
+    CharacterState.raceChoices.languages.push(sel.value);
     sel.disabled = true;
   });
   pendingRaceChoices.spells.forEach((sel) => {
@@ -565,6 +588,14 @@ function confirmRaceSelection() {
   if (replacements.length) {
     if (confirmBtn) confirmBtn.disabled = true;
     const check = () => {
+      replacements.forEach((s) => {
+        if (s.value && s.dataset.proftype) {
+          const list =
+            (CharacterState.raceChoices[s.dataset.proftype] =
+              CharacterState.raceChoices[s.dataset.proftype] || []);
+          if (!list.includes(s.value)) list.push(s.value);
+        }
+      });
       if (replacements.every((s) => s.value)) {
         replacements.forEach((s) => s.removeEventListener('change', check));
         finalize();
@@ -594,6 +625,43 @@ export async function loadStep3(force = false) {
   btn?.addEventListener('click', confirmRaceSelection);
   const changeBtn = document.getElementById('changeRace');
   changeBtn?.addEventListener('click', async () => {
+    if (currentRaceData) {
+      (CharacterState.raceChoices.skills || []).forEach((s) => {
+        const idx = CharacterState.system.skills.indexOf(s);
+        if (idx >= 0) CharacterState.system.skills.splice(idx, 1);
+      });
+      (CharacterState.raceChoices.tools || []).forEach((t) => {
+        const idx = CharacterState.system.tools.indexOf(t);
+        if (idx >= 0) CharacterState.system.tools.splice(idx, 1);
+      });
+      (CharacterState.raceChoices.languages || []).forEach((l) => {
+        const idx = CharacterState.system.traits.languages.value.indexOf(l);
+        if (idx >= 0)
+          CharacterState.system.traits.languages.value.splice(idx, 1);
+      });
+      const move = CharacterState.raceChoices.movement || {};
+      const movement = CharacterState.system.attributes.movement || {};
+      Object.keys(move).forEach((m) => {
+        if (m === 'walk') movement.walk = 30;
+        else delete movement[m];
+      });
+      CharacterState.system.attributes.movement = movement;
+      if (Array.isArray(currentRaceData.ability)) {
+        currentRaceData.ability.forEach((obj) => {
+          for (const [ab, val] of Object.entries(obj)) {
+            const abil = CharacterState.system.abilities[ab];
+            if (abil && typeof val === 'number')
+              abil.value = (abil.value || 0) - val;
+          }
+        });
+      }
+      CharacterState.raceChoices.skills = [];
+      CharacterState.raceChoices.tools = [];
+      CharacterState.raceChoices.languages = [];
+      CharacterState.raceChoices.movement = {};
+      CharacterState.raceChoices.spells = [];
+      CharacterState.raceChoices.spellAbility = '';
+    }
     selectedBaseRace = '';
     currentRaceData = null;
     pendingRaceChoices.subrace = '';
@@ -604,6 +672,8 @@ export async function loadStep3(force = false) {
       CharacterState.system.details.race = '';
       CharacterState.system.details.subrace = '';
     }
+    refreshBaseState();
+    rebuildFromClasses();
     const traits = document.getElementById('raceTraits');
     if (traits) traits.innerHTML = '';
     const list = document.getElementById('raceList');

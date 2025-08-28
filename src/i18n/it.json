@@ -31,5 +31,6 @@
   "standardGear": "Equipaggiamento standard",
   "fixedItems": "Oggetti fissi",
   "upgradeOptions": "Opzioni di potenziamento",
-  "selectSimpleWeapon": "Scegli arma semplice"
+  "selectSimpleWeapon": "Scegli arma semplice",
+  "equipmentLoadError": "Impossibile caricare i dati dell'equipaggiamento"
 }

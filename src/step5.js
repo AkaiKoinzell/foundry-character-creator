@@ -25,8 +25,16 @@ const SIMPLE_WEAPONS = DATA.simpleWeapons || [
 
 async function loadEquipmentData() {
   if (!equipmentData) {
-    const resp = await fetch('data/equipment.json');
-    equipmentData = await resp.json();
+    try {
+      const resp = await fetch('data/equipment.json');
+      if (resp.ok === false) throw new Error(resp.statusText || 'Failed to fetch');
+      equipmentData = await resp.json();
+    } catch (err) {
+      console.error(err);
+      const container = document.getElementById('equipmentSelections');
+      if (container) container.textContent = t('equipmentLoadError');
+      return null;
+    }
   }
   return equipmentData;
 }
@@ -271,7 +279,8 @@ export async function loadStep5(force = false) {
   confirmBtn.replaceWith(confirmBtn.cloneNode(true));
   confirmBtn = document.getElementById('confirmEquipment');
 
-  await loadEquipmentData();
+  const data = await loadEquipmentData();
+  if (!data) return;
 
   if (force) container.innerHTML = '';
   if (!force && container.querySelector('.accordion')) return;

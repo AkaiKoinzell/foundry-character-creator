@@ -34,3 +34,50 @@ export function createAccordionItem(title, content, isChoice = false, descriptio
   item.append(header, body);
   return item;
 }
+
+export function initNextStepWarning() {
+  const nextBtn = document.getElementById('nextStep');
+  if (!nextBtn) return;
+
+  const warn = document.createElement('div');
+  warn.id = 'nextStepWarning';
+  warn.className = 'next-step-warning hidden';
+  nextBtn.insertAdjacentElement('afterend', warn);
+
+  const messages = {
+    step2: 'Select a class to proceed.',
+    step3: 'Select a race to proceed.',
+    step4: 'Select a background to proceed.',
+    step5: 'Choose your equipment to proceed.',
+    step6: 'Assign all ability points to proceed.',
+  };
+
+  const updateWarning = () => {
+    const active = document.querySelector('.step:not(.hidden)');
+    const msg = active ? messages[active.id] : null;
+    if (nextBtn.disabled && msg) {
+      warn.textContent = msg;
+      warn.classList.remove('hidden');
+    } else {
+      warn.classList.add('hidden');
+    }
+  };
+
+  new MutationObserver(updateWarning).observe(nextBtn, {
+    attributes: true,
+    attributeFilter: ['disabled'],
+  });
+
+  const stepContainer = document.getElementById('stepContainer');
+  if (stepContainer) {
+    new MutationObserver(updateWarning).observe(stepContainer, {
+      attributes: true,
+      subtree: true,
+      attributeFilter: ['class'],
+    });
+  }
+
+  updateWarning();
+}
+
+document.addEventListener('DOMContentLoaded', initNextStepWarning);

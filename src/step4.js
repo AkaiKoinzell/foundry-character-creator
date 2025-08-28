@@ -9,13 +9,15 @@ import { t } from './i18n.js';
 import * as main from './main.js';
 import { createElement, createAccordionItem } from './ui-helpers.js';
 import { addUniqueProficiency } from './proficiency.js';
+import { renderFeatChoices } from './feat.js';
 
 let currentBackgroundData = null;
 const pendingSelections = {
   skills: [],
   tools: [],
   languages: [],
-  feat: null
+  feat: null,
+  featRenderer: null,
 };
 const choiceAccordions = {
   skills: null,
@@ -101,6 +103,7 @@ function selectBackground(bg) {
   pendingSelections.tools = [];
   pendingSelections.languages = [];
   pendingSelections.feat = null;
+  pendingSelections.featRenderer = null;
   choiceAccordions.skills = null;
   choiceAccordions.tools = null;
   choiceAccordions.languages = null;
@@ -238,7 +241,7 @@ function selectBackground(bg) {
       sel.appendChild(o);
     });
     // Disable feats already known
-    const taken = new Set(CharacterState.feats || []);
+    const taken = new Set((CharacterState.feats || []).map(f => f.name));
     (CharacterState.classes || []).forEach((cls) => {
       if (cls.choiceSelections) {
         Object.values(cls.choiceSelections).forEach((arr) => {
@@ -249,9 +252,18 @@ function selectBackground(bg) {
     Array.from(sel.options).forEach((opt) => {
       if (taken.has(opt.value)) opt.disabled = true;
     });
-    sel.addEventListener('change', validateBackgroundChoices);
+    const featChoicesDiv = document.createElement('div');
+    sel.addEventListener('change', async () => {
+      pendingSelections.featRenderer = null;
+      featChoicesDiv.innerHTML = '';
+      if (sel.value) {
+        pendingSelections.featRenderer = await renderFeatChoices(sel.value, featChoicesDiv);
+      }
+      validateBackgroundChoices();
+    });
     pendingSelections.feat = sel;
     wrapper.appendChild(sel);
+    wrapper.appendChild(featChoicesDiv);
     const acc = createAccordionItem(t('feat') || 'Feat', wrapper, true);
     acc.classList.add('needs-selection');
     features.appendChild(acc);
@@ -275,7 +287,13 @@ function validateBackgroundChoices() {
   if (choiceAccordions.languages)
     choiceAccordions.languages.classList.toggle('incomplete', !langValid);
 
-  const featValid = pendingSelections.feat ? !!pendingSelections.feat.value : true;
+  let featValid = true;
+  if (pendingSelections.feat) {
+    featValid = !!pendingSelections.feat.value;
+    if (featValid && pendingSelections.featRenderer) {
+      featValid = pendingSelections.featRenderer.isComplete();
+    }
+  }
   if (choiceAccordions.feat)
     choiceAccordions.feat.classList.toggle('incomplete', !featValid);
 
@@ -333,18 +351,22 @@ async function confirmBackgroundSelection() {
   });
 
   if (pendingSelections.feat && pendingSelections.feat.value) {
-    const featSet = new Set(CharacterState.feats || []);
-    featSet.add(pendingSelections.feat.value);
-    CharacterState.feats = Array.from(featSet);
+    pendingSelections.featRenderer?.apply();
+    const featMap = new Map((CharacterState.feats || []).map(f => [f.name, f]));
+    if (!featMap.has(pendingSelections.feat.value)) {
+      featMap.set(pendingSelections.feat.value, { name: pendingSelections.feat.value });
+    }
+    CharacterState.feats = Array.from(featMap.values());
     pendingSelections.feat.disabled = true;
   }
 
-  pendingSelections.skills = [];
-  pendingSelections.tools = [];
-  pendingSelections.languages = [];
-  pendingSelections.feat = null;
+    pendingSelections.skills = [];
+    pendingSelections.tools = [];
+    pendingSelections.languages = [];
+    pendingSelections.feat = null;
+    pendingSelections.featRenderer = null;
 
-  refreshBaseState();
+    refreshBaseState();
   rebuildFromClasses();
 
   const finalize = () => {
@@ -398,6 +420,8 @@ export function loadStep4(force = false) {
     pendingSelections.tools = [];
     pendingSelections.languages = [];
     pendingSelections.feat = null;
+    pendingSelections.featRenderer = null;
+    pendingSelections.featRenderer = null;
     const list = document.getElementById('backgroundList');
     list?.classList.remove('hidden');
     const search = document.getElementById('backgroundSearch');

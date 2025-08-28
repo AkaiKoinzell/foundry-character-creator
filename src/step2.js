@@ -57,7 +57,10 @@ function rebuildFromClasses() {
   const cantrips = new Set(baseState.cantrips);
   const feats = new Map();
   baseState.feats.forEach(f => feats.set(f.name, { ...f }));
-  const abilities = { ...baseState.abilities };
+  CharacterState.bonusAbilities = CharacterState.bonusAbilities || {};
+  for (const ab of Object.keys(baseState.abilities)) {
+    CharacterState.bonusAbilities[ab] = 0;
+  }
 
   (CharacterState.classes || []).forEach(cls => {
     (cls.skills || []).forEach(s => skills.add(s));
@@ -78,8 +81,17 @@ function rebuildFromClasses() {
       });
     }
     const bonuses = cls.asiBonuses || {};
-    for (const ab of Object.keys(abilities)) {
-      abilities[ab] += bonuses[ab] || 0;
+    for (const [ab, inc] of Object.entries(bonuses)) {
+      if (CharacterState.bonusAbilities[ab] !== undefined)
+        CharacterState.bonusAbilities[ab] += inc;
+    }
+  });
+  (CharacterState.feats || []).forEach(f => {
+    if (f.ability) {
+      for (const [ab, inc] of Object.entries(f.ability)) {
+        if (CharacterState.bonusAbilities[ab] !== undefined)
+          CharacterState.bonusAbilities[ab] += inc;
+      }
     }
   });
 
@@ -88,8 +100,9 @@ function rebuildFromClasses() {
   CharacterState.system.traits.languages.value = Array.from(languages);
   CharacterState.system.spells.cantrips = Array.from(cantrips);
   CharacterState.feats = Array.from(feats.values());
-  for (const [ab, val] of Object.entries(abilities)) {
-    CharacterState.system.abilities[ab].value = val;
+  for (const [ab, base] of Object.entries(baseState.abilities)) {
+    CharacterState.system.abilities[ab].value =
+      base + (CharacterState.bonusAbilities[ab] || 0);
   }
   updateSpellSlots();
   updateProficiencyBonus();
@@ -306,11 +319,38 @@ function createFeatSelect(current = '') {
   return sel;
 }
 
+function updateClassAsiBonuses(cls) {
+  cls.asiBonuses = {};
+  if (!cls.choiceSelections) return;
+  Object.values(cls.choiceSelections).forEach(entries => {
+    entries.forEach(e => {
+      if (
+        e.option === 'Increase one ability score by 2' &&
+        Array.isArray(e.abilities)
+      ) {
+        const code = abilityMap[e.abilities[0]];
+        if (code) cls.asiBonuses[code] = (cls.asiBonuses[code] || 0) + 2;
+      } else if (
+        e.option === 'Increase two ability scores by 1' &&
+        Array.isArray(e.abilities)
+      ) {
+        e.abilities.forEach(ab => {
+          const code = abilityMap[ab];
+          if (code) cls.asiBonuses[code] = (cls.asiBonuses[code] || 0) + 1;
+        });
+      }
+    });
+  });
+}
+
 function handleASISelection(sel, container, entry, cls) {
   const existing = container.querySelectorAll(
     `select[data-parent='${sel.dataset.choiceId}']`
   );
   existing.forEach(e => e.remove());
+
+  entry.abilities = [];
+  updateClassAsiBonuses(cls);
 
   if (sel.value === 'Increase one ability score by 2') {
     const abilitySel = createAbilitySelect();
@@ -318,6 +358,7 @@ function handleASISelection(sel, container, entry, cls) {
     abilitySel.value = entry?.abilities?.[0] || '';
     abilitySel.addEventListener('change', () => {
       entry.abilities = [abilitySel.value];
+      updateClassAsiBonuses(cls);
       compileClassFeatures(cls);
       rebuildFromClasses();
       updateStep2Completion();
@@ -332,6 +373,7 @@ function handleASISelection(sel, container, entry, cls) {
         const abilities = entry.abilities || [];
         abilities[j] = abilitySel.value;
         entry.abilities = abilities;
+        updateClassAsiBonuses(cls);
         compileClassFeatures(cls);
         rebuildFromClasses();
         updateStep2Completion();

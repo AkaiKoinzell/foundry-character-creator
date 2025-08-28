@@ -164,10 +164,15 @@ th {
   margin: 0 auto;
 }
 
+#stepNav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 880px;
+  margin: 0 auto;
+}
+
 .arrow-btn {
-  position: fixed;
-  top: 50%;
-  transform: translateY(-50%);
   background-color: var(--accent-color);
   color: #fff;
   border: none;
@@ -175,19 +180,12 @@ th {
   border-radius: 50%;
   cursor: pointer;
   opacity: 0.8;
+  margin: 0 20px;
 }
 
 .arrow-btn:hover {
   background-color: var(--accent-hover);
   opacity: 1;
-}
-
-#prevStep {
-  left: 10px;
-}
-
-#nextStep {
-  right: 10px;
 }
 
 .class-list {

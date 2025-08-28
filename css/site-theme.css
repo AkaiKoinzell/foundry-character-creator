@@ -188,6 +188,13 @@ th {
   opacity: 1;
 }
 
+#nextStepWarning {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
 .class-list {
   display: flex;
   flex-wrap: wrap;
@@ -272,6 +279,19 @@ th {
 .feature-block.needs-selection.incomplete .accordion-header {
   border-color: #e74c3c;
   color: #e74c3c;
+}
+
+.needs-selection.incomplete {
+  border: 2px solid #e74c3c;
+  border-radius: 4px;
+  position: relative;
+  padding: 0.5em;
+}
+
+.needs-selection.incomplete .accordion-header::before {
+  content: "\26A0";
+  color: #e74c3c;
+  margin-right: 0.25em;
 }
 
 /* Modal styles for class details */

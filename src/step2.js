@@ -97,7 +97,7 @@ function validateTotalLevel(pendingClass) {
     const allowed = Math.max(0, MAX_CHARACTER_LEVEL - existing);
     if (pendingClass) pendingClass.level = allowed;
     if (typeof alert !== 'undefined')
-      alert(`Total level cannot exceed ${MAX_CHARACTER_LEVEL}`);
+      alert(t('levelCap', { max: MAX_CHARACTER_LEVEL }));
     return false;
   }
   return true;
@@ -605,7 +605,7 @@ function renderSelectedClasses() {
 
   const addLink = document.createElement('a');
   addLink.href = '#';
-  addLink.textContent = 'Add another class?';
+  addLink.textContent = t('addAnotherClass');
   addLink.addEventListener('click', e => {
     e.preventDefault();
     showClassSelectionModal();

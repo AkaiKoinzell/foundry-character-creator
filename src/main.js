@@ -13,7 +13,7 @@ import { loadStep3 } from "./step3.js";
 import { loadStep4 } from "./step4.js";
 import { loadStep5 } from "./step5.js";
 import { exportFoundryActor } from "./export.js";
-import { t, initI18n } from "./i18n.js";
+import { t, initI18n, applyTranslations } from "./i18n.js";
 
 let currentStep = 1;
 
@@ -209,6 +209,7 @@ function renderFinalRecap() {
 
 document.addEventListener("DOMContentLoaded", async () => {
   await initI18n();
+  applyTranslations();
   for (let i = 1; i <= 7; i++) {
     const btn = document.getElementById(`btnStep${i}`);
     if (btn) {

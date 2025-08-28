@@ -848,6 +848,15 @@ function showClassModal(cls) {
  * Salva la classe selezionata nel CharacterState
  */
 function selectClass(cls) {
+  const classes = CharacterState.classes || (CharacterState.classes = []);
+  if (classes.some(c => c.name === cls.name)) {
+    if (typeof alert !== 'undefined') {
+      alert(`${cls.name} already selected.`);
+    }
+    loadStep2(false);
+    return;
+  }
+
   const newCls = {
     name: cls.name,
     level: 1,
@@ -857,7 +866,7 @@ function selectClass(cls) {
     skills: [],
     choiceSelections: {},
   };
-  CharacterState.classes.push(newCls);
+  classes.push(newCls);
   compileClassFeatures(newCls);
   const modal = document.getElementById('classModal');
   modal?.classList.add('hidden');
@@ -875,4 +884,5 @@ export {
   validateTotalLevel,
   refreshBaseState,
   rebuildFromClasses,
+  selectClass,
 };

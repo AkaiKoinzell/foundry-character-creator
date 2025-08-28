@@ -245,10 +245,20 @@ function validateEquipmentSelections() {
 function confirmEquipment() {
   if (!validateEquipmentSelections()) return;
   const selections = [];
-  selections.push(...(equipmentData.standard || []));
+  (equipmentData.standard || []).forEach((item) => {
+    selections.push({ name: item });
+  });
   const clsData = equipmentData.classes?.[getCurrentClass()] || {};
-  if (clsData.fixed) selections.push(...clsData.fixed);
-  choiceBlocks.forEach((b) => selections.push(...b.getValue()));
+  if (clsData.fixed) {
+    clsData.fixed.forEach((item) => {
+      selections.push({ name: item });
+    });
+  }
+  choiceBlocks.forEach((b) => {
+    b.getValue().forEach((item) => {
+      selections.push({ name: item });
+    });
+  });
   CharacterState.equipment = selections;
   showStep(6);
 }

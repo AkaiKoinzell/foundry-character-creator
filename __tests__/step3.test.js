@@ -15,6 +15,16 @@ jest.unstable_mockModule('../src/data.js', () => ({
       details: {},
       traits: { languages: { value: [] } },
       attributes: {},
+      skills: [],
+      tools: [],
+      abilities: {
+        str: { value: 8 },
+        dex: { value: 8 },
+        con: { value: 8 },
+        int: { value: 8 },
+        wis: { value: 8 },
+        cha: { value: 8 },
+      },
     },
     raceChoices: { spells: [], spellAbility: '' },
   },
@@ -38,8 +48,14 @@ jest.unstable_mockModule('../src/main.js', () => ({
   showStep: mockShowStep,
 }));
 
-const { renderBaseRaces, selectBaseRace, confirmRaceSelection } = await import('../src/step3.js');
+const {
+  renderBaseRaces,
+  selectBaseRace,
+  confirmRaceSelection,
+  loadStep3,
+} = await import('../src/step3.js');
 const { DATA, CharacterState } = await import('../src/data.js');
+const { refreshBaseState, rebuildFromClasses } = await import('../src/step2.js');
 
 describe('race search behavior', () => {
   beforeEach(() => {
@@ -336,6 +352,55 @@ describe('duplicate proficiency replacement', () => {
     repl.dispatchEvent(new Event('change'));
     expect(btn.disabled).toBe(false);
     expect(mockShowStep).toHaveBeenCalledWith(4);
+  });
+});
+
+describe('change race cleanup', () => {
+  beforeEach(async () => {
+    jest.clearAllMocks();
+    document.body.innerHTML = `
+      <div id="raceList"></div>
+      <div id="raceFeatures"></div>
+      <div id="raceTraits"></div>
+      <input id="raceSearch" />
+      <button id="confirmRaceSelection"></button>
+      <button id="btnStep4"></button>
+      <button id="changeRace"></button>
+    `;
+    DATA.races = {
+      Lizardfolk: [{ name: 'Lizardfolk', path: 'lizard' }],
+    };
+    const race = {
+      name: 'Lizardfolk',
+      entries: [],
+      skillProficiencies: [{ survival: true }],
+      languageProficiencies: [{ draconic: true }],
+      speed: { swim: 30 },
+      ability: [{ str: 2 }],
+    };
+    mockFetch.mockImplementation(() => Promise.resolve(race));
+    await loadStep3(true);
+    await selectBaseRace('Lizardfolk');
+    document.querySelector('#raceList .class-card').click();
+    await new Promise((r) => setTimeout(r, 0));
+    confirmRaceSelection();
+  });
+
+  test('removes race bonuses when changing race', async () => {
+    expect(CharacterState.system.abilities.str.value).toBe(10);
+    expect(CharacterState.system.skills).toContain('Survival');
+    expect(CharacterState.system.traits.languages.value).toContain('Draconic');
+    expect(CharacterState.system.attributes.movement.swim).toBe(30);
+
+    document.getElementById('changeRace').click();
+    await new Promise((r) => setTimeout(r, 0));
+
+    expect(CharacterState.system.abilities.str.value).toBe(8);
+    expect(CharacterState.system.skills).not.toContain('Survival');
+    expect(CharacterState.system.traits.languages.value).not.toContain('Draconic');
+    expect(CharacterState.system.attributes.movement.swim).toBeUndefined();
+    expect(refreshBaseState).toHaveBeenCalled();
+    expect(rebuildFromClasses).toHaveBeenCalled();
   });
 });
 

@@ -50,5 +50,8 @@
   "fetchRetry": "Unable to load {resource}. Would you like to retry?",
   "fetchFailed": "Data for {resource} could not be loaded.",
   "levelCap": "Total level cannot exceed {max}",
-  "maxScoreLevel1": "Ability scores cannot exceed 17 at level 1"
+  "maxScoreLevel1": "Ability scores cannot exceed 17 at level 1",
+  "spellsKnown": "Spells Known",
+  "selectSpell": "Select spell",
+  "selectSpellsWarning": "Please select all required spells"
 }

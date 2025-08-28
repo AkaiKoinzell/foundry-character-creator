@@ -2,7 +2,8 @@
  * @jest-environment jsdom
  */
 
-import { updateSkillSelectOptions, updateChoiceSelectOptions } from '../src/step2.js';
+import { jest } from '@jest/globals';
+import * as Step2 from '../src/step2.js';
 import { CharacterState } from '../src/data.js';
 
 describe('duplicate selection prevention', () => {
@@ -34,7 +35,7 @@ describe('duplicate selection prevention', () => {
     const skillSelects = [skillSelect1, skillSelect2];
     const choiceSkillSelects = [choiceSelect];
 
-    updateSkillSelectOptions(skillSelects, choiceSkillSelects);
+    Step2.updateSkillSelectOptions(skillSelects, choiceSkillSelects);
 
     expect(
       skillSelect2.querySelector("option[value='Acrobatics']").disabled
@@ -59,7 +60,7 @@ describe('duplicate selection prevention', () => {
     const skillSelects = [skillSelect];
     const choiceSelects = [choiceSelect1, choiceSelect2];
 
-    updateChoiceSelectOptions(
+    Step2.updateChoiceSelectOptions(
       choiceSelects,
       'skills',
       skillSelects,
@@ -86,10 +87,10 @@ describe('duplicate selection prevention', () => {
     skillSelect1.value = 'Acrobatics';
     const skillSelects = [skillSelect1, skillSelect2];
 
-    updateSkillSelectOptions(skillSelects);
+    Step2.updateSkillSelectOptions(skillSelects);
 
     skillSelect2.value = 'Athletics';
-    updateSkillSelectOptions(skillSelects);
+    Step2.updateSkillSelectOptions(skillSelects);
 
     expect(skillSelect1.value).toBe('Acrobatics');
     expect(skillSelect2.value).toBe('Athletics');
@@ -102,10 +103,10 @@ describe('duplicate selection prevention', () => {
     cantripSelect1.value = 'Fire Bolt';
     const selects = [cantripSelect1, cantripSelect2];
 
-    updateChoiceSelectOptions(selects, 'cantrips');
+    Step2.updateChoiceSelectOptions(selects, 'cantrips');
 
     cantripSelect2.value = 'Light';
-    updateChoiceSelectOptions(selects, 'cantrips');
+    Step2.updateChoiceSelectOptions(selects, 'cantrips');
 
     expect(cantripSelect1.value).toBe('Fire Bolt');
     expect(cantripSelect2.value).toBe('Light');
@@ -115,5 +116,13 @@ describe('duplicate selection prevention', () => {
     expect(
       cantripSelect2.querySelector("option[value='Fire Bolt']").disabled
     ).toBe(true);
+  });
+  test('selectClass prevents adding duplicate classes', () => {
+    CharacterState.classes = [{ name: 'Fighter', level: 1 }];
+    const alertMock = jest.spyOn(global, 'alert').mockImplementation(() => {});
+    Step2.selectClass({ name: 'Fighter' });
+    expect(CharacterState.classes).toHaveLength(1);
+    expect(alertMock).toHaveBeenCalled();
+    alertMock.mockRestore();
   });
 });

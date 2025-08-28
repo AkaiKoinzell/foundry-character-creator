@@ -255,9 +255,11 @@ function confirmEquipment() {
 
 export async function loadStep5(force = false) {
   const container = document.getElementById('equipmentSelections');
-  const confirmBtn = document.getElementById('confirmEquipment');
+  let confirmBtn = document.getElementById('confirmEquipment');
   if (!container || !confirmBtn) return;
   confirmBtn.textContent = t('confirmEquipment');
+  confirmBtn.replaceWith(confirmBtn.cloneNode(true));
+  confirmBtn = document.getElementById('confirmEquipment');
 
   await loadEquipmentData();
 

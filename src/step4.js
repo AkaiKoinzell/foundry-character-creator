@@ -7,7 +7,6 @@ import {
 import { refreshBaseState, rebuildFromClasses, updateChoiceSelectOptions } from './step2.js';
 import { t } from './i18n.js';
 import { showStep } from './main.js';
-import { loadStep5 } from './step5.js';
 import { createElement, createAccordionItem } from './ui-helpers.js';
 import { addUniqueProficiency } from './proficiency.js';
 
@@ -350,7 +349,6 @@ async function confirmBackgroundSelection() {
   const finalize = () => {
     logCharacterState();
     showStep(5);
-    loadStep5(true);
   };
 
   if (replacements.length) {

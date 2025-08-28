@@ -5,6 +5,8 @@ import * as main from './main.js';
 const ABILITIES = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
 const COST = { 8:0, 9:1, 10:2, 11:3, 12:4, 13:5, 14:7, 15:9 };
 
+let confirmBtn;
+
 function calcRemaining() {
   const remaining = 27 - ABILITIES.reduce((sum, ab) => sum + (COST[CharacterState.baseAbilities[ab]] || 0), 0);
   const span = document.getElementById('pointsRemaining');
@@ -25,6 +27,34 @@ function updateFinal(ab) {
   if (finalCell) finalCell.textContent = finalVal;
 }
 
+function validateAbilities() {
+  const isLevelOne = totalLevel() === 1;
+  let invalid = false;
+  ABILITIES.forEach((ab) => {
+    const final =
+      (CharacterState.baseAbilities[ab] || 0) +
+      (CharacterState.bonusAbilities?.[ab] || 0);
+    const finalCell = document.getElementById(`${ab}FinalScore`);
+    const row = finalCell?.closest('tr');
+    if (!row) return;
+    let warn = finalCell.querySelector('small');
+    if (!warn) {
+      warn = document.createElement('small');
+      warn.className = 'text-danger ms-2';
+      finalCell.appendChild(warn);
+    }
+    if (isLevelOne && final > 17) {
+      row.classList.add('incomplete');
+      warn.textContent = t('maxScoreLevel1');
+      invalid = true;
+    } else {
+      row.classList.remove('incomplete');
+      warn.textContent = '';
+    }
+  });
+  if (confirmBtn) confirmBtn.disabled = invalid;
+}
+
 function adjustAbility(ab, delta) {
   const current = CharacterState.baseAbilities[ab];
   const next = current + delta;
@@ -34,6 +64,7 @@ function adjustAbility(ab, delta) {
   if (delta > 0 && costDiff > remaining) return;
   CharacterState.baseAbilities[ab] = next;
   updateFinal(ab);
+  validateAbilities();
   calcRemaining();
 }
 
@@ -51,7 +82,7 @@ export function loadStep6(force = false) {
   const container = document.getElementById('step6');
   if (!container) return;
 
-  let confirmBtn = document.getElementById('confirmAbilities');
+  confirmBtn = document.getElementById('confirmAbilities');
   if (!confirmBtn) {
     confirmBtn = document.createElement('button');
     confirmBtn.id = 'confirmAbilities';
@@ -87,6 +118,7 @@ export function loadStep6(force = false) {
     newBtns[1]?.addEventListener('click', () => adjustAbility(ab, -1));
   });
 
+  validateAbilities();
   calcRemaining();
 }
 

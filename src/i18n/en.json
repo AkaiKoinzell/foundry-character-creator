@@ -49,5 +49,6 @@
   "addAnotherClass": "Add another class?",
   "fetchRetry": "Unable to load {resource}. Would you like to retry?",
   "fetchFailed": "Data for {resource} could not be loaded.",
-  "levelCap": "Total level cannot exceed {max}"
+  "levelCap": "Total level cannot exceed {max}",
+  "maxScoreLevel1": "Ability scores cannot exceed 17 at level 1"
 }

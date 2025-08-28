@@ -17,6 +17,7 @@ import {
 import { loadStep3, isStepComplete as isStep3Complete } from "./step3.js";
 import { loadStep4, isStepComplete as isStep4Complete } from "./step4.js";
 import { loadStep5, isStepComplete as isStep5Complete } from "./step5.js";
+import { loadStep6 } from "./step6.js";
 import { exportFoundryActor } from "./export.js";
 import { t, initI18n, applyTranslations } from "./i18n.js";
 
@@ -80,6 +81,7 @@ function showStep(step) {
     }
     currentStep = step;
     if (step === 5) loadStep5(true);
+    if (step === 6) loadStep6(true);
     if (step === 7) renderFinalRecap();
 
     const prevBtn = document.getElementById("prevStep");
@@ -267,6 +269,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (i === 3) loadStep3(true);
         if (i === 4) loadStep4(true);
         if (i === 5) loadStep5(true);
+        if (i === 6) loadStep6(true);
       });
     }
   }
@@ -302,6 +305,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       loadStep3();
       loadStep4();
       loadStep5();
+      loadStep6();
     })
     .catch((err) => console.error(err));
 

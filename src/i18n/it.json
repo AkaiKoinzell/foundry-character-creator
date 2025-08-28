@@ -35,5 +35,14 @@
   "fixedItems": "Oggetti fissi",
   "upgradeOptions": "Opzioni di potenziamento",
   "selectSimpleWeapon": "Scegli arma semplice",
-  "equipmentLoadError": "Impossibile caricare i dati dell'equipaggiamento"
+  "equipmentLoadError": "Impossibile caricare i dati dell'equipaggiamento",
+  "searchClasses": "Cerca classi",
+  "searchRaces": "Cerca razze",
+  "searchBackgrounds": "Cerca background",
+  "changeRace": "Cambia Razza",
+  "changeBackground": "Cambia Background",
+  "addAnotherClass": "Aggiungi un'altra classe?",
+  "fetchRetry": "Impossibile caricare {resource}. Vuoi riprovare?",
+  "fetchFailed": "Impossibile caricare i dati per {resource}.",
+  "levelCap": "Il livello totale non può superare {max}"
 }

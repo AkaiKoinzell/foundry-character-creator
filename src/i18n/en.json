@@ -35,5 +35,14 @@
   "fixedItems": "Fixed Items",
   "upgradeOptions": "Upgrade Options",
   "selectSimpleWeapon": "Select simple weapon",
-  "equipmentLoadError": "Failed to load equipment data"
+  "equipmentLoadError": "Failed to load equipment data",
+  "searchClasses": "Search classes",
+  "searchRaces": "Search races",
+  "searchBackgrounds": "Search backgrounds",
+  "changeRace": "Change Race",
+  "changeBackground": "Change Background",
+  "addAnotherClass": "Add another class?",
+  "fetchRetry": "Unable to load {resource}. Would you like to retry?",
+  "fetchFailed": "Data for {resource} could not be loaded.",
+  "levelCap": "Total level cannot exceed {max}"
 }

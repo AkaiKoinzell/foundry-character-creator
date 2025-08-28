@@ -1,3 +1,4 @@
+import { t } from './i18n.js';
 export const DATA = {};
 
 // Maximum total level a character can reach
@@ -17,10 +18,10 @@ export async function fetchJsonWithRetry(url, resourceName) {
   } catch (err) {
     console.error(err);
     const retry = window.confirm(
-      `Unable to load ${resourceName}. Would you like to retry?`
+      t('fetchRetry', { resource: resourceName })
     );
     if (retry) return fetchJsonWithRetry(url, resourceName);
-    window.alert(`Data for ${resourceName} could not be loaded.`);
+    window.alert(t('fetchFailed', { resource: resourceName }));
     throw err;
   }
 }

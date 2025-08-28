@@ -75,6 +75,7 @@
           type="text"
           class="form-control"
           placeholder="Search classes"
+          data-i18n-placeholder="searchClasses"
         />
         <div id="classList" class="class-list"></div>
         <div id="selectedClasses"></div>
@@ -107,7 +108,7 @@
         <div id="classFeatures" class="accordion hidden"></div>
         <div id="classActions" class="form-group hidden">
           <button id="changeClassButton" class="btn">Cambia Classe</button>
-          <p id="addClassPrompt" class="hidden"><a href="#" id="addClassLink">Add another class?</a></p>
+          <p id="addClassPrompt" class="hidden"><a href="#" id="addClassLink" data-i18n="addAnotherClass">Add another class?</a></p>
           <button id="confirmClassButton" class="btn btn-primary">Conferma Classe</button>
         </div>
       </div>
@@ -119,13 +120,14 @@
           type="text"
           class="form-control"
           placeholder="Search races"
+          data-i18n-placeholder="searchRaces"
         />
         <div id="raceList" class="class-list"></div>
         <div id="raceFeatures" class="accordion hidden">
           <div id="raceTraits"></div>
         </div>
         <div class="form-group">
-          <button id="changeRace" class="btn hidden">Change Race</button>
+          <button id="changeRace" class="btn hidden" data-i18n="changeRace">Change Race</button>
           <button id="confirmRaceSelection" class="btn btn-primary" disabled>Seleziona Razza</button>
         </div>
       </div>
@@ -137,6 +139,7 @@
           type="text"
           class="form-control"
           placeholder="Search backgrounds"
+          data-i18n-placeholder="searchBackgrounds"
         />
         <div id="backgroundList" class="class-list"></div>
         <div class="form-group">
@@ -150,7 +153,7 @@
         <div id="backgroundLanguages"></div>
         <div id="backgroundFeat"></div>
         <div class="form-group">
-          <button id="changeBackground" class="btn hidden">Change Background</button>
+          <button id="changeBackground" class="btn hidden" data-i18n="changeBackground">Change Background</button>
           <button id="confirmBackgroundSelection" class="btn btn-primary">Seleziona Background</button>
         </div>
       </div>
@@ -159,7 +162,7 @@
         <h2>Step 5: Equipment</h2>
         <div id="equipmentSelections" class="form-group"></div>
         <div class="form-group">
-          <button id="confirmEquipment" class="btn btn-primary">Confirm Equipment</button>
+          <button id="confirmEquipment" class="btn btn-primary" data-i18n="confirmEquipment">Confirm Equipment</button>
         </div>
       </div>
       <!-- Step 6: Sistema Point Buy -->

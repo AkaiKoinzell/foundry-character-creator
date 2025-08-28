@@ -5,23 +5,48 @@ export const DATA = {};
 export const MAX_CHARACTER_LEVEL = 20;
 
 /**
+ * Default callbacks used by {@link fetchJsonWithRetry} to interact with the
+ * user. These can be overridden in non-browser contexts such as tests.
+ * `onRetry` should return a boolean indicating whether to retry the fetch, and
+ * `onError` is invoked before the error is rethrown.
+ */
+export const fetchJsonCallbacks = {
+  onRetry: (msg) =>
+    typeof window !== 'undefined' && typeof window.confirm === 'function'
+      ? window.confirm(msg)
+      : false,
+  onError: (msg) => {
+    if (typeof window !== 'undefined' && typeof window.alert === 'function') {
+      window.alert(msg);
+    } else {
+      console.error(msg);
+    }
+  },
+};
+
+/**
  * Helper to fetch JSON resources with retry and user-friendly error messages.
  * @param {string} url - The resource URL
  * @param {string} resourceName - Name displayed to the user
+ * @param {{onRetry?: Function, onError?: Function}} callbacks - Optional UI callbacks
  * @returns {Promise<any>} Parsed JSON response
  */
-export async function fetchJsonWithRetry(url, resourceName) {
+export async function fetchJsonWithRetry(
+  url,
+  resourceName,
+  callbacks = fetchJsonCallbacks
+) {
   try {
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Failed loading ${resourceName}`);
     return await res.json();
   } catch (err) {
     console.error(err);
-    const retry = window.confirm(
+    const retry = callbacks.onRetry(
       t('fetchRetry', { resource: resourceName })
     );
-    if (retry) return fetchJsonWithRetry(url, resourceName);
-    window.alert(t('fetchFailed', { resource: resourceName }));
+    if (retry) return fetchJsonWithRetry(url, resourceName, callbacks);
+    callbacks.onError(t('fetchFailed', { resource: resourceName }));
     throw err;
   }
 }

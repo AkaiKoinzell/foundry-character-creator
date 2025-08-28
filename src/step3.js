@@ -139,7 +139,7 @@ function createRaceCard(race, onSelect, displayName = race.name) {
 
   const detailsBtn = document.createElement('button');
   detailsBtn.className = 'btn btn-primary';
-  detailsBtn.textContent = 'Details';
+  detailsBtn.textContent = t('details');
   detailsBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     details.classList.toggle('hidden');
@@ -342,7 +342,7 @@ async function renderSelectedRace() {
       abilityContent.appendChild(sel);
       pendingRaceChoices.abilities.push(sel);
       accordion.appendChild(
-        createAccordionItem('Spell Ability', abilityContent, true)
+        createAccordionItem(t('spellAbility'), abilityContent, true)
       );
     }
 
@@ -444,7 +444,7 @@ async function renderSelectedRace() {
       });
 
       updateSpellSelects();
-      accordion.appendChild(createAccordionItem('Spells', spellContent, true));
+      accordion.appendChild(createAccordionItem(t('spells'), spellContent, true));
     }
   }
 

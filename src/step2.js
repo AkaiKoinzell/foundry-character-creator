@@ -707,7 +707,7 @@ function updateStep2Completion() {
 export async function loadStep2(refresh = true) {
   const classListContainer = document.getElementById('classList');
   const selectedClassesContainer = document.getElementById('selectedClasses');
-  const searchInput = document.getElementById('classSearch');
+  let searchInput = document.getElementById('classSearch');
   if (!classListContainer || !selectedClassesContainer) return;
   classListContainer.innerHTML = '';
   selectedClassesContainer.innerHTML = '';
@@ -774,9 +774,14 @@ export async function loadStep2(refresh = true) {
         classListContainer.appendChild(classCard);
       });
   }
-  searchInput?.addEventListener('input', () =>
-    renderClassCards(searchInput.value)
-  );
+  if (searchInput) {
+    const newInput = searchInput.cloneNode(true);
+    searchInput.parentNode.replaceChild(newInput, searchInput);
+    searchInput = newInput;
+    searchInput.addEventListener('input', () =>
+      renderClassCards(searchInput.value)
+    );
+  }
   renderClassCards();
 }
 

@@ -633,16 +633,21 @@ function confirmRaceSelection() {
 export async function loadStep3(force = false) {
   await loadRaces();
   const container = document.getElementById('raceList');
-  const searchInput = document.getElementById('raceSearch');
+  let searchInput = document.getElementById('raceSearch');
   if (!container) return;
   if (container.childElementCount && !force) return;
   await renderBaseRaces(searchInput?.value);
 
-  searchInput?.addEventListener('input', async (e) => {
-    const term = e.target.value;
-    if (selectedBaseRace) await renderSubraceCards(selectedBaseRace, term);
-    else await renderBaseRaces(term);
-  });
+  if (searchInput) {
+    const newInput = searchInput.cloneNode(true);
+    searchInput.parentNode.replaceChild(newInput, searchInput);
+    searchInput = newInput;
+    searchInput.addEventListener('input', async (e) => {
+      const term = e.target.value;
+      if (selectedBaseRace) await renderSubraceCards(selectedBaseRace, term);
+      else await renderBaseRaces(term);
+    });
+  }
 
   const btn = document.getElementById('confirmRaceSelection');
   btn?.addEventListener('click', confirmRaceSelection);

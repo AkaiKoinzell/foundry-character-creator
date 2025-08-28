@@ -11,6 +11,7 @@ import {
 } from './data.js';
 import { t } from './i18n.js';
 import { createElement, createAccordionItem } from './ui-helpers.js';
+import { renderFeatChoices } from './feat.js';
 
 const abilityMap = {
   Strength: 'str',
@@ -41,7 +42,7 @@ function refreshBaseState() {
     ? [...CharacterState.system.spells.cantrips]
     : [];
   baseState.feats = Array.isArray(CharacterState.feats)
-    ? [...CharacterState.feats]
+    ? CharacterState.feats.map(f => ({ ...f }))
     : [];
   for (const [ab, obj] of Object.entries(CharacterState.system.abilities)) {
     baseState.abilities[ab] = obj.value || 0;
@@ -53,7 +54,8 @@ function rebuildFromClasses() {
   const tools = new Set(baseState.tools);
   const languages = new Set(baseState.languages);
   const cantrips = new Set(baseState.cantrips);
-  const feats = new Set(baseState.feats);
+  const feats = new Map();
+  baseState.feats.forEach(f => feats.set(f.name, { ...f }));
   const abilities = { ...baseState.abilities };
 
   (CharacterState.classes || []).forEach(cls => {
@@ -68,7 +70,9 @@ function rebuildFromClasses() {
           else if (e.type === 'tools') tools.add(e.option);
           else if (e.type === 'languages') languages.add(e.option);
           else if (e.type === 'cantrips') cantrips.add(e.option);
-          if (e.feat) feats.add(e.feat);
+          if (e.feat) {
+            if (!feats.has(e.feat)) feats.set(e.feat, { name: e.feat });
+          }
         });
       });
     }
@@ -82,7 +86,7 @@ function rebuildFromClasses() {
   CharacterState.system.tools = Array.from(tools);
   CharacterState.system.traits.languages.value = Array.from(languages);
   CharacterState.system.spells.cantrips = Array.from(cantrips);
-  CharacterState.feats = Array.from(feats);
+  CharacterState.feats = Array.from(feats.values());
   for (const [ab, val] of Object.entries(abilities)) {
     CharacterState.system.abilities[ab].value = val;
   }
@@ -205,7 +209,7 @@ function updateChoiceSelectOptions(
 }
 
 function getExistingFeats() {
-  const feats = new Set(CharacterState.feats || []);
+  const feats = new Set((CharacterState.feats || []).map(f => f.name));
   (CharacterState.classes || []).forEach(cls => {
     if (cls.choiceSelections) {
       Object.values(cls.choiceSelections).forEach(entries => {
@@ -337,14 +341,36 @@ function handleASISelection(sel, container, entry, cls) {
     const featSel = createFeatSelect(entry?.feat || '');
     featSel.dataset.parent = sel.dataset.choiceId;
     featSel.value = entry?.feat || '';
-    featSel.addEventListener('change', () => {
+    const featChoicesDiv = document.createElement('div');
+    featSel.addEventListener('change', async () => {
       entry.feat = featSel.value;
+      entry.featRenderer = null;
+      featChoicesDiv.innerHTML = '';
+      if (featSel.value) {
+        entry.featRenderer = await renderFeatChoices(featSel.value, featChoicesDiv);
+        const all = [
+          ...(entry.featRenderer.abilitySelects || []),
+          ...(entry.featRenderer.skillSelects || []),
+          ...(entry.featRenderer.toolSelects || []),
+          ...(entry.featRenderer.languageSelects || []),
+        ];
+        all.forEach(s =>
+          s.addEventListener('change', () => {
+            if (entry.featRenderer.isComplete()) {
+              entry.featRenderer.apply();
+              rebuildFromClasses();
+            }
+            updateStep2Completion();
+          })
+        );
+      }
       compileClassFeatures(cls);
       rebuildFromClasses();
       updateFeatSelectOptions();
       updateStep2Completion();
     });
     container.appendChild(featSel);
+    container.appendChild(featChoicesDiv);
     updateFeatSelectOptions();
   }
 }
@@ -676,7 +702,10 @@ function classHasPendingChoices(cls) {
           (!sel.abilities || sel.abilities.length !== 2)
         )
           return true;
-        if (sel.option === 'Feat' && !sel.feat) return true;
+        if (sel.option === 'Feat') {
+          if (!sel.feat) return true;
+          if (sel.featRenderer && !sel.featRenderer.isComplete()) return true;
+        }
       }
     }
   }

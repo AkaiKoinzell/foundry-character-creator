@@ -25,11 +25,9 @@ export function exportFoundryActor(state) {
   });
 
   (state.feats || []).forEach((feat) => {
-    actor.items.push({
-      name: typeof feat === "string" ? feat : feat.name,
-      type: "feat",
-      system: typeof feat === "string" ? {} : feat.system || {},
-    });
+    const name = typeof feat === "string" ? feat : feat.name;
+    const system = typeof feat === "string" ? {} : feat.system || {};
+    actor.items.push({ name, type: "feat", system });
   });
 
   (state.equipment || []).forEach((item) => {

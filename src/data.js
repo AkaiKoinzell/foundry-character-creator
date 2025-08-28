@@ -77,6 +77,25 @@ export async function loadFeats() {
   DATA.feats = Object.keys(json.feats || {});
 }
 
+// Cache for individual feat details keyed by feat name
+DATA.featDetails = DATA.featDetails || {};
+
+/**
+ * Fetches detailed data for a single feat by name and caches the result.
+ * The feat JSON files are stored under `data/feats/<slug>.json` where the
+ * slug is the lowercase name stripped of non-alphanumeric characters.
+ * @param {string} name - The feat name
+ * @returns {Promise<Object>} The feat detail object
+ */
+export async function loadFeatDetails(name) {
+  if (DATA.featDetails[name]) return DATA.featDetails[name];
+  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '');
+  const path = `data/feats/${slug}.json`;
+  const feat = await fetchJsonWithRetry(path, `feat ${name}`);
+  DATA.featDetails[name] = feat;
+  return feat;
+}
+
 /**
  * Fetches background data from the JSON index and stores full objects
  * keyed by their background name on `DATA.backgrounds`.

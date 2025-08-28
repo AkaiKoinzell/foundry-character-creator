@@ -369,7 +369,7 @@ async function confirmBackgroundSelection() {
 
 export function loadStep4(force = false) {
   const container = document.getElementById('backgroundList');
-  const searchInput = document.getElementById('backgroundSearch');
+  let searchInput = document.getElementById('backgroundSearch');
   if (!container) return;
   if (force) {
     container.classList.remove('hidden');
@@ -378,9 +378,14 @@ export function loadStep4(force = false) {
   }
   if (container.childElementCount && !force) return;
   renderBackgroundList(searchInput?.value);
-  searchInput?.addEventListener('input', (e) => {
-    renderBackgroundList(e.target.value);
-  });
+  if (searchInput) {
+    const newInput = searchInput.cloneNode(true);
+    searchInput.parentNode.replaceChild(newInput, searchInput);
+    searchInput = newInput;
+    searchInput.addEventListener('input', (e) => {
+      renderBackgroundList(e.target.value);
+    });
+  }
   const btn = document.getElementById('confirmBackgroundSelection');
   btn?.addEventListener('click', confirmBackgroundSelection);
   btn?.setAttribute('disabled', 'true');

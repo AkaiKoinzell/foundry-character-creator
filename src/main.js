@@ -22,11 +22,32 @@ import { t, initI18n, applyTranslations } from "./i18n.js";
 
 let currentStep = 1;
 let currentStepComplete = false;
+const visitedSteps = new Set();
+const completedSteps = new Set();
+
+function updateNavButtons() {
+  for (let i = 1; i <= 7; i++) {
+    const btn = document.getElementById(`btnStep${i}`);
+    if (!btn) continue;
+    if (i === 1) {
+      btn.disabled = false;
+      continue;
+    }
+    const isVisited = visitedSteps.has(i);
+    const prevCompleted = completedSteps.has(i - 1);
+    btn.disabled = !(isVisited || prevCompleted);
+  }
+}
 
 function setCurrentStepComplete(flag) {
   currentStepComplete = flag;
   const nextBtn = document.getElementById("nextStep");
   if (nextBtn) nextBtn.disabled = !flag || currentStep >= 7;
+  if (flag) {
+    completedSteps.add(currentStep);
+  } else {
+    completedSteps.delete(currentStep);
+  }
   if (!flag) {
     document
       .querySelectorAll(".needs-selection")
@@ -36,10 +57,12 @@ function setCurrentStepComplete(flag) {
       .querySelectorAll(".needs-selection.incomplete")
       .forEach((el) => el.classList.remove("incomplete"));
   }
+  updateNavButtons();
 }
 globalThis.setCurrentStepComplete = setCurrentStepComplete;
 
 function showStep(step) {
+    visitedSteps.add(step);
     for (let i = 1; i <= 7; i++) {
       const el = document.getElementById(`step${i}`);
       if (!el) continue;

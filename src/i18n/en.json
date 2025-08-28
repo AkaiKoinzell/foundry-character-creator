@@ -31,5 +31,6 @@
   "standardGear": "Standard Gear",
   "fixedItems": "Fixed Items",
   "upgradeOptions": "Upgrade Options",
-  "selectSimpleWeapon": "Select simple weapon"
+  "selectSimpleWeapon": "Select simple weapon",
+  "equipmentLoadError": "Failed to load equipment data"
 }

@@ -8,16 +8,38 @@ import {
   updateSpellSlots,
   loadBackgrounds,
 } from "./data.js";
-import { loadStep2, rebuildFromClasses, refreshBaseState } from "./step2.js";
-import { loadStep3 } from "./step3.js";
-import { loadStep4 } from "./step4.js";
-import { loadStep5 } from "./step5.js";
+import {
+  loadStep2,
+  rebuildFromClasses,
+  refreshBaseState,
+  isStepComplete as isStep2Complete,
+} from "./step2.js";
+import { loadStep3, isStepComplete as isStep3Complete } from "./step3.js";
+import { loadStep4, isStepComplete as isStep4Complete } from "./step4.js";
+import { loadStep5, isStepComplete as isStep5Complete } from "./step5.js";
 import { exportFoundryActor } from "./export.js";
 import { t, initI18n, applyTranslations } from "./i18n.js";
 
 let currentStep = 1;
+let currentStepComplete = false;
 
-  function showStep(step) {
+function setCurrentStepComplete(flag) {
+  currentStepComplete = flag;
+  const nextBtn = document.getElementById("nextStep");
+  if (nextBtn) nextBtn.disabled = !flag || currentStep >= 7;
+  if (!flag) {
+    document
+      .querySelectorAll(".needs-selection")
+      .forEach((el) => el.classList.add("incomplete"));
+  } else {
+    document
+      .querySelectorAll(".needs-selection.incomplete")
+      .forEach((el) => el.classList.remove("incomplete"));
+  }
+}
+globalThis.setCurrentStepComplete = setCurrentStepComplete;
+
+function showStep(step) {
     for (let i = 1; i <= 7; i++) {
       const el = document.getElementById(`step${i}`);
       if (!el) continue;
@@ -40,10 +62,13 @@ let currentStep = 1;
     const prevBtn = document.getElementById("prevStep");
     if (prevBtn) prevBtn.disabled = step <= 1;
 
-    const nextBtn = document.getElementById("nextStep");
-    if (nextBtn && step !== 1) {
-      nextBtn.disabled = step >= 7;
-    }
+    let stepComplete = true;
+    if (step === 1) stepComplete = false;
+    else if (step === 2) stepComplete = isStep2Complete();
+    else if (step === 3) stepComplete = isStep3Complete();
+    else if (step === 4) stepComplete = isStep4Complete();
+    else if (step === 5) stepComplete = isStep5Complete();
+    setCurrentStepComplete(stepComplete);
   }
 
 async function loadData() {
@@ -286,9 +311,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         userNameValid && characterNameValid && originValid && ageValid;
 
       const step2Btn = document.getElementById("btnStep2");
-      const nextBtn = document.getElementById("nextStep");
       if (step2Btn) step2Btn.disabled = !allValid;
-      if (nextBtn) nextBtn.disabled = !allValid;
+      setCurrentStepComplete(allValid);
     }
 
     if (userNameEl) {
@@ -326,4 +350,4 @@ document.addEventListener("DOMContentLoaded", async () => {
     validateStep1();
 });
 
-export { showStep, loadData };
+export { showStep, loadData, setCurrentStepComplete };

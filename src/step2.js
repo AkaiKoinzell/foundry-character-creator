@@ -688,17 +688,23 @@ function updateStep2Completion() {
   const btnStep4 = document.getElementById('btnStep4');
   const progressBar = document.getElementById('progressBar');
 
-  const incomplete = (CharacterState.classes || []).some(classHasPendingChoices);
-  const hasClass = (CharacterState.classes || []).length > 0;
+  const complete = isStepComplete();
 
-  if (btnStep3) btnStep3.disabled = incomplete;
+  if (btnStep3) btnStep3.disabled = !complete;
   if (btnStep4)
     btnStep4.disabled =
-      incomplete || !hasClass || !CharacterState.system.details.race;
+      !complete || !CharacterState.system.details.race;
   if (progressBar) {
-    const width = (incomplete ? 1 : 2) / 6 * 100;
+    const width = (complete ? 2 : 1) / 6 * 100;
     progressBar.style.width = `${width}%`;
   }
+  globalThis.setCurrentStepComplete?.(complete);
+}
+
+export function isStepComplete() {
+  const incomplete = (CharacterState.classes || []).some(classHasPendingChoices);
+  const hasClass = (CharacterState.classes || []).length > 0;
+  return hasClass && !incomplete;
 }
 
 /**

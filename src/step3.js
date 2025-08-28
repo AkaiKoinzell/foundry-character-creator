@@ -7,7 +7,7 @@ import {
 } from './data.js';
 import { refreshBaseState, rebuildFromClasses } from './step2.js';
 import { t } from './i18n.js';
-import { showStep } from './main.js';
+import * as main from './main.js';
 import { addUniqueProficiency } from './proficiency.js';
 import { createAccordionItem } from './ui-helpers.js';
 
@@ -96,6 +96,7 @@ function validateRaceChoices() {
     btn.title = valid ? '' : errors.join('. ');
   }
   if (btn4) btn4.disabled = true;
+  main.setCurrentStepComplete?.(valid);
   return valid;
 }
 
@@ -606,7 +607,7 @@ function confirmRaceSelection() {
     if (btn4) btn4.disabled = false;
     if (confirmBtn) confirmBtn.disabled = false;
     logCharacterState();
-    showStep(4);
+    main.showStep(4);
   };
   if (replacements.length) {
     if (confirmBtn) confirmBtn.disabled = true;
@@ -712,6 +713,10 @@ export async function loadStep3(force = false) {
     await renderBaseRaces(searchInput?.value);
     validateRaceChoices();
   });
+}
+
+export function isStepComplete() {
+  return !!CharacterState.system.details.race;
 }
 
 export { renderBaseRaces, selectBaseRace, confirmRaceSelection };

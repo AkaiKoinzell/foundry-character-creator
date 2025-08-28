@@ -35,6 +35,7 @@
   "language": "language",
   "cantrip": "cantrip",
   "confirmEquipment": "Confirm Equipment",
+  "confirmAbilities": "Confirm Abilities",
   "standardGear": "Standard Gear",
   "fixedItems": "Fixed Items",
   "upgradeOptions": "Upgrade Options",

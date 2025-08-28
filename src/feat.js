@@ -87,8 +87,17 @@ export async function renderFeatChoices(featName, container) {
         const code = sel.value;
         featObj.ability = featObj.ability || {};
         featObj.ability[code] = (featObj.ability[code] || 0) + 1;
-        if (CharacterState.system.abilities[code]) {
-          CharacterState.system.abilities[code].value += 1;
+        if (
+          CharacterState.system.abilities[code] &&
+          CharacterState.bonusAbilities[code] !== undefined
+        ) {
+          const base =
+            CharacterState.baseAbilities?.[code] ??
+            CharacterState.system.abilities[code].value -
+              (CharacterState.bonusAbilities[code] || 0);
+          CharacterState.bonusAbilities[code] += 1;
+          CharacterState.system.abilities[code].value =
+            base + CharacterState.bonusAbilities[code];
         }
       });
     }

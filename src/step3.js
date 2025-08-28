@@ -524,9 +524,18 @@ function confirmRaceSelection() {
   if (Array.isArray(currentRaceData.ability)) {
     currentRaceData.ability.forEach((obj) => {
       for (const [ab, val] of Object.entries(obj)) {
-        if (typeof val === 'number' && CharacterState.system.abilities[ab]) {
-          const abil = CharacterState.system.abilities[ab];
-          abil.value = (abil.value || 0) + val;
+        if (
+          typeof val === 'number' &&
+          CharacterState.system.abilities[ab] &&
+          CharacterState.bonusAbilities[ab] !== undefined
+        ) {
+          const base =
+            CharacterState.baseAbilities?.[ab] ??
+            CharacterState.system.abilities[ab].value -
+              (CharacterState.bonusAbilities[ab] || 0);
+          CharacterState.bonusAbilities[ab] += val;
+          CharacterState.system.abilities[ab].value =
+            base + CharacterState.bonusAbilities[ab];
         }
       }
     });
@@ -678,9 +687,19 @@ export async function loadStep3(force = false) {
       if (Array.isArray(currentRaceData.ability)) {
         currentRaceData.ability.forEach((obj) => {
           for (const [ab, val] of Object.entries(obj)) {
-            const abil = CharacterState.system.abilities[ab];
-            if (abil && typeof val === 'number')
-              abil.value = (abil.value || 0) - val;
+            if (
+              typeof val === 'number' &&
+              CharacterState.system.abilities[ab] &&
+              CharacterState.bonusAbilities[ab] !== undefined
+            ) {
+              const base =
+                CharacterState.baseAbilities?.[ab] ??
+                CharacterState.system.abilities[ab].value -
+                  CharacterState.bonusAbilities[ab];
+              CharacterState.bonusAbilities[ab] -= val;
+              CharacterState.system.abilities[ab].value =
+                base + CharacterState.bonusAbilities[ab];
+            }
           }
         });
       }

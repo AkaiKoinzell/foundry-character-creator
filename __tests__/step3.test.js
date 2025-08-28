@@ -27,6 +27,14 @@ jest.unstable_mockModule('../src/data.js', () => ({
       },
     },
     raceChoices: { spells: [], spellAbility: '' },
+    bonusAbilities: {
+      str: 0,
+      dex: 0,
+      con: 0,
+      int: 0,
+      wis: 0,
+      cha: 0,
+    },
   },
   fetchJsonWithRetry: mockFetch,
   loadRaces: mockLoadRaces,
@@ -388,6 +396,7 @@ describe('change race cleanup', () => {
 
   test('removes race bonuses when changing race', async () => {
     expect(CharacterState.system.abilities.str.value).toBe(10);
+    expect(CharacterState.bonusAbilities.str).toBe(2);
     expect(CharacterState.system.skills).toContain('Survival');
     expect(CharacterState.system.traits.languages.value).toContain('Draconic');
     expect(CharacterState.system.attributes.movement.swim).toBe(30);
@@ -396,6 +405,7 @@ describe('change race cleanup', () => {
     await new Promise((r) => setTimeout(r, 0));
 
     expect(CharacterState.system.abilities.str.value).toBe(8);
+    expect(CharacterState.bonusAbilities.str).toBe(0);
     expect(CharacterState.system.skills).not.toContain('Survival');
     expect(CharacterState.system.traits.languages.value).not.toContain('Draconic');
     expect(CharacterState.system.attributes.movement.swim).toBeUndefined();

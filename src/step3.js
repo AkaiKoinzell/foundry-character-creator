@@ -46,16 +46,39 @@ function validateRaceChoices() {
   allSelects.forEach((s) => {
     if (s.value) counts[s.value] = (counts[s.value] || 0) + 1;
   });
+
   const existingCantrips = new Set([
     ...(CharacterState.system.spells?.cantrips || []),
     ...(CharacterState.raceChoices?.spells || []),
   ]);
-  const duplicates = allSelects.filter(
-    (s) => s.value && (counts[s.value] > 1 || existingCantrips.has(s.value))
-  );
+  const existingLanguages = new Set([
+    ...(CharacterState.system.traits.languages.value || []),
+  ]);
+
+  const duplicateSet = new Set();
+  const languageDupSet = new Set();
+
+  allSelects.forEach((s) => {
+    if (s.value && counts[s.value] > 1) duplicateSet.add(s);
+  });
+
+  pendingRaceChoices.spells.forEach((s) => {
+    if (s.value && existingCantrips.has(s.value)) duplicateSet.add(s);
+  });
+
+  pendingRaceChoices.languages.forEach((s) => {
+    if (s.value && existingLanguages.has(s.value)) {
+      duplicateSet.add(s);
+      languageDupSet.add(s);
+    }
+  });
+
+  const duplicates = Array.from(duplicateSet);
   duplicates.forEach((s) => {
     s.classList.add('duplicate');
-    s.title = 'Selections must be unique';
+    s.title = languageDupSet.has(s)
+      ? 'Language already known'
+      : 'Selections must be unique';
   });
 
   const valid =

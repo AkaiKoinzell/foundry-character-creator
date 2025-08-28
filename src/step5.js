@@ -6,22 +6,26 @@ import { createAccordionItem } from './ui-helpers.js';
 let equipmentData = null;
 let choiceBlocks = [];
 
-const SIMPLE_WEAPONS = DATA.simpleWeapons || [
-  'Club',
-  'Dagger',
-  'Greatclub',
-  'Handaxe',
-  'Javelin',
-  'Light Hammer',
-  'Mace',
-  'Quarterstaff',
-  'Sickle',
-  'Spear',
-  'Light Crossbow',
-  'Dart',
-  'Shortbow',
-  'Sling'
-];
+function getSimpleWeapons() {
+  return DATA.simpleWeapons?.length
+    ? DATA.simpleWeapons
+    : [
+        'Club',
+        'Dagger',
+        'Greatclub',
+        'Handaxe',
+        'Javelin',
+        'Light Hammer',
+        'Mace',
+        'Quarterstaff',
+        'Sickle',
+        'Spear',
+        'Light Crossbow',
+        'Dart',
+        'Shortbow',
+        'Sling',
+      ];
+}
 
 async function loadEquipmentData() {
   if (!equipmentData) {
@@ -44,7 +48,7 @@ function buildSimpleWeaponSelect(count = 1) {
   for (let i = 0; i < count; i++) {
     const sel = document.createElement('select');
     sel.innerHTML = `<option value="">${t('selectSimpleWeapon')}</option>`;
-    SIMPLE_WEAPONS.forEach((w) => {
+    getSimpleWeapons().forEach((w) => {
       const o = document.createElement('option');
       o.value = w;
       o.textContent = w;

@@ -12,6 +12,7 @@ import {
 import { t } from './i18n.js';
 import { createElement, createAccordionItem } from './ui-helpers.js';
 import { renderFeatChoices } from './feat.js';
+import { renderSpellChoices } from './spell-select.js';
 
 const abilityMap = {
   Strength: 'str',
@@ -416,6 +417,14 @@ function renderClassEditor(cls, index) {
     }
     compileClassFeatures(cls);
     rebuildFromClasses();
+    if (cls.spellcasting?.type === 'known') {
+      const newRenderer = renderSpellChoices(cls);
+      const newItem = createAccordionItem(t('spellsKnown'), newRenderer.element, true);
+      if (spellItem) accordion.replaceChild(newItem, spellItem);
+      else accordion.appendChild(newItem);
+      cls.spellRenderer = newRenderer;
+      spellItem = newItem;
+    }
     updateStep2Completion();
   });
   card.appendChild(levelSel);
@@ -426,6 +435,7 @@ function renderClassEditor(cls, index) {
   const skillSelects = [];
   const skillChoiceSelects = [];
   const skillChoiceSelectMap = new Map();
+  let spellItem;
 
   const clsDef = DATA.classes.find(c => c.name === cls.name);
   if (clsDef) {
@@ -576,6 +586,12 @@ function renderClassEditor(cls, index) {
     }
   }
 
+  if (cls.spellcasting?.type === 'known') {
+    cls.spellRenderer = renderSpellChoices(cls);
+    spellItem = createAccordionItem(t('spellsKnown'), cls.spellRenderer.element, true);
+    accordion.appendChild(spellItem);
+  }
+
   card.appendChild(accordion);
   return card;
 }
@@ -594,7 +610,10 @@ function removeClass(index) {
     if (!proceed) return;
   }
 
-  classes.splice(index, 1);
+  const removed = classes.splice(index, 1)[0];
+  if (removed) {
+    delete (CharacterState.knownSpells || {})[removed.name];
+  }
   rebuildFromClasses();
   renderSelectedClasses();
   updateStep2Completion();
@@ -709,6 +728,9 @@ function classHasPendingChoices(cls) {
       }
     }
   }
+  if (cls.spellcasting?.type === 'known') {
+    if (!cls.spellRenderer || !cls.spellRenderer.isComplete()) return true;
+  }
   return false;
 }
 
@@ -729,6 +751,8 @@ function updateStep2Completion() {
   }
   globalThis.setCurrentStepComplete?.(complete);
 }
+
+globalThis.updateStep2Completion = updateStep2Completion;
 
 export function isStepComplete() {
   const incomplete = (CharacterState.classes || []).some(classHasPendingChoices);

@@ -50,5 +50,8 @@
   "fetchRetry": "Impossibile caricare {resource}. Vuoi riprovare?",
   "fetchFailed": "Impossibile caricare i dati per {resource}.",
   "levelCap": "Il livello totale non può superare {max}",
-  "maxScoreLevel1": "I punteggi delle caratteristiche non possono superare 17 al livello 1"
+  "maxScoreLevel1": "I punteggi delle caratteristiche non possono superare 17 al livello 1",
+  "spellsKnown": "Incantesimi Conosciuti",
+  "selectSpell": "Seleziona incantesimo",
+  "selectSpellsWarning": "Seleziona tutti gli incantesimi richiesti"
 }

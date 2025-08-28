@@ -38,5 +38,19 @@ export function exportFoundryActor(state) {
     });
   });
 
+  if (state.knownSpells) {
+    Object.values(state.knownSpells).forEach((byLevel) => {
+      Object.entries(byLevel).forEach(([lvl, names]) => {
+        names.forEach((name) => {
+          actor.items.push({
+            name,
+            type: "spell",
+            system: { level: Number(lvl), preparation: { prepared: true } },
+          });
+        });
+      });
+    });
+  }
+
   return actor;
 }

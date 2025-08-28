@@ -1,6 +1,6 @@
 import { DATA, CharacterState } from './data.js';
 import { t } from './i18n.js';
-import { showStep } from './main.js';
+import * as main from './main.js';
 import { createAccordionItem } from './ui-helpers.js';
 
 let equipmentData = null;
@@ -251,6 +251,7 @@ function validateEquipmentSelections() {
   });
   const btn = document.getElementById('confirmEquipment');
   if (btn) btn.disabled = !allValid;
+  main.setCurrentStepComplete?.(allValid);
   return allValid;
 }
 
@@ -272,7 +273,7 @@ function confirmEquipment() {
     });
   });
   CharacterState.equipment = selections;
-  showStep(6);
+  main.showStep(6);
 }
 
 export async function loadStep5(force = false) {
@@ -310,4 +311,9 @@ export async function loadStep5(force = false) {
 
   renderEquipmentForClass();
   confirmBtn.addEventListener('click', confirmEquipment);
+}
+
+export function isStepComplete() {
+  return Array.isArray(CharacterState.equipment) &&
+    CharacterState.equipment.length > 0;
 }

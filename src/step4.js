@@ -6,7 +6,7 @@ import {
 } from './data.js';
 import { refreshBaseState, rebuildFromClasses, updateChoiceSelectOptions } from './step2.js';
 import { t } from './i18n.js';
-import { showStep } from './main.js';
+import * as main from './main.js';
 import { createElement, createAccordionItem } from './ui-helpers.js';
 import { addUniqueProficiency } from './proficiency.js';
 
@@ -281,6 +281,7 @@ function validateBackgroundChoices() {
 
   const allValid = skillValid && toolValid && langValid && featValid;
   if (btn) btn.disabled = !allValid;
+  main.setCurrentStepComplete?.(allValid);
   return allValid;
 }
 
@@ -348,7 +349,7 @@ async function confirmBackgroundSelection() {
 
   const finalize = () => {
     logCharacterState();
-    showStep(5);
+    main.showStep(5);
   };
 
   if (replacements.length) {
@@ -408,5 +409,9 @@ export function loadStep4(force = false) {
     }
     renderBackgroundList(search?.value);
   });
+}
+
+export function isStepComplete() {
+  return !!CharacterState.system.details.background;
 }
 

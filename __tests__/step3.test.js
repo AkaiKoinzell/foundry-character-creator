@@ -394,13 +394,16 @@ describe('change race cleanup', () => {
     await confirmStep();
   });
 
-  test('removes race bonuses when changing race', async () => {
-    expect(CharacterState.system.abilities.str.value).toBe(10);
-    expect(CharacterState.bonusAbilities.str).toBe(2);
+  test('cleans up race metadata when changing race', async () => {
+    // Ability scores should remain untouched during race confirmation
+    expect(CharacterState.system.abilities.str.value).toBe(8);
+    expect(CharacterState.bonusAbilities.str).toBe(0);
+    // Other race features should still be applied
     expect(CharacterState.system.skills).toContain('Survival');
     expect(CharacterState.system.traits.languages.value).toContain('Draconic');
     expect(CharacterState.system.attributes.movement.swim).toBe(30);
 
+    // Changing race should remove metadata but leave abilities unchanged
     document.getElementById('changeRace').click();
     await new Promise((r) => setTimeout(r, 0));
 

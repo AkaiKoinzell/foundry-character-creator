@@ -514,25 +514,8 @@ function confirmRaceSelection() {
   };
   CharacterState.raceChoices.movement = move;
 
-  if (Array.isArray(currentRaceData.ability)) {
-    currentRaceData.ability.forEach((obj) => {
-      for (const [ab, val] of Object.entries(obj)) {
-        if (
-          typeof val === 'number' &&
-          CharacterState.system.abilities[ab] &&
-          CharacterState.bonusAbilities[ab] !== undefined
-        ) {
-          const base =
-            CharacterState.baseAbilities?.[ab] ??
-            CharacterState.system.abilities[ab].value -
-              (CharacterState.bonusAbilities[ab] || 0);
-          CharacterState.bonusAbilities[ab] += val;
-          CharacterState.system.abilities[ab].value =
-            base + CharacterState.bonusAbilities[ab];
-        }
-      }
-    });
-  }
+  // Ability score increases are now handled in Step 6. Race selection
+  // should not apply any modifiers to ability scores directly.
 
   if (currentRaceData.darkvision)
     CharacterState.system.traits.senses.darkvision = currentRaceData.darkvision;
@@ -672,25 +655,8 @@ export async function loadStep3(force = false) {
         else delete movement[m];
       });
       CharacterState.system.attributes.movement = movement;
-      if (Array.isArray(currentRaceData.ability)) {
-        currentRaceData.ability.forEach((obj) => {
-          for (const [ab, val] of Object.entries(obj)) {
-            if (
-              typeof val === 'number' &&
-              CharacterState.system.abilities[ab] &&
-              CharacterState.bonusAbilities[ab] !== undefined
-            ) {
-              const base =
-                CharacterState.baseAbilities?.[ab] ??
-                CharacterState.system.abilities[ab].value -
-                  CharacterState.bonusAbilities[ab];
-              CharacterState.bonusAbilities[ab] -= val;
-              CharacterState.system.abilities[ab].value =
-                base + CharacterState.bonusAbilities[ab];
-            }
-          }
-        });
-      }
+      // No ability score adjustments are made during race selection,
+      // so there is nothing to revert here.
       CharacterState.raceChoices.skills = [];
       CharacterState.raceChoices.tools = [];
       CharacterState.raceChoices.languages = [];

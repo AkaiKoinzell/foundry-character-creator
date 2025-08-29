@@ -57,7 +57,7 @@ function rebuildFromClasses() {
   const cantrips = new Set(baseState.cantrips);
   const feats = new Map();
   baseState.feats.forEach(f => feats.set(f.name, { ...f }));
-  CharacterState.bonusAbilities = CharacterState.bonusAbilities || {};
+  CharacterState.bonusAbilities = {};
   for (const ab of Object.keys(baseState.abilities)) {
     CharacterState.bonusAbilities[ab] = 0;
   }
@@ -319,30 +319,6 @@ function createFeatSelect(current = '') {
   return sel;
 }
 
-function updateClassAsiBonuses(cls) {
-  cls.asiBonuses = {};
-  if (!cls.choiceSelections) return;
-  Object.values(cls.choiceSelections).forEach(entries => {
-    entries.forEach(e => {
-      if (
-        e.option === 'Increase one ability score by 2' &&
-        Array.isArray(e.abilities)
-      ) {
-        const code = abilityMap[e.abilities[0]];
-        if (code) cls.asiBonuses[code] = (cls.asiBonuses[code] || 0) + 2;
-      } else if (
-        e.option === 'Increase two ability scores by 1' &&
-        Array.isArray(e.abilities)
-      ) {
-        e.abilities.forEach(ab => {
-          const code = abilityMap[ab];
-          if (code) cls.asiBonuses[code] = (cls.asiBonuses[code] || 0) + 1;
-        });
-      }
-    });
-  });
-}
-
 function handleASISelection(sel, container, entry, cls) {
   const existing = container.querySelectorAll(
     `select[data-parent='${sel.dataset.choiceId}']`
@@ -350,7 +326,31 @@ function handleASISelection(sel, container, entry, cls) {
   existing.forEach(e => e.remove());
 
   entry.abilities = [];
-  updateClassAsiBonuses(cls);
+  cls.asiBonuses = cls.asiBonuses || {};
+  const refreshBonuses = () => {
+    cls.asiBonuses = {};
+    if (!cls.choiceSelections) return;
+    Object.values(cls.choiceSelections).forEach(entries => {
+      entries.forEach(e => {
+        if (
+          e.option === 'Increase one ability score by 2' &&
+          Array.isArray(e.abilities)
+        ) {
+          const code = abilityMap[e.abilities[0]];
+          if (code) cls.asiBonuses[code] = (cls.asiBonuses[code] || 0) + 2;
+        } else if (
+          e.option === 'Increase two ability scores by 1' &&
+          Array.isArray(e.abilities)
+        ) {
+          e.abilities.forEach(ab => {
+            const code = abilityMap[ab];
+            if (code) cls.asiBonuses[code] = (cls.asiBonuses[code] || 0) + 1;
+          });
+        }
+      });
+    });
+  };
+  refreshBonuses();
 
   if (sel.value === 'Increase one ability score by 2') {
     const abilitySel = createAbilitySelect();
@@ -358,7 +358,7 @@ function handleASISelection(sel, container, entry, cls) {
     abilitySel.value = entry?.abilities?.[0] || '';
     abilitySel.addEventListener('change', () => {
       entry.abilities = [abilitySel.value];
-      updateClassAsiBonuses(cls);
+      refreshBonuses();
       compileClassFeatures(cls);
       rebuildFromClasses();
       updateStep2Completion();
@@ -373,7 +373,7 @@ function handleASISelection(sel, container, entry, cls) {
         const abilities = entry.abilities || [];
         abilities[j] = abilitySel.value;
         entry.abilities = abilities;
-        updateClassAsiBonuses(cls);
+        refreshBonuses();
         compileClassFeatures(cls);
         rebuildFromClasses();
         updateStep2Completion();

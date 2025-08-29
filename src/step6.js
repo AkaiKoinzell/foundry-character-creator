@@ -15,7 +15,7 @@ function calcRemaining() {
   return remaining;
 }
 
-function updateFinal(ab) {
+export function updateFinal(ab) {
   const base = CharacterState.baseAbilities[ab];
   const bonus = CharacterState.bonusAbilities?.[ab] || 0;
   const finalVal = base + bonus;

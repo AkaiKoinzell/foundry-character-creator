@@ -344,17 +344,7 @@
       "name": "Cantrip",
       "description": "Choose 3 cleric cantrips to learn",
       "count": 3,
-      "type": "cantrips",
-      "selection": [
-        "Guidance",
-        "Light",
-        "Resistance",
-        "Sacred Flame",
-        "Spare the Dying",
-        "Thaumaturgy",
-        "Toll the Dead",
-        "Word of Radiance"
-      ]
+      "type": "cantrips"
     },
     {
       "level": 4,

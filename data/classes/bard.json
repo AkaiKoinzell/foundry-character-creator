@@ -318,15 +318,7 @@
       "name": "Cantrip",
       "description": "Choose 2 bard cantrips to learn",
       "count": 2,
-      "type": "cantrips",
-      "selection": [
-        "Light",
-        "Mage Hand",
-        "Prestidigitation",
-        "Thunderclap",
-        "True Strike",
-        "Vicious Mockery"
-      ]
+      "type": "cantrips"
     },
     {
       "level": 3,

@@ -460,14 +460,15 @@ function renderClassEditor(cls, index) {
     }
     compileClassFeatures(cls);
     rebuildFromClasses();
-    if (cls.spellcasting?.type === 'known') {
-      const newRenderer = renderSpellChoices(cls);
-      const newItem = createAccordionItem(t('spellsKnown'), newRenderer.element, true);
-      if (spellItem) accordion.replaceChild(newItem, spellItem);
-      else accordion.appendChild(newItem);
-      cls.spellRenderer = newRenderer;
-      spellItem = newItem;
-    }
+    (CharacterState.classes || []).forEach(c => {
+      if (c.spellcasting?.type === 'known' && c.spellItem) {
+        const newRenderer = renderSpellChoices(c);
+        const newItem = createAccordionItem(t('spellsKnown'), newRenderer.element, true);
+        c.spellItem.parentNode.replaceChild(newItem, c.spellItem);
+        c.spellRenderer = newRenderer;
+        c.spellItem = newItem;
+      }
+    });
     updateStep2Completion();
   });
   card.appendChild(levelSel);
@@ -478,7 +479,6 @@ function renderClassEditor(cls, index) {
   const skillSelects = [];
   const skillChoiceSelects = [];
   const skillChoiceSelectMap = new Map();
-  let spellItem;
 
   const clsDef = DATA.classes.find(c => c.name === cls.name);
   if (clsDef) {
@@ -631,8 +631,8 @@ function renderClassEditor(cls, index) {
 
   if (cls.spellcasting?.type === 'known') {
     cls.spellRenderer = renderSpellChoices(cls);
-    spellItem = createAccordionItem(t('spellsKnown'), cls.spellRenderer.element, true);
-    accordion.appendChild(spellItem);
+    cls.spellItem = createAccordionItem(t('spellsKnown'), cls.spellRenderer.element, true);
+    accordion.appendChild(cls.spellItem);
   }
 
   card.appendChild(accordion);

@@ -1,0 +1,17 @@
+{
+  "name": "Apothecary",
+  "source": "HB",
+  "page": 0,
+  "ability": [{"choose": {"from": ["int", "wis"], "amount": 1}}],
+  "toolProficiencies": [{"alchemist's supplies": true}],
+  "entries": [
+    "You have studied alchemy and know how to create magical extracts in a short time, granting you the following benefits:",
+    {
+      "type": "list",
+      "items": [
+        "You gain proficiency with {@item alchemist's supplies|phb} if you don't already have it.",
+        "When you finish a long or short rest, you can choose a 1st- or 2nd-level spell from any class to imbue into a magical extract. The spell must have a casting time of 1 action and must target only you or a creature you touch. The extract retains the spell for 8 hours. As an action, a creature can consume the extract to gain the spell's effect (no concentration required), targeting only itself. If the spell requires a saving throw, the save DC equals {@dc 8} + your proficiency bonus + your Intelligence or Wisdom modifier (choose when you select this feat)."
+      ]
+    }
+  ]
+}

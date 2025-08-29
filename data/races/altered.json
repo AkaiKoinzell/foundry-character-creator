@@ -1,0 +1,35 @@
+{
+  "name": "Altered",
+  "source": "HB",
+  "page": 0,
+  "size": ["M"],
+  "speed": 30,
+  "ability": [
+    { "str": 2 }
+  ],
+  "skillProficiencies": [
+    { "athletics": true }
+  ],
+  "languageProficiencies": [
+    { "common": true, "undercommon": true }
+  ],
+  "entries": [
+    "Altered are beings whose bodies have been reshaped by strange magic.",
+    {
+      "name": "Alteration",
+      "type": "entries",
+      "entries": [
+        "Your altered form grants you resilience and adaptability beyond that of ordinary folk."
+      ]
+    },
+    {
+      "name": "Languages",
+      "type": "entries",
+      "entries": [
+        "You can speak, read, and write Common and Undercommon."
+      ]
+    }
+  ],
+  "raceName": "Altered",
+  "raceSource": "HB"
+}

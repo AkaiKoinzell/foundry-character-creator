@@ -1,4 +1,4 @@
-import { CharacterState } from './data.js';
+import { CharacterState, updateSpellSlots } from './data.js';
 import { t } from './i18n.js';
 
 let spellCache;
@@ -20,6 +20,14 @@ export function renderSpellChoices(cls) {
   let spells = [];
 
   function build() {
+    updateSpellSlots();
+    const spellState = CharacterState.system.spells || {};
+    let maxLevel = 0;
+    for (let i = 1; i <= 9; i++) {
+      if (spellState[`spell${i}`]?.max > 0) maxLevel = i;
+    }
+    if (spellState.pact?.level > maxLevel) maxLevel = spellState.pact.level;
+
     const count = cls.spellcasting?.spellsPerLevel?.[cls.level] || 0;
     container.innerHTML = '';
     selects.length = 0;
@@ -28,7 +36,12 @@ export function renderSpellChoices(cls) {
       const sel = document.createElement('select');
       sel.innerHTML = `<option value=''>${t('selectSpell')}</option>`;
       spells
-        .filter((s) => (s.spell_list || []).includes(cls.name))
+        .filter(
+          (s) =>
+            (s.spell_list || []).includes(cls.name) &&
+            s.level >= 1 &&
+            s.level <= maxLevel
+        )
         .forEach((spell) => {
           const opt = document.createElement('option');
           opt.value = spell.name;

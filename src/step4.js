@@ -8,7 +8,7 @@ import { refreshBaseState, rebuildFromClasses, updateChoiceSelectOptions } from 
 import { t } from './i18n.js';
 import * as main from './main.js';
 import { createElement, createAccordionItem } from './ui-helpers.js';
-import { addUniqueProficiency } from './proficiency.js';
+import { addUniqueProficiency, pendingReplacements } from './proficiency.js';
 import { renderFeatChoices } from './feat.js';
 
 let currentBackgroundData = null;
@@ -274,7 +274,6 @@ function selectBackground(bg) {
 }
 
 function validateBackgroundChoices() {
-  const btn = document.getElementById('confirmBackgroundSelection');
   const skillValid = pendingSelections.skills.every((s) => s.value);
   if (choiceAccordions.skills)
     choiceAccordions.skills.classList.toggle('incomplete', !skillValid);
@@ -298,14 +297,13 @@ function validateBackgroundChoices() {
     choiceAccordions.feat.classList.toggle('incomplete', !featValid);
 
   const allValid = skillValid && toolValid && langValid && featValid;
-  if (btn) btn.disabled = !allValid;
   main.setCurrentStepComplete?.(allValid);
   return allValid;
 }
 
 async function confirmBackgroundSelection() {
-  if (!currentBackgroundData) return;
-  if (!validateBackgroundChoices()) return;
+  if (!currentBackgroundData) return false;
+  if (!validateBackgroundChoices()) return false;
 
   const container = document.getElementById('backgroundFeatures');
   CharacterState.system.details.background = currentBackgroundData.name;
@@ -371,12 +369,11 @@ async function confirmBackgroundSelection() {
 
   const finalize = () => {
     logCharacterState();
-    main.showStep(5);
+    main.setCurrentStepComplete?.(true);
   };
 
   if (replacements.length) {
-    const btn = document.getElementById('confirmBackgroundSelection');
-    if (btn) btn.disabled = true;
+    main.setCurrentStepComplete?.(false);
     const check = () => {
       if (replacements.every((s) => s.value)) {
         replacements.forEach((s) => s.removeEventListener('change', check));
@@ -384,10 +381,11 @@ async function confirmBackgroundSelection() {
       }
     };
     replacements.forEach((s) => s.addEventListener('change', check));
-    return;
+    return false;
   }
 
   finalize();
+  return true;
 }
 
 export function loadStep4(force = false) {
@@ -409,10 +407,6 @@ export function loadStep4(force = false) {
       renderBackgroundList(e.target.value);
     });
   }
-  const btn = document.getElementById('confirmBackgroundSelection');
-  btn?.addEventListener('click', confirmBackgroundSelection);
-  btn?.setAttribute('disabled', 'true');
-
   const changeBtn = document.getElementById('changeBackground');
   changeBtn?.addEventListener('click', () => {
     currentBackgroundData = null;
@@ -436,6 +430,11 @@ export function loadStep4(force = false) {
 }
 
 export function isStepComplete() {
-  return !!CharacterState.system.details.background;
+  return !!CharacterState.system.details.background && pendingReplacements() === 0;
+}
+
+export async function confirmStep() {
+  if (isStepComplete()) return true;
+  return confirmBackgroundSelection();
 }
 

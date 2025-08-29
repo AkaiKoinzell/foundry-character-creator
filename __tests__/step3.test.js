@@ -59,8 +59,9 @@ jest.unstable_mockModule('../src/main.js', () => ({
 const {
   renderBaseRaces,
   selectBaseRace,
-  confirmRaceSelection,
+  confirmStep,
   loadStep3,
+  isStepComplete,
 } = await import('../src/step3.js');
 const { DATA, CharacterState } = await import('../src/data.js');
 const { refreshBaseState, rebuildFromClasses } = await import('../src/step2.js');
@@ -162,7 +163,6 @@ describe('Aarakocra selections', () => {
     document.body.innerHTML = `
       <div id="raceList"></div>
       <div id="raceFeatures"></div>
-      <button id="confirmRaceSelection"></button>
     `;
     DATA.races = {
       Aarakocra: [{ name: 'Aarakocra', path: 'aarakocra' }],
@@ -189,8 +189,7 @@ describe('Aarakocra selections', () => {
     const card = document.querySelector('#raceList .class-card');
     card.click();
     await new Promise((r) => setTimeout(r, 0));
-    const btn = document.getElementById('confirmRaceSelection');
-    expect(btn.disabled).toBe(true);
+    expect(await confirmStep()).toBe(false);
     const selects = document.querySelectorAll('#raceFeatures select');
     let langSel, abilitySel;
     selects.forEach((sel) => {
@@ -200,12 +199,11 @@ describe('Aarakocra selections', () => {
     });
     abilitySel.value = 'int';
     abilitySel.dispatchEvent(new Event('change'));
-    await new Promise((r) => setTimeout(r, 0));
-    expect(btn.disabled).toBe(true);
     langSel.value = 'Dwarvish';
     langSel.dispatchEvent(new Event('change'));
     await new Promise((r) => setTimeout(r, 0));
-    expect(btn.disabled).toBe(false);
+    expect(await confirmStep()).toBe(true);
+    expect(isStepComplete()).toBe(true);
   });
 });
 
@@ -330,13 +328,13 @@ describe('duplicate proficiency replacement', () => {
       <div id="raceList"></div>
       <div id="raceFeatures"></div>
       <div id="raceTraits"></div>
-      <button id="confirmRaceSelection"></button>
-      <button id="btnStep4"></button>
     `;
     DATA.races = {
       Elf: [{ name: 'Elf (High)', path: 'elfHigh' }],
     };
     DATA.languages = ['Common', 'Dwarvish'];
+    CharacterState.system.details = {};
+    CharacterState.raceChoices = { spells: [], spellAbility: '' };
     CharacterState.system.traits.languages.value = ['Elvish'];
     const race = {
       name: 'Elf (High)',
@@ -350,16 +348,13 @@ describe('duplicate proficiency replacement', () => {
   });
 
   test('waits for replacement selections before proceeding', () => {
-    confirmRaceSelection();
-    const btn = document.getElementById('confirmRaceSelection');
+    expect(confirmStep()).toBe(false);
     const repl = document.querySelector('#raceTraits select');
-    expect(btn.disabled).toBe(true);
-    expect(mockShowStep).not.toHaveBeenCalled();
     expect(repl).toBeTruthy();
+    expect(isStepComplete()).toBe(false);
     repl.value = 'Common';
     repl.dispatchEvent(new Event('change'));
-    expect(btn.disabled).toBe(false);
-    expect(mockShowStep).toHaveBeenCalledWith(4);
+    expect(isStepComplete()).toBe(true);
   });
 });
 
@@ -371,8 +366,6 @@ describe('change race cleanup', () => {
       <div id="raceFeatures"></div>
       <div id="raceTraits"></div>
       <input id="raceSearch" />
-      <button id="confirmRaceSelection"></button>
-      <button id="btnStep4"></button>
       <button id="changeRace"></button>
     `;
     DATA.races = {
@@ -386,12 +379,19 @@ describe('change race cleanup', () => {
       speed: { swim: 30 },
       ability: [{ str: 2 }],
     };
+    CharacterState.system.details = {};
+    CharacterState.raceChoices = { spells: [], spellAbility: '' };
+    CharacterState.system.skills = [];
+    CharacterState.system.traits.languages.value = [];
+    CharacterState.system.attributes = {};
+    CharacterState.system.abilities.str.value = 8;
+    CharacterState.bonusAbilities.str = 0;
     mockFetch.mockImplementation(() => Promise.resolve(race));
     await loadStep3(true);
     await selectBaseRace('Lizardfolk');
     document.querySelector('#raceList .class-card').click();
     await new Promise((r) => setTimeout(r, 0));
-    confirmRaceSelection();
+    await confirmStep();
   });
 
   test('removes race bonuses when changing race', async () => {

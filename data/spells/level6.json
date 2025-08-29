@@ -1,0 +1,372 @@
+[
+  {
+    "name": "Arcane Gate",
+    "level": 6,
+    "school": "Conjuration",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Arcane Transformation",
+    "level": 6,
+    "school": "Transmutation",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Blade Barrier",
+    "level": 6,
+    "school": "Evocation",
+    "spell_list": [
+      "Cleric"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Bones of the Earth",
+    "level": 6,
+    "school": "Transmutation",
+    "spell_list": [
+      "Druid"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Chain Lightning",
+    "level": 6,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Circle of Death",
+    "level": 6,
+    "school": "Necromancy",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Conjure Fey",
+    "level": 6,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Contingency",
+    "level": 6,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Create Homunculus",
+    "level": 6,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Create Undead",
+    "level": 6,
+    "school": "Necromancy",
+    "spell_list": [
+      "Cleric",
+      "Wizard",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Disintegrate",
+    "level": 6,
+    "school": "Transmutation",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Druid Grove",
+    "level": 6,
+    "school": "Abjuration",
+    "spell_list": [
+      "Druid"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Eyebite",
+    "level": 6,
+    "school": "Necromancy",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Find the Path",
+    "level": 6,
+    "school": "Divination",
+    "spell_list": [
+      "Bard",
+      "Cleric",
+      "Druid"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Flesh to Stone",
+    "level": 6,
+    "school": "Transmutation",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Forbiddance",
+    "level": 6,
+    "school": "Abjuration",
+    "spell_list": [
+      "Cleric"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Freezing Sphere",
+    "level": 6,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Globe of Invulnerability",
+    "level": 6,
+    "school": "Abjuration",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Gravity Fissure",
+    "level": 6,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Guards and Wards",
+    "level": 6,
+    "school": "Abjuration",
+    "spell_list": [
+      "Bard",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Harm",
+    "level": 6,
+    "school": "Necromancy",
+    "spell_list": [
+      "Cleric"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Heal",
+    "level": 6,
+    "school": "Evocation",
+    "spell_list": [
+      "Cleric",
+      "Druid"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Heroes' Feast",
+    "level": 6,
+    "school": "Conjuration",
+    "spell_list": [
+      "Bard",
+      "Cleric",
+      "Druid"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Instant Summons",
+    "level": 6,
+    "school": "Conjuration",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Investiture of Flame",
+    "level": 6,
+    "school": "Transmutation",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Investiture of Ice",
+    "level": 6,
+    "school": "Transmutation",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Investiture of Stone",
+    "level": 6,
+    "school": "Transmutation",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Investiture of Wind",
+    "level": 6,
+    "school": "Transmutation",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Irresistible Dance",
+    "level": 6,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Magic Jar",
+    "level": 6,
+    "school": "Necromancy",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Mass Suggestion",
+    "level": 6,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Mental Prison",
+    "level": 6,
+    "school": "Illusion",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Move Earth",
+    "level": 6,
+    "school": "Transmutation",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Otherworldly Guise",
+    "level": 6,
+    "school": "Transmutation",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Planar Ally",
+    "level": 6,
+    "school": "Conjuration",
+    "spell_list": [
+      "Cleric"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Platinum Shield",
+    "level": 6,
+    "school": "Abjuration",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  }
+]

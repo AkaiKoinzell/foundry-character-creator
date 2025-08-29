@@ -1,0 +1,655 @@
+[
+  {
+    "name": "Acid Arrow",
+    "level": 2,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Aid",
+    "level": 2,
+    "school": "Abjuration",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Cleric",
+      "Paladin",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Alter Self",
+    "level": 2,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Animal Messenger",
+    "level": 2,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Arcane Lock",
+    "level": 2,
+    "school": "Abjuration",
+    "spell_list": [
+      "Artificer",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Arcane Scorcher",
+    "level": 2,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Augury",
+    "level": 2,
+    "school": "Divination",
+    "spell_list": [
+      "Cleric",
+      "Druid"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Barkskin",
+    "level": 2,
+    "school": "Transmutation",
+    "spell_list": [
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Beast Sense",
+    "level": 2,
+    "school": "Divination",
+    "spell_list": [
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Binding Ice",
+    "level": 2,
+    "school": "Conjuration",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Blindness/Deafness",
+    "level": 2,
+    "school": "Necromancy",
+    "spell_list": [
+      "Bard",
+      "Cleric",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Blur",
+    "level": 2,
+    "school": "Illusion",
+    "spell_list": [
+      "Artificer",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Branding Smite",
+    "level": 2,
+    "school": "Evocation",
+    "spell_list": [
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Calm Emotions",
+    "level": 2,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Cleric"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Cloud of Daggers",
+    "level": 2,
+    "school": "Conjuration",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Continual Flame",
+    "level": 2,
+    "school": "Evocation",
+    "spell_list": [
+      "Artificer",
+      "Cleric",
+      "Druid",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Cordon of Arrows",
+    "level": 2,
+    "school": "Transmutation",
+    "spell_list": [
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Crown of Madness",
+    "level": 2,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Darkness",
+    "level": 2,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Darkvision",
+    "level": 2,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Druid",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Detect Thoughts",
+    "level": 2,
+    "school": "Divination",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Dragon's Breath",
+    "level": 2,
+    "school": "Transmutation",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Dust Devil",
+    "level": 2,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Earthbind",
+    "level": 2,
+    "school": "Transmutation",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Enhance Ability",
+    "level": 2,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Cleric",
+      "Druid",
+      "Wizard",
+      "Ranger",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Enlarge/Reduce",
+    "level": 2,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Druid",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Find Steed",
+    "level": 2,
+    "school": "Conjuration",
+    "spell_list": [
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Flame Blade",
+    "level": 2,
+    "school": "Evocation",
+    "spell_list": [
+      "Cleric",
+      "Druid",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Flaming Sphere",
+    "level": 2,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Gentle Repose",
+    "level": 2,
+    "school": "Necromancy",
+    "spell_list": [
+      "Cleric",
+      "Wizard",
+      "Paladin"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Gust of Wind",
+    "level": 2,
+    "school": "Evocation",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Ranger",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Hold Person",
+    "level": 2,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Cleric",
+      "Druid",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Invisibility",
+    "level": 2,
+    "school": "Illusion",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Knock",
+    "level": 2,
+    "school": "Transmutation",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Lesser Restoration",
+    "level": 2,
+    "school": "Abjuration",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Cleric",
+      "Druid",
+      "Paladin",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Levitate",
+    "level": 2,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Locate Animals or Plants",
+    "level": 2,
+    "school": "Divination",
+    "spell_list": [
+      "Bard",
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Locate Object",
+    "level": 2,
+    "school": "Divination",
+    "spell_list": [
+      "Bard",
+      "Cleric"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Magic Mouth",
+    "level": 2,
+    "school": "Illusion",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Wizard"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Magic Weapon",
+    "level": 2,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Wizard",
+      "Paladin",
+      "Ranger",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Mirror Image",
+    "level": 2,
+    "school": "Illusion",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Misty Step",
+    "level": 2,
+    "school": "Conjuration",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Moonbeam",
+    "level": 2,
+    "school": "Evocation",
+    "spell_list": [
+      "Druid"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Pass Without Trace",
+    "level": 2,
+    "school": "Abjuration",
+    "spell_list": [
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Phantasmal Force",
+    "level": 2,
+    "school": "Illusion",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Prayer of Healing",
+    "level": 2,
+    "school": "Evocation",
+    "spell_list": [
+      "Cleric",
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Protection from Poison",
+    "level": 2,
+    "school": "Abjuration",
+    "spell_list": [
+      "Artificer",
+      "Cleric",
+      "Druid",
+      "Paladin",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "See Invisibility",
+    "level": 2,
+    "school": "Divination",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Shatter",
+    "level": 2,
+    "school": "Evocation",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Silence",
+    "level": 2,
+    "school": "Illusion",
+    "spell_list": [
+      "Bard",
+      "Cleric",
+      "Ranger"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Skywrite",
+    "level": 2,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Druid",
+      "Wizard"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Spider Climb",
+    "level": 2,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Spike Growth",
+    "level": 2,
+    "school": "Transmutation",
+    "spell_list": [
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Spiritual Weapon",
+    "level": 2,
+    "school": "Evocation",
+    "spell_list": [
+      "Cleric"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Suggestion",
+    "level": 2,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Summon Beast",
+    "level": 2,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Warding Bond",
+    "level": 2,
+    "school": "Abjuration",
+    "spell_list": [
+      "Druid",
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Web",
+    "level": 2,
+    "school": "Conjuration",
+    "spell_list": [
+      "Artificer",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Zone of Truth",
+    "level": 2,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Cleric",
+      "Paladin"
+    ],
+    "ritual": false
+  }
+]

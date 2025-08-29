@@ -34,6 +34,7 @@ jest.unstable_mockModule('../src/data.js', () => {
     updateSpellSlots: jest.fn(),
     updateProficiencyBonus: jest.fn(),
     MAX_CHARACTER_LEVEL: 20,
+    loadSpells: jest.fn(),
   };
 });
 

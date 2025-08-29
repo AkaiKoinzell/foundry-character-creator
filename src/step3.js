@@ -3,7 +3,8 @@ import {
   CharacterState,
   fetchJsonWithRetry,
   loadRaces,
-  logCharacterState
+  logCharacterState,
+  loadSpells
 } from './data.js';
 import { refreshBaseState, rebuildFromClasses } from './step2.js';
 import { t } from './i18n.js';
@@ -352,8 +353,7 @@ async function renderSelectedRace() {
     walk(currentRaceData.additionalSpells);
     if (choices.length) {
       if (!DATA.spells) {
-        const spells = await fetchJsonWithRetry('data/spells.json', 'spells');
-        DATA.spells = spells;
+        await loadSpells();
       }
       const SCHOOL_MAP = {
         A: 'Abjuration',

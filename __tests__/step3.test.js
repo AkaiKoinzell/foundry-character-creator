@@ -43,6 +43,7 @@ jest.unstable_mockModule('../src/data.js', () => ({
   adjustResource: jest.fn(),
   updateSpellSlots: jest.fn(),
   loadBackgrounds: jest.fn(),
+  loadSpells: jest.fn(),
 }));
 
 jest.unstable_mockModule('../src/step2.js', () => ({

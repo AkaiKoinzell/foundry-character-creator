@@ -1,0 +1,238 @@
+[
+  {
+    "name": "Eldritch Blast",
+    "level": 0,
+    "school": "Evocation",
+    "spell_list": [
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Fire Bolt",
+    "level": 0,
+    "school": "Evocation",
+    "spell_list": [
+      "Artificer",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Guidance",
+    "level": 0,
+    "school": "Divination",
+    "spell_list": [
+      "Artificer",
+      "Cleric",
+      "Druid"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Light",
+    "level": 0,
+    "school": "Evocation",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Cleric",
+      "Sorcerer",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Mage Hand",
+    "level": 0,
+    "school": "Conjuration",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Prestidigitation",
+    "level": 0,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Sorcerer",
+      "Warlock",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Produce Flame",
+    "level": 0,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Ray of Frost",
+    "level": 0,
+    "school": "Evocation",
+    "spell_list": [
+      "Artificer",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Resistance",
+    "level": 0,
+    "school": "Abjuration",
+    "spell_list": [
+      "Artificer",
+      "Cleric",
+      "Druid"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Sacred Flame",
+    "level": 0,
+    "school": "Evocation",
+    "spell_list": [
+      "Cleric"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Shape Water",
+    "level": 0,
+    "school": "Transmutation",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Shillelagh",
+    "level": 0,
+    "school": "Transmutation",
+    "spell_list": [
+      "Druid"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Shocking Grasp",
+    "level": 0,
+    "school": "Evocation",
+    "spell_list": [
+      "Artificer",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Spare the Dying",
+    "level": 0,
+    "school": "Necromancy",
+    "spell_list": [
+      "Artificer",
+      "Cleric"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Sword Burst",
+    "level": 0,
+    "school": "Conjuration",
+    "spell_list": [
+      "Artificer",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Thaumaturgy",
+    "level": 0,
+    "school": "Transmutation",
+    "spell_list": [
+      "Cleric"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Thorn Whip",
+    "level": 0,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Druid"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Thunderclap",
+    "level": 0,
+    "school": "Evocation",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Druid",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Toll the Dead",
+    "level": 0,
+    "school": "Necromancy",
+    "spell_list": [
+      "Cleric",
+      "Wizard",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "True Strike",
+    "level": 0,
+    "school": "Divination",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Vicious Mockery",
+    "level": 0,
+    "school": "Abjuration",
+    "spell_list": [
+      "Bard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Word of Radiance",
+    "level": 0,
+    "school": "Evocation",
+    "spell_list": [
+      "Cleric"
+    ],
+    "ritual": false
+  }
+]

@@ -1,0 +1,672 @@
+[
+  {
+    "name": "Animate Dead",
+    "level": 3,
+    "school": "Necromancy",
+    "spell_list": [
+      "Cleric",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Aura of Vitality",
+    "level": 3,
+    "school": "Abjuration",
+    "spell_list": [
+      "Cleric",
+      "Druid",
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Beacon of Hope",
+    "level": 3,
+    "school": "Abjuration",
+    "spell_list": [
+      "Cleric"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Bestow Curse",
+    "level": 3,
+    "school": "Necromancy",
+    "spell_list": [
+      "Bard",
+      "Cleric",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Blinding Smite",
+    "level": 3,
+    "school": "Evocation",
+    "spell_list": [
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Blink",
+    "level": 3,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Call Lightning",
+    "level": 3,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Catnap",
+    "level": 3,
+    "school": "Enchantment",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Clairvoyance",
+    "level": 3,
+    "school": "Divination",
+    "spell_list": [
+      "Bard",
+      "Cleric",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Conjure Animals",
+    "level": 3,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Conjure Barrage",
+    "level": 3,
+    "school": "Conjuration",
+    "spell_list": [
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Counterspell",
+    "level": 3,
+    "school": "Abjuration",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Create Food and Water",
+    "level": 3,
+    "school": "Conjuration",
+    "spell_list": [
+      "Artificer",
+      "Cleric",
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Crusader's Mantle",
+    "level": 3,
+    "school": "Evocation",
+    "spell_list": [
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Daylight",
+    "level": 3,
+    "school": "Evocation",
+    "spell_list": [
+      "Cleric",
+      "Druid",
+      "Ranger",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Dispel Magic",
+    "level": 3,
+    "school": "Abjuration",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Cleric",
+      "Druid",
+      "Wizard",
+      "Paladin",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Elemental Weapon",
+    "level": 3,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Druid",
+      "Paladin",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Enemies Abound",
+    "level": 3,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Erupting Earth",
+    "level": 3,
+    "school": "Transmutation",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Fear",
+    "level": 3,
+    "school": "Illusion",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Feign Death",
+    "level": 3,
+    "school": "Necromancy",
+    "spell_list": [
+      "Bard",
+      "Cleric",
+      "Wizard"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Fireball",
+    "level": 3,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Fly",
+    "level": 3,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Gaseous Form",
+    "level": 3,
+    "school": "Transmutation",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Glyph of Warding",
+    "level": 3,
+    "school": "Abjuration",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Cleric",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Haste",
+    "level": 3,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Hunger of Hadar",
+    "level": 3,
+    "school": "Conjuration",
+    "spell_list": [
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Hypnotic Pattern",
+    "level": 3,
+    "school": "Illusion",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Intellect Fortress",
+    "level": 3,
+    "school": "Abjuration",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Lightning Bolt",
+    "level": 3,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Magic Circle",
+    "level": 3,
+    "school": "Abjuration",
+    "spell_list": [
+      "Cleric",
+      "Wizard",
+      "Paladin",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Major Image",
+    "level": 3,
+    "school": "Illusion",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Mass Healing Word",
+    "level": 3,
+    "school": "Evocation",
+    "spell_list": [
+      "Bard",
+      "Cleric"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Meld into Stone",
+    "level": 3,
+    "school": "Transmutation",
+    "spell_list": [
+      "Cleric",
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Minute Meteors",
+    "level": 3,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Nondetection",
+    "level": 3,
+    "school": "Abjuration",
+    "spell_list": [
+      "Bard",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Phantom Steed",
+    "level": 3,
+    "school": "Illusion",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Plant Growth",
+    "level": 3,
+    "school": "Transmutation",
+    "spell_list": [
+      "Bard",
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Protection from Energy",
+    "level": 3,
+    "school": "Abjuration",
+    "spell_list": [
+      "Artificer",
+      "Druid",
+      "Wizard",
+      "Ranger",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Remove Curse",
+    "level": 3,
+    "school": "Abjuration",
+    "spell_list": [
+      "Cleric",
+      "Wizard",
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Revivify",
+    "level": 3,
+    "school": "Necromancy",
+    "spell_list": [
+      "Artificer",
+      "Cleric",
+      "Druid",
+      "Paladin",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Sending",
+    "level": 3,
+    "school": "Evocation",
+    "spell_list": [
+      "Bard",
+      "Cleric",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Sleet Storm",
+    "level": 3,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Slow",
+    "level": 3,
+    "school": "Transmutation",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Speak with Dead",
+    "level": 3,
+    "school": "Necromancy",
+    "spell_list": [
+      "Bard",
+      "Cleric"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Speak with Plants",
+    "level": 3,
+    "school": "Transmutation",
+    "spell_list": [
+      "Bard",
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Spirit Guardians",
+    "level": 3,
+    "school": "Conjuration",
+    "spell_list": [
+      "Cleric"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Spirit Shroud",
+    "level": 3,
+    "school": "Necromancy",
+    "spell_list": [
+      "Cleric",
+      "Wizard",
+      "Paladin",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Stinking Cloud",
+    "level": 3,
+    "school": "Conjuration",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Summon Fey",
+    "level": 3,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Ranger",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Summon Lesser Demons",
+    "level": 3,
+    "school": "Conjuration",
+    "spell_list": [
+      "Wizard",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Summon Shadowspawn",
+    "level": 3,
+    "school": "Conjuration",
+    "spell_list": [
+      "Wizard",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Summon Undead",
+    "level": 3,
+    "school": "Conjuration",
+    "spell_list": [
+      "Wizard",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Thunder Step",
+    "level": 3,
+    "school": "Conjuration",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Tidal Wave",
+    "level": 3,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Tiny Hut",
+    "level": 3,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Tongues",
+    "level": 3,
+    "school": "Divination",
+    "spell_list": [
+      "Bard",
+      "Cleric",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Vampiric Touch",
+    "level": 3,
+    "school": "Necromancy",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Water Breathing",
+    "level": 3,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Druid",
+      "Wizard",
+      "Ranger",
+      "Sorcerer"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Water Walk",
+    "level": 3,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Cleric",
+      "Druid",
+      "Ranger",
+      "Sorcerer"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Wind Wall",
+    "level": 3,
+    "school": "Evocation",
+    "spell_list": [
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": false
+  }
+]

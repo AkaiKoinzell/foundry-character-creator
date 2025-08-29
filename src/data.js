@@ -29,26 +29,35 @@ export const fetchJsonCallbacks = {
  * @param {string} url - The resource URL
  * @param {string} resourceName - Name displayed to the user
  * @param {{onRetry?: Function, onError?: Function}} callbacks - Optional UI callbacks
+ * @param {number} [maxRetries=3] - Maximum number of attempts before failing
  * @returns {Promise<any>} Parsed JSON response
  */
 export async function fetchJsonWithRetry(
   url,
   resourceName,
-  callbacks = fetchJsonCallbacks
+  callbacks = fetchJsonCallbacks,
+  maxRetries = 3
 ) {
-  try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`Failed loading ${resourceName}`);
-    return await res.json();
-  } catch (err) {
-    console.error(err);
-    const retry = callbacks.onRetry(
-      t('fetchRetry', { resource: resourceName })
-    );
-    if (retry) return fetchJsonWithRetry(url, resourceName, callbacks);
-    callbacks.onError(t('fetchFailed', { resource: resourceName }));
-    throw err;
+  let attempts = 0;
+  let lastError;
+  while (attempts < maxRetries) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Failed loading ${resourceName}`);
+      return await res.json();
+    } catch (err) {
+      console.error(err);
+      lastError = err;
+      attempts++;
+      if (attempts >= maxRetries) break;
+      const retry = callbacks.onRetry(
+        t('fetchRetry', { resource: resourceName })
+      );
+      if (!retry) break;
+    }
   }
+  callbacks.onError(t('fetchFailed', { resource: resourceName }));
+  throw lastError;
 }
 
 /**

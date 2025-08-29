@@ -35,4 +35,20 @@ describe('fetchJsonWithRetry callbacks', () => {
       'Failed loading thing'
     );
   });
+
+  test('stops after maxRetries and triggers error callback', async () => {
+    const mockFetch = jest.fn().mockResolvedValue({ ok: false });
+    global.fetch = mockFetch;
+
+    const onRetry = jest.fn(() => true); // always retry
+    const onError = jest.fn();
+
+    await expect(
+      fetchJsonWithRetry('url', 'resource', { onRetry, onError }, 2)
+    ).rejects.toThrow('Failed loading resource');
+
+    expect(mockFetch).toHaveBeenCalledTimes(2);
+    expect(onRetry).toHaveBeenCalledTimes(1);
+    expect(onError).toHaveBeenCalledTimes(1);
+  });
 });

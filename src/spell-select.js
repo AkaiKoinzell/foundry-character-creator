@@ -11,6 +11,30 @@ async function loadSpells() {
   return spellCache;
 }
 
+export function updateSpellSelectOptions(selects) {
+  const counts = new Map();
+  selects.forEach((sel) => {
+    const val = sel.value;
+    if (!val) return;
+    counts.set(val, (counts.get(val) || 0) + 1);
+  });
+
+  selects.forEach((sel) => {
+    Array.from(sel.options).forEach((opt) => {
+      if (!opt.value) return;
+      const count = counts.get(opt.value) || 0;
+      const isCurrent = sel.value === opt.value;
+      opt.disabled = !isCurrent && count > 0;
+    });
+
+    const currentCount = (counts.get(sel.value) || 0) - 1;
+    if (sel.value && currentCount > 0) {
+      sel.value = '';
+      sel.dispatchEvent(new Event('change'));
+    }
+  });
+}
+
 export function renderSpellChoices(cls) {
   const container = document.createElement('div');
   const selects = [];
@@ -49,6 +73,7 @@ export function renderSpellChoices(cls) {
           sel.appendChild(opt);
         });
       sel.addEventListener('change', () => {
+        updateSpellSelectOptions(selects);
         apply();
         updateWarning();
         globalThis.updateStep2Completion?.();
@@ -62,6 +87,7 @@ export function renderSpellChoices(cls) {
     selects.forEach((sel, i) => {
       sel.value = flat[i] || '';
     });
+    updateSpellSelectOptions(selects);
     apply();
     updateWarning();
     container.appendChild(warning);
@@ -86,6 +112,9 @@ export function renderSpellChoices(cls) {
       const spell = spells.find((s) => s.name === name);
       const lvl = spell?.level || 0;
       (byLevel[lvl] = byLevel[lvl] || []).push(name);
+    });
+    Object.keys(byLevel).forEach((lvl) => {
+      byLevel[lvl] = Array.from(new Set(byLevel[lvl]));
     });
     CharacterState.knownSpells = CharacterState.knownSpells || {};
     CharacterState.knownSpells[cls.name] = byLevel;

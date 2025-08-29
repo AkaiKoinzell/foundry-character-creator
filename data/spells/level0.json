@@ -1,5 +1,97 @@
 [
   {
+    "name": "Acid Splash",
+    "level": 0,
+    "school": "Conjuration",
+    "spell_list": [
+      "Artificer",
+      "Sorcerer",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Blade Ward",
+    "level": 0,
+    "school": "Abjuration",
+    "spell_list": [
+      "Bard",
+      "Sorcerer",
+      "Warlock",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Booming Blade",
+    "level": 0,
+    "school": "Evocation",
+    "spell_list": [
+      "Artificer",
+      "Sorcerer",
+      "Warlock",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Chill Touch",
+    "level": 0,
+    "school": "Necromancy",
+    "spell_list": [
+      "Sorcerer",
+      "Warlock",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Control Flames",
+    "level": 0,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Druid",
+      "Sorcerer",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Create Bonfire",
+    "level": 0,
+    "school": "Conjuration",
+    "spell_list": [
+      "Artificer",
+      "Druid",
+      "Sorcerer",
+      "Warlock",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Dancing Lights",
+    "level": 0,
+    "school": "Evocation",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Sorcerer",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Druidcraft",
+    "level": 0,
+    "school": "Transmutation",
+    "spell_list": [
+      "Druid"
+    ],
+    "ritual": false
+  },
+  {
     "name": "Eldritch Blast",
     "level": 0,
     "school": "Evocation",
@@ -20,6 +112,43 @@
     "ritual": false
   },
   {
+    "name": "Friends",
+    "level": 0,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Sorcerer",
+      "Warlock",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Frostbite",
+    "level": 0,
+    "school": "Evocation",
+    "spell_list": [
+      "Artificer",
+      "Druid",
+      "Sorcerer",
+      "Warlock",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Green-Flame Blade",
+    "level": 0,
+    "school": "Evocation",
+    "spell_list": [
+      "Artificer",
+      "Sorcerer",
+      "Warlock",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
     "name": "Guidance",
     "level": 0,
     "school": "Divination",
@@ -27,6 +156,30 @@
       "Artificer",
       "Cleric",
       "Druid"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Gust",
+    "level": 0,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Druid",
+      "Sorcerer",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Infestation",
+    "level": 0,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid",
+      "Sorcerer",
+      "Warlock",
+      "Wizard"
     ],
     "ritual": false
   },
@@ -39,6 +192,18 @@
       "Bard",
       "Cleric",
       "Sorcerer",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Lightning Lure",
+    "level": 0,
+    "school": "Evocation",
+    "spell_list": [
+      "Artificer",
+      "Sorcerer",
+      "Warlock",
       "Wizard"
     ],
     "ritual": false
@@ -57,6 +222,91 @@
     "ritual": false
   },
   {
+    "name": "Magic Stone",
+    "level": 0,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Druid",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Mending",
+    "level": 0,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Cleric",
+      "Druid",
+      "Sorcerer",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Message",
+    "level": 0,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Sorcerer",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Mind Sliver",
+    "level": 0,
+    "school": "Enchantment",
+    "spell_list": [
+      "Sorcerer",
+      "Warlock",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Minor Illusion",
+    "level": 0,
+    "school": "Illusion",
+    "spell_list": [
+      "Bard",
+      "Sorcerer",
+      "Warlock",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Mold Earth",
+    "level": 0,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Druid",
+      "Sorcerer",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Poison Spray",
+    "level": 0,
+    "school": "Conjuration",
+    "spell_list": [
+      "Artificer",
+      "Druid",
+      "Sorcerer",
+      "Warlock",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
     "name": "Prestidigitation",
     "level": 0,
     "school": "Transmutation",
@@ -66,6 +316,15 @@
       "Sorcerer",
       "Warlock",
       "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Primal Savagery",
+    "level": 0,
+    "school": "Transmutation",
+    "spell_list": [
+      "Druid"
     ],
     "ritual": false
   },
@@ -106,6 +365,17 @@
     "school": "Evocation",
     "spell_list": [
       "Cleric"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Sapping Sting",
+    "level": 0,
+    "school": "Necromancy",
+    "spell_list": [
+      "Sorcerer",
+      "Warlock",
+      "Wizard"
     ],
     "ritual": false
   },
@@ -220,7 +490,7 @@
   {
     "name": "Vicious Mockery",
     "level": 0,
-    "school": "Abjuration",
+    "school": "Enchantment",
     "spell_list": [
       "Bard"
     ],

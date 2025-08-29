@@ -13,6 +13,7 @@ import { t } from './i18n.js';
 import { createElement, createAccordionItem } from './ui-helpers.js';
 import { renderFeatChoices } from './feat.js';
 import { renderSpellChoices } from './spell-select.js';
+import { pendingReplacements } from './proficiency.js';
 
 const abilityMap = {
   Strength: 'str',
@@ -799,7 +800,12 @@ globalThis.updateStep2Completion = updateStep2Completion;
 export function isStepComplete() {
   const incomplete = (CharacterState.classes || []).some(classHasPendingChoices);
   const hasClass = (CharacterState.classes || []).length > 0;
-  return hasClass && !incomplete;
+  return hasClass && !incomplete && pendingReplacements() === 0;
+}
+
+export function confirmStep() {
+  updateStep2Completion();
+  return isStepComplete();
 }
 
 /**

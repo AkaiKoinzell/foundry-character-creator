@@ -8,7 +8,7 @@ import {
 import { refreshBaseState, rebuildFromClasses } from './step2.js';
 import { t } from './i18n.js';
 import * as main from './main.js';
-import { addUniqueProficiency } from './proficiency.js';
+import { addUniqueProficiency, pendingReplacements } from './proficiency.js';
 import { createAccordionItem } from './ui-helpers.js';
 
 let selectedBaseRace = '';
@@ -23,8 +23,6 @@ const pendingRaceChoices = {
 let raceRenderSeq = 0;
 
 function validateRaceChoices() {
-  const btn = document.getElementById('confirmRaceSelection');
-  const btn4 = document.getElementById('btnStep4');
   const allSelects = [
     ...pendingRaceChoices.languages,
     ...pendingRaceChoices.spells,
@@ -91,11 +89,6 @@ function validateRaceChoices() {
   if (missing.length) errors.push('Complete all selections');
   if (duplicates.length) errors.push('Choose unique options');
 
-  if (btn) {
-    btn.disabled = !valid;
-    btn.title = valid ? '' : errors.join('. ');
-  }
-  if (btn4) btn4.disabled = true;
   main.setCurrentStepComplete?.(valid);
   return valid;
 }
@@ -486,8 +479,8 @@ function showRaceModal(race) {
 }
 
 function confirmRaceSelection() {
-  if (!currentRaceData || !selectedBaseRace) return;
-  if (!validateRaceChoices()) return;
+  if (!currentRaceData || !selectedBaseRace) return false;
+  if (!validateRaceChoices()) return false;
   const container = document.getElementById('raceTraits');
 
   CharacterState.system.details.race = selectedBaseRace;
@@ -610,16 +603,12 @@ function confirmRaceSelection() {
   pendingRaceChoices.abilities = [];
   refreshBaseState();
   rebuildFromClasses();
-  const btn4 = document.getElementById('btnStep4');
-  const confirmBtn = document.getElementById('confirmRaceSelection');
   const finalize = () => {
-    if (btn4) btn4.disabled = false;
-    if (confirmBtn) confirmBtn.disabled = false;
     logCharacterState();
-    main.showStep(4);
+    main.setCurrentStepComplete?.(true);
   };
   if (replacements.length) {
-    if (confirmBtn) confirmBtn.disabled = true;
+    main.setCurrentStepComplete?.(false);
     const check = () => {
       replacements.forEach((s) => {
         if (s.value && s.dataset.proftype) {
@@ -635,9 +624,10 @@ function confirmRaceSelection() {
       }
     };
     replacements.forEach((s) => s.addEventListener('change', check));
-    return;
+    return false;
   }
   finalize();
+  return true;
 }
 
 export async function loadStep3(force = false) {
@@ -659,8 +649,6 @@ export async function loadStep3(force = false) {
     });
   }
 
-  const btn = document.getElementById('confirmRaceSelection');
-  btn?.addEventListener('click', confirmRaceSelection);
   const changeBtn = document.getElementById('changeRace');
   changeBtn?.addEventListener('click', async () => {
     if (currentRaceData) {
@@ -735,7 +723,12 @@ export async function loadStep3(force = false) {
 }
 
 export function isStepComplete() {
-  return !!CharacterState.system.details.race;
+  return !!CharacterState.system.details.race && pendingReplacements() === 0;
 }
 
-export { renderBaseRaces, selectBaseRace, confirmRaceSelection };
+export function confirmStep() {
+  if (isStepComplete()) return true;
+  return confirmRaceSelection();
+}
+
+export { renderBaseRaces, selectBaseRace };

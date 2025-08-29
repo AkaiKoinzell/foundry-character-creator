@@ -13,9 +13,18 @@ import {
   rebuildFromClasses,
   refreshBaseState,
   isStepComplete as isStep2Complete,
+  confirmStep as confirmStep2,
 } from "./step2.js";
-import { loadStep3, isStepComplete as isStep3Complete } from "./step3.js";
-import { loadStep4, isStepComplete as isStep4Complete } from "./step4.js";
+import {
+  loadStep3,
+  isStepComplete as isStep3Complete,
+  confirmStep as confirmStep3,
+} from "./step3.js";
+import {
+  loadStep4,
+  isStepComplete as isStep4Complete,
+  confirmStep as confirmStep4,
+} from "./step4.js";
 import { loadStep5, isStepComplete as isStep5Complete } from "./step5.js";
 import { loadStep6 } from "./step6.js";
 import { exportFoundryActor } from "./export.js";
@@ -278,11 +287,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (resetBtn) {
       resetBtn.addEventListener("click", () => location.reload());
     }
+    const confirmMap = { 2: confirmStep2, 3: confirmStep3, 4: confirmStep4 };
     const nextArrow = document.getElementById("nextStep");
     if (nextArrow) {
-      nextArrow.addEventListener("click", () => {
-        if (!nextArrow.disabled) {
+      nextArrow.addEventListener("click", async () => {
+        if (nextArrow.disabled) return;
+        try {
+          const fn = confirmMap[currentStep];
+          if (fn) {
+            const ok = await fn();
+            if (!ok) return;
+          }
           showStep(currentStep + 1);
+        } catch (err) {
+          console.error(err);
         }
       });
     }

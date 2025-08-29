@@ -2,7 +2,8 @@
  * @jest-environment jsdom
  */
 
-import { updateSpellSelectOptions } from '../src/spell-select.js';
+import { jest } from '@jest/globals';
+import { updateSpellSelectOptions, loadSpells } from '../src/spell-select.js';
 
 describe('spell select duplicate prevention', () => {
   function createSelect(options) {
@@ -37,5 +38,33 @@ describe('spell select duplicate prevention', () => {
     select2.value = 'Magic Missile';
     updateSpellSelectOptions(selects);
     expect(select2.value).toBe('');
+  });
+});
+
+describe('loadSpells', () => {
+  test('merges level files and caches result', async () => {
+    const dataByLevel = Array.from({ length: 10 }, (_, i) => [
+      { name: `spell${i}`, level: i },
+    ]);
+    const originalFetch = global.fetch;
+    const fetchMock = jest.fn((url) => {
+      const match = /level(\d)\.json$/.exec(url);
+      const idx = match ? Number(match[1]) : 0;
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(dataByLevel[idx]),
+      });
+    });
+    global.fetch = fetchMock;
+
+    const first = await loadSpells();
+    expect(first).toHaveLength(10);
+    expect(fetchMock).toHaveBeenCalledTimes(10);
+
+    const second = await loadSpells();
+    expect(second).toBe(first);
+    expect(fetchMock).toHaveBeenCalledTimes(10);
+
+    global.fetch = originalFetch;
   });
 });

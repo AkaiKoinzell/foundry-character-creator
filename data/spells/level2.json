@@ -233,6 +233,17 @@
     "ritual": false
   },
   {
+    "name": "Dragonic Mischief",
+    "level": 2,
+    "school": "Illusion",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
     "name": "Dust Devil",
     "level": 2,
     "school": "Conjuration",
@@ -251,6 +262,16 @@
       "Wizard",
       "Sorcerer",
       "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Earthen Grasp",
+    "level": 2,
+    "school": "Transmutation",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
     ],
     "ritual": false
   },
@@ -283,11 +304,31 @@
     "ritual": false
   },
   {
+    "name": "Enthrall",
+    "level": 2,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
     "name": "Find Steed",
     "level": 2,
     "school": "Conjuration",
     "spell_list": [
       "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Find Traps",
+    "level": 2,
+    "school": "Divination",
+    "spell_list": [
+      "Cleric",
+      "Druid"
     ],
     "ritual": false
   },
@@ -310,6 +351,15 @@
       "Druid",
       "Wizard",
       "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Fortune's Favor",
+    "level": 2,
+    "school": "Divination",
+    "spell_list": [
+      "Wizard"
     ],
     "ritual": false
   },
@@ -337,6 +387,27 @@
     "ritual": false
   },
   {
+    "name": "Healing Spirit",
+    "level": 2,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Heat Metal",
+    "level": 2,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Druid"
+    ],
+    "ritual": false
+  },
+  {
     "name": "Hold Person",
     "level": 2,
     "school": "Enchantment",
@@ -347,6 +418,15 @@
       "Wizard",
       "Sorcerer",
       "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Immovable Object",
+    "level": 2,
+    "school": "Transmutation",
+    "spell_list": [
+      "Wizard"
     ],
     "ritual": false
   },
@@ -421,6 +501,15 @@
     "ritual": false
   },
   {
+    "name": "Magic Aura",
+    "level": 2,
+    "school": "Illusion",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
     "name": "Magic Mouth",
     "level": 2,
     "school": "Illusion",
@@ -440,6 +529,27 @@
       "Wizard",
       "Paladin",
       "Ranger",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Mind Spike",
+    "level": 2,
+    "school": "Divination",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Mind Whip",
+    "level": 2,
+    "school": "Enchantment",
+    "spell_list": [
+      "Wizard",
       "Sorcerer"
     ],
     "ritual": false
@@ -521,6 +631,48 @@
     "ritual": false
   },
   {
+    "name": "Pyrotechnics",
+    "level": 2,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Ray of Enfeeblement",
+    "level": 2,
+    "school": "Necromancy",
+    "spell_list": [
+      "Wizard",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Rope Trick",
+    "level": 2,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Scorching Ray",
+    "level": 2,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
     "name": "See Invisibility",
     "level": 2,
     "school": "Divination",
@@ -529,6 +681,17 @@
       "Bard",
       "Wizard",
       "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Shadow Blade",
+    "level": 2,
+    "school": "Illusion",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
     ],
     "ritual": false
   },
@@ -568,6 +731,16 @@
     "ritual": true
   },
   {
+    "name": "Snowball Swarm",
+    "level": 2,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
     "name": "Spider Climb",
     "level": 2,
     "school": "Transmutation",
@@ -595,6 +768,18 @@
     "school": "Evocation",
     "spell_list": [
       "Cleric"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Spray Of Cards",
+    "level": 2,
+    "school": "Conjuration",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
     ],
     "ritual": false
   },
@@ -631,6 +816,29 @@
     "ritual": false
   },
   {
+    "name": "Warding Wind",
+    "level": 2,
+    "school": "Evocation",
+    "spell_list": [
+      "Bard",
+      "Druid",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Warp Sense",
+    "level": 2,
+    "school": "Divination",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
     "name": "Web",
     "level": 2,
     "school": "Conjuration",
@@ -640,6 +848,15 @@
       "Sorcerer"
     ],
     "ritual": false
+  },
+  {
+    "name": "Wristpocket",
+    "level": 2,
+    "school": "Conjuration",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": true
   },
   {
     "name": "Zone of Truth",

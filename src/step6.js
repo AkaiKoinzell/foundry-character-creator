@@ -68,6 +68,36 @@ function adjustAbility(ab, delta) {
   calcRemaining();
 }
 
+function applyRacialBonus() {
+  const selections = [
+    document.getElementById('racialBonus1')?.value,
+    document.getElementById('racialBonus2')?.value,
+    document.getElementById('racialBonus3')?.value,
+  ];
+  if (selections.some((v) => !v)) {
+    alert('Seleziona tre caratteristiche per i bonus razziali');
+    return;
+  }
+  const counts = selections.reduce((acc, ab) => {
+    acc[ab] = (acc[ab] || 0) + 1;
+    return acc;
+  }, {});
+  const values = Object.values(counts);
+  const valid =
+    (Object.keys(counts).length === 2 && values.includes(2) && values.includes(1)) ||
+    (Object.keys(counts).length === 3 && values.every((v) => v === 1));
+  if (!valid) {
+    alert('Distribuzione dei bonus non valida');
+    return;
+  }
+  CharacterState.bonusAbilities = {};
+  Object.entries(counts).forEach(([ab, val]) => {
+    CharacterState.bonusAbilities[ab] = val;
+  });
+  ABILITIES.forEach(updateFinal);
+  validateAbilities();
+}
+
 function confirmAbilities() {
   ABILITIES.forEach((ab) => {
     const base = CharacterState.baseAbilities[ab];
@@ -117,6 +147,13 @@ export function loadStep6(force = false) {
     newBtns[0]?.addEventListener('click', () => adjustAbility(ab, 1));
     newBtns[1]?.addEventListener('click', () => adjustAbility(ab, -1));
   });
+
+  let applyBtn = document.getElementById('applyRacialBonus');
+  if (applyBtn) {
+    applyBtn.replaceWith(applyBtn.cloneNode(true));
+    applyBtn = document.getElementById('applyRacialBonus');
+    applyBtn.addEventListener('click', applyRacialBonus);
+  }
 
   validateAbilities();
   calcRemaining();

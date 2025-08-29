@@ -133,20 +133,7 @@
       "name": "Cantrip",
       "description": "Choose 3 wizard cantrips to learn",
       "count": 3,
-      "type": "cantrips",
-      "selection": [
-        "Fire Bolt",
-        "Light",
-        "Mage Hand",
-        "Prestidigitation",
-        "Ray of Frost",
-        "Shape Water",
-        "Shocking Grasp",
-        "Sword Burst",
-        "Thunderclap",
-        "Toll the Dead",
-        "True Strike"
-      ]
+      "type": "cantrips"
     },
     {
       "level": 4,

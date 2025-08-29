@@ -246,21 +246,7 @@
       "name": "Cantrip",
       "description": "Choose 2 artificer cantrips to learn",
       "count": 2,
-      "type": "cantrips",
-      "selection": [
-        "Fire Bolt",
-        "Guidance",
-        "Light",
-        "Mage Hand",
-        "Prestidigitation",
-        "Ray of Frost",
-        "Resistance",
-        "Shocking Grasp",
-        "Spare the Dying",
-        "Sword Burst",
-        "Thorn Whip",
-        "Thunderclap"
-      ]
+      "type": "cantrips"
     },
     {
       "level": 2,

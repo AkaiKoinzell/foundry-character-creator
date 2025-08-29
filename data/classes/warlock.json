@@ -263,15 +263,7 @@
       "name": "Cantrip",
       "description": "Choose 2 warlock cantrips to learn",
       "count": 2,
-      "type": "cantrips",
-      "selection": [
-        "Eldritch Blast",
-        "Mage Hand",
-        "Prestidigitation",
-        "Sword Burst",
-        "Thunderclap",
-        "Toll the Dead"
-      ]
+      "type": "cantrips"
     },
     {
       "level": 2,

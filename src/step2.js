@@ -8,6 +8,7 @@ import {
   updateSpellSlots,
   updateProficiencyBonus,
   MAX_CHARACTER_LEVEL,
+  loadSpells,
 } from './data.js';
 import { t } from './i18n.js';
 import { createElement, createAccordionItem } from './ui-helpers.js';
@@ -564,23 +565,46 @@ function renderClassEditor(cls, index) {
         const choiceSelects = [];
         cls.choiceSelections = cls.choiceSelections || {};
         const existing = cls.choiceSelections[choice.name] || [];
+        let cantripOptionsPromise;
+        if (choice.type === 'cantrips') {
+          cantripOptionsPromise = loadSpells().then(spells =>
+            spells
+              .filter(
+                s => s.level === 0 && (s.spell_list || []).includes(cls.name)
+              )
+              .map(s => s.name)
+              .sort()
+          );
+        }
         for (let i = 0; i < count; i++) {
           const sel = document.createElement('select');
           sel.innerHTML = `<option value=''>${t('select')}</option>`;
-          choice.selection.forEach(opt => {
-            const o = document.createElement('option');
-            o.value = opt;
-            o.textContent = opt;
-            sel.appendChild(o);
-          });
           sel.dataset.type = 'choice';
           sel.dataset.choiceName = choice.name;
           sel.dataset.choiceType = choice.type || '';
           const choiceId = `${choice.name}-${lvl}-${i}`;
           sel.dataset.choiceId = choiceId;
           const stored = existing[i];
-          if (stored) sel.value = stored.option;
           choiceSelects.push(sel);
+          if (choice.type === 'cantrips') {
+            cantripOptionsPromise.then(opts => {
+              opts.forEach(opt => {
+                const o = document.createElement('option');
+                o.value = opt;
+                o.textContent = opt;
+                sel.appendChild(o);
+              });
+              if (stored) sel.value = stored.option;
+            });
+          } else {
+            (choice.selection || []).forEach(opt => {
+              const o = document.createElement('option');
+              o.value = opt;
+              o.textContent = opt;
+              sel.appendChild(o);
+            });
+            if (stored) sel.value = stored.option;
+          }
           if (choice.type === 'skills') {
             skillChoiceSelects.push(sel);
           }
@@ -613,6 +637,10 @@ function renderClassEditor(cls, index) {
           updateSkillSelectOptions(skillSelects, skillChoiceSelects);
           skillChoiceSelectMap.forEach(selects => {
             updateChoiceSelectOptions(selects, 'skills', skillSelects, skillChoiceSelects);
+          });
+        } else if (choice.type === 'cantrips') {
+          cantripOptionsPromise.then(() => {
+            updateChoiceSelectOptions(choiceSelects, choice.type, skillSelects, skillChoiceSelects);
           });
         } else {
           updateChoiceSelectOptions(choiceSelects, choice.type, skillSelects, skillChoiceSelects);

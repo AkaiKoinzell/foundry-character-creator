@@ -263,16 +263,7 @@
       "name": "Cantrip",
       "description": "Choose 2 druid cantrips to learn",
       "count": 2,
-      "type": "cantrips",
-      "selection": [
-        "Guidance",
-        "Produce Flame",
-        "Resistance",
-        "Shape Water",
-        "Shillelagh",
-        "Thorn Whip",
-        "Thunderclap"
-      ]
+      "type": "cantrips"
     },
     {
       "level": 4,

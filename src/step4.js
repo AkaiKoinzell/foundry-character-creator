@@ -258,6 +258,13 @@ function selectBackground(bg) {
       featChoicesDiv.innerHTML = '';
       if (sel.value) {
         pendingSelections.featRenderer = await renderFeatChoices(sel.value, featChoicesDiv);
+        const all = [
+          ...(pendingSelections.featRenderer.abilitySelects || []),
+          ...(pendingSelections.featRenderer.skillSelects || []),
+          ...(pendingSelections.featRenderer.toolSelects || []),
+          ...(pendingSelections.featRenderer.languageSelects || [])
+        ];
+        all.forEach((s) => s.addEventListener('change', validateBackgroundChoices));
       }
       validateBackgroundChoices();
     });

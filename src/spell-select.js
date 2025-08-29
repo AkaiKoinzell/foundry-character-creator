@@ -1,5 +1,24 @@
-import { CharacterState, updateSpellSlots, loadSpells } from './data.js';
+import {
+  CharacterState,
+  updateSpellSlots,
+  fetchJsonWithRetry,
+} from './data.js';
 import { t } from './i18n.js';
+
+let spellCache;
+
+export async function loadSpells() {
+  if (!spellCache) {
+    const promises = [];
+    for (let i = 0; i <= 9; i++) {
+      promises.push(
+        fetchJsonWithRetry(`data/spells/level${i}.json`, `spells level ${i}`)
+      );
+    }
+    spellCache = (await Promise.all(promises)).flat();
+  }
+  return spellCache;
+}
 
 export function updateSpellSelectOptions(selects) {
   const counts = new Map();

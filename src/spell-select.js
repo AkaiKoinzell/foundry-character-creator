@@ -1,15 +1,5 @@
-import { CharacterState, updateSpellSlots } from './data.js';
+import { CharacterState, updateSpellSlots, loadSpells } from './data.js';
 import { t } from './i18n.js';
-
-let spellCache;
-
-async function loadSpells() {
-  if (!spellCache) {
-    const res = await fetch('data/spells.json');
-    spellCache = await res.json();
-  }
-  return spellCache;
-}
 
 export function updateSpellSelectOptions(selects) {
   const counts = new Map();

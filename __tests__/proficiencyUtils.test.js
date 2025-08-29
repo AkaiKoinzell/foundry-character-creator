@@ -17,6 +17,7 @@ jest.unstable_mockModule('../src/data.js', () => ({
   DATA: { languages: [], feats: [] },
   CharacterState: mockState,
   logCharacterState: jest.fn(),
+  loadSpells: jest.fn(),
 }));
 
 const {

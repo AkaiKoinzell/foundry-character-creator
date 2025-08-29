@@ -1,0 +1,286 @@
+[
+  {
+    "name": "Arcane Sword",
+    "level": 7,
+    "school": "Evocation",
+    "spell_list": [
+      "Bard",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Conjure Celestial",
+    "level": 7,
+    "school": "Conjuration",
+    "spell_list": [
+      "Cleric"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Crown of Stars",
+    "level": 7,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Delayed Blast Fireball",
+    "level": 7,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Divine Word",
+    "level": 7,
+    "school": "Evocation",
+    "spell_list": [
+      "Cleric",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Draconic Transformation",
+    "level": 7,
+    "school": "Transmutation",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Dream of the Blue Veil",
+    "level": 7,
+    "school": "Conjuration",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Etherealness",
+    "level": 7,
+    "school": "Transmutation",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Finger of Death",
+    "level": 7,
+    "school": "Necromancy",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Fire Storm",
+    "level": 7,
+    "school": "Evocation",
+    "spell_list": [
+      "Cleric",
+      "Druid",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Forcecage",
+    "level": 7,
+    "school": "Evocation",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Magnificent Mansion",
+    "level": 7,
+    "school": "Conjuration",
+    "spell_list": [
+      "Bard",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Mirage Arcane",
+    "level": 7,
+    "school": "Illusion",
+    "spell_list": [
+      "Druid",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Plane Shift",
+    "level": 7,
+    "school": "Conjuration",
+    "spell_list": [
+      "Cleric",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Power Word Pain",
+    "level": 7,
+    "school": "Enchantment",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Prismatic Spray",
+    "level": 7,
+    "school": "Evocation",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Project Image",
+    "level": 7,
+    "school": "Illusion",
+    "spell_list": [
+      "Bard",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Regenerate",
+    "level": 7,
+    "school": "Transmutation",
+    "spell_list": [
+      "Bard",
+      "Cleric",
+      "Druid"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Resurrection",
+    "level": 7,
+    "school": "Necromancy",
+    "spell_list": [
+      "Bard",
+      "Cleric"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Reverse Gravity",
+    "level": 7,
+    "school": "Transmutation",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Sequester",
+    "level": 7,
+    "school": "Transmutation",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Simulacrum",
+    "level": 7,
+    "school": "Illusion",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Symbol",
+    "level": 7,
+    "school": "Abjuration",
+    "spell_list": [
+      "Bard",
+      "Cleric",
+      "Druid",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Teleport",
+    "level": 7,
+    "school": "Conjuration",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Temple of the Gods",
+    "level": 7,
+    "school": "Conjuration",
+    "spell_list": [
+      "Cleric"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Tether Essence",
+    "level": 7,
+    "school": "Necromancy",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Whirlwind",
+    "level": 7,
+    "school": "Evocation",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  }
+]

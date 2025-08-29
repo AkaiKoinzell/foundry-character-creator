@@ -6,7 +6,8 @@ import { jest } from '@jest/globals';
 
 jest.unstable_mockModule('../src/data.js', () => ({
   DATA: {},
-  CharacterState: { classes: [{ name: 'Test', level: 1 }], equipment: [] }
+  CharacterState: { classes: [{ name: 'Test', level: 1 }], equipment: [] },
+  loadSpells: jest.fn(),
 }));
 
 jest.unstable_mockModule('../src/i18n.js', () => ({ t: (k) => k }));

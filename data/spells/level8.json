@@ -1,0 +1,243 @@
+[
+  {
+    "name": "Animal Shapes",
+    "level": 8,
+    "school": "Transmutation",
+    "spell_list": [
+      "Druid"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Antimagic Field",
+    "level": 8,
+    "school": "Abjuration",
+    "spell_list": [
+      "Cleric",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Antipathy/Sympathy",
+    "level": 8,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Druid",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Clone",
+    "level": 8,
+    "school": "Necromancy",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Control Weather",
+    "level": 8,
+    "school": "Transmutation",
+    "spell_list": [
+      "Cleric",
+      "Druid",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Dark Star",
+    "level": 8,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Demiplane",
+    "level": 8,
+    "school": "Conjuration",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Dominate Monster",
+    "level": 8,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Earthquake",
+    "level": 8,
+    "school": "Evocation",
+    "spell_list": [
+      "Cleric",
+      "Druid",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Feeblemind",
+    "level": 8,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Glibness",
+    "level": 8,
+    "school": "Transmutation",
+    "spell_list": [
+      "Bard",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Holy Aura",
+    "level": 8,
+    "school": "Abjuration",
+    "spell_list": [
+      "Cleric"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Horrid Wilting",
+    "level": 8,
+    "school": "Necromancy",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Illusory Dragon",
+    "level": 8,
+    "school": "Illusion",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Incendiary Cloud",
+    "level": 8,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Maddening Darkness",
+    "level": 8,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Maze",
+    "level": 8,
+    "school": "Conjuration",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Mighty Fortress",
+    "level": 8,
+    "school": "Conjuration",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Mind Blank",
+    "level": 8,
+    "school": "Abjuration",
+    "spell_list": [
+      "Bard",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Power Word Stun",
+    "level": 8,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Reality Break",
+    "level": 8,
+    "school": "Conjuration",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Sunburst",
+    "level": 8,
+    "school": "Evocation",
+    "spell_list": [
+      "Cleric",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Telepathy",
+    "level": 8,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Tsunami",
+    "level": 8,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid"
+    ],
+    "ritual": false
+  }
+]

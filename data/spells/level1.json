@@ -1,0 +1,1127 @@
+[
+  {
+    "name": "False Life",
+    "level": 1,
+    "school": "Necromancy",
+    "spell_list": [
+      "Artificer",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Feather Fall",
+    "level": 1,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Find Familiar",
+    "level": 1,
+    "school": "Conjuration",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Floating Disk",
+    "level": 1,
+    "school": "Conjuration",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Fog Cloud",
+    "level": 1,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Ranger",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Gift of Alacrity",
+    "level": 1,
+    "school": "Divination",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Goodberry",
+    "level": 1,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Grease",
+    "level": 1,
+    "school": "Conjuration",
+    "spell_list": [
+      "Artificer",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Guiding Bolt",
+    "level": 1,
+    "school": "Evocation",
+    "spell_list": [
+      "Cleric"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Hail of Thorns",
+    "level": 1,
+    "school": "Conjuration",
+    "spell_list": [
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Healing Word",
+    "level": 1,
+    "school": "Evocation",
+    "spell_list": [
+      "Bard",
+      "Cleric",
+      "Druid"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Hellish Rebuke",
+    "level": 1,
+    "school": "Evocation",
+    "spell_list": [
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Heroism",
+    "level": 1,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Hex",
+    "level": 1,
+    "school": "Enchantment",
+    "spell_list": [
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Hideous Laughter",
+    "level": 1,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Hunter's Mark",
+    "level": 1,
+    "school": "Divination",
+    "spell_list": [
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Ice Knife",
+    "level": 1,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Identify",
+    "level": 1,
+    "school": "Divination",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Wizard"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Illusory Script",
+    "level": 1,
+    "school": "Illusion",
+    "spell_list": [
+      "Wizard",
+      "Warlock"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Inflict Wounds",
+    "level": 1,
+    "school": "Necromancy",
+    "spell_list": [
+      "Cleric",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Jump",
+    "level": 1,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Druid",
+      "Wizard",
+      "Ranger",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Longstrider",
+    "level": 1,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Mage Armor",
+    "level": 1,
+    "school": "Abjuration",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Magic Missile",
+    "level": 1,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Magnify Gravity",
+    "level": 1,
+    "school": "Transmutation",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Protection from Evil and Good",
+    "level": 1,
+    "school": "Abjuration",
+    "spell_list": [
+      "Cleric",
+      "Druid",
+      "Wizard",
+      "Paladin",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Purify Food and Drink",
+    "level": 1,
+    "school": "Abjuration",
+    "spell_list": [
+      "Artificer",
+      "Cleric",
+      "Druid",
+      "Paladin"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Ray of Sickness",
+    "level": 1,
+    "school": "Necromancy",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Sanctuary",
+    "level": 1,
+    "school": "Abjuration",
+    "spell_list": [
+      "Artificer",
+      "Cleric"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Searing Smite",
+    "level": 1,
+    "school": "Evocation",
+    "spell_list": [
+      "Paladin",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Shield",
+    "level": 1,
+    "school": "Abjuration",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Shield of Faith",
+    "level": 1,
+    "school": "Abjuration",
+    "spell_list": [
+      "Cleric",
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Silent Image",
+    "level": 1,
+    "school": "Illusion",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Sleep",
+    "level": 1,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Snare",
+    "level": 1,
+    "school": "Abjuration",
+    "spell_list": [
+      "Artificer",
+      "Druid",
+      "Wizard",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Speak with Animals",
+    "level": 1,
+    "school": "Divination",
+    "spell_list": [
+      "Bard",
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Thunderous Smite",
+    "level": 1,
+    "school": "Evocation",
+    "spell_list": [
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Absorb Elements",
+    "level": 1,
+    "school": "Abjuration",
+    "spell_list": [
+      "Artificer",
+      "Druid",
+      "Wizard",
+      "Ranger",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Alarm",
+    "level": 1,
+    "school": "Abjuration",
+    "spell_list": [
+      "Artificer",
+      "Wizard",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Animal Friendship",
+    "level": 1,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Armor of Agathys",
+    "level": 1,
+    "school": "Abjuration",
+    "spell_list": [
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Arms of Hadar",
+    "level": 1,
+    "school": "Conjuration",
+    "spell_list": [
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Bane",
+    "level": 1,
+    "school": "Abjuration",
+    "spell_list": [
+      "Druid",
+      "Ranger",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Beast Bond",
+    "level": 1,
+    "school": "Divination",
+    "spell_list": [
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Bless",
+    "level": 1,
+    "school": "Enchantment",
+    "spell_list": [
+      "Cleric",
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Burning Hands",
+    "level": 1,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Catapult",
+    "level": 1,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Cause Fear",
+    "level": 1,
+    "school": "Necromancy",
+    "spell_list": [
+      "Wizard",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Caustic Brew",
+    "level": 1,
+    "school": "Evocation",
+    "spell_list": [
+      "Artificer",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Ceremony",
+    "level": 1,
+    "school": "Abjuration",
+    "spell_list": [
+      "Cleric",
+      "Paladin"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Chaos Bolt",
+    "level": 1,
+    "school": "Evocation",
+    "spell_list": [
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Charm Person",
+    "level": 1,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Druid",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Chromatic Orb",
+    "level": 1,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Color Spray",
+    "level": 1,
+    "school": "Illusion",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Command",
+    "level": 1,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Cleric",
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Compelled Duel",
+    "level": 1,
+    "school": "Enchantment",
+    "spell_list": [
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Comprehend Languages",
+    "level": 1,
+    "school": "Divination",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Create or Destroy Water",
+    "level": 1,
+    "school": "Transmutation",
+    "spell_list": [
+      "Cleric",
+      "Druid"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Cure Wounds",
+    "level": 1,
+    "school": "Evocation",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Cleric",
+      "Druid",
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Detect Evil and Good",
+    "level": 1,
+    "school": "Divination",
+    "spell_list": [
+      "Cleric",
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Detect Magic",
+    "level": 1,
+    "school": "Divination",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Cleric",
+      "Druid",
+      "Wizard",
+      "Paladin",
+      "Ranger",
+      "Sorcerer"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Detect Poison and Disease",
+    "level": 1,
+    "school": "Divination",
+    "spell_list": [
+      "Cleric",
+      "Druid",
+      "Paladin",
+      "Ranger"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Disguise Self",
+    "level": 1,
+    "school": "Illusion",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Dissonant Whispers",
+    "level": 1,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Divine Favor",
+    "level": 1,
+    "school": "Evocation",
+    "spell_list": [
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Earth Tremor",
+    "level": 1,
+    "school": "Evocation",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Ensnaring Strike",
+    "level": 1,
+    "school": "Conjuration",
+    "spell_list": [
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Entangle",
+    "level": 1,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Expeditious Retreat",
+    "level": 1,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Faerie Fire",
+    "level": 1,
+    "school": "Evocation",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Druid"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "False Life",
+    "level": 1,
+    "school": "Necromancy",
+    "spell_list": [
+      "Artificer",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Feather Fall",
+    "level": 1,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Find Familiar",
+    "level": 1,
+    "school": "Conjuration",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Floating Disk",
+    "level": 1,
+    "school": "Conjuration",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Fog Cloud",
+    "level": 1,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Ranger",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Gift of Alacrity",
+    "level": 1,
+    "school": "Divination",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Goodberry",
+    "level": 1,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Grease",
+    "level": 1,
+    "school": "Conjuration",
+    "spell_list": [
+      "Artificer",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Guiding Bolt",
+    "level": 1,
+    "school": "Evocation",
+    "spell_list": [
+      "Cleric"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Hail of Thorns",
+    "level": 1,
+    "school": "Conjuration",
+    "spell_list": [
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Healing Word",
+    "level": 1,
+    "school": "Evocation",
+    "spell_list": [
+      "Bard",
+      "Cleric",
+      "Druid"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Hellish Rebuke",
+    "level": 1,
+    "school": "Evocation",
+    "spell_list": [
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Heroism",
+    "level": 1,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Hex",
+    "level": 1,
+    "school": "Enchantment",
+    "spell_list": [
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Hideous Laughter",
+    "level": 1,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Hunter's Mark",
+    "level": 1,
+    "school": "Divination",
+    "spell_list": [
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Ice Knife",
+    "level": 1,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Identify",
+    "level": 1,
+    "school": "Divination",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Wizard"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Illusory Script",
+    "level": 1,
+    "school": "Illusion",
+    "spell_list": [
+      "Wizard",
+      "Warlock"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Inflict Wounds",
+    "level": 1,
+    "school": "Necromancy",
+    "spell_list": [
+      "Cleric",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Jump",
+    "level": 1,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Druid",
+      "Wizard",
+      "Ranger",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Longstrider",
+    "level": 1,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Mage Armor",
+    "level": 1,
+    "school": "Abjuration",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Magic Missile",
+    "level": 1,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Magnify Gravity",
+    "level": 1,
+    "school": "Transmutation",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Protection from Evil and Good",
+    "level": 1,
+    "school": "Abjuration",
+    "spell_list": [
+      "Cleric",
+      "Druid",
+      "Wizard",
+      "Paladin",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Purify Food and Drink",
+    "level": 1,
+    "school": "Abjuration",
+    "spell_list": [
+      "Artificer",
+      "Cleric",
+      "Druid",
+      "Paladin"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Ray of Sickness",
+    "level": 1,
+    "school": "Necromancy",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Sanctuary",
+    "level": 1,
+    "school": "Abjuration",
+    "spell_list": [
+      "Artificer",
+      "Cleric"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Searing Smite",
+    "level": 1,
+    "school": "Evocation",
+    "spell_list": [
+      "Paladin",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Shield",
+    "level": 1,
+    "school": "Abjuration",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Shield of Faith",
+    "level": 1,
+    "school": "Abjuration",
+    "spell_list": [
+      "Cleric",
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Silent Image",
+    "level": 1,
+    "school": "Illusion",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Sleep",
+    "level": 1,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Snare",
+    "level": 1,
+    "school": "Abjuration",
+    "spell_list": [
+      "Artificer",
+      "Druid",
+      "Wizard",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Speak with Animals",
+    "level": 1,
+    "school": "Divination",
+    "spell_list": [
+      "Bard",
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Thunderous Smite",
+    "level": 1,
+    "school": "Evocation",
+    "spell_list": [
+      "Paladin"
+    ],
+    "ritual": false
+  }
+]

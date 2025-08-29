@@ -1,0 +1,534 @@
+[
+  {
+    "name": "Arcane Eye",
+    "level": 4,
+    "school": "Divination",
+    "spell_list": [
+      "Artificer",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Aura of Life",
+    "level": 4,
+    "school": "Abjuration",
+    "spell_list": [
+      "Cleric",
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Aura of Purity",
+    "level": 4,
+    "school": "Abjuration",
+    "spell_list": [
+      "Cleric",
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Banishment",
+    "level": 4,
+    "school": "Abjuration",
+    "spell_list": [
+      "Cleric",
+      "Wizard",
+      "Paladin",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Black Tentacles",
+    "level": 4,
+    "school": "Conjuration",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Blight",
+    "level": 4,
+    "school": "Necromancy",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Charm Monster",
+    "level": 4,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Druid",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Compulsion",
+    "level": 4,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Confusion",
+    "level": 4,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Conjure Minor Elementals",
+    "level": 4,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Conjure Woodland Beings",
+    "level": 4,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Control Water",
+    "level": 4,
+    "school": "Transmutation",
+    "spell_list": [
+      "Cleric",
+      "Druid",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Death Ward",
+    "level": 4,
+    "school": "Abjuration",
+    "spell_list": [
+      "Cleric",
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Dimension Door",
+    "level": 4,
+    "school": "Conjuration",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Divination",
+    "level": 4,
+    "school": "Divination",
+    "spell_list": [
+      "Cleric",
+      "Druid",
+      "Wizard"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Dominate Beast",
+    "level": 4,
+    "school": "Enchantment",
+    "spell_list": [
+      "Druid",
+      "Ranger",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Elemental Bane",
+    "level": 4,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Druid",
+      "Wizard",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Fabricate",
+    "level": 4,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Faithful Hound",
+    "level": 4,
+    "school": "Conjuration",
+    "spell_list": [
+      "Artificer",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Find Greater Steed",
+    "level": 4,
+    "school": "Conjuration",
+    "spell_list": [
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Fire Shield",
+    "level": 4,
+    "school": "Evocation",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Freedom of Movement",
+    "level": 4,
+    "school": "Abjuration",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Cleric",
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Giant Insect",
+    "level": 4,
+    "school": "Transmutation",
+    "spell_list": [
+      "Druid"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Grasping Vine",
+    "level": 4,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Greater Invisibility",
+    "level": 4,
+    "school": "Illusion",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Guardian of Faith",
+    "level": 4,
+    "school": "Conjuration",
+    "spell_list": [
+      "Cleric"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Guardian of Nature",
+    "level": 4,
+    "school": "Transmutation",
+    "spell_list": [
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Hallucinatory Terrain",
+    "level": 4,
+    "school": "Illusion",
+    "spell_list": [
+      "Bard",
+      "Druid",
+      "Wizard",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Ice Storm",
+    "level": 4,
+    "school": "Evocation",
+    "spell_list": [
+      "Druid",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Locate Creature",
+    "level": 4,
+    "school": "Divination",
+    "spell_list": [
+      "Bard",
+      "Cleric",
+      "Druid",
+      "Wizard",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Phantasmal Killer",
+    "level": 4,
+    "school": "Illusion",
+    "spell_list": [
+      "Bard",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Polymorph",
+    "level": 4,
+    "school": "Transmutation",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Paladin",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Private Sanctum",
+    "level": 4,
+    "school": "Conjuration",
+    "spell_list": [
+      "Artificer",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Psychic Lance",
+    "level": 4,
+    "school": "Abjuration",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Resilient Sphere",
+    "level": 4,
+    "school": "Evocation",
+    "spell_list": [
+      "Artificer",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Secret Chest",
+    "level": 4,
+    "school": "Conjuration",
+    "spell_list": [
+      "Artificer",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Shadow of Moil",
+    "level": 4,
+    "school": "Necromancy",
+    "spell_list": [
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Sickening Radiance",
+    "level": 4,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Spirit of Death",
+    "level": 4,
+    "school": "Necromancy",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Staggering Smite",
+    "level": 4,
+    "school": "Evocation",
+    "spell_list": [
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Stone Shape",
+    "level": 4,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Cleric",
+      "Druid",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Stoneskin",
+    "level": 4,
+    "school": "Abjuration",
+    "spell_list": [
+      "Artificer",
+      "Druid",
+      "Wizard",
+      "Ranger",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Storm Sphere",
+    "level": 4,
+    "school": "Evocation",
+    "spell_list": [
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Summon Aberration",
+    "level": 4,
+    "school": "Conjuration",
+    "spell_list": [
+      "Wizard",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Summon Construct",
+    "level": 4,
+    "school": "Conjuration",
+    "spell_list": [
+      "Artificer",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Summon Elemental",
+    "level": 4,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Summon Greater Demon",
+    "level": 4,
+    "school": "Conjuration",
+    "spell_list": [
+      "Wizard",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Vitriolic Sphere",
+    "level": 4,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Wall of Fire",
+    "level": 4,
+    "school": "Evocation",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Watery Sphere",
+    "level": 4,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  }
+]

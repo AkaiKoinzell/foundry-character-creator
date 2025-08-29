@@ -150,6 +150,21 @@ export async function loadRaces() {
   DATA.races = groups;
 }
 
+/**
+ * Fetches spell data for levels 0-9 and caches the combined array on
+ * `DATA.spells`.
+ */
+export async function loadSpells() {
+  if (Array.isArray(DATA.spells) && DATA.spells.length) return DATA.spells;
+  const promises = [];
+  for (let i = 0; i <= 9; i++) {
+    const path = `data/spells/level${i}.json`;
+    promises.push(fetchJsonWithRetry(path, `spells level ${i}`));
+  }
+  DATA.spells = (await Promise.all(promises)).flat();
+  return DATA.spells;
+}
+
 export const CharacterState = {
   playerName: "",
   name: "",

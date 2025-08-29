@@ -1,0 +1,572 @@
+[
+  {
+    "name": "Animate Objects",
+    "level": 5,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Antilife Shell",
+    "level": 5,
+    "school": "Abjuration",
+    "spell_list": [
+      "Druid"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Arcane Hand",
+    "level": 5,
+    "school": "Evocation",
+    "spell_list": [
+      "Artificer",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Awaken",
+    "level": 5,
+    "school": "Transmutation",
+    "spell_list": [
+      "Bard",
+      "Druid"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Banishing Smite",
+    "level": 5,
+    "school": "Abjuration",
+    "spell_list": [
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Circle of Power",
+    "level": 5,
+    "school": "Abjuration",
+    "spell_list": [
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Cloudkill",
+    "level": 5,
+    "school": "Conjuration",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Commune",
+    "level": 5,
+    "school": "Divination",
+    "spell_list": [
+      "Cleric"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Commune with Nature",
+    "level": 5,
+    "school": "Divination",
+    "spell_list": [
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Cone of Cold",
+    "level": 5,
+    "school": "Evocation",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Conjure Elemental",
+    "level": 5,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Conjure Volley",
+    "level": 5,
+    "school": "Conjuration",
+    "spell_list": [
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Contact Other Plane",
+    "level": 5,
+    "school": "Divination",
+    "spell_list": [
+      "Wizard",
+      "Warlock"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Contagion",
+    "level": 5,
+    "school": "Necromancy",
+    "spell_list": [
+      "Cleric",
+      "Druid"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Control Winds",
+    "level": 5,
+    "school": "Transmutation",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Creation",
+    "level": 5,
+    "school": "Illusion",
+    "spell_list": [
+      "Artificer",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Danse Macabre",
+    "level": 5,
+    "school": "Necromancy",
+    "spell_list": [
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Dawn",
+    "level": 5,
+    "school": "Evocation",
+    "spell_list": [
+      "Cleric",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Destructive Wave",
+    "level": 5,
+    "school": "Evocation",
+    "spell_list": [
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Dispel Evil and Good",
+    "level": 5,
+    "school": "Abjuration",
+    "spell_list": [
+      "Cleric",
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Dominate Person",
+    "level": 5,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Dream",
+    "level": 5,
+    "school": "Illusion",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Enervation",
+    "level": 5,
+    "school": "Necromancy",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Far Step",
+    "level": 5,
+    "school": "Conjuration",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Flame Strike",
+    "level": 5,
+    "school": "Evocation",
+    "spell_list": [
+      "Cleric"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Geas",
+    "level": 5,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Cleric",
+      "Druid",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Greater Restoration",
+    "level": 5,
+    "school": "Abjuration",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Cleric",
+      "Druid",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Hallow",
+    "level": 5,
+    "school": "Evocation",
+    "spell_list": [
+      "Cleric"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Hold Monster",
+    "level": 5,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Holy Weapon",
+    "level": 5,
+    "school": "Evocation",
+    "spell_list": [
+      "Cleric",
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Immolation",
+    "level": 5,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Infernal Calling",
+    "level": 5,
+    "school": "Conjuration",
+    "spell_list": [
+      "Wizard",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Insect Plague",
+    "level": 5,
+    "school": "Conjuration",
+    "spell_list": [
+      "Cleric",
+      "Druid",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Legend Lore",
+    "level": 5,
+    "school": "Divination",
+    "spell_list": [
+      "Bard",
+      "Cleric",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Maelstrom",
+    "level": 5,
+    "school": "Evocation",
+    "spell_list": [
+      "Druid"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Mass Cure Wounds",
+    "level": 5,
+    "school": "Evocation",
+    "spell_list": [
+      "Bard",
+      "Cleric",
+      "Druid"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Mislead",
+    "level": 5,
+    "school": "Illusion",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Modify Memory",
+    "level": 5,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Negative Energy Flood",
+    "level": 5,
+    "school": "Necromancy",
+    "spell_list": [
+      "Wizard",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Passwall",
+    "level": 5,
+    "school": "Transmutation",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Planar Binding",
+    "level": 5,
+    "school": "Abjuration",
+    "spell_list": [
+      "Bard",
+      "Cleric",
+      "Druid",
+      "Wizard",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Raise Dead",
+    "level": 5,
+    "school": "Necromancy",
+    "spell_list": [
+      "Bard",
+      "Cleric",
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Rary's Telepathic Bond",
+    "level": 5,
+    "school": "Divination",
+    "spell_list": [
+      "Bard",
+      "Wizard"
+    ],
+    "ritual": true
+  },
+  {
+    "name": "Reincarnate",
+    "level": 5,
+    "school": "Transmutation",
+    "spell_list": [
+      "Druid"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Scrying",
+    "level": 5,
+    "school": "Divination",
+    "spell_list": [
+      "Bard",
+      "Cleric",
+      "Wizard",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Seeming",
+    "level": 5,
+    "school": "Illusion",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Skill Empowerment",
+    "level": 5,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Bard",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Steel Wind Strike",
+    "level": 5,
+    "school": "Conjuration",
+    "spell_list": [
+      "Wizard",
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Summon Celestial",
+    "level": 5,
+    "school": "Conjuration",
+    "spell_list": [
+      "Cleric",
+      "Paladin"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Summon Draconic Spirit",
+    "level": 5,
+    "school": "Conjuration",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Swift Quiver",
+    "level": 5,
+    "school": "Transmutation",
+    "spell_list": [
+      "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Synaptic Static",
+    "level": 5,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Telekinesis",
+    "level": 5,
+    "school": "Transmutation",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Teleportation Circle",
+    "level": 5,
+    "school": "Conjuration",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Temporal Shunt",
+    "level": 5,
+    "school": "Transmutation",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": false
+  }
+]

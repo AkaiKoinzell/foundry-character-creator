@@ -31,6 +31,7 @@ const CharacterState = {
 jest.unstable_mockModule('../src/data.js', () => ({
   CharacterState,
   totalLevel: () => 1,
+  loadSpells: jest.fn(),
 }));
 
 const { loadStep6 } = await import('../src/step6.js');

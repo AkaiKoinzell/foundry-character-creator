@@ -10,6 +10,18 @@
     "ritual": false
   },
   {
+    "name": "Antagonize",
+    "level": 3,
+    "school": "Enchantment",
+    "spell_list": [
+      "Bard",
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
     "name": "Aura of Vitality",
     "level": 3,
     "school": "Abjuration",
@@ -229,11 +241,36 @@
     "ritual": true
   },
   {
+    "name": "Fire Stride",
+    "level": 3,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Wizard",
+      "Ranger",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
     "name": "Fireball",
     "level": 3,
     "school": "Evocation",
     "spell_list": [
       "Wizard",
+      "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Flame Arrows",
+    "level": 3,
+    "school": "Transmutation",
+    "spell_list": [
+      "Artificer",
+      "Druid",
+      "Wizard",
+      "Ranger",
       "Sorcerer"
     ],
     "ritual": false
@@ -315,6 +352,25 @@
       "Wizard",
       "Sorcerer",
       "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Life Transference",
+    "level": 3,
+    "school": "Necromancy",
+    "spell_list": [
+      "Cleric",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Lightning Arrow",
+    "level": 3,
+    "school": "Transmutation",
+    "spell_list": [
+      "Ranger"
     ],
     "ritual": false
   },
@@ -423,6 +479,15 @@
       "Wizard",
       "Ranger",
       "Sorcerer"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Pulse Wave",
+    "level": 3,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard"
     ],
     "ritual": false
   },
@@ -610,6 +675,16 @@
     "ritual": true
   },
   {
+    "name": "Tiny Servant",
+    "level": 3,
+    "school": "Conjuration",
+    "spell_list": [
+      "Artificer",
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
     "name": "Tongues",
     "level": 3,
     "school": "Divination",
@@ -630,6 +705,26 @@
       "Wizard",
       "Sorcerer",
       "Warlock"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Wall of Sand",
+    "level": 3,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Wall of Water",
+    "level": 3,
+    "school": "Evocation",
+    "spell_list": [
+      "Druid",
+      "Wizard",
+      "Sorcerer"
     ],
     "ritual": false
   },

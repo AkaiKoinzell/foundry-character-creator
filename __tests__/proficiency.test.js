@@ -7,6 +7,7 @@ describe('updateProficiencyBonus', () => {
   });
 
   test.each([
+    [0, 0],
     [1, 2],
     [4, 2],
     [5, 3],

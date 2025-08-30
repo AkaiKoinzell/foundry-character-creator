@@ -361,15 +361,20 @@ export function updateSpellSlots() {
 
 /**
  * Update the proficiency bonus based on total character level.
- * Levels 1-4: +2, 5-8: +3, 9-12: +4, 13-16: +5, 17+: +6.
+ * Levels 1-4: +2, 5-8: +3, 9-12: +4, 13-16: +5, 17-20: +6.
+ * Levels below 1 have no proficiency bonus.
  */
 export function updateProficiencyBonus() {
   const level = totalLevel();
-  let prof = 2;
-  if (level >= 17) prof = 6;
-  else if (level >= 13) prof = 5;
-  else if (level >= 9) prof = 4;
-  else if (level >= 5) prof = 3;
+  const PROFICIENCY_BY_LEVEL = [
+    0, // 0 (no class levels)
+    2, 2, 2, 2, // 1-4
+    3, 3, 3, 3, // 5-8
+    4, 4, 4, 4, // 9-12
+    5, 5, 5, 5, // 13-16
+    6, 6, 6, 6, // 17-20
+  ];
+  const prof = PROFICIENCY_BY_LEVEL[Math.min(level, 20)] || 0;
   CharacterState.system.attributes.prof = prof;
 }
 

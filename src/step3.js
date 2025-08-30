@@ -10,7 +10,11 @@ import { refreshBaseState, rebuildFromClasses } from './step2.js';
 import { t } from './i18n.js';
 import * as main from './main.js';
 import { addUniqueProficiency, pendingReplacements } from './proficiency.js';
-import { createAccordionItem, createSelectableCard } from './ui-helpers.js';
+import {
+  createAccordionItem,
+  createSelectableCard,
+  capitalize,
+} from './ui-helpers.js';
 
 let selectedBaseRace = '';
 let currentRaceData = null;
@@ -87,10 +91,6 @@ function validateRaceChoices() {
 
   main.setCurrentStepComplete?.(valid);
   return valid;
-}
-
-function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 function createRaceCard(race, onSelect, displayName = race.name) {

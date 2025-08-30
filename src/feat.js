@@ -1,11 +1,7 @@
 import { CharacterState } from './data.js';
 import { t } from './i18n.js';
 import { addUniqueProficiency } from './proficiency.js';
-import { createElement } from './ui-helpers.js';
-
-function capitalize(str) {
-  return str.replace(/(^|\s)\w/g, (c) => c.toUpperCase());
-}
+import { createElement, capitalize } from './ui-helpers.js';
 
 function refreshAbility(ab) {
   const base = CharacterState.baseAbilities?.[ab];

@@ -66,6 +66,7 @@ const {
 } = await import('../src/step3.js');
 const { DATA, CharacterState } = await import('../src/data.js');
 const { refreshBaseState, rebuildFromClasses } = await import('../src/step2.js');
+const { ALL_SKILLS } = await import('../src/proficiency.js');
 
 describe('race search behavior', () => {
   beforeEach(() => {
@@ -450,6 +451,48 @@ describe('change race cleanup', () => {
     expect(CharacterState.system.attributes.movement.swim).toBeUndefined();
     expect(refreshBaseState).toHaveBeenCalled();
     expect(rebuildFromClasses).toHaveBeenCalled();
+  });
+});
+
+describe('race skill proficiency choices', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    document.body.innerHTML = `
+      <div id="raceList"></div>
+      <div id="raceFeatures"></div>
+      <div id="raceTraits"></div>
+      <input id="raceSearch" />
+      <button id="changeRace"></button>
+    `;
+    DATA.races = {
+      Human: [{ name: 'Human (Variant)', path: 'humanVar' }],
+    };
+    const race = {
+      name: 'Human (Variant)',
+      entries: [],
+      skillProficiencies: [{ any: 1 }],
+    };
+    CharacterState.system.details = {};
+    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '' };
+    CharacterState.system.skills = [];
+    mockFetch.mockImplementation(() => Promise.resolve(race));
+  });
+
+  test('requires selecting skill and applies choice', async () => {
+    await loadStep3(true);
+    await selectBaseRace('Human');
+    document.querySelector('#raceList .class-card').click();
+    await new Promise((r) => setTimeout(r, 0));
+    const sel = document.querySelector('#raceFeatures select');
+    expect(sel).not.toBeNull();
+    expect(sel.options.length).toBe(ALL_SKILLS.length + 1);
+    expect(await confirmStep()).toBe(false);
+    sel.value = 'Arcana';
+    sel.dispatchEvent(new Event('change'));
+    await new Promise((r) => setTimeout(r, 0));
+    expect(await confirmStep()).toBe(true);
+    expect(CharacterState.system.skills).toContain('Arcana');
+    expect(CharacterState.raceChoices.skills).toContain('Arcana');
   });
 });
 

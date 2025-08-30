@@ -56,5 +56,6 @@
   "selectSpellsWarning": "Please select all required spells",
   "selectionRequired": "Selection required",
   "languageAlreadyKnown": "Language already known",
+  "skillAlreadyKnown": "Skill already known",
   "selectionsMustBeUnique": "Selections must be unique"
 }

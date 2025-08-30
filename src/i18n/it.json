@@ -57,5 +57,6 @@
   "selectionRequired": "Selezione obbligatoria",
   "languageAlreadyKnown": "Lingua già conosciuta",
   "skillAlreadyKnown": "Abilità già conosciuta",
-  "selectionsMustBeUnique": "Le selezioni devono essere uniche"
+  "selectionsMustBeUnique": "Le selezioni devono essere uniche",
+  "damageResist": "Resistenza ai danni"
 }

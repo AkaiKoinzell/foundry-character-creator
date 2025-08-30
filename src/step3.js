@@ -18,6 +18,8 @@ import {
   createAccordionItem,
   createSelectableCard,
   capitalize,
+  appendEntries,
+  createElement,
 } from './ui-helpers.js';
 
 let selectedBaseRace = '';
@@ -251,6 +253,17 @@ async function renderSelectedRace() {
   header.textContent = currentRaceData.name;
   accordion.appendChild(header);
 
+  const entryMap = {};
+  (currentRaceData.entries || []).forEach(e => {
+    if (e.name) entryMap[e.name] = e;
+  });
+  const usedEntries = new Set();
+  const spellEntry = Object.values(entryMap).find(e =>
+    Array.isArray(e.entries) &&
+    e.entries.some(sub => typeof sub === 'string' && /@spell|spell/i.test(sub))
+  );
+  let spellEntryUsed = false;
+
   if (
     Array.isArray(currentRaceData.size) &&
     currentRaceData.size.length > 1
@@ -277,23 +290,16 @@ async function renderSelectedRace() {
     sel.addEventListener('change', validateRaceChoices);
     sizeContent.appendChild(sel);
     pendingRaceChoices.size = sel;
+    const sizeEntry = Object.values(entryMap).find(
+      e => e.name && e.name.toLowerCase() === 'size'
+    );
+    if (sizeEntry) {
+      if (sizeEntry.description)
+        sizeContent.appendChild(createElement('p', sizeEntry.description));
+      appendEntries(sizeContent, sizeEntry.entries);
+      usedEntries.add(sizeEntry.name);
+    }
     accordion.appendChild(createAccordionItem(t('size'), sizeContent, true));
-  }
-
-  if (currentRaceData.entries) {
-    currentRaceData.entries.forEach((e) => {
-      if (e.name) {
-        const body = document.createElement('div');
-        (e.entries || []).forEach((sub) => {
-          if (typeof sub === 'string') {
-            const p = document.createElement('p');
-            p.textContent = sub;
-            body.appendChild(p);
-          }
-        });
-        accordion.appendChild(createAccordionItem(e.name, body));
-      }
-    });
   }
 
   if (currentRaceData.skillProficiencies) {
@@ -378,10 +384,19 @@ async function renderSelectedRace() {
         DATA.languages = langs.languages || langs;
       }
       const langContent = document.createElement('div');
+      const langEntry = Object.values(entryMap).find(
+        e => e.name && e.name.toLowerCase() === 'languages'
+      );
+      if (langEntry) {
+        if (langEntry.description)
+          langContent.appendChild(createElement('p', langEntry.description));
+        appendEntries(langContent, langEntry.entries);
+        usedEntries.add(langEntry.name);
+      }
       if (raceLang.length) {
-        const p = document.createElement('p');
-        p.textContent = raceLang.join(', ');
-        langContent.appendChild(p);
+        langContent.appendChild(
+          createElement('p', raceLang.join(', '))
+        );
       }
       if (pendingLang > 0) {
         const known = new Set([
@@ -487,6 +502,13 @@ async function renderSelectedRace() {
 
     if (abilityOpts) {
       const abilityContent = document.createElement('div');
+      if (spellEntry) {
+        if (spellEntry.description)
+          abilityContent.appendChild(createElement('p', spellEntry.description));
+        appendEntries(abilityContent, spellEntry.entries);
+        usedEntries.add(spellEntry.name);
+        spellEntryUsed = true;
+      }
       const sel = document.createElement('select');
       sel.innerHTML = `<option value=''>${t('select')}</option>`;
       abilityOpts.forEach((ab) => {
@@ -530,6 +552,13 @@ async function renderSelectedRace() {
         V: 'Evocation',
       };
       const spellContent = document.createElement('div');
+      if (spellEntry && !spellEntryUsed) {
+        if (spellEntry.description)
+          spellContent.appendChild(createElement('p', spellEntry.description));
+        appendEntries(spellContent, spellEntry.entries);
+        usedEntries.add(spellEntry.name);
+        spellEntryUsed = true;
+      }
 
       function updateSpellSelects() {
         const chosen = new Set([
@@ -608,6 +637,13 @@ async function renderSelectedRace() {
 
   const traitsDiv = document.createElement('div');
   traitsDiv.id = 'raceTraits';
+  Object.values(entryMap).forEach(e => {
+    if (!e.name || usedEntries.has(e.name)) return;
+    const body = document.createElement('div');
+    if (e.description) body.appendChild(createElement('p', e.description));
+    appendEntries(body, e.entries);
+    accordion.appendChild(createAccordionItem(e.name, body));
+  });
   accordion.appendChild(traitsDiv);
   validateRaceChoices();
 }

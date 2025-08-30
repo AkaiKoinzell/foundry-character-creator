@@ -128,10 +128,19 @@ function selectBackground(bg) {
   features.appendChild(createAccordionItem(t('details') || 'Details', details));
 
   // Choices --------------------------------------------------
+  const appendFeatureDesc = (wrapper, key) => {
+    const entry = (currentBackgroundData.entries || []).find(
+      e => e.name && e.name.toLowerCase().includes(key)
+    );
+    if (entry) {
+      if (entry.description) wrapper.appendChild(createElement('p', entry.description));
+      appendEntries(wrapper, entry.entries);
+    }
+  };
 
   if (currentBackgroundData.skillChoices?.choose) {
     const wrapper = document.createElement('div');
-    appendEntries(wrapper, currentBackgroundData.entries);
+    appendFeatureDesc(wrapper, 'skill');
     for (let i = 0; i < currentBackgroundData.skillChoices.choose; i++) {
       const sel = document.createElement('select');
       sel.innerHTML = `<option value=''>${t('selectSkill') || 'Select skill'}</option>`;
@@ -162,7 +171,7 @@ function selectBackground(bg) {
       : null);
   if (toolData?.choose) {
     const wrapper = document.createElement('div');
-    appendEntries(wrapper, currentBackgroundData.entries);
+    appendFeatureDesc(wrapper, 'tool');
     for (let i = 0; i < toolData.choose; i++) {
       const sel = document.createElement('select');
       sel.innerHTML = `<option value=''>${t('selectTool') || 'Select tool'}</option>`;
@@ -192,7 +201,7 @@ function selectBackground(bg) {
     currentBackgroundData.languages.choose
   ) {
     const wrapper = document.createElement('div');
-    appendEntries(wrapper, currentBackgroundData.entries);
+    appendFeatureDesc(wrapper, 'language');
     const langOpts = currentBackgroundData.languages.options?.length
       ? currentBackgroundData.languages.options
       : DATA.languages || [];
@@ -221,7 +230,7 @@ function selectBackground(bg) {
 
   if (currentBackgroundData.featOptions && currentBackgroundData.featOptions.length) {
     const wrapper = document.createElement('div');
-    appendEntries(wrapper, currentBackgroundData.entries);
+    appendFeatureDesc(wrapper, 'feat');
     const sel = document.createElement('select');
     sel.innerHTML = `<option value=''>${t('selectFeat') || 'Select feat'}</option>`;
     currentBackgroundData.featOptions.forEach((f) => {

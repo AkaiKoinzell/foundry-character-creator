@@ -1,7 +1,7 @@
 import { CharacterState, loadFeatDetails } from './data.js';
 import { t } from './i18n.js';
 import { addUniqueProficiency } from './proficiency.js';
-import { createElement, capitalize } from './ui-helpers.js';
+import { createElement, capitalize, appendEntries } from './ui-helpers.js';
 
 function refreshAbility(ab) {
   const base = CharacterState.baseAbilities?.[ab];
@@ -19,6 +19,8 @@ export async function renderFeatChoices(featName, container) {
   const feat = await loadFeatDetails(featName);
   const wrapper = createElement('div');
   container.appendChild(wrapper);
+  if (feat.description) wrapper.appendChild(createElement('p', feat.description));
+  appendEntries(wrapper, feat.entries);
 
   const abilitySelects = [];
   const skillSelects = [];

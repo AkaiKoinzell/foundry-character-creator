@@ -11,11 +11,15 @@ export function createElement(tag, text) {
 export function appendEntries(container, entries) {
   (entries || []).forEach(e => {
     if (!e) return;
-    const text =
-      typeof e === 'string'
-        ? e
-        : e.entry || e.description || e.name || '';
-    if (text) container.appendChild(createElement('p', text));
+    if (typeof e === 'string') {
+      container.appendChild(createElement('p', e));
+    } else if (typeof e === 'object') {
+      if (e.description) container.appendChild(createElement('p', e.description));
+      if (typeof e.entry === 'string') container.appendChild(createElement('p', e.entry));
+      if (Array.isArray(e.entries)) appendEntries(container, e.entries);
+      else if (e.name && !e.entry && !e.entries && !e.description)
+        container.appendChild(createElement('p', e.name));
+    }
   });
 }
 

@@ -7,7 +7,12 @@ import {
 import { refreshBaseState, rebuildFromClasses, updateChoiceSelectOptions } from './step2.js';
 import { t } from './i18n.js';
 import * as main from './main.js';
-import { createElement, createAccordionItem, createSelectableCard } from './ui-helpers.js';
+import {
+  createElement,
+  createAccordionItem,
+  createSelectableCard,
+  appendEntries,
+} from './ui-helpers.js';
 import { addUniqueProficiency, pendingReplacements } from './proficiency.js';
 import { renderFeatChoices } from './feat.js';
 
@@ -126,6 +131,7 @@ function selectBackground(bg) {
 
   if (currentBackgroundData.skillChoices?.choose) {
     const wrapper = document.createElement('div');
+    appendEntries(wrapper, currentBackgroundData.entries);
     for (let i = 0; i < currentBackgroundData.skillChoices.choose; i++) {
       const sel = document.createElement('select');
       sel.innerHTML = `<option value=''>${t('selectSkill') || 'Select skill'}</option>`;
@@ -156,6 +162,7 @@ function selectBackground(bg) {
       : null);
   if (toolData?.choose) {
     const wrapper = document.createElement('div');
+    appendEntries(wrapper, currentBackgroundData.entries);
     for (let i = 0; i < toolData.choose; i++) {
       const sel = document.createElement('select');
       sel.innerHTML = `<option value=''>${t('selectTool') || 'Select tool'}</option>`;
@@ -185,6 +192,7 @@ function selectBackground(bg) {
     currentBackgroundData.languages.choose
   ) {
     const wrapper = document.createElement('div');
+    appendEntries(wrapper, currentBackgroundData.entries);
     const langOpts = currentBackgroundData.languages.options?.length
       ? currentBackgroundData.languages.options
       : DATA.languages || [];
@@ -213,6 +221,7 @@ function selectBackground(bg) {
 
   if (currentBackgroundData.featOptions && currentBackgroundData.featOptions.length) {
     const wrapper = document.createElement('div');
+    appendEntries(wrapper, currentBackgroundData.entries);
     const sel = document.createElement('select');
     sel.innerHTML = `<option value=''>${t('selectFeat') || 'Select feat'}</option>`;
     currentBackgroundData.featOptions.forEach((f) => {

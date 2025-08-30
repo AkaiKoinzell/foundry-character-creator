@@ -8,6 +8,17 @@ export function createElement(tag, text) {
   return el;
 }
 
+export function appendEntries(container, entries) {
+  (entries || []).forEach(e => {
+    if (!e) return;
+    const text =
+      typeof e === 'string'
+        ? e
+        : e.entry || e.description || e.name || '';
+    if (text) container.appendChild(createElement('p', text));
+  });
+}
+
 export function createAccordionItem(title, content, isChoice = false, description = '') {
   const item = document.createElement('div');
   item.className = 'accordion-item' + (isChoice ? ' user-choice' : '');

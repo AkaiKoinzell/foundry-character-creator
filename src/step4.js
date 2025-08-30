@@ -7,7 +7,7 @@ import {
 import { refreshBaseState, rebuildFromClasses, updateChoiceSelectOptions } from './step2.js';
 import { t } from './i18n.js';
 import * as main from './main.js';
-import { createElement, createAccordionItem } from './ui-helpers.js';
+import { createElement, createAccordionItem, createSelectableCard } from './ui-helpers.js';
 import { addUniqueProficiency, pendingReplacements } from './proficiency.js';
 import { renderFeatChoices } from './feat.js';
 
@@ -36,48 +36,29 @@ export function renderBackgroundList(query = '') {
   const term = query.toLowerCase();
   for (const [name, bg] of Object.entries(entries)) {
     if (!name.toLowerCase().includes(term)) continue;
-    const card = document.createElement('div');
-    card.className = 'class-card';
-    card.addEventListener('click', () => selectBackground(bg));
-    const title = createElement('h3', name);
-    card.appendChild(title);
-
-    const descText =
-      bg.short || bg.description || bg.summary || bg.desc || '';
-    if (descText) card.appendChild(createElement('p', descText));
-
-    const details = document.createElement('div');
-    details.className = 'race-details hidden';
+    const details = [];
     if (bg.skills && bg.skills.length)
-      details.appendChild(
-        createElement('p', `${t('skills')}: ${bg.skills.join(', ')}`)
-      );
+      details.push(createElement('p', `${t('skills')}: ${bg.skills.join(', ')}`));
     if (Array.isArray(bg.tools) && bg.tools.length)
-      details.appendChild(
-        createElement('p', `${t('tools')}: ${bg.tools.join(', ')}`)
-      );
+      details.push(createElement('p', `${t('tools')}: ${bg.tools.join(', ')}`));
     if (Array.isArray(bg.languages) && bg.languages.length)
-      details.appendChild(
+      details.push(
         createElement('p', `${t('languages')}: ${bg.languages.join(', ')}`)
       );
     if (bg.featOptions && bg.featOptions.length)
-      details.appendChild(
+      details.push(
         createElement(
           'p',
           `${t('featOptions') || 'Feat Options'}: ${bg.featOptions.join(', ')}`
         )
       );
-    if (details.childElementCount) {
-      card.appendChild(details);
-      const detailsBtn = document.createElement('button');
-      detailsBtn.className = 'btn btn-primary';
-      detailsBtn.textContent = t('details') || 'Details';
-      detailsBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        details.classList.toggle('hidden');
-      });
-      card.appendChild(detailsBtn);
-    }
+    const card = createSelectableCard(
+      name,
+      bg.short || bg.description || bg.summary || bg.desc || '',
+      details,
+      () => selectBackground(bg),
+      t('details') || 'Details'
+    );
     container.appendChild(card);
   }
 }

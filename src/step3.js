@@ -10,7 +10,7 @@ import { refreshBaseState, rebuildFromClasses } from './step2.js';
 import { t } from './i18n.js';
 import * as main from './main.js';
 import { addUniqueProficiency, pendingReplacements } from './proficiency.js';
-import { createAccordionItem } from './ui-helpers.js';
+import { createAccordionItem, createSelectableCard } from './ui-helpers.js';
 
 let selectedBaseRace = '';
 let currentRaceData = null;
@@ -94,51 +94,31 @@ function capitalize(str) {
 }
 
 function createRaceCard(race, onSelect, displayName = race.name) {
-  const card = document.createElement('div');
-  card.className = 'class-card';
-
-  const title = document.createElement('h3');
-  title.textContent = displayName;
-  card.appendChild(title);
-
-  const details = document.createElement('div');
-  details.className = 'race-details hidden';
-
-  const shortDesc = (race.entries || []).find((e) => typeof e === 'string');
-  if (shortDesc) {
-    const p = document.createElement('p');
-    p.textContent = shortDesc;
-    details.appendChild(p);
-  }
+  const detailItems = [];
+  const shortDesc = (race.entries || []).find(e => typeof e === 'string');
+  if (shortDesc) detailItems.push(shortDesc);
 
   const traits = (race.entries || [])
-    .filter((e) => e.name)
-    .map((e) => e.name)
+    .filter(e => e.name)
+    .map(e => e.name)
     .slice(0, 3);
   if (traits.length) {
     const ul = document.createElement('ul');
-    traits.forEach((t) => {
+    traits.forEach(t => {
       const li = document.createElement('li');
       li.textContent = t;
       ul.appendChild(li);
     });
-    details.appendChild(ul);
+    detailItems.push(ul);
   }
 
-  card.appendChild(details);
-
-  const detailsBtn = document.createElement('button');
-  detailsBtn.className = 'btn btn-primary';
-  detailsBtn.textContent = t('details');
-  detailsBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    details.classList.toggle('hidden');
-  });
-  card.appendChild(detailsBtn);
-
-  card.addEventListener('click', onSelect);
-
-  return card;
+  return createSelectableCard(
+    displayName,
+    null,
+    detailItems,
+    onSelect,
+    t('details') || 'Details'
+  );
 }
 
 async function renderBaseRaces(search = '') {

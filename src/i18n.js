@@ -17,7 +17,7 @@ export async function initI18n() {
 export function t(key, params = {}) {
   let str = translations[key] || key;
   for (const [k, v] of Object.entries(params)) {
-    str = str.replace(`{${k}}`, v);
+    str = str.replaceAll(`{${k}}`, v);
   }
   return str;
 }

@@ -118,10 +118,6 @@ async function loadData() {
   DATA.languages = langJson.languages;
 }
 
-function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
 // Render a summary of resources and spell slots on the final step. Users can
 // tweak resource values directly from here using the helper functions in
 // data.js.

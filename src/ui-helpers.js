@@ -1,3 +1,7 @@
+export function capitalize(str) {
+  return str.replace(/(^|\s)\w/g, (c) => c.toUpperCase());
+}
+
 export function createElement(tag, text) {
   const el = document.createElement(tag);
   if (text) el.textContent = text;

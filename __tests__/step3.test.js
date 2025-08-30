@@ -26,7 +26,7 @@ jest.unstable_mockModule('../src/data.js', () => ({
         cha: { value: 8 },
       },
     },
-    raceChoices: { spells: [], spellAbility: '' },
+    raceChoices: { spells: [], spellAbility: '', size: '' },
     bonusAbilities: {
       str: 0,
       dex: 0,
@@ -156,6 +156,41 @@ describe('race card details toggle', () => {
     expect(details.classList.contains('hidden')).toBe(true);
     card.querySelector('button').click();
     expect(details.classList.contains('hidden')).toBe(false);
+  });
+});
+
+describe('race size selection', () => {
+  beforeEach(() => {
+    document.body.innerHTML = `
+      <div id="raceList"></div>
+      <div id="raceFeatures"></div>
+      <button id="confirmRaceSelection"></button>
+    `;
+    DATA.races = {
+      Sprite: [{ name: 'Sprite', path: 'sprite' }],
+    };
+    const race = { name: 'Sprite', entries: [], size: ['S', 'M'] };
+    mockFetch.mockImplementation(() => Promise.resolve(race));
+  });
+
+  afterEach(() => {
+    CharacterState.system.details = {};
+    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '' };
+  });
+
+  test('requires selecting size when multiple options', async () => {
+    await selectBaseRace('Sprite');
+    const card = document.querySelector('#raceList .class-card');
+    card.click();
+    await new Promise((r) => setTimeout(r, 0));
+    expect(await confirmStep()).toBe(false);
+    const sel = document.querySelector('#raceFeatures select');
+    sel.value = 'S';
+    sel.dispatchEvent(new Event('change'));
+    await new Promise((r) => setTimeout(r, 0));
+    expect(await confirmStep()).toBe(true);
+    expect(CharacterState.system.traits.size).toBe('sm');
+    expect(CharacterState.raceChoices.size).toBe('sm');
   });
 });
 
@@ -335,7 +370,7 @@ describe('duplicate proficiency replacement', () => {
     };
     DATA.languages = ['Common', 'Dwarvish'];
     CharacterState.system.details = {};
-    CharacterState.raceChoices = { spells: [], spellAbility: '' };
+    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '' };
     CharacterState.system.traits.languages.value = ['Elvish'];
     const race = {
       name: 'Elf (High)',
@@ -381,7 +416,7 @@ describe('change race cleanup', () => {
       ability: [{ str: 2 }],
     };
     CharacterState.system.details = {};
-    CharacterState.raceChoices = { spells: [], spellAbility: '' };
+    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '' };
     CharacterState.system.skills = [];
     CharacterState.system.traits.languages.value = [];
     CharacterState.system.attributes = {};

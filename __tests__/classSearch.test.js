@@ -36,6 +36,7 @@ jest.unstable_mockModule('../src/data.js', () => {
     MAX_CHARACTER_LEVEL: 20,
     loadSpells: jest.fn(),
     fetchJsonWithRetry: jest.fn(),
+    loadFeatDetails: jest.fn(),
   };
 });
 

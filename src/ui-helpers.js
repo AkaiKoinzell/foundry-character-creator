@@ -35,6 +35,51 @@ export function createAccordionItem(title, content, isChoice = false, descriptio
   return item;
 }
 
+export function createSelectableCard(
+  title,
+  description,
+  details = null,
+  onClick = null,
+  detailsButtonText = 'Details',
+  onDetailsClick = null
+) {
+  const card = document.createElement('div');
+  card.className = 'class-card';
+  if (onClick) card.addEventListener('click', onClick);
+
+  if (title) card.appendChild(createElement('h3', title));
+  if (description) card.appendChild(createElement('p', description));
+
+  const detailItems = Array.isArray(details)
+    ? details.filter(Boolean)
+    : details
+    ? [details]
+    : [];
+  let detailContainer = null;
+  if (detailItems.length) {
+    detailContainer = document.createElement('div');
+    detailContainer.className = 'race-details hidden';
+    detailItems.forEach(d => {
+      if (typeof d === 'string') detailContainer.appendChild(createElement('p', d));
+      else detailContainer.appendChild(d);
+    });
+    card.appendChild(detailContainer);
+  }
+
+  if (detailItems.length || onDetailsClick) {
+    const btn = createElement('button', detailsButtonText);
+    btn.className = 'btn btn-primary';
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      if (onDetailsClick) onDetailsClick(e);
+      else if (detailContainer) detailContainer.classList.toggle('hidden');
+    });
+    card.appendChild(btn);
+  }
+
+  return card;
+}
+
 export function initNextStepWarning() {
   const nextBtn = document.getElementById('nextStep');
   if (!nextBtn) return;

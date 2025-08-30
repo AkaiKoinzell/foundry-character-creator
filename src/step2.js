@@ -10,7 +10,7 @@ import {
   loadSpells,
 } from './data.js';
 import { t } from './i18n.js';
-import { createElement, createAccordionItem } from './ui-helpers.js';
+import { createElement, createAccordionItem, createSelectableCard } from './ui-helpers.js';
 import { renderFeatChoices } from './feat.js';
 import { renderSpellChoices } from './spell-select.js';
 import { pendingReplacements } from './proficiency.js';
@@ -884,28 +884,15 @@ export async function loadStep2(refresh = true) {
           cls.name.toLowerCase().includes(query.toLowerCase())
       )
       .forEach(cls => {
-        const classCard = document.createElement('div');
-        classCard.className = 'class-card';
-        classCard.addEventListener('click', () => showClassModal(cls));
-
-        const title = createElement('h3', cls.name);
-        const desc = createElement(
-          'p',
-          cls.description || 'Nessuna descrizione disponibile.'
+        const card = createSelectableCard(
+          cls.name,
+          cls.description || 'Nessuna descrizione disponibile.',
+          null,
+          () => showClassModal(cls),
+          'Dettagli',
+          () => showClassModal(cls)
         );
-
-        const detailsBtn = createElement('button', 'Dettagli');
-        detailsBtn.className = 'btn btn-primary';
-        detailsBtn.addEventListener('click', e => {
-          e.stopPropagation();
-          showClassModal(cls);
-        });
-
-        classCard.appendChild(title);
-        classCard.appendChild(desc);
-        classCard.appendChild(detailsBtn);
-
-        classListContainer.appendChild(classCard);
+        classListContainer.appendChild(card);
       });
   }
   if (searchInput) {

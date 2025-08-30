@@ -38,7 +38,7 @@ function validateRaceChoices() {
   const missing = allSelects.filter((s) => !s.value);
   missing.forEach((s) => {
     s.classList.add('missing');
-    s.title = 'Selection required';
+    s.title = t('selectionRequired');
   });
 
   const counts = {};
@@ -76,19 +76,14 @@ function validateRaceChoices() {
   duplicates.forEach((s) => {
     s.classList.add('duplicate');
     s.title = languageDupSet.has(s)
-      ? 'Language already known'
-      : 'Selections must be unique';
+      ? t('languageAlreadyKnown')
+      : t('selectionsMustBeUnique');
   });
 
   const valid =
     missing.length === 0 &&
     duplicates.length === 0 &&
     !!pendingRaceChoices.subrace;
-
-  const errors = [];
-  if (!pendingRaceChoices.subrace) errors.push('Select a subrace');
-  if (missing.length) errors.push('Complete all selections');
-  if (duplicates.length) errors.push('Choose unique options');
 
   main.setCurrentStepComplete?.(valid);
   return valid;

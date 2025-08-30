@@ -53,5 +53,8 @@
   "maxScoreLevel1": "I punteggi delle caratteristiche non possono superare 17 al livello 1",
   "spellsKnown": "Incantesimi Conosciuti",
   "selectSpell": "Seleziona incantesimo",
-  "selectSpellsWarning": "Seleziona tutti gli incantesimi richiesti"
+  "selectSpellsWarning": "Seleziona tutti gli incantesimi richiesti",
+  "selectionRequired": "Selezione obbligatoria",
+  "languageAlreadyKnown": "Lingua già conosciuta",
+  "selectionsMustBeUnique": "Le selezioni devono essere uniche"
 }

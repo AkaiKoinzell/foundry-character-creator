@@ -89,6 +89,7 @@ function showStep(step) {
       bar.style.width = `${((step - 1) / 6) * 100}%`;
     }
     currentStep = step;
+    if (step === 4) loadStep4(true);
     if (step === 5) loadStep5(true);
     if (step === 6) loadStep6(true);
     if (step === 7) renderFinalRecap();

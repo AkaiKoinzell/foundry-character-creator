@@ -24,6 +24,7 @@ const pendingRaceChoices = {
   spells: [],
   abilities: [],
   size: null,
+  alterations: { combo: null, minor: [], major: [] },
 };
 
 let raceRenderSeq = 0;
@@ -33,9 +34,13 @@ function validateRaceChoices() {
     ...pendingRaceChoices.languages,
     ...pendingRaceChoices.spells,
     ...pendingRaceChoices.abilities,
+    ...(pendingRaceChoices.alterations?.minor || []),
+    ...(pendingRaceChoices.alterations?.major || []),
   ];
   const allSelects = [...choiceSelects];
   if (pendingRaceChoices.size) allSelects.push(pendingRaceChoices.size);
+  if (pendingRaceChoices.alterations?.combo)
+    allSelects.push(pendingRaceChoices.alterations.combo);
 
   allSelects.forEach((sel) => {
     sel.classList.remove('missing', 'duplicate');
@@ -165,6 +170,7 @@ async function selectBaseRace(base) {
   pendingRaceChoices.spells = [];
   pendingRaceChoices.abilities = [];
   pendingRaceChoices.size = null;
+  pendingRaceChoices.alterations = { combo: null, minor: [], major: [] };
   const traits = document.getElementById('raceTraits');
   if (traits) traits.innerHTML = '';
   const features = document.getElementById('raceFeatures');
@@ -212,6 +218,7 @@ async function renderSelectedRace() {
   pendingRaceChoices.spells = [];
   pendingRaceChoices.abilities = [];
   pendingRaceChoices.size = null;
+  pendingRaceChoices.alterations = { combo: null, minor: [], major: [] };
 
   const header = document.createElement('h3');
   header.textContent = currentRaceData.name;
@@ -320,6 +327,71 @@ async function renderSelectedRace() {
         createAccordionItem(t('languages'), langContent, pendingLang > 0)
       );
     }
+  }
+
+  if (
+    currentRaceData.minorAlterations?.length ||
+    currentRaceData.majorAlterations?.length
+  ) {
+    const alterContent = document.createElement('div');
+    const comboSel = document.createElement('select');
+    comboSel.innerHTML = `<option value=''>${t('select')}</option>`;
+    (currentRaceData.alterationCombinations || []).forEach((combo, idx) => {
+      const parts = [];
+      if (combo.minor) parts.push(`${combo.minor} Minor`);
+      if (combo.major) parts.push(`${combo.major} Major`);
+      const o = document.createElement('option');
+      o.value = idx;
+      o.textContent = parts.join(' and ');
+      comboSel.appendChild(o);
+    });
+    function renderAlterSelections() {
+      pendingRaceChoices.alterations.minor = [];
+      pendingRaceChoices.alterations.major = [];
+      while (comboSel.nextSibling)
+        comboSel.parentNode.removeChild(comboSel.nextSibling);
+      const combo =
+        (currentRaceData.alterationCombinations || [])[comboSel.value];
+      if (!combo) {
+        validateRaceChoices();
+        return;
+      }
+      for (let i = 0; i < (combo.minor || 0); i++) {
+        const sel = document.createElement('select');
+        sel.innerHTML = `<option value=''>${t('select')}</option>`;
+        (currentRaceData.minorAlterations || []).forEach((opt) => {
+          const o = document.createElement('option');
+          o.value = opt;
+          o.textContent = opt;
+          sel.appendChild(o);
+        });
+        sel.dataset.type = 'choice';
+        sel.addEventListener('change', validateRaceChoices);
+        comboSel.parentNode.appendChild(sel);
+        pendingRaceChoices.alterations.minor.push(sel);
+      }
+      for (let i = 0; i < (combo.major || 0); i++) {
+        const sel = document.createElement('select');
+        sel.innerHTML = `<option value=''>${t('select')}</option>`;
+        (currentRaceData.majorAlterations || []).forEach((opt) => {
+          const o = document.createElement('option');
+          o.value = opt;
+          o.textContent = opt;
+          sel.appendChild(o);
+        });
+        sel.dataset.type = 'choice';
+        sel.addEventListener('change', validateRaceChoices);
+        comboSel.parentNode.appendChild(sel);
+        pendingRaceChoices.alterations.major.push(sel);
+      }
+      validateRaceChoices();
+    }
+    comboSel.addEventListener('change', renderAlterSelections);
+    alterContent.appendChild(comboSel);
+    pendingRaceChoices.alterations.combo = comboSel;
+    accordion.appendChild(
+      createAccordionItem('Alterations', alterContent, true)
+    );
   }
 
   if (currentRaceData.additionalSpells) {
@@ -593,6 +665,29 @@ function confirmRaceSelection() {
     CharacterState.raceChoices.spellAbility = sel.value;
     sel.disabled = true;
   });
+  if (
+    pendingRaceChoices.alterations.minor.length ||
+    pendingRaceChoices.alterations.major.length
+  ) {
+    CharacterState.raceChoices.alterations = { minor: [], major: [] };
+    pendingRaceChoices.alterations.minor.forEach((sel) => {
+      CharacterState.raceChoices.alterations.minor.push(sel.value);
+      sel.disabled = true;
+    });
+    pendingRaceChoices.alterations.major.forEach((sel) => {
+      CharacterState.raceChoices.alterations.major.push(sel.value);
+      sel.disabled = true;
+    });
+    if (pendingRaceChoices.alterations.combo)
+      pendingRaceChoices.alterations.combo.disabled = true;
+    const chosen = [
+      ...CharacterState.raceChoices.alterations.minor,
+      ...CharacterState.raceChoices.alterations.major,
+    ];
+    const p = document.createElement('p');
+    p.textContent = `Alterations: ${chosen.join(', ')}`;
+    container.appendChild(p);
+  }
   if (pendingRaceChoices.size) {
     pendingRaceChoices.size.disabled = true;
   }
@@ -601,6 +696,7 @@ function confirmRaceSelection() {
   pendingRaceChoices.spells = [];
   pendingRaceChoices.abilities = [];
   pendingRaceChoices.size = null;
+  pendingRaceChoices.alterations = { combo: null, minor: [], major: [] };
   refreshBaseState();
   rebuildFromClasses();
   const finalize = () => {
@@ -682,6 +778,7 @@ export async function loadStep3(force = false) {
       CharacterState.raceChoices.spells = [];
       CharacterState.raceChoices.spellAbility = '';
       CharacterState.raceChoices.size = '';
+      CharacterState.raceChoices.alterations = {};
     }
     selectedBaseRace = '';
     currentRaceData = null;
@@ -690,6 +787,7 @@ export async function loadStep3(force = false) {
     pendingRaceChoices.spells = [];
     pendingRaceChoices.abilities = [];
     pendingRaceChoices.size = null;
+    pendingRaceChoices.alterations = { combo: null, minor: [], major: [] };
     if (CharacterState.system?.details) {
       CharacterState.system.details.race = '';
       CharacterState.system.details.subrace = '';

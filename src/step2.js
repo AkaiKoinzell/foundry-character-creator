@@ -10,7 +10,12 @@ import {
   loadSpells,
 } from './data.js';
 import { t } from './i18n.js';
-import { createElement, createAccordionItem, createSelectableCard } from './ui-helpers.js';
+import {
+  createElement,
+  createAccordionItem,
+  createSelectableCard,
+  appendEntries,
+} from './ui-helpers.js';
 import { renderFeatChoices } from './feat.js';
 import { renderSpellChoices } from './spell-select.js';
 import { pendingReplacements } from './proficiency.js';
@@ -266,17 +271,21 @@ function compileClassFeatures(cls) {
         level: lvl,
         name: f.name,
         description: f.description || '',
+        entries: f.entries || [],
       });
     });
   }
   if (cls.choiceSelections) {
     for (const [name, entries] of Object.entries(cls.choiceSelections)) {
+      const choiceDef = (data.choices || []).find(c => c.name === name);
       entries.forEach(e => {
         cls.features.push({
           level: e.level || null,
           name: `${name}: ${e.option}`,
           abilities: e.abilities,
           feat: e.feat,
+          description: choiceDef?.description || '',
+          entries: choiceDef?.entries || [],
         });
       });
     }
@@ -549,17 +558,18 @@ function renderClassEditor(cls, index) {
         f => !levelChoices.some(c => c.name === f.name)
       );
       features.forEach(f => {
+        const body = document.createElement('div');
+        if (f.description) body.appendChild(createElement('p', f.description));
+        appendEntries(body, f.entries);
         accordion.appendChild(
-          createAccordionItem(`${t('level')} ${lvl}: ${f.name}`, f.description || '')
+          createAccordionItem(`${t('level')} ${lvl}: ${f.name}`, body)
         );
       });
 
       levelChoices.forEach(choice => {
         const cContainer = document.createElement('div');
-        const description = choice.description || t('choiceDescriptionDefault');
-        const p = document.createElement('p');
-        p.textContent = description;
-        cContainer.appendChild(p);
+        if (choice.description) cContainer.appendChild(createElement('p', choice.description));
+        appendEntries(cContainer, choice.entries);
         const count = choice.count || 1;
         const choiceSelects = [];
         cls.choiceSelections = cls.choiceSelections || {};
@@ -648,8 +658,7 @@ function renderClassEditor(cls, index) {
           createAccordionItem(
             `${t('level')} ${choice.level}: ${choice.name}`,
             cContainer,
-            true,
-            description
+            true
           )
         );
       });

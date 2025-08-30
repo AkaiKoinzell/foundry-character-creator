@@ -23,16 +23,19 @@ const pendingRaceChoices = {
   languages: [],
   spells: [],
   abilities: [],
+  size: null,
 };
 
 let raceRenderSeq = 0;
 
 function validateRaceChoices() {
-  const allSelects = [
+  const choiceSelects = [
     ...pendingRaceChoices.languages,
     ...pendingRaceChoices.spells,
     ...pendingRaceChoices.abilities,
   ];
+  const allSelects = [...choiceSelects];
+  if (pendingRaceChoices.size) allSelects.push(pendingRaceChoices.size);
 
   allSelects.forEach((sel) => {
     sel.classList.remove('missing', 'duplicate');
@@ -46,7 +49,7 @@ function validateRaceChoices() {
   });
 
   const counts = {};
-  allSelects.forEach((s) => {
+  choiceSelects.forEach((s) => {
     if (s.value) counts[s.value] = (counts[s.value] || 0) + 1;
   });
 
@@ -61,7 +64,7 @@ function validateRaceChoices() {
   const duplicateSet = new Set();
   const languageDupSet = new Set();
 
-  allSelects.forEach((s) => {
+  choiceSelects.forEach((s) => {
     if (s.value && counts[s.value] > 1) duplicateSet.add(s);
   });
 
@@ -161,6 +164,7 @@ async function selectBaseRace(base) {
   pendingRaceChoices.languages = [];
   pendingRaceChoices.spells = [];
   pendingRaceChoices.abilities = [];
+  pendingRaceChoices.size = null;
   const traits = document.getElementById('raceTraits');
   if (traits) traits.innerHTML = '';
   const features = document.getElementById('raceFeatures');
@@ -207,10 +211,40 @@ async function renderSelectedRace() {
   pendingRaceChoices.languages = [];
   pendingRaceChoices.spells = [];
   pendingRaceChoices.abilities = [];
+  pendingRaceChoices.size = null;
 
   const header = document.createElement('h3');
   header.textContent = currentRaceData.name;
   accordion.appendChild(header);
+
+  if (
+    Array.isArray(currentRaceData.size) &&
+    currentRaceData.size.length > 1
+  ) {
+    const sizeContent = document.createElement('div');
+    const sel = document.createElement('select');
+    sel.innerHTML = `<option value=''>${t('select')}</option>`;
+    const sizeNames = {
+      T: 'Tiny',
+      S: 'Small',
+      M: 'Medium',
+      L: 'Large',
+      H: 'Huge',
+      G: 'Gargantuan',
+    };
+    currentRaceData.size.forEach((sz) => {
+      const o = document.createElement('option');
+      o.value = sz;
+      o.textContent = sizeNames[sz] || sz;
+      sel.appendChild(o);
+    });
+    sel.dataset.type = 'choice';
+    sel.dataset.choice = 'size';
+    sel.addEventListener('change', validateRaceChoices);
+    sizeContent.appendChild(sel);
+    pendingRaceChoices.size = sel;
+    accordion.appendChild(createAccordionItem(t('size'), sizeContent, true));
+  }
 
   if (currentRaceData.entries) {
     currentRaceData.entries.forEach((e) => {
@@ -463,11 +497,15 @@ function confirmRaceSelection() {
 
   const sizeMap = { T: 'tiny', S: 'sm', M: 'med', L: 'lg', H: 'huge', G: 'grg' };
   if (currentRaceData.size) {
-    const sz = Array.isArray(currentRaceData.size)
-      ? currentRaceData.size[0]
-      : currentRaceData.size;
+    let sz;
+    if (Array.isArray(currentRaceData.size)) {
+      sz = pendingRaceChoices.size?.value || currentRaceData.size[0];
+    } else {
+      sz = currentRaceData.size;
+    }
     CharacterState.system.traits.size =
       sizeMap[sz] || CharacterState.system.traits.size;
+    CharacterState.raceChoices.size = sizeMap[sz] || '';
   }
 
   const move = { ...(CharacterState.system.attributes.movement || {}) };
@@ -555,10 +593,14 @@ function confirmRaceSelection() {
     CharacterState.raceChoices.spellAbility = sel.value;
     sel.disabled = true;
   });
+  if (pendingRaceChoices.size) {
+    pendingRaceChoices.size.disabled = true;
+  }
 
   pendingRaceChoices.languages = [];
   pendingRaceChoices.spells = [];
   pendingRaceChoices.abilities = [];
+  pendingRaceChoices.size = null;
   refreshBaseState();
   rebuildFromClasses();
   const finalize = () => {
@@ -623,6 +665,7 @@ export async function loadStep3(force = false) {
         if (idx >= 0)
           CharacterState.system.traits.languages.value.splice(idx, 1);
       });
+      CharacterState.system.traits.size = 'med';
       const move = CharacterState.raceChoices.movement || {};
       const movement = CharacterState.system.attributes.movement || {};
       Object.keys(move).forEach((m) => {
@@ -638,6 +681,7 @@ export async function loadStep3(force = false) {
       CharacterState.raceChoices.movement = {};
       CharacterState.raceChoices.spells = [];
       CharacterState.raceChoices.spellAbility = '';
+      CharacterState.raceChoices.size = '';
     }
     selectedBaseRace = '';
     currentRaceData = null;
@@ -645,6 +689,7 @@ export async function loadStep3(force = false) {
     pendingRaceChoices.languages = [];
     pendingRaceChoices.spells = [];
     pendingRaceChoices.abilities = [];
+    pendingRaceChoices.size = null;
     if (CharacterState.system?.details) {
       CharacterState.system.details.race = '';
       CharacterState.system.details.subrace = '';

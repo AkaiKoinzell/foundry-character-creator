@@ -6,7 +6,8 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js"
+    "validate:races": "node scripts/validate-races.js",
+    "test": "npm run validate:races && node --experimental-vm-modules ./node_modules/jest/bin/jest.js"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.6",

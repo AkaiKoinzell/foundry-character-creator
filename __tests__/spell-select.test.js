@@ -3,7 +3,8 @@
  */
 
 import { jest } from '@jest/globals';
-import { updateSpellSelectOptions, loadSpells } from '../src/spell-select.js';
+import { updateSpellSelectOptions } from '../src/spell-select.js';
+import { loadSpells, DATA } from '../src/data.js';
 
 describe('spell select duplicate prevention', () => {
   function createSelect(options) {
@@ -66,5 +67,6 @@ describe('loadSpells', () => {
     expect(fetchMock).toHaveBeenCalledTimes(10);
 
     global.fetch = originalFetch;
+    DATA.spells = undefined;
   });
 });

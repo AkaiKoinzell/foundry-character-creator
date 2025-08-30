@@ -53,5 +53,8 @@
   "maxScoreLevel1": "Ability scores cannot exceed 17 at level 1",
   "spellsKnown": "Spells Known",
   "selectSpell": "Select spell",
-  "selectSpellsWarning": "Please select all required spells"
+  "selectSpellsWarning": "Please select all required spells",
+  "selectionRequired": "Selection required",
+  "languageAlreadyKnown": "Language already known",
+  "selectionsMustBeUnique": "Selections must be unique"
 }

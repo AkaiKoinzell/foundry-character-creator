@@ -1,4 +1,4 @@
-import { CharacterState } from './data.js';
+import { CharacterState, loadFeatDetails } from './data.js';
 import { t } from './i18n.js';
 import { addUniqueProficiency } from './proficiency.js';
 import { createElement, capitalize } from './ui-helpers.js';
@@ -15,13 +15,8 @@ function refreshAbility(ab) {
   if (finalCell) finalCell.textContent = finalVal;
 }
 
-async function getFeat(name) {
-  const mod = await import('./data.js');
-  return mod.loadFeatDetails(name);
-}
-
 export async function renderFeatChoices(featName, container) {
-  const feat = await getFeat(featName);
+  const feat = await loadFeatDetails(featName);
   const wrapper = createElement('div');
   container.appendChild(wrapper);
 

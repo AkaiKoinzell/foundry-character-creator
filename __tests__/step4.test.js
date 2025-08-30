@@ -16,6 +16,7 @@ jest.unstable_mockModule('../src/data.js', () => ({
   logCharacterState: jest.fn(),
   fetchJsonWithRetry: jest.fn(),
   loadSpells: jest.fn(),
+  loadFeatDetails: jest.fn(),
 }));
 
 jest.unstable_mockModule('../src/step2.js', () => ({

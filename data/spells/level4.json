@@ -236,6 +236,17 @@
     "ritual": false
   },
   {
+    "name": "Gate Seal",
+    "level": 4,
+    "school": "Abjuration",
+    "spell_list": [
+      "Wizard",
+      "Sorcerer",
+      "Warlock"
+    ],
+    "ritual": false
+  },
+  {
     "name": "Giant Insect",
     "level": 4,
     "school": "Transmutation",
@@ -251,6 +262,15 @@
     "spell_list": [
       "Druid",
       "Ranger"
+    ],
+    "ritual": false
+  },
+  {
+    "name": "Gravity Sinkhole",
+    "level": 4,
+    "school": "Evocation",
+    "spell_list": [
+      "Wizard"
     ],
     "ritual": false
   },

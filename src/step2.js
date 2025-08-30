@@ -2,7 +2,6 @@ import {
   DATA,
   CharacterState,
   loadClasses,
-  logCharacterState,
   loadFeats,
   totalLevel,
   updateSpellSlots,

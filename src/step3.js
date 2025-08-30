@@ -428,13 +428,23 @@ async function renderSelectedRace() {
   }
 
   if (
-    currentRaceData.minorAlterations?.length ||
-    currentRaceData.majorAlterations?.length
+    currentRaceData.minorAlterations?.options?.length ||
+    currentRaceData.majorAlterations?.options?.length
   ) {
     const alterContent = document.createElement('div');
     const comboSel = document.createElement('select');
     comboSel.innerHTML = `<option value=''>${t('select')}</option>`;
-    (currentRaceData.alterationCombinations || []).forEach((combo, idx) => {
+    const minorAllowed = currentRaceData.minorAlterations?.allowed || [];
+    const majorAllowed = currentRaceData.majorAlterations?.allowed || [];
+    const combos = [];
+    const len = Math.max(minorAllowed.length, majorAllowed.length);
+    for (let i = 0; i < len; i++) {
+      combos.push({
+        minor: minorAllowed[i] || 0,
+        major: majorAllowed[i] || 0,
+      });
+    }
+    combos.forEach((combo, idx) => {
       const parts = [];
       if (combo.minor) parts.push(`${combo.minor} Minor`);
       if (combo.major) parts.push(`${combo.major} Major`);
@@ -448,8 +458,7 @@ async function renderSelectedRace() {
       pendingRaceChoices.alterations.major = [];
       while (comboSel.nextSibling)
         comboSel.parentNode.removeChild(comboSel.nextSibling);
-      const combo =
-        (currentRaceData.alterationCombinations || [])[comboSel.value];
+      const combo = combos[comboSel.value];
       if (!combo) {
         validateRaceChoices();
         return;
@@ -457,7 +466,7 @@ async function renderSelectedRace() {
       for (let i = 0; i < (combo.minor || 0); i++) {
         const sel = document.createElement('select');
         sel.innerHTML = `<option value=''>${t('select')}</option>`;
-        (currentRaceData.minorAlterations || []).forEach((opt) => {
+        (currentRaceData.minorAlterations?.options || []).forEach((opt) => {
           const o = document.createElement('option');
           o.value = opt;
           o.textContent = opt;
@@ -471,7 +480,7 @@ async function renderSelectedRace() {
       for (let i = 0; i < (combo.major || 0); i++) {
         const sel = document.createElement('select');
         sel.innerHTML = `<option value=''>${t('select')}</option>`;
-        (currentRaceData.majorAlterations || []).forEach((opt) => {
+        (currentRaceData.majorAlterations?.options || []).forEach((opt) => {
           const o = document.createElement('option');
           o.value = opt;
           o.textContent = opt;
@@ -819,6 +828,14 @@ function confirmRaceSelection() {
     const p = document.createElement('p');
     p.textContent = `Alterations: ${chosen.join(', ')}`;
     container.appendChild(p);
+    const featureContainer = pendingRaceChoices.alterations.combo
+      ? pendingRaceChoices.alterations.combo.parentNode
+      : null;
+    if (featureContainer) {
+      const pf = document.createElement('p');
+      pf.textContent = `Alterations: ${chosen.join(', ')}`;
+      featureContainer.appendChild(pf);
+    }
   }
   if (pendingRaceChoices.size) {
     pendingRaceChoices.size.disabled = true;

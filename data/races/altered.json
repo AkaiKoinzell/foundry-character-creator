@@ -28,35 +28,37 @@
   "languageProficiencies": [
     { "common": true, "anyStandard": 1 }
   ],
-  "minorAlterations": [
-    "Aquatic Adaptation",
-    "Altered Metabolism",
-    "Darkvision",
-    "Fleet of Foot",
-    "Glider",
-    "Natural Weapon",
-    "Nimble Climber",
-    "Mutated Eyes",
-    "Silent Speech",
-    "Skilled",
-    "Strong-Minded",
-    "Supernatural Resistance"
-  ],
-  "majorAlterations": [
-    "Amorphous",
-    "Augmented Toughness",
-    "Blind Sense",
-    "Magical Affinity",
-    "Massive Build",
-    "Painful Regeneration",
-    "Secondary Arms",
-    "Shapechanger",
-    "Unnatural Armor"
-  ],
-  "alterationCombinations": [
-    { "minor": 3 },
-    { "minor": 2, "major": 1 }
-  ],
+  "minorAlterations": {
+    "allowed": [3, 2],
+    "options": [
+      "Aquatic Adaptation",
+      "Altered Metabolism",
+      "Darkvision",
+      "Fleet of Foot",
+      "Glider",
+      "Natural Weapon",
+      "Nimble Climber",
+      "Mutated Eyes",
+      "Silent Speech",
+      "Skilled",
+      "Strong-Minded",
+      "Supernatural Resistance"
+    ]
+  },
+  "majorAlterations": {
+    "allowed": [0, 1],
+    "options": [
+      "Amorphous",
+      "Augmented Toughness",
+      "Blind Sense",
+      "Magical Affinity",
+      "Massive Build",
+      "Painful Regeneration",
+      "Secondary Arms",
+      "Shapechanger",
+      "Unnatural Armor"
+    ]
+  },
   "entries": [
     {
       "name": "Size",

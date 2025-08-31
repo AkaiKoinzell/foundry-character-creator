@@ -46,7 +46,7 @@ describe('level 1 ability cap', () => {
             <td>STR</td>
             <td><button class="btn">+</button><button class="btn">-</button></td>
             <td><span id="strPoints">15</span></td>
-            <td><span id="strRaceModifier">3</span></td>
+            <td><span id="strBonusModifier">3</span></td>
             <td id="strFinalScore">18</td>
           </tr>
         </table>

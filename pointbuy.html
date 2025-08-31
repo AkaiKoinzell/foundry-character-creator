@@ -47,16 +47,16 @@
     <tr>
         <th>Caratteristiche</th>
         <th>Spendi i tuoi punti</th>
-        <th>Punteggi Iniziali</th>
-        <th>Punteggi di Razza</th>
-        <th>Talento di BG</th>
-        <th>Punteggi Finali</th>
+          <th>Punteggi Iniziali</th>
+          <th>Punteggi Bonus</th>
+          <th>Talento di BG</th>
+          <th>Punteggi Finali</th>
     </tr>
     <tr>
         <td>FOR</td>
         <td><button>+</button><button>-</button></td>
         <td><span id="strPoints">8</span></td>
-        <td><input type="number" id="strRaceModifier" value="0" min="0" max="2"></td>
+        <td><input type="number" id="strBonusModifier" value="0" min="0" max="2"></td>
         <td><input type="number" id="strBackgroundTalent" value="0" min="0" max="1"></td>
         <td id="strFinalScore">8</td>
     </tr>
@@ -64,7 +64,7 @@
         <td>DES</td>
         <td><button>+</button><button>-</button></td>
         <td><span id="dexPoints">8</span></td>
-        <td><input type="number" id="dexRaceModifier" value="0" min="0" max="2"></td>
+        <td><input type="number" id="dexBonusModifier" value="0" min="0" max="2"></td>
         <td><input type="number" id="dexBackgroundTalent" value="0" min="0" max="1"></td>
         <td id="dexFinalScore">8</td>
     </tr>
@@ -72,7 +72,7 @@
         <td>COS</td>
         <td><button>+</button><button>-</button></td>
         <td><span id="conPoints">8</span></td>
-        <td><input type="number" id="conRaceModifier" value="0" min="0" max="2"></td>
+        <td><input type="number" id="conBonusModifier" value="0" min="0" max="2"></td>
         <td><input type="number" id="conBackgroundTalent" value="0" min="0" max="1"></td>
         <td id="conFinalScore">8</td>
     </tr>
@@ -80,7 +80,7 @@
         <td>INT</td>
         <td><button>+</button><button>-</button></td>
         <td><span id="intPoints">8</span></td>
-        <td><input type="number" id="intRaceModifier" value="0" min="0" max="2"></td>
+        <td><input type="number" id="intBonusModifier" value="0" min="0" max="2"></td>
         <td><input type="number" id="intBackgroundTalent" value="0" min="0" max="1"></td>
         <td id="intFinalScore">8</td>
     </tr>
@@ -88,7 +88,7 @@
         <td>SAG</td>
         <td><button>+</button><button>-</button></td>
         <td><span id="wisPoints">8</span></td>
-        <td><input type="number" id="wisRaceModifier" value="0" min="0" max="2"></td>
+        <td><input type="number" id="wisBonusModifier" value="0" min="0" max="2"></td>
         <td><input type="number" id="wisBackgroundTalent" value="0" min="0" max="1"></td>
         <td id="wisFinalScore">8</td>
     </tr>
@@ -96,7 +96,7 @@
         <td>CAR</td>
         <td><button>+</button><button>-</button></td>
         <td><span id="chaPoints">8</span></td>
-        <td><input type="number" id="chaRaceModifier" value="0" min="0" max="2"></td>
+        <td><input type="number" id="chaBonusModifier" value="0" min="0" max="2"></td>
         <td><input type="number" id="chaBackgroundTalent" value="0" min="0" max="1"></td>
         <td id="chaFinalScore">8</td>
     </tr>

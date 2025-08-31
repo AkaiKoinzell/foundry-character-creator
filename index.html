@@ -169,8 +169,8 @@
         <h2>Step 6: Sistema Point Buy</h2>
         <p class="text-center"><strong>Total Points Remaining:</strong> <span id="pointsRemaining">27</span></p>
         <p class="text-center">Assegna i tuoi punti tra i punteggi di caratteristica (FOR, DES, COS, INT, SAG, CAR).</p>
-        <div id="racialBonusSelection">
-          <h3>Distribuzione Bonus Razza</h3>
+        <div id="bonusSelection">
+          <h3>Distribuzione Punteggi Bonus</h3>
           <p>Distribuisci i tuoi 3 punti extra in una delle seguenti combinazioni:</p>
           <ul>
             <li>+2 a una caratteristica e +1 a un'altra</li>
@@ -178,8 +178,8 @@
           </ul>
           <div id="bonusRow">
             <div class="form-group">
-              <label for="racialBonus1">Bonus 1:</label>
-              <select id="racialBonus1" class="form-control">
+              <label for="bonusSelect1">Bonus 1:</label>
+              <select id="bonusSelect1" class="form-control">
                 <option value="">Seleziona</option>
                 <option value="str">Forza</option>
                 <option value="dex">Destrezza</option>
@@ -190,8 +190,8 @@
               </select>
             </div>
             <div class="form-group">
-              <label for="racialBonus2">Bonus 2:</label>
-              <select id="racialBonus2" class="form-control">
+              <label for="bonusSelect2">Bonus 2:</label>
+              <select id="bonusSelect2" class="form-control">
                 <option value="">Seleziona</option>
                 <option value="str">Forza</option>
                 <option value="dex">Destrezza</option>
@@ -202,8 +202,8 @@
               </select>
             </div>
             <div class="form-group">
-              <label for="racialBonus3">Bonus 3:</label>
-              <select id="racialBonus3" class="form-control">
+              <label for="bonusSelect3">Bonus 3:</label>
+              <select id="bonusSelect3" class="form-control">
                 <option value="">Seleziona</option>
                 <option value="str">Forza</option>
                 <option value="dex">Destrezza</option>
@@ -214,7 +214,7 @@
               </select>
             </div>
             <div class="form-group">
-              <button id="applyRacialBonus" class="btn btn-primary">Applica Bonus Razza</button>
+              <button id="applyBonus" class="btn btn-primary">Applica Punteggi Bonus</button>
             </div>
           </div>
         </div>
@@ -223,7 +223,7 @@
             <th>Caratteristiche</th>
             <th>Spendi i tuoi punti</th>
             <th>Punteggi Iniziali</th>
-            <th>Punteggi di Razza</th>
+            <th>Punteggi Bonus</th>
             <th>Punteggi Finali</th>
           </tr>
           <tr>
@@ -233,7 +233,7 @@
               <button class="btn">-</button>
             </td>
             <td><span id="strPoints">8</span></td>
-            <td><span id="strRaceModifier">0</span></td>
+            <td><span id="strBonusModifier">0</span></td>
             <td id="strFinalScore">8</td>
           </tr>
           <tr>
@@ -243,7 +243,7 @@
               <button class="btn">-</button>
             </td>
             <td><span id="dexPoints">8</span></td>
-            <td><span id="dexRaceModifier">0</span></td>
+            <td><span id="dexBonusModifier">0</span></td>
             <td id="dexFinalScore">8</td>
           </tr>
           <tr>
@@ -253,7 +253,7 @@
               <button class="btn">-</button>
             </td>
             <td><span id="conPoints">8</span></td>
-            <td><span id="conRaceModifier">0</span></td>
+            <td><span id="conBonusModifier">0</span></td>
             <td id="conFinalScore">8</td>
           </tr>
           <tr>
@@ -263,7 +263,7 @@
               <button class="btn">-</button>
             </td>
             <td><span id="intPoints">8</span></td>
-            <td><span id="intRaceModifier">0</span></td>
+            <td><span id="intBonusModifier">0</span></td>
             <td id="intFinalScore">8</td>
           </tr>
           <tr>
@@ -273,7 +273,7 @@
               <button class="btn">-</button>
             </td>
             <td><span id="wisPoints">8</span></td>
-            <td><span id="wisRaceModifier">0</span></td>
+            <td><span id="wisBonusModifier">0</span></td>
             <td id="wisFinalScore">8</td>
           </tr>
           <tr>
@@ -283,7 +283,7 @@
               <button class="btn">-</button>
             </td>
             <td><span id="chaPoints">8</span></td>
-            <td><span id="chaRaceModifier">0</span></td>
+            <td><span id="chaBonusModifier">0</span></td>
             <td id="chaFinalScore">8</td>
           </tr>
         </table>

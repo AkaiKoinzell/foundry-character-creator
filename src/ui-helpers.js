@@ -10,17 +10,51 @@ export function createElement(tag, text) {
   return el;
 }
 
+export function parse5eLinks(str) {
+  const TOKEN_URLS = {
+    spell: 'spells',
+    condition: 'conditions',
+    item: 'items',
+    class: 'classes',
+    skill: 'skills',
+    feat: 'feats',
+    race: 'races',
+    background: 'backgrounds',
+    monster: 'bestiary',
+  };
+
+  return (str || '').replace(/\{@(\w+)\s([^}|]+)(?:\|[^}]+)?}/g, (match, type, name) => {
+    const base = TOKEN_URLS[type.toLowerCase()];
+    if (!base) return match;
+    const slug = encodeURIComponent(name.trim().toLowerCase());
+    return `<a href="https://5e.tools/#${base}:${slug}" target="_blank" rel="noopener noreferrer">${name}</a>`;
+  });
+}
+
 export function appendEntries(container, entries) {
   (entries || []).forEach(e => {
     if (!e) return;
     if (typeof e === 'string') {
-      container.appendChild(createElement('p', e));
+      const p = document.createElement('p');
+      p.innerHTML = parse5eLinks(e);
+      container.appendChild(p);
     } else if (typeof e === 'object') {
-      if (e.description) container.appendChild(createElement('p', e.description));
-      if (typeof e.entry === 'string') container.appendChild(createElement('p', e.entry));
+      if (e.description) {
+        const p = document.createElement('p');
+        p.innerHTML = parse5eLinks(e.description);
+        container.appendChild(p);
+      }
+      if (typeof e.entry === 'string') {
+        const p = document.createElement('p');
+        p.innerHTML = parse5eLinks(e.entry);
+        container.appendChild(p);
+      }
       if (Array.isArray(e.entries)) appendEntries(container, e.entries);
-      else if (e.name && !e.entry && !e.entries && !e.description)
-        container.appendChild(createElement('p', e.name));
+      else if (e.name && !e.entry && !e.entries && !e.description) {
+        const p = document.createElement('p');
+        p.innerHTML = parse5eLinks(e.name);
+        container.appendChild(p);
+      }
     }
   });
 }

@@ -17,9 +17,9 @@ describe('equipment rendering', () => {
     );
     global.fetch = (filePath) => {
       if (filePath === 'data/equipment.json') {
-        return Promise.resolve({ json: () => Promise.resolve(equipment) });
+        return Promise.resolve({ ok: true, json: () => Promise.resolve(equipment) });
       }
-      return Promise.resolve({ json: () => Promise.resolve({}) });
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
     };
     document.body.innerHTML = '<div id="equipmentSelections"></div><button id="confirmEquipment"></button>';
     CharacterState.classes = [{ name: 'Artificer', level: 1 }];

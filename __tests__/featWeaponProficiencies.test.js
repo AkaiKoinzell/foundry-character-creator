@@ -5,7 +5,7 @@ import { jest } from '@jest/globals';
 
 jest.unstable_mockModule('../src/i18n.js', () => ({ t: (k) => k }));
 
-const CharacterState = { feats: [] };
+const CharacterState = { feats: [], system: { weapons: [] } };
 const DATA = {
   equipment: [
     { name: 'Longsword', type: 'martial weapon', miscellaneous: 'mundane' },

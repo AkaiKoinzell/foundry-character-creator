@@ -17,6 +17,7 @@ jest.unstable_mockModule('../src/data.js', () => ({
       attributes: {},
       skills: [],
       tools: [],
+      weapons: [],
       abilities: {
         str: { value: 8 },
         dex: { value: 8 },
@@ -27,7 +28,7 @@ jest.unstable_mockModule('../src/data.js', () => ({
       },
     },
     
-    raceChoices: { spells: [], spellAbility: '', size: '', resist: '', tools: [] },
+    raceChoices: { spells: [], spellAbility: '', size: '', resist: '', tools: [], weapons: [] },
     bonusAbilities: {
       str: 0,
       dex: 0,
@@ -178,7 +179,7 @@ describe('race size selection', () => {
   afterEach(() => {
     CharacterState.system.details = {};
     CharacterState.system.traits.damageResist = [];
-    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [] };
+    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [], weapons: [] };
   });
 
   test('requires selecting size when multiple options', async () => {
@@ -218,7 +219,7 @@ describe('race damage resistance selection', () => {
   afterEach(() => {
     CharacterState.system.details = {};
     CharacterState.system.traits.damageResist = [];
-    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '' };
+    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', weapons: [] };
   });
 
   test('requires selecting damage type and applies result', async () => {
@@ -248,7 +249,7 @@ describe('Aarakocra selections', () => {
     };
     DATA.languages = [];
     CharacterState.system.details = {};
-    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '' };
+    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', weapons: [] };
     CharacterState.system.traits.damageResist = [];
     const race = {
       name: 'Aarakocra',
@@ -308,7 +309,13 @@ describe('race tool proficiency choices', () => {
     };
     mockFetch.mockImplementation(() => Promise.resolve(race));
     CharacterState.system.details = {};
-    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', tools: [] };
+    CharacterState.raceChoices = {
+      spells: [],
+      spellAbility: '',
+      size: '',
+      tools: [],
+      weapons: [],
+    };
     CharacterState.system.tools = [];
   });
 
@@ -330,6 +337,55 @@ describe('race tool proficiency choices', () => {
     );
     expect(CharacterState.raceChoices.tools).toEqual(
       expect.arrayContaining(["Thieves' Tools", "Smith's Tools"])
+    );
+  });
+});
+
+describe('race weapon proficiency choices', () => {
+  beforeEach(() => {
+    document.body.innerHTML = `
+      <div id="raceList"></div>
+      <div id="raceFeatures"></div>
+    `;
+    DATA.races = {
+      Elf: [{ name: 'Elf (Sea)', path: 'elfSea' }],
+    };
+    const race = {
+      name: 'Elf (Sea)',
+      entries: [],
+      weaponProficiencies: [
+        { 'longsword|phb': true },
+        { choose: { from: ['shortsword|phb', 'scimitar|phb'] } },
+      ],
+    };
+    mockFetch.mockImplementation(() => Promise.resolve(race));
+    CharacterState.system.details = {};
+    CharacterState.raceChoices = {
+      spells: [],
+      spellAbility: '',
+      size: '',
+      tools: [],
+      weapons: [],
+    };
+    CharacterState.system.weapons = [];
+  });
+
+  test('requires selecting weapons and applies choices', async () => {
+    await selectBaseRace('Elf');
+    document.querySelector('#raceList .class-card').click();
+    await new Promise((r) => setTimeout(r, 0));
+    const selects = document.querySelectorAll('#raceFeatures select');
+    expect(selects.length).toBe(1);
+    expect(await confirmStep()).toBe(false);
+    selects[0].value = 'Scimitar';
+    selects[0].dispatchEvent(new Event('change'));
+    await new Promise((r) => setTimeout(r, 0));
+    expect(await confirmStep()).toBe(true);
+    expect(CharacterState.system.weapons).toEqual(
+      expect.arrayContaining(['Longsword', 'Scimitar'])
+    );
+    expect(CharacterState.raceChoices.weapons).toEqual(
+      expect.arrayContaining(['Longsword', 'Scimitar'])
     );
   });
 });
@@ -462,7 +518,7 @@ describe('duplicate proficiency replacement', () => {
     DATA.languages = ['Common', 'Dwarvish'];
     CharacterState.system.details = {};
     CharacterState.system.traits.damageResist = [];
-    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [] };
+    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [], weapons: [] };
     CharacterState.system.traits.languages.value = ['Elvish'];
     const race = {
       name: 'Elf (High)',
@@ -510,7 +566,7 @@ describe('change race cleanup', () => {
     };
     CharacterState.system.details = {};
     CharacterState.system.traits.damageResist = [];
-    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [] };
+    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [], weapons: [] };
     CharacterState.system.skills = [];
     CharacterState.system.traits.languages.value = [];
     CharacterState.system.attributes = {};
@@ -569,7 +625,7 @@ describe('race skill proficiency choices', () => {
     };
     CharacterState.system.details = {};
     CharacterState.system.traits.damageResist = [];
-    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [] };
+    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [], weapons: [] };
     CharacterState.system.skills = [];
     mockFetch.mockImplementation(() => Promise.resolve(race));
   });

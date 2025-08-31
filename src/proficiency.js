@@ -72,6 +72,7 @@ export function getProficiencyList(type) {
   if (type === 'skills') return CharacterState.system.skills;
   if (type === 'tools') return CharacterState.system.tools;
   if (type === 'instruments') return CharacterState.system.tools;
+  if (type === 'weapons') return CharacterState.system.weapons || [];
   if (type === 'languages') return CharacterState.system.traits.languages.value;
   if (type === 'cantrips') return CharacterState.system.spells.cantrips;
   if (type === 'feats') return CharacterState.feats;
@@ -83,6 +84,10 @@ export function getAllOptions(type) {
   if (type === 'tools') return ALL_TOOLS;
   if (type === 'instruments') return ALL_INSTRUMENTS;
   if (type === 'languages') return DATA.languages || [];
+  if (type === 'weapons')
+    return (DATA.equipment || [])
+      .filter((i) => /weapon/i.test(i.type))
+      .map((i) => i.name);
   if (type === 'feats') return DATA.feats || [];
   return [];
 }

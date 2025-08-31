@@ -117,7 +117,6 @@ export function initNextStepWarning() {
   nextBtn.insertAdjacentElement('afterend', warn);
 
   const messages = {
-    step2: t('selectClassToProceed'),
     step3: t('selectRaceToProceed'),
     step4: t('selectBackgroundToProceed'),
     step5: t('chooseEquipmentToProceed'),
@@ -126,7 +125,17 @@ export function initNextStepWarning() {
 
   const updateWarning = () => {
     const active = document.querySelector('.step:not(.hidden)');
-    const msg = active ? messages[active.id] : null;
+    let msg = active ? messages[active.id] : null;
+
+    if (active?.id === 'step2' && nextBtn.disabled) {
+      const hasClass = (globalThis.CharacterState?.classes || []).length > 0;
+      if (!hasClass) {
+        msg = t('selectClassToProceed');
+      } else if (document.querySelector('#step2 .needs-selection.incomplete')) {
+        msg = t('completeClassChoicesToProceed');
+      }
+    }
+
     if (nextBtn.disabled && msg) {
       warn.textContent = msg;
       warn.classList.remove('hidden');
@@ -144,6 +153,7 @@ export function initNextStepWarning() {
   if (stepContainer) {
     new MutationObserver(updateWarning).observe(stepContainer, {
       attributes: true,
+      childList: true,
       subtree: true,
       attributeFilter: ['class'],
     });

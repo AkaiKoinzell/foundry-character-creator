@@ -32,6 +32,7 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
   const skillSelects = [];
   const toolSelects = [];
   const languageSelects = [];
+  const saveSelects = [];
   const fixedAbilityBonuses = {};
 
   if (Array.isArray(feat.ability)) {
@@ -106,6 +107,33 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
     makeSelects(feat.languageProficiencies, languageSelects, 'selectLanguageForFeat');
   }
 
+  if (Array.isArray(feat.savingThrowProficiencies)) {
+    feat.savingThrowProficiencies.forEach((entry) => {
+      if (entry.choose) {
+        const amount = entry.choose.amount || entry.choose.count || 1;
+        const from = entry.choose.from || [];
+        for (let i = 0; i < amount; i++) {
+          const sel = document.createElement('select');
+          sel.dataset.opts = JSON.stringify(from);
+          sel.innerHTML = `<option value=''>${t('selectSaveForFeat')}</option>`;
+          from.forEach((opt) => {
+            const o = document.createElement('option');
+            o.value = opt;
+            o.textContent = opt.toUpperCase();
+            sel.appendChild(o);
+          });
+          wrapper.appendChild(sel);
+          saveSelects.push(sel);
+          sel.addEventListener('change', () => {
+            updateSaveSelects();
+            onChange();
+          });
+        }
+      }
+    });
+    updateSaveSelects();
+  }
+
   const optionalFeatureSelects = [];
   if (Array.isArray(feat.optionalfeatureProgression)) {
     await loadOptionalFeatures();
@@ -143,6 +171,34 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
         sel.appendChild(opt);
       });
       sel.value = current;
+    });
+  }
+
+  function updateSaveSelects() {
+    const taken = new Set(CharacterState.system.attributes?.saves || []);
+    (CharacterState.feats || [])
+      .filter((f) => f.name !== featName)
+      .forEach((f) => {
+        const arr = f.saves || f.system?.attributes?.saves;
+        if (Array.isArray(arr)) arr.forEach((s) => taken.add(s));
+      });
+    saveSelects.forEach((sel) => {
+      if (sel.value) taken.add(sel.value);
+    });
+    saveSelects.forEach((sel) => {
+      const opts = JSON.parse(sel.dataset.opts || '[]');
+      const current = sel.value;
+      if (current) taken.delete(current);
+      sel.innerHTML = `<option value=''>${t('selectSaveForFeat')}</option>`;
+      opts.forEach((ab) => {
+        if (ab !== current && taken.has(ab)) return;
+        const o = document.createElement('option');
+        o.value = ab;
+        o.textContent = ab.toUpperCase();
+        sel.appendChild(o);
+      });
+      sel.value = current;
+      if (current) taken.add(current);
     });
   }
 
@@ -309,10 +365,15 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
     skillSelects.every((s) => s.value) &&
     toolSelects.every((s) => s.value) &&
     languageSelects.every((s) => s.value) &&
+    saveSelects.every((s) => s.value) &&
     spellSelects.every((s) => s.value) &&
     optionalFeatureSelects.every((s) => s.value);
 
   const apply = () => {
+    const idx = (CharacterState.feats || []).findIndex(
+      (f) => f.name === featName
+    );
+    const prevFeat = idx >= 0 ? CharacterState.feats[idx] : null;
     const featObj = { name: featName, system: {} };
     if (Object.keys(fixedAbilityBonuses).length) {
       featObj.ability = { ...fixedAbilityBonuses };
@@ -359,6 +420,22 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
         addUniqueProficiency('languages', sel.value, container);
       });
     }
+    if (saveSelects.length) {
+      featObj.saves = saveSelects.map((s) => s.value);
+      CharacterState.system.attributes.saves =
+        CharacterState.system.attributes.saves || [];
+      if (prevFeat?.saves) {
+        prevFeat.saves.forEach((sv) => {
+          const i = CharacterState.system.attributes.saves.indexOf(sv);
+          if (i >= 0) CharacterState.system.attributes.saves.splice(i, 1);
+        });
+      }
+      featObj.saves.forEach((sv) => {
+        if (!CharacterState.system.attributes.saves.includes(sv)) {
+          CharacterState.system.attributes.saves.push(sv);
+        }
+      });
+    }
     if (spellClassSelect && spellClassSelect.value) {
       const obj = {
         class: feat.additionalSpells[Number(spellClassSelect.value)].name || '',
@@ -370,7 +447,6 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
     if (optionalFeatureSelects.length) {
       featObj.optionalFeatures = optionalFeatureSelects.map((s) => s.value);
     }
-    const idx = (CharacterState.feats || []).findIndex((f) => f.name === featName);
     if (idx >= 0) CharacterState.feats[idx] = featObj;
     else {
       CharacterState.feats = CharacterState.feats || [];
@@ -383,6 +459,7 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
     skillSelects,
     toolSelects,
     languageSelects,
+    saveSelects,
     spellSelects,
     optionalFeatureSelects,
     isComplete,

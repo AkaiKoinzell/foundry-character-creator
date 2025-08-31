@@ -268,6 +268,7 @@ function selectBackground(bg) {
           ...(pendingSelections.featRenderer.toolSelects || []),
           ...(pendingSelections.featRenderer.languageSelects || []),
           ...(pendingSelections.featRenderer.spellSelects || []),
+          ...(pendingSelections.featRenderer.optionalFeatureSelects || []),
         ];
         all.forEach((s) =>
           s.addEventListener('change', validateBackgroundChoices)

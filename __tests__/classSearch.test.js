@@ -37,6 +37,7 @@ jest.unstable_mockModule('../src/data.js', () => {
     loadSpells: jest.fn(),
     fetchJsonWithRetry: jest.fn(),
     loadFeatDetails: jest.fn(),
+    loadOptionalFeatures: jest.fn(),
   };
 });
 

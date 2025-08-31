@@ -255,6 +255,7 @@ function compileClassFeatures(cls) {
           name: `${name}: ${e.option}`,
           abilities: e.abilities,
           feat: e.feat,
+          optionalFeatures: e.optionalFeatures,
           description: choiceDef?.description || '',
           entries: choiceDef?.entries || [],
         });
@@ -374,6 +375,10 @@ function handleASISelection(sel, container, entry, cls) {
         const onFeatChange = () => {
           if (entry.featRenderer?.isComplete()) {
             entry.featRenderer.apply();
+            entry.optionalFeatures =
+              entry.featRenderer.optionalFeatureSelects?.map(
+                (s) => s.value
+              );
             rebuildFromClasses();
           }
           updateStep2Completion();
@@ -389,6 +394,7 @@ function handleASISelection(sel, container, entry, cls) {
           ...(entry.featRenderer.toolSelects || []),
           ...(entry.featRenderer.languageSelects || []),
           ...(entry.featRenderer.spellSelects || []),
+          ...(entry.featRenderer.optionalFeatureSelects || []),
         ];
         all.forEach((s) => s.addEventListener('change', onFeatChange));
       }

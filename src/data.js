@@ -165,6 +165,18 @@ export async function loadSpells() {
   return DATA.spells;
 }
 
+/**
+ * Fetches optional feature lists keyed by feature type.
+ */
+export async function loadOptionalFeatures() {
+  if (DATA.optionalFeatures) return DATA.optionalFeatures;
+  DATA.optionalFeatures = await fetchJsonWithRetry(
+    'data/optionalfeatures.json',
+    'optional features'
+  );
+  return DATA.optionalFeatures;
+}
+
 export const CharacterState = {
   playerName: "",
   name: "",

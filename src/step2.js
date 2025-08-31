@@ -683,9 +683,7 @@ function removeClass(index) {
     typeof window !== 'undefined' &&
     typeof window.confirm === 'function'
   ) {
-    const proceed = window.confirm(
-      'Removing this class will also remove any spells, feats, or other choices derived from it. Continue?'
-    );
+    const proceed = window.confirm(t('removeClassConfirm'));
     if (!proceed) return;
   }
 
@@ -860,7 +858,7 @@ export async function loadStep2(refresh = true) {
     await loadClasses();
     await loadFeats();
   } catch (err) {
-    console.error('Dati classi non disponibili.', err);
+    console.error(t('classDataUnavailable'), err);
     return;
   }
 
@@ -880,7 +878,7 @@ export async function loadStep2(refresh = true) {
 
   const classes = Array.isArray(DATA.classes) ? DATA.classes : [];
   if (!classes.length) {
-    console.error('Dati classi non disponibili.');
+    console.error(t('classDataUnavailable'));
     return;
   }
   function renderClassCards(query = '') {
@@ -895,10 +893,10 @@ export async function loadStep2(refresh = true) {
       .forEach(cls => {
         const card = createSelectableCard(
           cls.name,
-          cls.description || 'Nessuna descrizione disponibile.',
+          cls.description || t('noDescription'),
           null,
           () => showClassModal(cls),
-          'Dettagli',
+          t('details'),
           () => showClassModal(cls)
         );
         classListContainer.appendChild(card);
@@ -931,34 +929,43 @@ function showClassModal(cls) {
   // Title and description
   details.appendChild(createElement('h2', cls.name));
   details.appendChild(
-    createElement('p', cls.description || 'Nessuna descrizione disponibile.')
+    createElement('p', cls.description || t('noDescription'))
   );
 
   // Proficiency information
   const profList = document.createElement('ul');
   if (Array.isArray(cls.armor_proficiencies) && cls.armor_proficiencies.length) {
     profList.appendChild(
-      createElement('li', `Armature: ${cls.armor_proficiencies.join(', ')}`)
+      createElement('li',
+        t('armorProficiencies', { list: cls.armor_proficiencies.join(', ') })
+      )
     );
   }
   if (Array.isArray(cls.weapon_proficiencies) && cls.weapon_proficiencies.length) {
     profList.appendChild(
-      createElement('li', `Armi: ${cls.weapon_proficiencies.join(', ')}`)
+      createElement('li',
+        t('weaponProficiencies', { list: cls.weapon_proficiencies.join(', ') })
+      )
     );
   }
   if (cls.skill_proficiencies) {
     let skillText = '';
     if (cls.skill_proficiencies.options) {
-      skillText = `scegli ${cls.skill_proficiencies.choose}: ${cls.skill_proficiencies.options.join(', ')}`;
+      skillText = t('chooseOptions', {
+        count: cls.skill_proficiencies.choose,
+        options: cls.skill_proficiencies.options.join(', '),
+      });
     } else if (cls.skill_proficiencies.fixed) {
       skillText = cls.skill_proficiencies.fixed.join(', ');
     }
     if (skillText) {
-      profList.appendChild(createElement('li', `Abilità: ${skillText}`));
+      profList.appendChild(
+        createElement('li', `${t('skills')}: ${skillText}`)
+      );
     }
   }
   if (profList.childNodes.length) {
-    const profHeader = createElement('h3', 'Proficienze');
+    const profHeader = createElement('h3', t('proficiencies'));
     details.appendChild(profHeader);
     details.appendChild(profList);
   }
@@ -981,7 +988,7 @@ function selectClass(cls) {
   const classes = CharacterState.classes || (CharacterState.classes = []);
   if (classes.some(c => c.name === cls.name)) {
     if (typeof alert !== 'undefined') {
-      alert(`${cls.name} already selected.`);
+      alert(t('classAlreadySelected', { name: cls.name }));
     }
     loadStep2(false);
     return;

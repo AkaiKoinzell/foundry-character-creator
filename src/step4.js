@@ -54,7 +54,7 @@ export function renderBackgroundList(query = '') {
       details.push(
         createElement(
           'p',
-          `${t('featOptions') || 'Feat Options'}: ${bg.featOptions.join(', ')}`
+          `${t('featOptions')}: ${bg.featOptions.join(', ')}`
         )
       );
     const card = createSelectableCard(
@@ -62,7 +62,7 @@ export function renderBackgroundList(query = '') {
       bg.short || bg.description || bg.summary || bg.desc || '',
       details,
       () => selectBackground(bg),
-      t('details') || 'Details'
+      t('details')
     );
     container.appendChild(card);
   }
@@ -122,10 +122,10 @@ function selectBackground(bg) {
     details.appendChild(
       createElement(
         'p',
-        `${t('featOptions') || 'Feat Options'}: ${currentBackgroundData.featOptions.join(', ')}`
+        `${t('featOptions')}: ${currentBackgroundData.featOptions.join(', ')}`
       )
     );
-  features.appendChild(createAccordionItem(t('details') || 'Details', details));
+  features.appendChild(createAccordionItem(t('details'), details));
 
   // Choices --------------------------------------------------
   const appendFeatureDesc = (wrapper, key) => {
@@ -143,7 +143,7 @@ function selectBackground(bg) {
     appendFeatureDesc(wrapper, 'skill');
     for (let i = 0; i < currentBackgroundData.skillChoices.choose; i++) {
       const sel = document.createElement('select');
-      sel.innerHTML = `<option value=''>${t('selectSkill') || 'Select skill'}</option>`;
+      sel.innerHTML = `<option value=''>${t('selectSkill')}</option>`;
       currentBackgroundData.skillChoices.options.forEach((opt) => {
         const o = document.createElement('option');
         o.value = opt;
@@ -174,7 +174,7 @@ function selectBackground(bg) {
     appendFeatureDesc(wrapper, 'tool');
     for (let i = 0; i < toolData.choose; i++) {
       const sel = document.createElement('select');
-      sel.innerHTML = `<option value=''>${t('selectTool') || 'Select tool'}</option>`;
+      sel.innerHTML = `<option value=''>${t('selectTool')}</option>`;
       (toolData.options || []).forEach((opt) => {
         const o = document.createElement('option');
         o.value = opt;
@@ -207,7 +207,7 @@ function selectBackground(bg) {
       : DATA.languages || [];
     for (let i = 0; i < currentBackgroundData.languages.choose; i++) {
       const sel = document.createElement('select');
-      sel.innerHTML = `<option value=''>${t('selectLanguage') || 'Select language'}</option>`;
+      sel.innerHTML = `<option value=''>${t('selectLanguage')}</option>`;
       langOpts.forEach((l) => {
         const o = document.createElement('option');
         o.value = l;
@@ -232,7 +232,7 @@ function selectBackground(bg) {
     const wrapper = document.createElement('div');
     appendFeatureDesc(wrapper, 'feat');
     const sel = document.createElement('select');
-    sel.innerHTML = `<option value=''>${t('selectFeat') || 'Select feat'}</option>`;
+    sel.innerHTML = `<option value=''>${t('selectFeat')}</option>`;
     currentBackgroundData.featOptions.forEach((f) => {
       const o = document.createElement('option');
       o.value = f;
@@ -270,7 +270,7 @@ function selectBackground(bg) {
     pendingSelections.feat = sel;
     wrapper.appendChild(sel);
     wrapper.appendChild(featChoicesDiv);
-    const acc = createAccordionItem(t('feat') || 'Feat', wrapper, true);
+    const acc = createAccordionItem(t('feat'), wrapper, true);
     acc.classList.add('needs-selection');
     features.appendChild(acc);
     choiceAccordions.feat = acc;

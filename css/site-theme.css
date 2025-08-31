@@ -310,7 +310,7 @@ th {
   padding: 0.5em;
 }
 
-.needs-selection.incomplete .accordion-header::before {
+.needs-selection.incomplete .accordion-item.user-choice > .accordion-header::before {
   content: "\26A0";
   color: #e74c3c;
   margin-right: 0.25em;

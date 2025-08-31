@@ -55,5 +55,19 @@ describe('ASI and feat bonuses', () => {
     expect(document.getElementById('strRaceModifier').textContent).toBe('3');
     expect(document.getElementById('strFinalScore').textContent).toBe('13');
   });
+
+  test('rebuildFromClasses applies bonuses only once', () => {
+    CharacterState.feats = [{ name: 'TestFeat', ability: { str: 1 } }];
+    CharacterState.classes = [
+      { name: 'Fighter', level: 4, asiBonuses: { str: 2 } },
+    ];
+    refreshBaseState();
+    rebuildFromClasses();
+    expect(CharacterState.system.abilities.str.value).toBe(13);
+    refreshBaseState();
+    rebuildFromClasses();
+    expect(CharacterState.system.abilities.str.value).toBe(13);
+    expect(CharacterState.bonusAbilities.str).toBe(3);
+  });
 });
 

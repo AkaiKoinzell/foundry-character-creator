@@ -53,7 +53,8 @@ function refreshBaseState() {
     ? CharacterState.feats.map(f => ({ ...f }))
     : [];
   for (const [ab, obj] of Object.entries(CharacterState.system.abilities)) {
-    baseState.abilities[ab] = obj.value || 0;
+    const bonus = CharacterState.bonusAbilities?.[ab] || 0;
+    baseState.abilities[ab] = (obj.value || 0) - bonus;
   }
 }
 

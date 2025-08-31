@@ -107,6 +107,29 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
     makeSelects(feat.languageProficiencies, languageSelects, 'selectLanguageForFeat');
   }
 
+  const weaponSelects = [];
+  if (Array.isArray(feat.weaponProficiencies)) {
+    feat.weaponProficiencies.forEach((entry) => {
+      if (entry.choose?.fromFilter) {
+        const opts = getWeaponsFromFilter(entry.choose.fromFilter);
+        const count = entry.choose.count || entry.choose.amount || 1;
+        const selects = [];
+        for (let i = 0; i < count; i++) {
+          const sel = document.createElement('select');
+          sel.innerHTML = `<option value=''>${t('selectWeaponForFeat')}</option>`;
+          wrapper.appendChild(sel);
+          weaponSelects.push(sel);
+          selects.push(sel);
+          sel.addEventListener('change', () => {
+            updateWeaponSelects(selects, opts);
+            onChange();
+          });
+        }
+        updateWeaponSelects(selects, opts);
+      }
+    });
+  }
+
   if (Array.isArray(feat.savingThrowProficiencies)) {
     feat.savingThrowProficiencies.forEach((entry) => {
       if (entry.choose) {
@@ -199,6 +222,52 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
       });
       sel.value = current;
       if (current) taken.add(current);
+    });
+  }
+
+  function getWeaponsFromFilter(filter) {
+    if (!filter) return [];
+    const items = Array.isArray(DATA.equipment) ? DATA.equipment : [];
+    const groups = filter.split('|').map((g) => g.trim()).filter(Boolean);
+    const matches = items.filter((item) =>
+      groups.some((grp) => {
+        const [key, vals] = grp.split('=');
+        if (!key || vals === undefined) return false;
+        const values = vals.split(';').map((v) => v.trim().toLowerCase());
+        const itemVal = item[key.trim()];
+        if (Array.isArray(itemVal)) {
+          return itemVal
+            .map((v) => String(v).toLowerCase())
+            .some((v) => values.includes(v));
+        }
+        return values.includes(String(itemVal).toLowerCase());
+      })
+    );
+    const seen = new Set();
+    const names = [];
+    matches.forEach((m) => {
+      const nm = m.name || m;
+      if (!seen.has(nm)) {
+        seen.add(nm);
+        names.push(nm);
+      }
+    });
+    return names.sort();
+  }
+
+  function updateWeaponSelects(selects, opts) {
+    const taken = new Set(selects.map((s) => s.value).filter(Boolean));
+    selects.forEach((sel) => {
+      const current = sel.value;
+      sel.innerHTML = `<option value=''>${t('selectWeaponForFeat')}</option>`;
+      opts.forEach((o) => {
+        if (o !== current && taken.has(o)) return;
+        const opt = document.createElement('option');
+        opt.value = o;
+        opt.textContent = o;
+        sel.appendChild(opt);
+      });
+      sel.value = current;
     });
   }
 
@@ -365,6 +434,7 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
     skillSelects.every((s) => s.value) &&
     toolSelects.every((s) => s.value) &&
     languageSelects.every((s) => s.value) &&
+    weaponSelects.every((s) => s.value) &&
     saveSelects.every((s) => s.value) &&
     spellSelects.every((s) => s.value) &&
     optionalFeatureSelects.every((s) => s.value);
@@ -420,6 +490,9 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
         addUniqueProficiency('languages', sel.value, container);
       });
     }
+    if (weaponSelects.length) {
+      featObj.weapons = weaponSelects.map((s) => s.value);
+    }
     if (saveSelects.length) {
       featObj.saves = saveSelects.map((s) => s.value);
       CharacterState.system.attributes.saves =
@@ -459,6 +532,7 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
     skillSelects,
     toolSelects,
     languageSelects,
+    weaponSelects,
     saveSelects,
     spellSelects,
     optionalFeatureSelects,

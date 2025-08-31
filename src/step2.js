@@ -371,22 +371,26 @@ function handleASISelection(sel, container, entry, cls) {
       entry.featRenderer = null;
       featChoicesDiv.innerHTML = '';
       if (featSel.value) {
-        entry.featRenderer = await renderFeatChoices(featSel.value, featChoicesDiv);
+        const onFeatChange = () => {
+          if (entry.featRenderer?.isComplete()) {
+            entry.featRenderer.apply();
+            rebuildFromClasses();
+          }
+          updateStep2Completion();
+        };
+        entry.featRenderer = await renderFeatChoices(
+          featSel.value,
+          featChoicesDiv,
+          onFeatChange
+        );
         const all = [
           ...(entry.featRenderer.abilitySelects || []),
           ...(entry.featRenderer.skillSelects || []),
           ...(entry.featRenderer.toolSelects || []),
           ...(entry.featRenderer.languageSelects || []),
+          ...(entry.featRenderer.spellSelects || []),
         ];
-        all.forEach(s =>
-          s.addEventListener('change', () => {
-            if (entry.featRenderer.isComplete()) {
-              entry.featRenderer.apply();
-              rebuildFromClasses();
-            }
-            updateStep2Completion();
-          })
-        );
+        all.forEach((s) => s.addEventListener('change', onFeatChange));
       }
       compileClassFeatures(cls);
       rebuildFromClasses();

@@ -1,4 +1,4 @@
-import { CharacterState, loadFeatDetails } from './data.js';
+import { CharacterState, loadFeatDetails, DATA, loadSpells } from './data.js';
 import { t } from './i18n.js';
 import { addUniqueProficiency } from './proficiency.js';
 import { createElement, capitalize, appendEntries } from './ui-helpers.js';
@@ -15,7 +15,7 @@ function refreshAbility(ab) {
   if (finalCell) finalCell.textContent = finalVal;
 }
 
-export async function renderFeatChoices(featName, container) {
+export async function renderFeatChoices(featName, container, onChange = () => {}) {
   const feat = await loadFeatDetails(featName);
   const wrapper = createElement('div');
   container.appendChild(wrapper);
@@ -43,6 +43,7 @@ export async function renderFeatChoices(featName, container) {
             sel.appendChild(o);
           });
           wrapper.appendChild(sel);
+          sel.addEventListener('change', onChange);
           abilitySelects.push(sel);
         }
       } else {
@@ -82,6 +83,7 @@ export async function renderFeatChoices(featName, container) {
             sel.appendChild(o);
           });
           wrapper.appendChild(sel);
+          sel.addEventListener('change', onChange);
           list.push(sel);
         }
       }
@@ -98,11 +100,170 @@ export async function renderFeatChoices(featName, container) {
     makeSelects(feat.languageProficiencies, languageSelects, 'selectLanguageForFeat');
   }
 
+  const spellSelects = [];
+  const cantripSelects = [];
+  let level1Select = null;
+  let spellClassSelect = null;
+
+  if (Array.isArray(feat.additionalSpells) && feat.additionalSpells.length) {
+    const spellWrapper = document.createElement('div');
+    spellClassSelect = document.createElement('select');
+    spellClassSelect.innerHTML = `<option value=''>${t('select')}</option>`;
+    feat.additionalSpells.forEach((opt, idx) => {
+      const o = document.createElement('option');
+      o.value = String(idx);
+      o.textContent = opt.name || opt.class || opt.ability || `Option ${idx + 1}`;
+      spellClassSelect.appendChild(o);
+    });
+    spellClassSelect.addEventListener('change', async () => {
+      // Clear previous selects
+      cantripSelects.splice(0).forEach((sel) => sel.remove());
+      if (level1Select) {
+        level1Select.remove();
+        level1Select = null;
+      }
+      spellSelects.length = 1; // keep class select
+      spellWrapper
+        .querySelectorAll('.feat-spell-select')
+        .forEach((n) => n.remove());
+
+      const idx = spellClassSelect.value ? Number(spellClassSelect.value) : -1;
+      if (idx >= 0) {
+        const choice = feat.additionalSpells[idx];
+        if (!DATA.spells) await loadSpells();
+        const SCHOOL_MAP = {
+          A: 'Abjuration',
+          C: 'Conjuration',
+          D: 'Divination',
+          E: 'Enchantment',
+          I: 'Illusion',
+          N: 'Necromancy',
+          T: 'Transmutation',
+          V: 'Evocation',
+        };
+
+        const parseOpts = (str) =>
+          (DATA.spells || [])
+            .filter((sp) => {
+              return str.split('|').every((cond) => {
+                const [key, val] = cond.split('=');
+                if (key === 'level') return sp.level === parseInt(val, 10);
+                if (key === 'school') {
+                  const schools = val
+                    .split(';')
+                    .map((s) => SCHOOL_MAP[s] || s);
+                  return schools.includes(sp.school);
+                }
+                if (key === 'class') {
+                  const classes = val
+                    .split(';')
+                    .map((c) => capitalize(c.trim()))
+                    .filter((c) => c);
+                  return classes.some((c) => (sp.spell_list || []).includes(c));
+                }
+                return true;
+              });
+            })
+            .map((sp) => sp.name);
+
+        const createSelects = (opts, count, list) => {
+          for (let i = 0; i < count; i++) {
+            const sel = document.createElement('select');
+            sel.className = 'feat-spell-select';
+            sel.dataset.opts = JSON.stringify(opts);
+            sel.innerHTML = `<option value=''>${t('select')}</option>`;
+            sel.addEventListener('change', () => {
+              updateSpellSelects();
+              onChange();
+            });
+            spellWrapper.appendChild(sel);
+            list.push(sel);
+            spellSelects.push(sel);
+          }
+        };
+
+        if (choice.known && choice.known._) {
+          choice.known._.forEach((entry) => {
+            if (entry.choose) {
+              const cnt = entry.count || entry.choose.count || 1;
+              const opts = parseOpts(entry.choose);
+              createSelects(opts, cnt, cantripSelects);
+            }
+          });
+        }
+
+        if (choice.innate?._.daily) {
+          const daily = choice.innate._.daily;
+          const arr = daily['1'] || daily['1e'];
+          if (Array.isArray(arr)) {
+            const entry = arr.find(
+              (e) => typeof e === 'object' && e.choose
+            );
+            if (entry) {
+              const opts = parseOpts(entry.choose);
+              const sel = document.createElement('select');
+              sel.className = 'feat-spell-select';
+              sel.dataset.opts = JSON.stringify(opts);
+              sel.innerHTML = `<option value=''>${t('select')}</option>`;
+              sel.addEventListener('change', () => {
+                updateSpellSelects();
+                onChange();
+              });
+              spellWrapper.appendChild(sel);
+              level1Select = sel;
+              spellSelects.push(sel);
+            }
+          }
+        }
+        updateSpellSelects();
+      }
+      onChange();
+    });
+    wrapper.appendChild(spellClassSelect);
+    spellSelects.push(spellClassSelect);
+    wrapper.appendChild(spellWrapper);
+  }
+
+  function updateSpellSelects() {
+    const existing = new Set([
+      ...(CharacterState.system.spells?.cantrips || []),
+      ...(CharacterState.raceChoices?.spells || []),
+    ]);
+    (CharacterState.feats || []).forEach((f) => {
+      const sp = f.spells || f.system?.spells;
+      if (sp) {
+        (sp.cantrips || []).forEach((c) => existing.add(c));
+        if (sp.level1) existing.add(sp.level1);
+      }
+    });
+    const all = [...cantripSelects];
+    if (level1Select) all.push(level1Select);
+    all.forEach((s) => {
+      if (s.value) existing.add(s.value);
+    });
+    all.forEach((sel) => {
+      const opts = JSON.parse(sel.dataset.opts || '[]');
+      const current = sel.value;
+      if (current) existing.delete(current);
+      sel.innerHTML = `<option value=''>${t('select')}</option>`;
+      opts.forEach((sp) => {
+        if (sp !== current && existing.has(sp)) return;
+        const o = document.createElement('option');
+        o.value = sp;
+        o.textContent = sp;
+        sel.appendChild(o);
+      });
+      sel.value = current;
+      if (current) existing.add(current);
+    });
+  }
+
   const isComplete = () =>
     abilitySelects.every((s) => s.value) &&
     skillSelects.every((s) => s.value) &&
     toolSelects.every((s) => s.value) &&
-    languageSelects.every((s) => s.value);
+    languageSelects.every((s) => s.value) &&
+    spellSelects.every((s) => s.value);
 
   const apply = () => {
     const featObj = { name: featName, system: {} };
@@ -151,6 +312,14 @@ export async function renderFeatChoices(featName, container) {
         addUniqueProficiency('languages', sel.value, container);
       });
     }
+    if (spellClassSelect && spellClassSelect.value) {
+      const obj = {
+        class: feat.additionalSpells[Number(spellClassSelect.value)].name || '',
+        cantrips: cantripSelects.map((s) => s.value),
+        level1: level1Select ? level1Select.value : '',
+      };
+      featObj.spells = obj;
+    }
     const idx = (CharacterState.feats || []).findIndex((f) => f.name === featName);
     if (idx >= 0) CharacterState.feats[idx] = featObj;
     else {
@@ -159,5 +328,13 @@ export async function renderFeatChoices(featName, container) {
     }
   };
 
-  return { abilitySelects, skillSelects, toolSelects, languageSelects, isComplete, apply };
+  return {
+    abilitySelects,
+    skillSelects,
+    toolSelects,
+    languageSelects,
+    spellSelects,
+    isComplete,
+    apply,
+  };
 }

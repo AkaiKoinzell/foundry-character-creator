@@ -257,14 +257,21 @@ function selectBackground(bg) {
       pendingSelections.featRenderer = null;
       featChoicesDiv.innerHTML = '';
       if (sel.value) {
-        pendingSelections.featRenderer = await renderFeatChoices(sel.value, featChoicesDiv);
+        pendingSelections.featRenderer = await renderFeatChoices(
+          sel.value,
+          featChoicesDiv,
+          validateBackgroundChoices
+        );
         const all = [
           ...(pendingSelections.featRenderer.abilitySelects || []),
           ...(pendingSelections.featRenderer.skillSelects || []),
           ...(pendingSelections.featRenderer.toolSelects || []),
-          ...(pendingSelections.featRenderer.languageSelects || [])
+          ...(pendingSelections.featRenderer.languageSelects || []),
+          ...(pendingSelections.featRenderer.spellSelects || []),
         ];
-        all.forEach((s) => s.addEventListener('change', validateBackgroundChoices));
+        all.forEach((s) =>
+          s.addEventListener('change', validateBackgroundChoices)
+        );
       }
       validateBackgroundChoices();
     });

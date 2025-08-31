@@ -1,0 +1,35 @@
+{
+  "FS:F": [
+    "Archery",
+    "Blind Fighting",
+    "Defense",
+    "Dueling",
+    "Great Weapon Fighting",
+    "Protection",
+    "Two-Weapon Fighting"
+  ],
+  "EI": [
+    "Agonizing Blast",
+    "Armor of Shadows",
+    "Beast Speech",
+    "Devil's Sight"
+  ],
+  "MM": [
+    "Careful Spell",
+    "Distant Spell",
+    "Empowered Spell",
+    "Extended Spell",
+    "Quickened Spell",
+    "Subtle Spell",
+    "Twinned Spell"
+  ],
+  "MV:B": [
+    "Disarming Attack",
+    "Evasive Footwork",
+    "Feinting Attack",
+    "Lunging Attack",
+    "Parry",
+    "Precision Attack",
+    "Trip Attack"
+  ]
+}

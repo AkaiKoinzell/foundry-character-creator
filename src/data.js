@@ -212,6 +212,7 @@ export const CharacterState = {
       cha: { value: 8 },
     },
     skills: [],
+    expertise: [],
     weapons: [],
     currency: { pp: 0, gp: 0, ep: 0, sp: 0, cp: 0 },
     attributes: {

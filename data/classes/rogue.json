@@ -267,6 +267,7 @@
       "description": "Choose two skills to gain expertise in",
       "count": 2,
       "type": "skills",
+      "requiresProficiency": true,
       "selection": [
         "Acrobatics",
         "Athletics",
@@ -299,6 +300,7 @@
       "description": "Choose two additional skills to gain expertise in",
       "count": 4,
       "type": "skills",
+      "requiresProficiency": true,
       "selection": [
         "Acrobatics",
         "Athletics",

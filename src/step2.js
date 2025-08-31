@@ -40,6 +40,7 @@ const baseState = {
   cantrips: [],
   feats: [],
   abilities: {},
+  expertise: [],
 };
 
 function refreshBaseState() {
@@ -51,6 +52,9 @@ function refreshBaseState() {
     : [];
   baseState.feats = Array.isArray(CharacterState.feats)
     ? CharacterState.feats.map(f => ({ ...f }))
+    : [];
+  baseState.expertise = Array.isArray(CharacterState.system.expertise)
+    ? [...CharacterState.system.expertise]
     : [];
   for (const [ab, obj] of Object.entries(CharacterState.system.abilities)) {
     const bonus = CharacterState.bonusAbilities?.[ab] || 0;
@@ -64,6 +68,7 @@ function rebuildFromClasses() {
   const languages = new Set(baseState.languages);
   const cantrips = new Set(baseState.cantrips);
   const feats = new Map();
+  const expertise = new Set(baseState.expertise);
   baseState.feats.forEach(f => feats.set(f.name, { ...f }));
   CharacterState.bonusAbilities = {};
   for (const ab of Object.keys(baseState.abilities)) {
@@ -72,6 +77,7 @@ function rebuildFromClasses() {
 
   (CharacterState.classes || []).forEach(cls => {
     (cls.skills || []).forEach(s => skills.add(s));
+    (cls.expertise || []).forEach(e => expertise.add(e.skill || e));
     if (Array.isArray(cls.fixed_proficiencies)) {
       cls.fixed_proficiencies.forEach(l => languages.add(l));
     }
@@ -101,12 +107,14 @@ function rebuildFromClasses() {
           CharacterState.bonusAbilities[ab] += inc;
       }
     }
+    (f.expertise || []).forEach(sk => expertise.add(sk));
   });
 
   CharacterState.system.skills = Array.from(skills);
   CharacterState.system.tools = Array.from(tools);
   CharacterState.system.traits.languages.value = Array.from(languages);
   CharacterState.system.spells.cantrips = Array.from(cantrips);
+  CharacterState.system.expertise = Array.from(expertise);
   CharacterState.feats = Array.from(feats.values());
   for (const [ab, base] of Object.entries(baseState.abilities)) {
     CharacterState.system.abilities[ab].value =
@@ -199,6 +207,23 @@ function updateChoiceSelectOptions(
   }
 }
 
+function updateExpertiseSelectOptions(selects) {
+  const list = Array.from(selects);
+  const profSkills = [...CharacterState.system.skills].sort();
+  list.forEach(sel => {
+    const current = sel.value;
+    sel.innerHTML = `<option value=''>${t('select')}</option>`;
+    profSkills.forEach(sk => {
+      const o = document.createElement('option');
+      o.value = sk;
+      o.textContent = sk;
+      sel.appendChild(o);
+    });
+    if (profSkills.includes(current)) sel.value = current;
+  });
+  filterDuplicateOptions(list, CharacterState.system.expertise || []);
+}
+
 function getExistingFeats() {
   const feats = new Set((CharacterState.feats || []).map(f => f.name));
   (CharacterState.classes || []).forEach(cls => {
@@ -262,6 +287,14 @@ function compileClassFeatures(cls) {
       });
     }
   }
+  (cls.expertise || []).forEach(e => {
+    cls.features.push({
+      level: e.level || null,
+      name: `Expertise: ${e.skill}`,
+      description: '',
+      entries: [],
+    });
+  });
 }
 
 function createAbilitySelect() {
@@ -451,6 +484,7 @@ function renderClassEditor(cls, index) {
         if (cls.choiceSelections[name].length === 0) delete cls.choiceSelections[name];
       });
     }
+    cls.expertise = (cls.expertise || []).filter(e => (e.level || 1) <= cls.level);
     compileClassFeatures(cls);
     rebuildFromClasses();
     (CharacterState.classes || []).forEach(c => {
@@ -462,6 +496,9 @@ function renderClassEditor(cls, index) {
         c.spellItem = newItem;
       }
     });
+    updateExpertiseSelectOptions(
+      document.querySelectorAll("select[data-type='expertise']")
+    );
     updateStep2Completion();
   });
   card.appendChild(levelSel);
@@ -501,6 +538,9 @@ function renderClassEditor(cls, index) {
           });
           compileClassFeatures(cls);
           rebuildFromClasses();
+          updateExpertiseSelectOptions(
+            document.querySelectorAll("select[data-type='expertise']")
+          );
           updateStep2Completion();
         });
         sContainer.appendChild(sel);
@@ -556,10 +596,17 @@ function renderClassEditor(cls, index) {
         appendEntries(cContainer, choice.entries);
         const count = choice.count || 1;
         const choiceSelects = [];
-        cls.choiceSelections = cls.choiceSelections || {};
-        const existing = cls.choiceSelections[choice.name] || [];
+        const isExpertise = choice.name === 'Expertise' || choice.requiresProficiency;
+        let existing = [];
+        if (isExpertise) {
+          cls.expertise = cls.expertise || [];
+          existing = cls.expertise.filter(e => e.id.startsWith(`${choice.name}-${choice.level}-`));
+        } else {
+          cls.choiceSelections = cls.choiceSelections || {};
+          existing = cls.choiceSelections[choice.name] || [];
+        }
         let cantripOptionsPromise;
-        if (choice.type === 'cantrips') {
+        if (choice.type === 'cantrips' && !isExpertise) {
           cantripOptionsPromise = loadSpells().then(spells =>
             spells
               .filter(
@@ -572,60 +619,91 @@ function renderClassEditor(cls, index) {
         for (let i = 0; i < count; i++) {
           const sel = document.createElement('select');
           sel.innerHTML = `<option value=''>${t('select')}</option>`;
-          sel.dataset.type = 'choice';
-          sel.dataset.choiceName = choice.name;
-          sel.dataset.choiceType = choice.type || '';
           const choiceId = `${choice.name}-${lvl}-${i}`;
           sel.dataset.choiceId = choiceId;
-          const stored = existing[i];
-          choiceSelects.push(sel);
-          if (choice.type === 'cantrips') {
-            cantripOptionsPromise.then(opts => {
-              opts.forEach(opt => {
+          if (isExpertise) {
+            sel.dataset.type = 'expertise';
+            const stored = existing.find(e => e.id === choiceId);
+            if (stored) sel.value = stored.skill;
+            choiceSelects.push(sel);
+            sel.addEventListener('change', () => {
+              cls.expertise = cls.expertise || [];
+              const idx = cls.expertise.findIndex(e => e.id === choiceId);
+              if (sel.value) {
+                const obj = { id: choiceId, level: lvl, skill: sel.value };
+                if (idx >= 0) cls.expertise[idx] = obj;
+                else cls.expertise.push(obj);
+              } else if (idx >= 0) {
+                cls.expertise.splice(idx, 1);
+              }
+              rebuildFromClasses();
+              updateExpertiseSelectOptions(
+                document.querySelectorAll("select[data-type='expertise']")
+              );
+              updateStep2Completion();
+            });
+            cContainer.appendChild(sel);
+          } else {
+            sel.dataset.type = 'choice';
+            sel.dataset.choiceName = choice.name;
+            sel.dataset.choiceType = choice.type || '';
+            const stored = existing[i];
+            choiceSelects.push(sel);
+            if (choice.type === 'cantrips') {
+              cantripOptionsPromise.then(opts => {
+                opts.forEach(opt => {
+                  const o = document.createElement('option');
+                  o.value = opt;
+                  o.textContent = opt;
+                  sel.appendChild(o);
+                });
+                if (stored) sel.value = stored.option;
+              });
+            } else {
+              (choice.selection || []).forEach(opt => {
                 const o = document.createElement('option');
                 o.value = opt;
                 o.textContent = opt;
                 sel.appendChild(o);
               });
               if (stored) sel.value = stored.option;
-            });
-          } else {
-            (choice.selection || []).forEach(opt => {
-              const o = document.createElement('option');
-              o.value = opt;
-              o.textContent = opt;
-              sel.appendChild(o);
-            });
-            if (stored) sel.value = stored.option;
-          }
-          if (choice.type === 'skills') {
-            skillChoiceSelects.push(sel);
-          }
-          sel.addEventListener('change', () => {
-            cls.choiceSelections[choice.name] = cls.choiceSelections[choice.name] || [];
-            const arr = cls.choiceSelections[choice.name];
-            const entry = arr[i] || { level: lvl, type: choice.type };
-            entry.option = sel.value;
-            arr[i] = entry;
-            handleASISelection(sel, cContainer, entry, cls);
-            updateChoiceSelectOptions(choiceSelects, choice.type, skillSelects, skillChoiceSelects);
-            if (choice.type === 'skills') {
-              updateSkillSelectOptions(skillSelects, skillChoiceSelects);
-              skillChoiceSelectMap.forEach(selects => {
-                updateChoiceSelectOptions(selects, 'skills', skillSelects, skillChoiceSelects);
-              });
             }
-            compileClassFeatures(cls);
-            rebuildFromClasses();
-            updateFeatSelectOptions();
-            updateStep2Completion();
-          });
-          cContainer.appendChild(sel);
-          if (stored) {
-            handleASISelection(sel, cContainer, stored, cls);
+            if (choice.type === 'skills') {
+              skillChoiceSelects.push(sel);
+            }
+            sel.addEventListener('change', () => {
+              cls.choiceSelections[choice.name] = cls.choiceSelections[choice.name] || [];
+              const arr = cls.choiceSelections[choice.name];
+              const entry = arr[i] || { level: lvl, type: choice.type };
+              entry.option = sel.value;
+              arr[i] = entry;
+              handleASISelection(sel, cContainer, entry, cls);
+              updateChoiceSelectOptions(choiceSelects, choice.type, skillSelects, skillChoiceSelects);
+              if (choice.type === 'skills') {
+                updateSkillSelectOptions(skillSelects, skillChoiceSelects);
+                skillChoiceSelectMap.forEach(selects => {
+                  updateChoiceSelectOptions(selects, 'skills', skillSelects, skillChoiceSelects);
+                });
+              }
+              compileClassFeatures(cls);
+              rebuildFromClasses();
+              updateExpertiseSelectOptions(
+                document.querySelectorAll("select[data-type='expertise']")
+              );
+              updateFeatSelectOptions();
+              updateStep2Completion();
+            });
+            cContainer.appendChild(sel);
+            if (stored) {
+              handleASISelection(sel, cContainer, stored, cls);
+            }
           }
         }
-        if (choice.type === 'skills') {
+        if (isExpertise) {
+          updateExpertiseSelectOptions(
+            document.querySelectorAll("select[data-type='expertise']")
+          );
+        } else if (choice.type === 'skills') {
           skillChoiceSelectMap.set(choice.name, choiceSelects);
           updateSkillSelectOptions(skillSelects, skillChoiceSelects);
           skillChoiceSelectMap.forEach(selects => {
@@ -708,6 +786,9 @@ function renderSelectedClasses() {
     const card = renderClassEditor(cls, index);
     container.appendChild(card);
   });
+  updateExpertiseSelectOptions(
+    document.querySelectorAll("select[data-type='expertise']")
+  );
 
   const addLink = document.createElement('a');
   addLink.href = '#';
@@ -767,6 +848,13 @@ function classHasPendingChoices(cls) {
   const choices = (clsDef.choices || []).filter(c => c.level <= (cls.level || 1));
   for (const choice of choices) {
     const needed = choice.count || 1;
+    const isExpertise = choice.name === 'Expertise' || choice.requiresProficiency;
+    if (isExpertise) {
+      const selections = (cls.expertise || []).filter(e => e.level === choice.level);
+      if (selections.length < needed) return true;
+      if (selections.some(s => !s.skill)) return true;
+      continue;
+    }
     const selections = cls.choiceSelections?.[choice.name] || [];
     if (selections.length < needed) return true;
     if (selections.some(s => !s.option)) return true;
@@ -989,6 +1077,7 @@ function selectClass(cls) {
     spellcasting: cls.spellcasting || {},
     skills: [],
     choiceSelections: {},
+    expertise: [],
   };
   classes.push(newCls);
   compileClassFeatures(newCls);
@@ -1005,6 +1094,7 @@ function selectClass(cls) {
 export {
   updateSkillSelectOptions,
   updateChoiceSelectOptions,
+  updateExpertiseSelectOptions,
   validateTotalLevel,
   refreshBaseState,
   rebuildFromClasses,

@@ -1,4 +1,4 @@
-import { DATA, CharacterState } from './data.js';
+import { DATA, CharacterState, fetchJsonWithRetry } from './data.js';
 import { t } from './i18n.js';
 import * as main from './main.js';
 import { createAccordionItem } from './ui-helpers.js';
@@ -29,16 +29,13 @@ function getSimpleWeapons() {
 
 async function loadEquipmentData() {
   if (!equipmentData) {
-    try {
-      const resp = await fetch('data/equipment.json');
-      if (resp.ok === false) throw new Error(resp.statusText || 'Failed to fetch');
-      equipmentData = await resp.json();
-    } catch (err) {
-      console.error(err);
-      const container = document.getElementById('equipmentSelections');
-      if (container) container.textContent = t('equipmentLoadError');
-      return null;
-    }
+    equipmentData = await fetchJsonWithRetry('data/equipment.json', 'equipment').catch(
+      () => {
+        const container = document.getElementById('equipmentSelections');
+        if (container) container.textContent = t('equipmentLoadError');
+        return null;
+      }
+    );
   }
   return equipmentData;
 }

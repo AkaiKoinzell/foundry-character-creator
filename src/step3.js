@@ -13,6 +13,7 @@ import {
   addUniqueProficiency,
   pendingReplacements,
   ALL_SKILLS,
+  ALL_TOOLS,
 } from './proficiency.js';
 import {
   createAccordionItem,
@@ -30,6 +31,7 @@ const pendingRaceChoices = {
   languages: [],
   spells: [],
   abilities: [],
+  tools: [],
   size: null,
   resist: null,
   alterations: { combo: null, minor: [], major: [] },
@@ -43,6 +45,7 @@ function validateRaceChoices() {
     ...pendingRaceChoices.languages,
     ...pendingRaceChoices.spells,
     ...pendingRaceChoices.abilities,
+    ...pendingRaceChoices.tools,
     ...(pendingRaceChoices.alterations?.minor || []),
     ...(pendingRaceChoices.alterations?.major || []),
   ];
@@ -76,6 +79,7 @@ function validateRaceChoices() {
     ...(CharacterState.system.traits.languages.value || []),
   ]);
   const existingSkills = new Set([...(CharacterState.system.skills || [])]);
+  const existingTools = new Set([...(CharacterState.system.tools || [])]);
   if (currentRaceData?.skillProficiencies) {
     currentRaceData.skillProficiencies.forEach((obj) => {
       for (const k in obj) {
@@ -84,10 +88,19 @@ function validateRaceChoices() {
       }
     });
   }
+  if (currentRaceData?.toolProficiencies) {
+    currentRaceData.toolProficiencies.forEach((obj) => {
+      for (const k in obj) {
+        if (k !== 'choose' && k !== 'any' && obj[k])
+          existingTools.add(capitalize(k));
+      }
+    });
+  }
 
   const duplicateSet = new Set();
   const languageDupSet = new Set();
   const skillDupSet = new Set();
+  const toolDupSet = new Set();
 
   choiceSelects.forEach((s) => {
     if (s.value && counts[s.value] > 1) duplicateSet.add(s);
@@ -110,6 +123,12 @@ function validateRaceChoices() {
       skillDupSet.add(s);
     }
   });
+  pendingRaceChoices.tools.forEach((s) => {
+    if (s.value && existingTools.has(s.value)) {
+      duplicateSet.add(s);
+      toolDupSet.add(s);
+    }
+  });
 
   const duplicates = Array.from(duplicateSet);
   duplicates.forEach((s) => {
@@ -118,6 +137,8 @@ function validateRaceChoices() {
       ? t('languageAlreadyKnown')
       : skillDupSet.has(s)
       ? t('skillAlreadyKnown')
+      : toolDupSet.has(s)
+      ? t('toolAlreadyKnown')
       : t('selectionsMustBeUnique');
   });
 
@@ -199,6 +220,7 @@ async function selectBaseRace(base) {
   pendingRaceChoices.languages = [];
   pendingRaceChoices.spells = [];
   pendingRaceChoices.abilities = [];
+  pendingRaceChoices.tools = [];
   pendingRaceChoices.size = null;
   pendingRaceChoices.resist = null;
   pendingRaceChoices.alterations = { combo: null, minor: [], major: [] };
@@ -249,6 +271,7 @@ async function renderSelectedRace() {
   pendingRaceChoices.languages = [];
   pendingRaceChoices.spells = [];
   pendingRaceChoices.abilities = [];
+  pendingRaceChoices.tools = [];
   pendingRaceChoices.size = null;
   pendingRaceChoices.resist = null;
   pendingRaceChoices.alterations = { combo: null, minor: [], major: [] };
@@ -369,6 +392,76 @@ async function renderSelectedRace() {
           `${t('skills')}`,
           skillContent,
           pendingRaceChoices.skills.length > 0
+        )
+      );
+    }
+  }
+  if (currentRaceData.toolProficiencies) {
+    const raceTools = [];
+    let pendingAny = 0;
+    const chooseGroups = [];
+    currentRaceData.toolProficiencies.forEach((obj) => {
+      if (typeof obj.any === 'number') pendingAny += obj.any;
+      else if (obj.choose) {
+        const from = obj.choose.from || obj.choose.options || [];
+        const count = obj.choose.count || obj.choose.amount || 1;
+        chooseGroups.push({ from, count });
+      } else {
+        for (const k in obj) if (obj[k]) raceTools.push(capitalize(k));
+      }
+    });
+    if (raceTools.length || pendingAny > 0 || chooseGroups.length) {
+      const toolContent = document.createElement('div');
+      if (raceTools.length) {
+        const p = document.createElement('p');
+        p.textContent = raceTools.join(', ');
+        toolContent.appendChild(p);
+      }
+      const known = new Set([
+        ...(CharacterState.system.tools || []),
+        ...raceTools,
+      ]);
+      for (let i = 0; i < pendingAny; i++) {
+        const sel = document.createElement('select');
+        sel.innerHTML = `<option value=''>${t('select')}</option>`;
+        ALL_TOOLS.filter((tl) => !known.has(tl)).forEach((tl) => {
+          const o = document.createElement('option');
+          o.value = tl;
+          o.textContent = tl;
+          sel.appendChild(o);
+        });
+        sel.dataset.type = 'choice';
+        sel.dataset.choice = 'tool';
+        sel.addEventListener('change', validateRaceChoices);
+        toolContent.appendChild(sel);
+        pendingRaceChoices.tools.push(sel);
+      }
+      chooseGroups.forEach((grp) => {
+        const opts = (grp.from || []).map((s) => capitalize(s));
+        const count = grp.count || 1;
+        for (let i = 0; i < count; i++) {
+          const sel = document.createElement('select');
+          sel.innerHTML = `<option value=''>${t('select')}</option>`;
+          opts
+            .filter((opt) => !known.has(opt))
+            .forEach((opt) => {
+              const o = document.createElement('option');
+              o.value = opt;
+              o.textContent = opt;
+              sel.appendChild(o);
+            });
+          sel.dataset.type = 'choice';
+          sel.dataset.choice = 'tool';
+          sel.addEventListener('change', validateRaceChoices);
+          toolContent.appendChild(sel);
+          pendingRaceChoices.tools.push(sel);
+        }
+      });
+      accordion.appendChild(
+        createAccordionItem(
+          `${t('tools')}`,
+          toolContent,
+          pendingRaceChoices.tools.length > 0
         )
       );
     }
@@ -807,6 +900,36 @@ function confirmRaceSelection() {
     CharacterState.raceChoices.skills.push(sel.value);
     sel.disabled = true;
   });
+  if (currentRaceData.toolProficiencies) {
+    currentRaceData.toolProficiencies.forEach((obj) => {
+      for (const k in obj)
+        if (k !== 'any' && k !== 'choose' && obj[k]) {
+          const val = capitalize(k);
+          const sel = addUniqueProficiency('tools', val, container);
+          if (sel) {
+            sel.dataset.proftype = 'tools';
+            replacements.push(sel);
+          } else {
+            CharacterState.raceChoices.tools =
+              CharacterState.raceChoices.tools || [];
+            CharacterState.raceChoices.tools.push(val);
+          }
+        }
+    });
+  }
+  pendingRaceChoices.tools.forEach((sel) => {
+    const repl = addUniqueProficiency('tools', sel.value, container);
+    if (repl) {
+      repl.dataset.proftype = 'tools';
+      replacements.push(repl);
+    }
+    if (!CharacterState.system.tools.includes(sel.value))
+      CharacterState.system.tools.push(sel.value);
+    CharacterState.raceChoices.tools =
+      CharacterState.raceChoices.tools || [];
+    CharacterState.raceChoices.tools.push(sel.value);
+    sel.disabled = true;
+  });
   if (currentRaceData.languageProficiencies) {
     currentRaceData.languageProficiencies.forEach((obj) => {
       for (const k in obj)
@@ -896,6 +1019,7 @@ function confirmRaceSelection() {
   pendingRaceChoices.languages = [];
   pendingRaceChoices.spells = [];
   pendingRaceChoices.abilities = [];
+  pendingRaceChoices.tools = [];
   pendingRaceChoices.size = null;
   pendingRaceChoices.resist = null;
   pendingRaceChoices.alterations = { combo: null, minor: [], major: [] };
@@ -1000,6 +1124,7 @@ export async function loadStep3(force = false) {
     pendingRaceChoices.languages = [];
     pendingRaceChoices.spells = [];
     pendingRaceChoices.abilities = [];
+    pendingRaceChoices.tools = [];
     pendingRaceChoices.size = null;
     pendingRaceChoices.resist = null;
     pendingRaceChoices.alterations = { combo: null, minor: [], major: [] };

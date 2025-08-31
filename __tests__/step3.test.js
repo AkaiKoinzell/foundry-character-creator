@@ -26,7 +26,8 @@ jest.unstable_mockModule('../src/data.js', () => ({
         cha: { value: 8 },
       },
     },
-    raceChoices: { spells: [], spellAbility: '', size: '', resist: '' },
+    
+    raceChoices: { spells: [], spellAbility: '', size: '', resist: '', tools: [] },
     bonusAbilities: {
       str: 0,
       dex: 0,
@@ -177,7 +178,7 @@ describe('race size selection', () => {
   afterEach(() => {
     CharacterState.system.details = {};
     CharacterState.system.traits.damageResist = [];
-    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '' };
+    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [] };
   });
 
   test('requires selecting size when multiple options', async () => {
@@ -285,6 +286,51 @@ describe('Aarakocra selections', () => {
     await new Promise((r) => setTimeout(r, 0));
     expect(await confirmStep()).toBe(true);
     expect(isStepComplete()).toBe(true);
+  });
+});
+
+describe('race tool proficiency choices', () => {
+  beforeEach(() => {
+    document.body.innerHTML = `
+      <div id="raceList"></div>
+      <div id="raceFeatures"></div>
+    `;
+    DATA.races = {
+      Gith: [{ name: 'Githyanki', path: 'gith' }],
+    };
+    const race = {
+      name: 'Githyanki',
+      entries: [],
+      toolProficiencies: [
+        { any: 1 },
+        { choose: { from: ["smith's tools", "brewer's supplies"] } },
+      ],
+    };
+    mockFetch.mockImplementation(() => Promise.resolve(race));
+    CharacterState.system.details = {};
+    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', tools: [] };
+    CharacterState.system.tools = [];
+  });
+
+  test('requires selecting tools and applies choices', async () => {
+    await selectBaseRace('Gith');
+    document.querySelector('#raceList .class-card').click();
+    await new Promise((r) => setTimeout(r, 0));
+    const selects = document.querySelectorAll('#raceFeatures select');
+    expect(selects.length).toBe(2);
+    expect(await confirmStep()).toBe(false);
+    selects[0].value = "Thieves' Tools";
+    selects[0].dispatchEvent(new Event('change'));
+    selects[1].value = "Smith's Tools";
+    selects[1].dispatchEvent(new Event('change'));
+    await new Promise((r) => setTimeout(r, 0));
+    expect(await confirmStep()).toBe(true);
+    expect(CharacterState.system.tools).toEqual(
+      expect.arrayContaining(["Thieves' Tools", "Smith's Tools"])
+    );
+    expect(CharacterState.raceChoices.tools).toEqual(
+      expect.arrayContaining(["Thieves' Tools", "Smith's Tools"])
+    );
   });
 });
 
@@ -416,7 +462,7 @@ describe('duplicate proficiency replacement', () => {
     DATA.languages = ['Common', 'Dwarvish'];
     CharacterState.system.details = {};
     CharacterState.system.traits.damageResist = [];
-    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '' };
+    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [] };
     CharacterState.system.traits.languages.value = ['Elvish'];
     const race = {
       name: 'Elf (High)',
@@ -458,12 +504,13 @@ describe('change race cleanup', () => {
       entries: [],
       skillProficiencies: [{ survival: true }],
       languageProficiencies: [{ draconic: true }],
+      toolProficiencies: [{ "tinker's tools": true }],
       speed: { swim: 30 },
       ability: [{ str: 2 }],
     };
     CharacterState.system.details = {};
     CharacterState.system.traits.damageResist = [];
-    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '' };
+    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [] };
     CharacterState.system.skills = [];
     CharacterState.system.traits.languages.value = [];
     CharacterState.system.attributes = {};
@@ -485,6 +532,7 @@ describe('change race cleanup', () => {
     expect(CharacterState.system.skills).toContain('Survival');
     expect(CharacterState.system.traits.languages.value).toContain('Draconic');
     expect(CharacterState.system.attributes.movement.swim).toBe(30);
+    expect(CharacterState.system.tools).toContain("Tinker's Tools");
 
     // Changing race should remove metadata but leave abilities unchanged
     document.getElementById('changeRace').click();
@@ -495,6 +543,7 @@ describe('change race cleanup', () => {
     expect(CharacterState.system.skills).not.toContain('Survival');
     expect(CharacterState.system.traits.languages.value).not.toContain('Draconic');
     expect(CharacterState.system.attributes.movement.swim).toBeUndefined();
+    expect(CharacterState.system.tools).not.toContain("Tinker's Tools");
     expect(refreshBaseState).toHaveBeenCalled();
     expect(rebuildFromClasses).toHaveBeenCalled();
   });
@@ -520,7 +569,7 @@ describe('race skill proficiency choices', () => {
     };
     CharacterState.system.details = {};
     CharacterState.system.traits.damageResist = [];
-    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '' };
+    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [] };
     CharacterState.system.skills = [];
     mockFetch.mockImplementation(() => Promise.resolve(race));
   });

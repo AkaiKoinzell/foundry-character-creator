@@ -218,9 +218,8 @@ th {
 }
 
 .class-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 10px;
   margin-bottom: 15px;
 }
@@ -358,7 +357,7 @@ th {
   margin-bottom: 10px;
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  flex: 1 0 250px;
+  width: 100%;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }

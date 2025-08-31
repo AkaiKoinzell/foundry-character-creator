@@ -421,7 +421,6 @@ export function loadStep4(force = false) {
     pendingSelections.languages = [];
     pendingSelections.feat = null;
     pendingSelections.featRenderer = null;
-    pendingSelections.featRenderer = null;
     const list = document.getElementById('backgroundList');
     list?.classList.remove('hidden');
     const search = document.getElementById('backgroundSearch');

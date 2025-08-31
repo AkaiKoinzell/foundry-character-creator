@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import { parse5eLinks, appendEntries } from '../src/ui-helpers.js';
 
 describe('parse5eLinks', () => {

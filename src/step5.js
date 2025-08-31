@@ -1,7 +1,7 @@
 import { DATA, CharacterState, fetchJsonWithRetry } from './data.js';
 import { t } from './i18n.js';
 import * as main from './main.js';
-import { createAccordionItem } from './ui-helpers.js';
+import { createAccordionItem, markIncomplete } from './ui-helpers.js';
 
 let equipmentData = null;
 let choiceBlocks = [];
@@ -240,11 +240,8 @@ function validateEquipmentSelections() {
   let allValid = true;
   choiceBlocks.forEach((b) => {
     const ok = b.validator();
-    if (ok) b.element.classList.remove('needs-selection');
-    else {
-      b.element.classList.add('needs-selection');
-      allValid = false;
-    }
+    markIncomplete(b.element, ok);
+    if (!ok) allValid = false;
   });
   const btn = document.getElementById('confirmEquipment');
   if (btn) btn.disabled = !allValid;

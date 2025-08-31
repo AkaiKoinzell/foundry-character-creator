@@ -15,6 +15,7 @@ import {
   createAccordionItem,
   createSelectableCard,
   appendEntries,
+  markIncomplete,
 } from './ui-helpers.js';
 import { renderFeatChoices } from './feat.js';
 import { renderSpellChoices } from './spell-select.js';
@@ -400,6 +401,9 @@ function handleASISelection(sel, container, entry, cls) {
 function renderClassEditor(cls, index) {
   const card = document.createElement('div');
   card.className = 'saved-class';
+  card.classList.add('needs-selection');
+  cls.element = card;
+  markIncomplete(card, !classHasPendingChoices(cls));
 
   const header = document.createElement('div');
   const title = document.createElement('h3');
@@ -795,6 +799,9 @@ function updateStep2Completion() {
     const width = (complete ? 2 : 1) / 6 * 100;
     progressBar.style.width = `${width}%`;
   }
+  (CharacterState.classes || []).forEach((cls) => {
+    if (cls.element) markIncomplete(cls.element, !classHasPendingChoices(cls));
+  });
   globalThis.setCurrentStepComplete?.(complete);
 }
 

@@ -30,6 +30,7 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
 
   const abilitySelects = [];
   const skillSelects = [];
+  const expertiseSelects = [];
   const toolSelects = [];
   const languageSelects = [];
   const saveSelects = [];
@@ -99,6 +100,25 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
 
   if (Array.isArray(feat.skillProficiencies)) {
     makeSelects(feat.skillProficiencies, skillSelects, 'selectSkillForFeat');
+  }
+  if (Array.isArray(feat.expertise)) {
+    feat.expertise.forEach((entry) => {
+      const count = entry.anyProficientSkill || 0;
+      for (let i = 0; i < count; i++) {
+        const sel = document.createElement('select');
+        sel.innerHTML = `<option value=''>${t('selectSkillForFeat')}</option>`;
+        wrapper.appendChild(sel);
+        expertiseSelects.push(sel);
+        sel.addEventListener('change', () => {
+          updateExpertiseSelects();
+          onChange();
+        });
+      }
+    });
+    if (expertiseSelects.length) {
+      skillSelects.forEach((sel) => sel.addEventListener('change', updateExpertiseSelects));
+      updateExpertiseSelects();
+    }
   }
   if (Array.isArray(feat.toolProficiencies)) {
     makeSelects(feat.toolProficiencies, toolSelects, 'selectToolForFeat');
@@ -429,6 +449,30 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
     });
   }
 
+  function updateExpertiseSelects() {
+    const known = new Set(CharacterState.system.skills || []);
+    skillSelects.forEach((sel) => {
+      if (sel.value) known.add(capitalize(sel.value));
+    });
+    const taken = new Set(expertiseSelects.map((s) => s.value).filter(Boolean));
+    expertiseSelects.forEach((sel) => {
+      const current = sel.value;
+      if (current) taken.delete(current);
+      sel.innerHTML = `<option value=''>${t('selectSkillForFeat')}</option>`;
+      Array.from(known)
+        .sort()
+        .forEach((sk) => {
+          if (sk !== current && taken.has(sk)) return;
+          const o = document.createElement('option');
+          o.value = sk;
+          o.textContent = sk;
+          sel.appendChild(o);
+        });
+      sel.value = current;
+      if (current) taken.add(current);
+    });
+  }
+
   const isComplete = () =>
     abilitySelects.every((s) => s.value) &&
     skillSelects.every((s) => s.value) &&
@@ -437,7 +481,8 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
     weaponSelects.every((s) => s.value) &&
     saveSelects.every((s) => s.value) &&
     spellSelects.every((s) => s.value) &&
-    optionalFeatureSelects.every((s) => s.value);
+    optionalFeatureSelects.every((s) => s.value) &&
+    expertiseSelects.every((s) => s.value);
 
   const apply = () => {
     const idx = (CharacterState.feats || []).findIndex(
@@ -475,6 +520,9 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
         featObj.skills.push(val);
         addUniqueProficiency('skills', val, container);
       });
+    }
+    if (expertiseSelects.length) {
+      featObj.expertise = expertiseSelects.map((s) => s.value);
     }
     if (toolSelects.length) {
       featObj.tools = [];
@@ -536,6 +584,7 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
     saveSelects,
     spellSelects,
     optionalFeatureSelects,
+    expertiseSelects,
     isComplete,
     apply,
   };

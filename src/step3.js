@@ -606,34 +606,59 @@ async function renderSelectedRace() {
         validateRaceChoices();
         return;
       }
+
+      function updateAlterOptionLists() {
+        const chosen = [
+          ...pendingRaceChoices.alterations.minor,
+          ...pendingRaceChoices.alterations.major,
+        ]
+          .map((s) => s.value)
+          .filter(Boolean);
+
+        const rebuild = (sel, opts) => {
+          const current = sel.value;
+          sel.innerHTML = `<option value=''>${t('select')}</option>`;
+          (opts || []).forEach((opt) => {
+            const o = document.createElement('option');
+            o.value = opt;
+            o.textContent = opt;
+            if (chosen.includes(opt) && opt !== current) o.disabled = true;
+            sel.appendChild(o);
+          });
+          if (current && (opts || []).includes(current)) sel.value = current;
+        };
+
+        pendingRaceChoices.alterations.minor.forEach((sel) =>
+          rebuild(sel, currentRaceData.minorAlterations?.options || [])
+        );
+        pendingRaceChoices.alterations.major.forEach((sel) =>
+          rebuild(sel, currentRaceData.majorAlterations?.options || [])
+        );
+      }
+
       for (let i = 0; i < (combo.minor || 0); i++) {
         const sel = document.createElement('select');
         sel.innerHTML = `<option value=''>${t('select')}</option>`;
-        (currentRaceData.minorAlterations?.options || []).forEach((opt) => {
-          const o = document.createElement('option');
-          o.value = opt;
-          o.textContent = opt;
-          sel.appendChild(o);
-        });
         sel.dataset.type = 'choice';
-        sel.addEventListener('change', validateRaceChoices);
+        sel.addEventListener('change', () => {
+          updateAlterOptionLists();
+          validateRaceChoices();
+        });
         comboSel.parentNode.appendChild(sel);
         pendingRaceChoices.alterations.minor.push(sel);
       }
       for (let i = 0; i < (combo.major || 0); i++) {
         const sel = document.createElement('select');
         sel.innerHTML = `<option value=''>${t('select')}</option>`;
-        (currentRaceData.majorAlterations?.options || []).forEach((opt) => {
-          const o = document.createElement('option');
-          o.value = opt;
-          o.textContent = opt;
-          sel.appendChild(o);
-        });
         sel.dataset.type = 'choice';
-        sel.addEventListener('change', validateRaceChoices);
+        sel.addEventListener('change', () => {
+          updateAlterOptionLists();
+          validateRaceChoices();
+        });
         comboSel.parentNode.appendChild(sel);
         pendingRaceChoices.alterations.major.push(sel);
       }
+      updateAlterOptionLists();
       validateRaceChoices();
     }
     comboSel.addEventListener('change', renderAlterSelections);

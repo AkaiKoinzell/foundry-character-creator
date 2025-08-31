@@ -58,6 +58,8 @@
   "languageAlreadyKnown": "Lingua già conosciuta",
   "skillAlreadyKnown": "Abilità già conosciuta",
   "selectionsMustBeUnique": "Le selezioni devono essere uniche",
-  "damageResist": "Resistenza ai danni"
+  "damageResist": "Resistenza ai danni",
   "toolAlreadyKnown": "Strumento già conosciuto",
+  "selectThreeAbilities": "Seleziona tre caratteristiche per i bonus razziali",
+  "invalidBonusDistribution": "Distribuzione dei bonus non valida"
 }

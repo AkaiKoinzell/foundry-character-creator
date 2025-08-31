@@ -58,6 +58,8 @@
   "languageAlreadyKnown": "Language already known",
   "skillAlreadyKnown": "Skill already known",
   "selectionsMustBeUnique": "Selections must be unique",
-  "damageResist": "Damage Resistance"
+  "damageResist": "Damage Resistance",
   "toolAlreadyKnown": "Tool already known",
+  "selectThreeAbilities": "Select three abilities for racial bonuses",
+  "invalidBonusDistribution": "Invalid bonus distribution"
 }

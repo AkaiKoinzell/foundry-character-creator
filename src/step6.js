@@ -98,12 +98,16 @@ function applyBonus() {
   validateAbilities();
 }
 
-function confirmAbilities() {
+export function commitAbilities() {
   ABILITIES.forEach((ab) => {
     const base = CharacterState.baseAbilities[ab];
     const bonus = CharacterState.bonusAbilities?.[ab] || 0;
     CharacterState.system.abilities[ab].value = base + bonus;
   });
+}
+
+function confirmAbilities() {
+  commitAbilities();
   main.showStep?.(7);
 }
 
@@ -159,4 +163,4 @@ export function loadStep6(force = false) {
   calcRemaining();
 }
 
-export default { loadStep6 };
+export default { loadStep6, commitAbilities };

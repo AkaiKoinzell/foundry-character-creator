@@ -12,6 +12,7 @@ import {
   createAccordionItem,
   createSelectableCard,
   appendEntries,
+  markIncomplete,
 } from './ui-helpers.js';
 import { addUniqueProficiency, pendingReplacements } from './proficiency.js';
 import { renderFeatChoices } from './feat.js';
@@ -281,16 +282,13 @@ function selectBackground(bg) {
 
 function validateBackgroundChoices() {
   const skillValid = pendingSelections.skills.every((s) => s.value);
-  if (choiceAccordions.skills)
-    choiceAccordions.skills.classList.toggle('incomplete', !skillValid);
+  markIncomplete(choiceAccordions.skills, skillValid);
 
   const toolValid = pendingSelections.tools.every((s) => s.value);
-  if (choiceAccordions.tools)
-    choiceAccordions.tools.classList.toggle('incomplete', !toolValid);
+  markIncomplete(choiceAccordions.tools, toolValid);
 
   const langValid = pendingSelections.languages.every((s) => s.value);
-  if (choiceAccordions.languages)
-    choiceAccordions.languages.classList.toggle('incomplete', !langValid);
+  markIncomplete(choiceAccordions.languages, langValid);
 
   let featValid = true;
   if (pendingSelections.feat) {
@@ -299,8 +297,7 @@ function validateBackgroundChoices() {
       featValid = pendingSelections.featRenderer.isComplete();
     }
   }
-  if (choiceAccordions.feat)
-    choiceAccordions.feat.classList.toggle('incomplete', !featValid);
+  markIncomplete(choiceAccordions.feat, featValid);
 
   const allValid = skillValid && toolValid && langValid && featValid;
   main.setCurrentStepComplete?.(allValid);

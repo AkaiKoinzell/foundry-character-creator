@@ -58,15 +58,6 @@ function setCurrentStepComplete(flag) {
   } else {
     completedSteps.delete(currentStep);
   }
-  if (!flag) {
-    document
-      .querySelectorAll(".needs-selection")
-      .forEach((el) => el.classList.add("incomplete"));
-  } else {
-    document
-      .querySelectorAll(".needs-selection.incomplete")
-      .forEach((el) => el.classList.remove("incomplete"));
-  }
   updateNavButtons();
 }
 globalThis.setCurrentStepComplete = setCurrentStepComplete;

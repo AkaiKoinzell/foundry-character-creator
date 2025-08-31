@@ -21,6 +21,7 @@ import {
   capitalize,
   appendEntries,
   createElement,
+  markIncomplete,
 } from './ui-helpers.js';
 
 let selectedBaseRace = '';
@@ -39,6 +40,17 @@ const pendingRaceChoices = {
 
 let raceRenderSeq = 0;
 
+const choiceAccordions = {
+  size: null,
+  skills: null,
+  languages: null,
+  spells: null,
+  abilities: null,
+  tools: null,
+  resist: null,
+  alterations: null,
+};
+
 function validateRaceChoices() {
   const choiceSelects = [
     ...pendingRaceChoices.skills,
@@ -56,13 +68,11 @@ function validateRaceChoices() {
     allSelects.push(pendingRaceChoices.alterations.combo);
 
   allSelects.forEach((sel) => {
-    sel.classList.remove('missing', 'duplicate');
     sel.removeAttribute('title');
   });
 
   const missing = allSelects.filter((s) => !s.value);
   missing.forEach((s) => {
-    s.classList.add('missing');
     s.title = t('selectionRequired');
   });
 
@@ -132,7 +142,6 @@ function validateRaceChoices() {
 
   const duplicates = Array.from(duplicateSet);
   duplicates.forEach((s) => {
-    s.classList.add('duplicate');
     s.title = languageDupSet.has(s)
       ? t('languageAlreadyKnown')
       : skillDupSet.has(s)
@@ -142,9 +151,49 @@ function validateRaceChoices() {
       : t('selectionsMustBeUnique');
   });
 
+  const isGroupValid = (arr) =>
+    arr.length === 0 ||
+    (arr.every((s) => s.value) && arr.every((s) => !duplicateSet.has(s)));
+
+  const skillValid = isGroupValid(pendingRaceChoices.skills);
+  markIncomplete(choiceAccordions.skills, skillValid);
+
+  const langValid = isGroupValid(pendingRaceChoices.languages);
+  markIncomplete(choiceAccordions.languages, langValid);
+
+  const spellValid = isGroupValid(pendingRaceChoices.spells);
+  markIncomplete(choiceAccordions.spells, spellValid);
+
+  const abilityValid = isGroupValid(pendingRaceChoices.abilities);
+  markIncomplete(choiceAccordions.abilities, abilityValid);
+
+  const toolValid = isGroupValid(pendingRaceChoices.tools);
+  markIncomplete(choiceAccordions.tools, toolValid);
+
+  const sizeValid = !pendingRaceChoices.size
+    || (pendingRaceChoices.size.value && !duplicateSet.has(pendingRaceChoices.size));
+  markIncomplete(choiceAccordions.size, sizeValid);
+
+  const resistValid = !pendingRaceChoices.resist
+    || (pendingRaceChoices.resist.value && !duplicateSet.has(pendingRaceChoices.resist));
+  markIncomplete(choiceAccordions.resist, resistValid);
+
+  const altComboValid = !pendingRaceChoices.alterations.combo
+    || pendingRaceChoices.alterations.combo.value;
+  const altMinorValid = pendingRaceChoices.alterations.minor.every((s) => s.value);
+  const altMajorValid = pendingRaceChoices.alterations.major.every((s) => s.value);
+  const altValid = altComboValid && altMinorValid && altMajorValid;
+  markIncomplete(choiceAccordions.alterations, altValid);
+
   const valid =
-    missing.length === 0 &&
-    duplicates.length === 0 &&
+    skillValid &&
+    langValid &&
+    spellValid &&
+    abilityValid &&
+    toolValid &&
+    sizeValid &&
+    resistValid &&
+    altValid &&
     !!pendingRaceChoices.subrace;
 
   main.setCurrentStepComplete?.(valid);
@@ -224,6 +273,7 @@ async function selectBaseRace(base) {
   pendingRaceChoices.size = null;
   pendingRaceChoices.resist = null;
   pendingRaceChoices.alterations = { combo: null, minor: [], major: [] };
+  for (const k in choiceAccordions) choiceAccordions[k] = null;
   const traits = document.getElementById('raceTraits');
   if (traits) traits.innerHTML = '';
   const features = document.getElementById('raceFeatures');
@@ -326,7 +376,10 @@ async function renderSelectedRace() {
       appendEntries(sizeContent, sizeEntry.entries);
       usedEntries.add(sizeEntry.name);
     }
-    accordion.appendChild(createAccordionItem(t('size'), sizeContent, true));
+    const acc = createAccordionItem(t('size'), sizeContent, true);
+    acc.classList.add('needs-selection');
+    accordion.appendChild(acc);
+    choiceAccordions.size = acc;
   }
 
   if (currentRaceData.skillProficiencies) {
@@ -387,13 +440,14 @@ async function renderSelectedRace() {
           pendingRaceChoices.skills.push(sel);
         }
       });
-      accordion.appendChild(
-        createAccordionItem(
-          `${t('skills')}`,
-          skillContent,
-          pendingRaceChoices.skills.length > 0
-        )
+      const acc = createAccordionItem(
+        `${t('skills')}`,
+        skillContent,
+        pendingRaceChoices.skills.length > 0
       );
+      if (pendingRaceChoices.skills.length > 0) acc.classList.add('needs-selection');
+      accordion.appendChild(acc);
+      choiceAccordions.skills = acc;
     }
   }
   if (currentRaceData.toolProficiencies) {
@@ -457,13 +511,14 @@ async function renderSelectedRace() {
           pendingRaceChoices.tools.push(sel);
         }
       });
-      accordion.appendChild(
-        createAccordionItem(
-          `${t('tools')}`,
-          toolContent,
-          pendingRaceChoices.tools.length > 0
-        )
+      const acc = createAccordionItem(
+        `${t('tools')}`,
+        toolContent,
+        pendingRaceChoices.tools.length > 0
       );
+      if (pendingRaceChoices.tools.length > 0) acc.classList.add('needs-selection');
+      accordion.appendChild(acc);
+      choiceAccordions.tools = acc;
     }
   }
   if (currentRaceData.languageProficiencies) {
@@ -518,9 +573,10 @@ async function renderSelectedRace() {
           pendingRaceChoices.languages.push(sel);
         }
       }
-      accordion.appendChild(
-        createAccordionItem(t('languages'), langContent, pendingLang > 0)
-      );
+      const acc = createAccordionItem(t('languages'), langContent, pendingLang > 0);
+      if (pendingLang > 0) acc.classList.add('needs-selection');
+      accordion.appendChild(acc);
+      choiceAccordions.languages = acc;
     }
   }
 
@@ -560,13 +616,14 @@ async function renderSelectedRace() {
         resistContent.appendChild(sel);
         pendingRaceChoices.resist = sel;
       }
-      accordion.appendChild(
-        createAccordionItem(
-          t('damageResist'),
-          resistContent,
-          !!pendingRaceChoices.resist
-        )
+      const acc = createAccordionItem(
+        t('damageResist'),
+        resistContent,
+        !!pendingRaceChoices.resist
       );
+      if (pendingRaceChoices.resist) acc.classList.add('needs-selection');
+      accordion.appendChild(acc);
+      choiceAccordions.resist = acc;
     }
   }
 
@@ -664,9 +721,10 @@ async function renderSelectedRace() {
     comboSel.addEventListener('change', renderAlterSelections);
     alterContent.appendChild(comboSel);
     pendingRaceChoices.alterations.combo = comboSel;
-    accordion.appendChild(
-      createAccordionItem('Alterations', alterContent, true)
-    );
+    const acc = createAccordionItem('Alterations', alterContent, true);
+    acc.classList.add('needs-selection');
+    accordion.appendChild(acc);
+    choiceAccordions.alterations = acc;
   }
 
   if (currentRaceData.additionalSpells) {
@@ -699,9 +757,10 @@ async function renderSelectedRace() {
       sel.addEventListener('change', validateRaceChoices);
       abilityContent.appendChild(sel);
       pendingRaceChoices.abilities.push(sel);
-      accordion.appendChild(
-        createAccordionItem(t('spellAbility'), abilityContent, true)
-      );
+      const acc = createAccordionItem(t('spellAbility'), abilityContent, true);
+      acc.classList.add('needs-selection');
+      accordion.appendChild(acc);
+      choiceAccordions.abilities = acc;
     }
 
     const choices = [];
@@ -808,7 +867,10 @@ async function renderSelectedRace() {
       });
 
       updateSpellSelects();
-      accordion.appendChild(createAccordionItem(t('spells'), spellContent, true));
+      const acc = createAccordionItem(t('spells'), spellContent, true);
+      acc.classList.add('needs-selection');
+      accordion.appendChild(acc);
+      choiceAccordions.spells = acc;
     }
   }
 

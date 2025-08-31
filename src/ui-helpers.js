@@ -101,6 +101,12 @@ export function createSelectableCard(
   return card;
 }
 
+export function markIncomplete(section, isValid) {
+  if (!section) return;
+  section.classList.add('needs-selection');
+  section.classList.toggle('incomplete', !isValid);
+}
+
 export function initNextStepWarning() {
   const nextBtn = document.getElementById('nextStep');
   if (!nextBtn) return;

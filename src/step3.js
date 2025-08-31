@@ -881,19 +881,19 @@ function confirmRaceSelection() {
   const replacements = [];
   if (currentRaceData.skillProficiencies) {
     currentRaceData.skillProficiencies.forEach((obj) => {
-      for (const k in obj)
-        if (obj[k]) {
-          const val = capitalize(k);
-          const sel = addUniqueProficiency('skills', val, container);
-          if (sel) {
-            sel.dataset.proftype = 'skills';
-            replacements.push(sel);
-          } else {
-            CharacterState.raceChoices.skills =
-              CharacterState.raceChoices.skills || [];
-            CharacterState.raceChoices.skills.push(val);
-          }
+      for (const k in obj) {
+        if (k === 'choose' || k === 'any' || !obj[k]) continue;
+        const val = capitalize(k);
+        const sel = addUniqueProficiency('skills', val, container);
+        if (sel) {
+          sel.dataset.proftype = 'skills';
+          replacements.push(sel);
+        } else {
+          CharacterState.raceChoices.skills =
+            CharacterState.raceChoices.skills || [];
+          CharacterState.raceChoices.skills.push(val);
         }
+      }
     });
   }
   pendingRaceChoices.skills.forEach((sel) => {

@@ -33,6 +33,7 @@ const pendingRaceChoices = {
   spells: [],
   abilities: [],
   tools: [],
+  weapons: [],
   size: null,
   resist: null,
   alterations: { combo: null, minor: [], major: [] },
@@ -47,6 +48,7 @@ const choiceAccordions = {
   spells: null,
   abilities: null,
   tools: null,
+  weapons: null,
   resist: null,
   alterations: null,
 };
@@ -58,6 +60,7 @@ function validateRaceChoices() {
     ...pendingRaceChoices.spells,
     ...pendingRaceChoices.abilities,
     ...pendingRaceChoices.tools,
+    ...pendingRaceChoices.weapons,
     ...(pendingRaceChoices.alterations?.minor || []),
     ...(pendingRaceChoices.alterations?.major || []),
   ];
@@ -90,6 +93,7 @@ function validateRaceChoices() {
   ]);
   const existingSkills = new Set([...(CharacterState.system.skills || [])]);
   const existingTools = new Set([...(CharacterState.system.tools || [])]);
+  const existingWeapons = new Set([...(CharacterState.system.weapons || [])]);
   if (currentRaceData?.skillProficiencies) {
     currentRaceData.skillProficiencies.forEach((obj) => {
       for (const k in obj) {
@@ -106,11 +110,21 @@ function validateRaceChoices() {
       }
     });
   }
+  if (currentRaceData?.weaponProficiencies) {
+    currentRaceData.weaponProficiencies.forEach((obj) => {
+      if (!obj.choose) {
+        for (const k in obj) {
+          if (obj[k]) existingWeapons.add(capitalize(k.split('|')[0]));
+        }
+      }
+    });
+  }
 
   const duplicateSet = new Set();
   const languageDupSet = new Set();
   const skillDupSet = new Set();
   const toolDupSet = new Set();
+  const weaponDupSet = new Set();
 
   choiceSelects.forEach((s) => {
     if (s.value && counts[s.value] > 1) duplicateSet.add(s);
@@ -139,6 +153,12 @@ function validateRaceChoices() {
       toolDupSet.add(s);
     }
   });
+  pendingRaceChoices.weapons.forEach((s) => {
+    if (s.value && existingWeapons.has(s.value)) {
+      duplicateSet.add(s);
+      weaponDupSet.add(s);
+    }
+  });
 
   const duplicates = Array.from(duplicateSet);
   duplicates.forEach((s) => {
@@ -148,6 +168,8 @@ function validateRaceChoices() {
       ? t('skillAlreadyKnown')
       : toolDupSet.has(s)
       ? t('toolAlreadyKnown')
+      : weaponDupSet.has(s)
+      ? t('weaponAlreadyKnown')
       : t('selectionsMustBeUnique');
   });
 
@@ -170,6 +192,9 @@ function validateRaceChoices() {
   const toolValid = isGroupValid(pendingRaceChoices.tools);
   markIncomplete(choiceAccordions.tools, toolValid);
 
+  const weaponValid = isGroupValid(pendingRaceChoices.weapons);
+  markIncomplete(choiceAccordions.weapons, weaponValid);
+
   const sizeValid = !pendingRaceChoices.size
     || (pendingRaceChoices.size.value && !duplicateSet.has(pendingRaceChoices.size));
   markIncomplete(choiceAccordions.size, sizeValid);
@@ -191,6 +216,7 @@ function validateRaceChoices() {
     spellValid &&
     abilityValid &&
     toolValid &&
+    weaponValid &&
     sizeValid &&
     resistValid &&
     altValid &&
@@ -270,6 +296,7 @@ async function selectBaseRace(base) {
   pendingRaceChoices.spells = [];
   pendingRaceChoices.abilities = [];
   pendingRaceChoices.tools = [];
+  pendingRaceChoices.weapons = [];
   pendingRaceChoices.size = null;
   pendingRaceChoices.resist = null;
   pendingRaceChoices.alterations = { combo: null, minor: [], major: [] };
@@ -322,6 +349,7 @@ async function renderSelectedRace() {
   pendingRaceChoices.spells = [];
   pendingRaceChoices.abilities = [];
   pendingRaceChoices.tools = [];
+  pendingRaceChoices.weapons = [];
   pendingRaceChoices.size = null;
   pendingRaceChoices.resist = null;
   pendingRaceChoices.alterations = { combo: null, minor: [], major: [] };
@@ -519,6 +547,107 @@ async function renderSelectedRace() {
       if (pendingRaceChoices.tools.length > 0) acc.classList.add('needs-selection');
       accordion.appendChild(acc);
       choiceAccordions.tools = acc;
+    }
+  }
+  if (currentRaceData.weaponProficiencies) {
+    const raceWeapons = [];
+    const chooseGroups = [];
+    currentRaceData.weaponProficiencies.forEach((obj) => {
+      if (obj.choose) {
+        const from = obj.choose.from || obj.choose.options || [];
+        const count = obj.choose.count || obj.choose.amount || 1;
+        const fromFilter = obj.choose.fromFilter;
+        chooseGroups.push({ from, fromFilter, count });
+      } else {
+        for (const k in obj) if (obj[k]) raceWeapons.push(capitalize(k.split('|')[0]));
+      }
+    });
+    if (raceWeapons.length || chooseGroups.length) {
+      const weaponContent = document.createElement('div');
+      if (raceWeapons.length) {
+        weaponContent.appendChild(createElement('p', raceWeapons.join(', ')));
+      }
+      const known = new Set([...(CharacterState.system.weapons || []), ...raceWeapons]);
+      function getWeaponsFromFilter(filter) {
+        if (!filter) return [];
+        const items = Array.isArray(DATA.equipment) ? DATA.equipment : [];
+        const groups = filter.split('|').map((g) => g.trim()).filter(Boolean);
+        const matches = items.filter((item) =>
+          groups.some((grp) => {
+            const [key, vals] = grp.split('=');
+            if (!key || vals === undefined) return false;
+            const values = vals.split(';').map((v) => v.trim().toLowerCase());
+            const itemVal = item[key.trim()];
+            if (Array.isArray(itemVal)) {
+              return itemVal
+                .map((v) => String(v).toLowerCase())
+                .some((v) => values.includes(v));
+            }
+            return values.includes(String(itemVal).toLowerCase());
+          })
+        );
+        const seen = new Set();
+        const names = [];
+        matches.forEach((m) => {
+          const nm = m.name || m;
+          if (!seen.has(nm)) {
+            seen.add(nm);
+            names.push(nm);
+          }
+        });
+        return names.sort();
+      }
+      function updateWeaponSelects(selects, opts) {
+        const taken = new Set(selects.map((s) => s.value).filter(Boolean));
+        selects.forEach((sel) => {
+          const current = sel.value;
+          sel.innerHTML = `<option value=''>${t('select')}</option>`;
+          opts.forEach((o) => {
+            if (o !== current && taken.has(o)) return;
+            const opt = document.createElement('option');
+            opt.value = o;
+            opt.textContent = o;
+            sel.appendChild(opt);
+          });
+          sel.value = current;
+        });
+      }
+      chooseGroups.forEach((grp) => {
+        let opts = (grp.from || []).map((s) => capitalize(s.split('|')[0]));
+        if (grp.fromFilter) opts = getWeaponsFromFilter(grp.fromFilter);
+        const count = grp.count || 1;
+        const selects = [];
+        for (let i = 0; i < count; i++) {
+          const sel = document.createElement('select');
+          sel.innerHTML = `<option value=''>${t('select')}</option>`;
+          (opts || [])
+            .filter((opt) => !known.has(opt))
+            .forEach((opt) => {
+              const o = document.createElement('option');
+              o.value = opt;
+              o.textContent = opt;
+              sel.appendChild(o);
+            });
+          sel.dataset.type = 'choice';
+          sel.dataset.choice = 'weapon';
+          sel.addEventListener('change', () => {
+            if (grp.fromFilter) updateWeaponSelects(selects, opts);
+            validateRaceChoices();
+          });
+          weaponContent.appendChild(sel);
+          pendingRaceChoices.weapons.push(sel);
+          selects.push(sel);
+        }
+        if (grp.fromFilter) updateWeaponSelects(selects, opts);
+      });
+      const acc = createAccordionItem(
+        t('weapons'),
+        weaponContent,
+        pendingRaceChoices.weapons.length > 0
+      );
+      if (pendingRaceChoices.weapons.length > 0) acc.classList.add('needs-selection');
+      accordion.appendChild(acc);
+      choiceAccordions.weapons = acc;
     }
   }
   if (currentRaceData.languageProficiencies) {
@@ -966,6 +1095,7 @@ function confirmRaceSelection() {
     CharacterState.system.traits.traitTags = [...currentRaceData.traitTags];
 
   const replacements = [];
+  const weaponSummary = [];
   if (currentRaceData.skillProficiencies) {
     currentRaceData.skillProficiencies.forEach((obj) => {
       for (const k in obj) {
@@ -1026,6 +1156,44 @@ function confirmRaceSelection() {
     CharacterState.raceChoices.tools.push(sel.value);
     sel.disabled = true;
   });
+  if (currentRaceData.weaponProficiencies) {
+    currentRaceData.weaponProficiencies.forEach((obj) => {
+      if (obj.choose) return;
+      for (const k in obj)
+        if (obj[k]) {
+          const val = capitalize(k.split('|')[0]);
+          const sel = addUniqueProficiency('weapons', val, container);
+          if (sel) {
+            sel.dataset.proftype = 'weapons';
+            replacements.push(sel);
+          } else {
+            CharacterState.raceChoices.weapons =
+              CharacterState.raceChoices.weapons || [];
+            CharacterState.raceChoices.weapons.push(val);
+            weaponSummary.push(val);
+          }
+        }
+    });
+  }
+  pendingRaceChoices.weapons.forEach((sel) => {
+    const repl = addUniqueProficiency('weapons', sel.value, container);
+    if (repl) {
+      repl.dataset.proftype = 'weapons';
+      replacements.push(repl);
+    }
+    if (!CharacterState.system.weapons.includes(sel.value))
+      CharacterState.system.weapons.push(sel.value);
+    CharacterState.raceChoices.weapons =
+      CharacterState.raceChoices.weapons || [];
+    CharacterState.raceChoices.weapons.push(sel.value);
+    weaponSummary.push(sel.value);
+    sel.disabled = true;
+  });
+  if (weaponSummary.length) {
+    const p = document.createElement('p');
+    p.textContent = `Weapons: ${weaponSummary.join(', ')}`;
+    container.appendChild(p);
+  }
   if (currentRaceData.languageProficiencies) {
     currentRaceData.languageProficiencies.forEach((obj) => {
       for (const k in obj)
@@ -1124,6 +1292,7 @@ function confirmRaceSelection() {
   pendingRaceChoices.spells = [];
   pendingRaceChoices.abilities = [];
   pendingRaceChoices.tools = [];
+  pendingRaceChoices.weapons = [];
   pendingRaceChoices.size = null;
   pendingRaceChoices.resist = null;
   pendingRaceChoices.alterations = { combo: null, minor: [], major: [] };
@@ -1186,6 +1355,10 @@ export async function loadStep3(force = false) {
         const idx = CharacterState.system.tools.indexOf(t);
         if (idx >= 0) CharacterState.system.tools.splice(idx, 1);
       });
+      (CharacterState.raceChoices.weapons || []).forEach((w) => {
+        const idx = CharacterState.system.weapons.indexOf(w);
+        if (idx >= 0) CharacterState.system.weapons.splice(idx, 1);
+      });
       (CharacterState.raceChoices.languages || []).forEach((l) => {
         const idx = CharacterState.system.traits.languages.value.indexOf(l);
         if (idx >= 0)
@@ -1203,6 +1376,7 @@ export async function loadStep3(force = false) {
       // so there is nothing to revert here.
       CharacterState.raceChoices.skills = [];
       CharacterState.raceChoices.tools = [];
+      CharacterState.raceChoices.weapons = [];
       CharacterState.raceChoices.languages = [];
       CharacterState.raceChoices.movement = {};
       CharacterState.raceChoices.spells = [];
@@ -1229,6 +1403,7 @@ export async function loadStep3(force = false) {
     pendingRaceChoices.spells = [];
     pendingRaceChoices.abilities = [];
     pendingRaceChoices.tools = [];
+    pendingRaceChoices.weapons = [];
     pendingRaceChoices.size = null;
     pendingRaceChoices.resist = null;
     pendingRaceChoices.alterations = { combo: null, minor: [], major: [] };

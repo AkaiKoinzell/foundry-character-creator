@@ -185,7 +185,15 @@ export const CharacterState = {
   feats: [],
   equipment: [],
   knownSpells: {},
-  raceChoices: { spells: [], spellAbility: '', size: '', alterations: {}, resist: '', tools: [] },
+  raceChoices: {
+    spells: [],
+    spellAbility: '',
+    size: '',
+    alterations: {},
+    resist: '',
+    tools: [],
+    weapons: [],
+  },
   bonusAbilities: {
     str: 0,
     dex: 0,
@@ -204,6 +212,7 @@ export const CharacterState = {
       cha: { value: 8 },
     },
     skills: [],
+    weapons: [],
     currency: { pp: 0, gp: 0, ep: 0, sp: 0, cp: 0 },
     attributes: {
       ac: 10,

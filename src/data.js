@@ -173,7 +173,7 @@ export const CharacterState = {
   feats: [],
   equipment: [],
   knownSpells: {},
-    raceChoices: { spells: [], spellAbility: '', size: '', alterations: {}, tools: [] },
+  raceChoices: { spells: [], spellAbility: '', size: '', alterations: {}, resist: '', tools: [] },
   bonusAbilities: {
     str: 0,
     dex: 0,
@@ -212,6 +212,7 @@ export const CharacterState = {
       size: "med",
       senses: { darkvision: 0 },
       languages: { value: [] },
+      damageResist: [],
     },
     // Resource pools closely matching the structure used by Foundry's
     // dnd5e system.  Each resource tracks a label, current and maximum

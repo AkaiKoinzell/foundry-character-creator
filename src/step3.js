@@ -33,6 +33,7 @@ const pendingRaceChoices = {
   abilities: [],
   tools: [],
   size: null,
+  resist: null,
   alterations: { combo: null, minor: [], major: [] },
 };
 
@@ -50,6 +51,7 @@ function validateRaceChoices() {
   ];
   const allSelects = [...choiceSelects];
   if (pendingRaceChoices.size) allSelects.push(pendingRaceChoices.size);
+  if (pendingRaceChoices.resist) allSelects.push(pendingRaceChoices.resist);
   if (pendingRaceChoices.alterations?.combo)
     allSelects.push(pendingRaceChoices.alterations.combo);
 
@@ -220,6 +222,7 @@ async function selectBaseRace(base) {
   pendingRaceChoices.abilities = [];
   pendingRaceChoices.tools = [];
   pendingRaceChoices.size = null;
+  pendingRaceChoices.resist = null;
   pendingRaceChoices.alterations = { combo: null, minor: [], major: [] };
   const traits = document.getElementById('raceTraits');
   if (traits) traits.innerHTML = '';
@@ -270,6 +273,7 @@ async function renderSelectedRace() {
   pendingRaceChoices.abilities = [];
   pendingRaceChoices.tools = [];
   pendingRaceChoices.size = null;
+  pendingRaceChoices.resist = null;
   pendingRaceChoices.alterations = { combo: null, minor: [], major: [] };
 
   const header = document.createElement('h3');
@@ -516,6 +520,52 @@ async function renderSelectedRace() {
       }
       accordion.appendChild(
         createAccordionItem(t('languages'), langContent, pendingLang > 0)
+      );
+    }
+  }
+
+  if (Array.isArray(currentRaceData.resist) && currentRaceData.resist.length) {
+    const fixed = [];
+    let chooseOpts = null;
+    currentRaceData.resist.forEach((r) => {
+      if (typeof r === 'string') fixed.push(capitalize(r));
+      else if (r.choose) chooseOpts = r.choose.from || [];
+    });
+    if (fixed.length || chooseOpts) {
+      const resistContent = document.createElement('div');
+      const resistEntry = Object.values(entryMap).find(
+        (e) => e.name && /resist/i.test(e.name)
+      );
+      if (resistEntry) {
+        if (resistEntry.description)
+          resistContent.appendChild(createElement('p', resistEntry.description));
+        appendEntries(resistContent, resistEntry.entries);
+        usedEntries.add(resistEntry.name);
+      }
+      if (fixed.length) {
+        resistContent.appendChild(createElement('p', fixed.join(', ')));
+      }
+      if (Array.isArray(chooseOpts) && chooseOpts.length) {
+        const sel = document.createElement('select');
+        sel.innerHTML = `<option value=''>${t('select')}</option>`;
+        chooseOpts.forEach((opt) => {
+          const o = document.createElement('option');
+          o.value = opt;
+          o.textContent = capitalize(opt);
+          sel.appendChild(o);
+        });
+        sel.dataset.type = 'choice';
+        sel.dataset.choice = 'resist';
+        sel.addEventListener('change', validateRaceChoices);
+        resistContent.appendChild(sel);
+        pendingRaceChoices.resist = sel;
+      }
+      accordion.appendChild(
+        createAccordionItem(
+          t('damageResist'),
+          resistContent,
+          !!pendingRaceChoices.resist
+        )
       );
     }
   }
@@ -910,6 +960,24 @@ function confirmRaceSelection() {
     CharacterState.raceChoices.languages.push(sel.value);
     sel.disabled = true;
   });
+  if (Array.isArray(currentRaceData.resist)) {
+    const resists = [];
+    currentRaceData.resist.forEach((r) => {
+      if (typeof r === 'string') resists.push(r);
+    });
+    if (pendingRaceChoices.resist && pendingRaceChoices.resist.value) {
+      resists.push(pendingRaceChoices.resist.value);
+      CharacterState.raceChoices.resist = pendingRaceChoices.resist.value;
+      pendingRaceChoices.resist.disabled = true;
+    } else {
+      CharacterState.raceChoices.resist = '';
+    }
+    if (resists.length) {
+      const set = new Set(CharacterState.system.traits.damageResist || []);
+      resists.forEach((r) => set.add(r));
+      CharacterState.system.traits.damageResist = Array.from(set);
+    }
+  }
   pendingRaceChoices.spells.forEach((sel) => {
     const repl = addUniqueProficiency('cantrips', sel.value, container);
     if (repl) replacements.push(repl);
@@ -953,6 +1021,7 @@ function confirmRaceSelection() {
   pendingRaceChoices.abilities = [];
   pendingRaceChoices.tools = [];
   pendingRaceChoices.size = null;
+  pendingRaceChoices.resist = null;
   pendingRaceChoices.alterations = { combo: null, minor: [], major: [] };
   refreshBaseState();
   rebuildFromClasses();
@@ -1035,6 +1104,17 @@ export async function loadStep3(force = false) {
       CharacterState.raceChoices.spells = [];
       CharacterState.raceChoices.spellAbility = '';
       CharacterState.raceChoices.size = '';
+      const removeRes = [];
+      (currentRaceData.resist || []).forEach((r) => {
+        if (typeof r === 'string') removeRes.push(r);
+      });
+      if (CharacterState.raceChoices.resist)
+        removeRes.push(CharacterState.raceChoices.resist);
+      CharacterState.system.traits.damageResist =
+        (CharacterState.system.traits.damageResist || []).filter(
+          (r) => !removeRes.includes(r)
+        );
+      CharacterState.raceChoices.resist = '';
       CharacterState.raceChoices.alterations = {};
     }
     selectedBaseRace = '';
@@ -1046,6 +1126,7 @@ export async function loadStep3(force = false) {
     pendingRaceChoices.abilities = [];
     pendingRaceChoices.tools = [];
     pendingRaceChoices.size = null;
+    pendingRaceChoices.resist = null;
     pendingRaceChoices.alterations = { combo: null, minor: [], major: [] };
     if (CharacterState.system?.details) {
       CharacterState.system.details.race = '';

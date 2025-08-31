@@ -57,6 +57,7 @@
   "selectionRequired": "Selection required",
   "languageAlreadyKnown": "Language already known",
   "skillAlreadyKnown": "Skill already known",
+  "selectionsMustBeUnique": "Selections must be unique",
+  "damageResist": "Damage Resistance"
   "toolAlreadyKnown": "Tool already known",
-  "selectionsMustBeUnique": "Selections must be unique"
 }

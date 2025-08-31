@@ -60,6 +60,8 @@
   "selectionsMustBeUnique": "Le selezioni devono essere uniche",
   "damageResist": "Resistenza ai danni",
   "toolAlreadyKnown": "Strumento già conosciuto",
+  "selectThreeAbilities": "Seleziona tre caratteristiche per i bonus razziali",
+  "invalidBonusDistribution": "Distribuzione dei bonus non valida",
   "noDescription": "Nessuna descrizione disponibile.",
   "armorProficiencies": "Armature: {list}",
   "weaponProficiencies": "Armi: {list}",

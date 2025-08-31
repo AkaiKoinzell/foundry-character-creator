@@ -60,6 +60,8 @@
   "selectionsMustBeUnique": "Selections must be unique",
   "damageResist": "Damage Resistance",
   "toolAlreadyKnown": "Tool already known",
+  "selectThreeAbilities": "Select three abilities for racial bonuses",
+  "invalidBonusDistribution": "Invalid bonus distribution",
   "noDescription": "No description available.",
   "armorProficiencies": "Armor: {list}",
   "weaponProficiencies": "Weapons: {list}",

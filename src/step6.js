@@ -75,7 +75,7 @@ function applyRacialBonus() {
     document.getElementById('racialBonus3')?.value,
   ];
   if (selections.some((v) => !v)) {
-    alert('Seleziona tre caratteristiche per i bonus razziali');
+    alert(t('selectThreeAbilities'));
     return;
   }
   const counts = selections.reduce((acc, ab) => {
@@ -87,7 +87,7 @@ function applyRacialBonus() {
     (Object.keys(counts).length === 2 && values.includes(2) && values.includes(1)) ||
     (Object.keys(counts).length === 3 && values.every((v) => v === 1));
   if (!valid) {
-    alert('Distribuzione dei bonus non valida');
+    alert(t('invalidBonusDistribution'));
     return;
   }
   CharacterState.bonusAbilities = {};

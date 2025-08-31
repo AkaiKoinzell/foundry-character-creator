@@ -176,7 +176,7 @@ function renderEquipmentForClass() {
   if (!clsData) {
     console.warn(`Missing equipment mapping for class: ${className}`);
     const msg = document.createElement('div');
-    msg.textContent = `No equipment mapping found for ${className}.`;
+    msg.textContent = t('missingEquipmentMapping', { class: className });
     accordion.appendChild(msg);
     container.appendChild(accordion);
     validateEquipmentSelections();

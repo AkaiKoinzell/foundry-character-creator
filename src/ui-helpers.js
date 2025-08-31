@@ -148,7 +148,12 @@ export function initNextStepWarning() {
   const warn = document.createElement('div');
   warn.id = 'nextStepWarning';
   warn.className = 'next-step-warning hidden';
-  nextBtn.insertAdjacentElement('afterend', warn);
+  const stepNav = document.getElementById('stepNav');
+  if (stepNav) {
+    stepNav.insertAdjacentElement('afterend', warn);
+  } else {
+    nextBtn.insertAdjacentElement('afterend', warn);
+  }
 
   const messages = {
     step3: t('selectRaceToProceed'),

@@ -28,6 +28,11 @@ header.banner {
   margin-bottom: 20px;
 }
 
+header.banner img {
+  max-height: 80px;  /* adjust to suit */
+  width: auto;
+}
+
 .section-divider {
   height: 4px;
   background-color: var(--primary-color);

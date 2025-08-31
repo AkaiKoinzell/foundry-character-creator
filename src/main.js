@@ -3,9 +3,6 @@ import {
   CharacterState,
   loadClasses,
   fetchJsonWithRetry,
-  logCharacterState,
-  adjustResource,
-  updateSpellSlots,
   loadBackgrounds,
 } from "./data.js";
 import {
@@ -26,7 +23,7 @@ import {
   confirmStep as confirmStep4,
 } from "./step4.js";
 import { loadStep5, isStepComplete as isStep5Complete } from "./step5.js";
-import { loadStep6 } from "./step6.js";
+import { loadStep6, commitAbilities } from "./step6.js";
 import { exportFoundryActor } from "./export.js";
 import { t, initI18n, applyTranslations } from "./i18n.js";
 
@@ -83,7 +80,10 @@ function showStep(step) {
     if (step === 4) loadStep4(true);
     if (step === 5) loadStep5(true);
     if (step === 6) loadStep6(true);
-    if (step === 7) renderFinalRecap();
+    if (step === 7) {
+      commitAbilities();
+      renderFinalRecap();
+    }
 
     const prevBtn = document.getElementById("prevStep");
     if (prevBtn) prevBtn.disabled = step <= 1;
@@ -109,149 +109,37 @@ async function loadData() {
   DATA.languages = langJson.languages;
 }
 
-// Render a summary of resources and spell slots on the final step. Users can
-// tweak resource values directly from here using the helper functions in
-// data.js.
+// Render a high-level summary on the final step.
 function renderFinalRecap() {
   const container = document.getElementById("finalRecap");
   if (!container) return;
-  updateSpellSlots();
   container.innerHTML = "";
 
-  // Resources ---------------------------------------------------------------
-  const resSection = document.createElement("div");
-  const resTitle = document.createElement("h3");
-  resTitle.textContent = t("resources");
-  resSection.appendChild(resTitle);
-  ["primary", "secondary", "tertiary"].forEach((key) => {
-    const res = CharacterState.system.resources[key];
-    const row = document.createElement("div");
+  const classes = CharacterState.classes.reduce((acc, c) => {
+    if (c.name) acc[c.name] = c.level || 0;
+    return acc;
+  }, {});
 
-    const labelInput = document.createElement("input");
-    labelInput.placeholder = t("label");
-    labelInput.value = res.label || "";
-    labelInput.addEventListener("input", () => {
-      res.label = labelInput.value;
-    });
-    row.appendChild(labelInput);
+  const abilities = Object.entries(CharacterState.system.abilities || {}).reduce(
+    (acc, [ab, obj]) => {
+      acc[ab] = obj.value;
+      return acc;
+    },
+    {}
+  );
 
-    const dec = document.createElement("button");
-    dec.textContent = "-";
-    dec.addEventListener("click", () => {
-      adjustResource(key, -1);
-      renderFinalRecap();
-    });
-    row.appendChild(dec);
+  const summary = {
+    race: CharacterState.system.details.race,
+    background: CharacterState.system.details.background,
+    classes,
+    feats: (CharacterState.feats || []).map((f) => f.name),
+    skills: CharacterState.system.skills || [],
+    abilities,
+  };
 
-    const span = document.createElement("span");
-    span.textContent = `${res.value}/${res.max}`;
-    span.style.margin = "0 4px";
-    row.appendChild(span);
-
-    const inc = document.createElement("button");
-    inc.textContent = "+";
-    inc.addEventListener("click", () => {
-      adjustResource(key, 1);
-      renderFinalRecap();
-    });
-    row.appendChild(inc);
-
-    const maxInput = document.createElement("input");
-    maxInput.type = "number";
-    maxInput.value = res.max;
-    maxInput.style.width = "4em";
-    maxInput.addEventListener("change", () => {
-      res.max = parseInt(maxInput.value, 10) || 0;
-      if (res.value > res.max) res.value = res.max;
-      renderFinalRecap();
-    });
-    row.appendChild(maxInput);
-
-    const srLabel = document.createElement("label");
-    const sr = document.createElement("input");
-    sr.type = "checkbox";
-    sr.checked = !!res.sr;
-    sr.addEventListener("change", () => {
-      res.sr = sr.checked;
-    });
-    srLabel.appendChild(sr);
-    srLabel.appendChild(document.createTextNode(" SR"));
-    row.appendChild(srLabel);
-
-    const lrLabel = document.createElement("label");
-    const lr = document.createElement("input");
-    lr.type = "checkbox";
-    lr.checked = !!res.lr;
-    lr.addEventListener("change", () => {
-      res.lr = lr.checked;
-    });
-    lrLabel.appendChild(lr);
-    lrLabel.appendChild(document.createTextNode(" LR"));
-    row.appendChild(lrLabel);
-
-    resSection.appendChild(row);
-  });
-  container.appendChild(resSection);
-
-  // Spell slots ------------------------------------------------------------
-  const spellSection = document.createElement("div");
-  const spellTitle = document.createElement("h3");
-  spellTitle.textContent = t("spellSlots");
-  spellSection.appendChild(spellTitle);
-  for (let i = 1; i <= 9; i++) {
-    const slot = CharacterState.system.spells[`spell${i}`];
-    const row = document.createElement("div");
-    const dec = document.createElement("button");
-    dec.textContent = "-";
-    dec.addEventListener("click", () => {
-      if (slot.value > 0) slot.value--;
-      renderFinalRecap();
-    });
-    row.appendChild(dec);
-    const span = document.createElement("span");
-    span.textContent = t("levelEntry", {
-      level: i,
-      value: slot.value,
-      max: slot.max,
-    });
-    span.style.margin = "0 4px";
-    row.appendChild(span);
-    const inc = document.createElement("button");
-    inc.textContent = "+";
-    inc.addEventListener("click", () => {
-      if (slot.value < slot.max) slot.value++;
-      renderFinalRecap();
-    });
-    row.appendChild(inc);
-    spellSection.appendChild(row);
-  }
-  const pact = CharacterState.system.spells.pact;
-  const pactRow = document.createElement("div");
-  const pactDec = document.createElement("button");
-  pactDec.textContent = "-";
-  pactDec.addEventListener("click", () => {
-    if (pact.value > 0) pact.value--;
-    renderFinalRecap();
-  });
-  pactRow.appendChild(pactDec);
-  const pactSpan = document.createElement("span");
-  pactSpan.textContent = t("pactEntry", {
-    value: pact.value,
-    max: pact.max,
-    level: pact.level,
-  });
-  pactSpan.style.margin = "0 4px";
-  pactRow.appendChild(pactSpan);
-  const pactInc = document.createElement("button");
-  pactInc.textContent = "+";
-  pactInc.addEventListener("click", () => {
-    if (pact.value < pact.max) pact.value++;
-    renderFinalRecap();
-  });
-  pactRow.appendChild(pactInc);
-  spellSection.appendChild(pactRow);
-
-  container.appendChild(spellSection);
+  const pre = document.createElement("pre");
+  pre.textContent = JSON.stringify(summary, null, 2);
+  container.appendChild(pre);
 }
 
 document.addEventListener("DOMContentLoaded", async () => {

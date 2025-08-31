@@ -135,8 +135,7 @@ function getProficiencyList(type) {
   return [];
 }
 
-function updateSkillSelectOptions(skillSelectsList, choiceSkillSelectsList = []) {
-  // Track how many times each skill is already known/selected
+function filterDuplicateOptions(selects, existingValues = [], otherSelects = []) {
   const counts = new Map();
   const add = val => {
     if (!val) return;
@@ -149,68 +148,13 @@ function updateSkillSelectOptions(skillSelectsList, choiceSkillSelectsList = [])
     else counts.set(val, newCount);
   };
 
-  // Start from the character's known skills
-  CharacterState.system.skills.forEach(add);
+  existingValues.forEach(add);
 
-  // Remove the current class's selections before recounting
-  skillSelectsList.forEach(sel => subtract(sel.value));
-  choiceSkillSelectsList.forEach(sel => subtract(sel.value));
-
-  // Add the current selections back once to track duplicates correctly
-  skillSelectsList.forEach(sel => add(sel.value));
-  choiceSkillSelectsList.forEach(sel => add(sel.value));
-
-  skillSelectsList.forEach(sel => {
-    Array.from(sel.options).forEach(opt => {
-      if (!opt.value) return;
-      const count = counts.get(opt.value) || 0;
-      const isCurrent = sel.value === opt.value;
-      // Disable options if already taken elsewhere or from state
-      opt.disabled = !isCurrent && count > 0;
-    });
-
-    // If current selection conflicts with known skill, clear it
-    const currentCount = counts.get(sel.value) || 0;
-    if (sel.value && currentCount > 1) {
-      sel.value = '';
-      sel.dispatchEvent(new Event('change'));
-    }
-  });
-}
-
-function updateChoiceSelectOptions(
-  selects,
-  type,
-  skillSelectsList = [],
-  allSkillChoiceSelects = []
-) {
-  const counts = new Map();
-  const add = val => {
-    if (!val) return;
-    counts.set(val, (counts.get(val) || 0) + 1);
-  };
-  const subtract = val => {
-    if (!val) return;
-    const newCount = (counts.get(val) || 0) - 1;
-    if (newCount <= 0) counts.delete(val);
-    else counts.set(val, newCount);
-  };
-
-  if (type === 'skills') {
-    getProficiencyList('skills').forEach(add);
-    skillSelectsList.forEach(sel => add(sel.value));
-    allSkillChoiceSelects.forEach(sel => {
-      if (!selects.includes(sel)) add(sel.value);
-    });
-  } else {
-    getProficiencyList(type).forEach(add);
-  }
-
-  // Remove the current selections before recounting
   selects.forEach(sel => subtract(sel.value));
+  otherSelects.forEach(sel => subtract(sel.value));
 
-  // Add the current selections back once to track duplicates correctly
   selects.forEach(sel => add(sel.value));
+  otherSelects.forEach(sel => add(sel.value));
 
   selects.forEach(sel => {
     Array.from(sel.options).forEach(opt => {
@@ -220,12 +164,37 @@ function updateChoiceSelectOptions(
       opt.disabled = !isCurrent && count > 0;
     });
 
-    const currentCount = (counts.get(sel.value) || 0) - 1;
-    if (sel.value && currentCount > 0) {
+    const currentCount = counts.get(sel.value) || 0;
+    if (sel.value && currentCount > 1) {
       sel.value = '';
       sel.dispatchEvent(new Event('change'));
     }
   });
+}
+
+function updateSkillSelectOptions(skillSelectsList, choiceSkillSelectsList = []) {
+  filterDuplicateOptions(
+    skillSelectsList,
+    CharacterState.system.skills,
+    choiceSkillSelectsList
+  );
+}
+
+function updateChoiceSelectOptions(
+  selects,
+  type,
+  skillSelectsList = [],
+  allSkillChoiceSelects = []
+) {
+  if (type === 'skills') {
+    const otherSelects = [
+      ...skillSelectsList,
+      ...allSkillChoiceSelects.filter(sel => !selects.includes(sel)),
+    ];
+    filterDuplicateOptions(selects, getProficiencyList('skills'), otherSelects);
+  } else {
+    filterDuplicateOptions(selects, getProficiencyList(type));
+  }
 }
 
 function getExistingFeats() {

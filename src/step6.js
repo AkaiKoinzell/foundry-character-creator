@@ -20,7 +20,7 @@ export function updateFinal(ab) {
   const bonus = CharacterState.bonusAbilities?.[ab] || 0;
   const finalVal = base + bonus;
   const baseSpan = document.getElementById(`${ab}Points`);
-  const bonusSpan = document.getElementById(`${ab}RaceModifier`);
+  const bonusSpan = document.getElementById(`${ab}BonusModifier`);
   const finalCell = document.getElementById(`${ab}FinalScore`);
   if (baseSpan) baseSpan.textContent = base;
   if (bonusSpan) bonusSpan.textContent = bonus;
@@ -68,11 +68,11 @@ function adjustAbility(ab, delta) {
   calcRemaining();
 }
 
-function applyRacialBonus() {
+function applyBonus() {
   const selections = [
-    document.getElementById('racialBonus1')?.value,
-    document.getElementById('racialBonus2')?.value,
-    document.getElementById('racialBonus3')?.value,
+    document.getElementById('bonusSelect1')?.value,
+    document.getElementById('bonusSelect2')?.value,
+    document.getElementById('bonusSelect3')?.value,
   ];
   if (selections.some((v) => !v)) {
     alert(t('selectThreeAbilities'));
@@ -148,11 +148,11 @@ export function loadStep6(force = false) {
     newBtns[1]?.addEventListener('click', () => adjustAbility(ab, -1));
   });
 
-  let applyBtn = document.getElementById('applyRacialBonus');
+  let applyBtn = document.getElementById('applyBonus');
   if (applyBtn) {
     applyBtn.replaceWith(applyBtn.cloneNode(true));
-    applyBtn = document.getElementById('applyRacialBonus');
-    applyBtn.addEventListener('click', applyRacialBonus);
+    applyBtn = document.getElementById('applyBonus');
+    applyBtn.addEventListener('click', applyBonus);
   }
 
   validateAbilities();

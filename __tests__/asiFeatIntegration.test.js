@@ -42,7 +42,7 @@ describe('ASI and feat bonuses', () => {
             <td>STR</td>
             <td><button class="btn">+</button><button class="btn">-</button></td>
             <td><span id="strPoints"></span></td>
-            <td><span id="strRaceModifier"></span></td>
+            <td><span id="strBonusModifier"></span></td>
             <td id="strFinalScore"></td>
           </tr>
         </table>
@@ -52,7 +52,7 @@ describe('ASI and feat bonuses', () => {
     loadStep6(true);
 
     expect(document.getElementById('strPoints').textContent).toBe('10');
-    expect(document.getElementById('strRaceModifier').textContent).toBe('3');
+    expect(document.getElementById('strBonusModifier').textContent).toBe('3');
     expect(document.getElementById('strFinalScore').textContent).toBe('13');
   });
 

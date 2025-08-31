@@ -8,7 +8,7 @@ function refreshAbility(ab) {
   const bonus = CharacterState.bonusAbilities?.[ab] || 0;
   const finalVal = (base || 0) + bonus;
   const baseSpan = document.getElementById(`${ab}Points`);
-  const bonusSpan = document.getElementById(`${ab}RaceModifier`);
+  const bonusSpan = document.getElementById(`${ab}BonusModifier`);
   const finalCell = document.getElementById(`${ab}FinalScore`);
   if (baseSpan) baseSpan.textContent = base;
   if (bonusSpan) bonusSpan.textContent = bonus;

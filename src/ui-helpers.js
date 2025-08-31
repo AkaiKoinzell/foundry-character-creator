@@ -1,3 +1,5 @@
+import { t } from './i18n.js';
+
 export function capitalize(str) {
   return str.replace(/(^|\s)\w/g, (c) => c.toUpperCase());
 }
@@ -59,7 +61,7 @@ export function createSelectableCard(
   description,
   details = null,
   onClick = null,
-  detailsButtonText = 'Details',
+  detailsButtonText = t('details'),
   onDetailsClick = null
 ) {
   const card = document.createElement('div');
@@ -109,11 +111,11 @@ export function initNextStepWarning() {
   nextBtn.insertAdjacentElement('afterend', warn);
 
   const messages = {
-    step2: 'Select a class to proceed.',
-    step3: 'Select a race to proceed.',
-    step4: 'Select a background to proceed.',
-    step5: 'Choose your equipment to proceed.',
-    step6: 'Assign all ability points to proceed.',
+    step2: t('selectClassToProceed'),
+    step3: t('selectRaceToProceed'),
+    step4: t('selectBackgroundToProceed'),
+    step5: t('chooseEquipmentToProceed'),
+    step6: t('assignAbilityPointsToProceed'),
   };
 
   const updateWarning = () => {

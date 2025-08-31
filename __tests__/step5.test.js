@@ -17,20 +17,16 @@ const showStep = jest.fn();
 jest.unstable_mockModule('../src/main.js', () => ({ showStep }));
 
 const { loadStep5 } = await import('../src/step5.js');
-const { CharacterState } = await import('../src/data.js');
+const { CharacterState, fetchJsonWithRetry } = await import('../src/data.js');
 
 describe('step5 re-entry', () => {
   beforeEach(() => {
     document.body.innerHTML =
       '<div id="equipmentSelections"></div><button id="confirmEquipment"></button>';
-    global.fetch = () =>
-      Promise.resolve({
-        json: () =>
-          Promise.resolve({
-            standard: [],
-            classes: { Test: { fixed: [], choices: [] } }
-          })
-      });
+    fetchJsonWithRetry.mockResolvedValue({
+      standard: [],
+      classes: { Test: { fixed: [], choices: [] } },
+    });
     CharacterState.classes = [{ name: 'Test', level: 1 }];
     showStep.mockClear();
   });

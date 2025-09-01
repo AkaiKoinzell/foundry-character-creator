@@ -61,6 +61,7 @@ function setCurrentStepComplete(flag) {
 globalThis.setCurrentStepComplete = setCurrentStepComplete;
 
 function showStep(step) {
+    const firstVisit = !visitedSteps.has(step);
     visitedSteps.add(step);
     for (let i = 1; i <= 7; i++) {
       const el = document.getElementById(`step${i}`);
@@ -82,9 +83,10 @@ function showStep(step) {
       // Placeholder for contextual help integration
       console.log(`Help: display guidance for step ${step}`);
     }
-    if (step === 4) loadStep4(true);
-    if (step === 5) loadStep5(true);
-    if (step === 6) loadStep6(true);
+    if (step === 3) loadStep3(firstVisit);
+    if (step === 4) loadStep4(firstVisit);
+    if (step === 5) loadStep5(firstVisit);
+    if (step === 6) loadStep6(firstVisit);
     if (step === 7) {
       commitAbilities();
       CharacterState.playerName =

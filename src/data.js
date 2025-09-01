@@ -185,6 +185,7 @@ export const CharacterState = {
   feats: [],
   equipment: [],
   knownSpells: {},
+  showHelp: false,
   raceChoices: {
     spells: [],
     spellAbility: '',

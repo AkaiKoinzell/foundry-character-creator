@@ -514,9 +514,11 @@ function renderClassEditor(cls, index) {
   if (clsDef) {
     if (clsDef.skill_proficiencies?.options) {
       const sContainer = document.createElement('div');
-      const desc = document.createElement('p');
-      desc.textContent = `${t('skillProficiencyExplanation')} ${t('chooseSkills', { count: clsDef.skill_proficiencies.choose })}`;
-      sContainer.appendChild(desc);
+      if (CharacterState.showHelp) {
+        const desc = document.createElement('p');
+        desc.textContent = `${t('skillProficiencyExplanation')} ${t('chooseSkills', { count: clsDef.skill_proficiencies.choose })}`;
+        sContainer.appendChild(desc);
+      }
       for (let i = 0; i < clsDef.skill_proficiencies.choose; i++) {
         const sel = document.createElement('select');
         sel.innerHTML = `<option value=''>${t('select')}</option>`;
@@ -553,9 +555,11 @@ function renderClassEditor(cls, index) {
 
     if (Array.isArray(clsDef.subclasses) && clsDef.subclasses.length) {
       const subContainer = document.createElement('div');
-      const desc = document.createElement('p');
-      desc.textContent = t('chooseSubclass');
-      subContainer.appendChild(desc);
+      if (CharacterState.showHelp) {
+        const desc = document.createElement('p');
+        desc.textContent = t('chooseSubclass');
+        subContainer.appendChild(desc);
+      }
       const sel = document.createElement('select');
       sel.innerHTML = `<option value=''>${t('select')}</option>`;
       clsDef.subclasses.forEach(sc => {
@@ -583,7 +587,8 @@ function renderClassEditor(cls, index) {
       );
       features.forEach(f => {
         const body = document.createElement('div');
-        if (f.description) body.appendChild(createElement('p', f.description));
+        if (CharacterState.showHelp && f.description)
+          body.appendChild(createElement('p', f.description));
         appendEntries(body, f.entries);
         accordion.appendChild(
           createAccordionItem(`${t('level')} ${lvl}: ${f.name}`, body)
@@ -592,7 +597,8 @@ function renderClassEditor(cls, index) {
 
       levelChoices.forEach(choice => {
         const cContainer = document.createElement('div');
-        if (choice.description) cContainer.appendChild(createElement('p', choice.description));
+        if (CharacterState.showHelp && choice.description)
+          cContainer.appendChild(createElement('p', choice.description));
         appendEntries(cContainer, choice.entries);
         const count = choice.count || 1;
         const choiceSelects = [];
@@ -767,19 +773,21 @@ function renderSelectedClasses() {
     const summaryText = classes
       .map(c => `${c.name} (${t('level')} ${c.level})`)
       .join(', ');
-    container.appendChild(
-      createElement(
-        'p',
-        t('selectedClasses', { classes: summaryText, level: totalLevel() })
-      )
-    );
-    container.appendChild(
-      createElement('p',
-        t('proficiencyBonus', {
-          value: CharacterState.system.attributes.prof,
-        })
-      )
-    );
+    if (CharacterState.showHelp) {
+      container.appendChild(
+        createElement(
+          'p',
+          t('selectedClasses', { classes: summaryText, level: totalLevel() })
+        )
+      );
+      container.appendChild(
+        createElement('p',
+          t('proficiencyBonus', {
+            value: CharacterState.system.attributes.prof,
+          })
+        )
+      );
+    }
   }
 
   classes.forEach((cls, index) => {
@@ -1003,9 +1011,10 @@ function showClassModal(cls) {
 
   // Title and description
   details.appendChild(createElement('h2', cls.name));
-  details.appendChild(
-    createElement('p', cls.description || t('noDescription'))
-  );
+  if (CharacterState.showHelp)
+    details.appendChild(
+      createElement('p', cls.description || t('noDescription'))
+    );
 
   // Proficiency information
   const profList = document.createElement('ul');

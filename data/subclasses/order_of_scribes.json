@@ -1,0 +1,35 @@
+{
+  "name": "Order of Scribes",
+  "description": "Bookish wizards who awaken their spellbooks to sentience.",
+  "features_by_level": {
+    "2": [
+      {
+        "name": "Wizardly Quill",
+        "description": "As a bonus action, create a magical quill that produces ink in any color, halves the time to copy spells, and can erase writing within 5 feet. The quill disappears if you create another or die."
+      },
+      {
+        "name": "Awakened Spellbook",
+        "description": "Your spellbook is sentient. You can use it as a spellcasting focus, change a spell's damage type to that of another spell in the book of the same level, cast rituals at normal speed once per long rest, and recreate the book after a short rest using your quill."
+      }
+    ],
+    "6": [
+      {
+        "name": "Manifest Mind",
+        "description": "As a bonus action, conjure the spectral mind of your spellbook within 60 feet. It can hear and see, can move 30 feet as a bonus action, and lets you cast spells from its space a number of times per day equal to your proficiency bonus. The mind vanishes if more than 300 feet away or if dismissed."
+      }
+    ],
+    "10": [
+      {
+        "name": "Master Scrivener",
+        "description": "After a long rest, create one spell scroll of a 1st- or 2nd-level spell in your spellbook that counts as one level higher. You also halve the gold and time required to craft spell scrolls."
+      }
+    ],
+    "14": [
+      {
+        "name": "One with the Word",
+        "description": "While the spellbook is on your person, you have advantage on Intelligence (Arcana) checks. If you take damage while your spectral mind is manifested, you can dismiss it to prevent the damage, losing spells from the book totaling at least 3d6 levels. Lost spells return after 1d6 long rests."
+      }
+    ]
+  }
+}
+

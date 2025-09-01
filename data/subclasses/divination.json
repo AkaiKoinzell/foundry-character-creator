@@ -1,34 +1,35 @@
 {
   "name": "Divination",
-  "description": "You peer through time and space to better understand the world.",
+  "description": "Seers who glimpse the future to shape the present.",
   "features_by_level": {
     "2": [
       {
         "name": "Divination Savant",
-        "description": "Description for Divination Savant."
+        "description": "The gold and time you must spend to copy a divination spell into your spellbook is halved."
       },
       {
         "name": "Portent",
-        "description": "Description for Portent."
+        "description": "After finishing a long rest, roll two d20s and record the numbers; you can replace any attack, save, or check made by you or a creature you can see with one of these rolls."
       }
     ],
     "6": [
       {
         "name": "Expert Divination",
-        "description": "Description for Expert Divination."
+        "description": "When you cast a divination spell of 2nd level or higher, you regain one expended spell slot of a lower level (up to 5th)."
       }
     ],
     "10": [
       {
         "name": "The Third Eye",
-        "description": "Description for The Third Eye."
+        "description": "As an action, gain darkvision, ethereal sight, the ability to read any language, or see invisibility until you finish a short or long rest."
       }
     ],
     "14": [
       {
         "name": "Greater Portent",
-        "description": "Description for Greater Portent."
+        "description": "You roll three d20s for your Portent feature instead of two."
       }
     ]
   }
 }
+

@@ -1,34 +1,35 @@
 {
   "name": "Transmutation",
-  "description": "You master the art of altering matter and form.",
+  "description": "Alchemists who reshape matter and energy to their will.",
   "features_by_level": {
     "2": [
       {
         "name": "Transmutation Savant",
-        "description": "Description for Transmutation Savant."
+        "description": "The gold and time you must spend to copy a transmutation spell into your spellbook is halved."
       },
       {
         "name": "Minor Alchemy",
-        "description": "Description for Minor Alchemy."
+        "description": "Temporarily transmute a nonmagical object made of wood, stone, iron, copper, or silver into another of those materials for up to 1 hour."
       }
     ],
     "6": [
       {
         "name": "Transmuter's Stone",
-        "description": "Description for Transmuter's Stone."
+        "description": "After 8 hours of work, create a stone granting a chosen benefit (darkvision, extra speed, Constitution save proficiency, or elemental resistance) while carried; you can change the benefit when you cast a transmutation spell."
       }
     ],
     "10": [
       {
         "name": "Shapechanger",
-        "description": "Description for Shapechanger."
+        "description": "Add polymorph to your spellbook and cast it on yourself once without expending a spell slot, transforming into a beast of CR 1 or lower; regain use after a short or long rest."
       }
     ],
     "14": [
       {
         "name": "Master Transmuter",
-        "description": "Description for Master Transmuter."
+        "description": "Consume your transmuter's stone to produce a major transformation, panacea, raise dead, or restore youth effect."
       }
     ]
   }
 }
+

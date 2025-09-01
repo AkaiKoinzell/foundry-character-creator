@@ -1,0 +1,35 @@
+{
+  "name": "Chronurgy Magic",
+  "description": "Manipulators of time who twist events to their advantage.",
+  "features_by_level": {
+    "2": [
+      {
+        "name": "Chronal Shift",
+        "description": "As a reaction after you or a creature you can see makes an attack roll, ability check, or saving throw, force a reroll. The target must use the new result. You can use this feature twice per long rest."
+      },
+      {
+        "name": "Temporal Awareness",
+        "description": "You add your Intelligence modifier to initiative rolls."
+      }
+    ],
+    "6": [
+      {
+        "name": "Momentary Stasis",
+        "description": "As an action, force a creature within 60 feet to make a Constitution save. On a failure, the creature is incapacitated and speed 0 until the end of your next turn or it takes damage. Uses equal to your Intelligence modifier per long rest."
+      }
+    ],
+    "10": [
+      {
+        "name": "Arcane Abeyance",
+        "description": "When you cast a spell using a slot of 4th level or lower, you can condense the magic into a Tiny bead that holds the spell for up to 1 hour. A creature holding the bead can release the spell using your spell attack bonus and save DC. Once you create a bead, you must finish a short or long rest before doing so again."
+      }
+    ],
+    "14": [
+      {
+        "name": "Convergent Future",
+        "description": "When you or a creature you can see makes a roll, you can use your reaction to decide whether the roll succeeds or fails. Using this feature gives you one level of exhaustion, removable only by finishing a long rest."
+      }
+    ]
+  }
+}
+

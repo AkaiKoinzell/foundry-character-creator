@@ -1,34 +1,35 @@
 {
   "name": "Enchantment",
-  "description": "You bend and twist the minds of others with your magic.",
+  "description": "Charmers who bend the wills of others with magic.",
   "features_by_level": {
     "2": [
       {
         "name": "Enchantment Savant",
-        "description": "Description for Enchantment Savant."
+        "description": "The gold and time you must spend to copy an enchantment spell into your spellbook is halved."
       },
       {
         "name": "Hypnotic Gaze",
-        "description": "Description for Hypnotic Gaze."
+        "description": "As an action, choose a creature within 5 feet that can see or hear you; it must succeed on a Wisdom save or be charmed, incapacitated, and speed 0 until the end of your next turn. You can maintain the effect with actions but cannot use it again on that creature until after a long rest."
       }
     ],
     "6": [
       {
         "name": "Instinctive Charm",
-        "description": "Description for Instinctive Charm."
+        "description": "When a creature you can see within 30 feet attacks you, use your reaction to force it to target the nearest creature other than you, unless it succeeds on a Wisdom save."
       }
     ],
     "10": [
       {
         "name": "Split Enchantment",
-        "description": "Description for Split Enchantment."
+        "description": "When you cast an enchantment spell of 1st level or higher that targets only one creature, you can have it target a second creature."
       }
     ],
     "14": [
       {
         "name": "Alter Memories",
-        "description": "Description for Alter Memories."
+        "description": "When you charm a creature with an enchantment spell, you can make it unaware of being charmed and, once before the spell ends, force an Intelligence save to make it forget up to 1 + your Charisma modifier hours of time."
       }
     ]
   }
 }
+

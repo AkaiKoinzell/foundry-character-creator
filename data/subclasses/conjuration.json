@@ -1,34 +1,35 @@
 {
   "name": "Conjuration",
-  "description": "You focus on summoning creatures and objects.",
+  "description": "Summoners who create objects and creatures from thin air.",
   "features_by_level": {
     "2": [
       {
         "name": "Conjuration Savant",
-        "description": "Description for Conjuration Savant."
+        "description": "The gold and time you must spend to copy a conjuration spell into your spellbook is halved."
       },
       {
         "name": "Minor Conjuration",
-        "description": "Description for Minor Conjuration."
+        "description": "As an action, conjure a small nonmagical object you've seen, which lasts for 1 hour or until damaged or you use this feature again."
       }
     ],
     "6": [
       {
         "name": "Benign Transposition",
-        "description": "Description for Benign Transposition."
+        "description": "Teleport up to 30 feet to an unoccupied space or swap places with a willing creature; reuse after a long rest or after casting a conjuration spell of 1st level or higher."
       }
     ],
     "10": [
       {
         "name": "Focused Conjuration",
-        "description": "Description for Focused Conjuration."
+        "description": "Your concentration on conjuration spells can't be broken as a result of taking damage."
       }
     ],
     "14": [
       {
         "name": "Durable Summons",
-        "description": "Description for Durable Summons."
+        "description": "Creatures you summon or create with conjuration spells gain 30 temporary hit points."
       }
     ]
   }
 }
+

@@ -1,0 +1,31 @@
+{
+  "name": "Graviturgy Magic",
+  "description": "Mages who manipulate the forces of gravity to hinder foes and aid allies.",
+  "features_by_level": {
+    "2": [
+      {
+        "name": "Adjust Density",
+        "description": "As an action, halve or double the weight of a creature or object you can see within 30 feet for up to 1 minute (concentration). Halved weight increases speed by 10 feet and jump distance but imposes disadvantage on Strength checks and saves; doubled weight reduces speed by 10 feet and grants advantage on Strength checks and saves. At 10th level you can target Huge or smaller."
+      }
+    ],
+    "6": [
+      {
+        "name": "Gravity Well",
+        "description": "Whenever you cast a spell on a creature, you can move the target 5 feet to an unoccupied space if it is willing, the spell hits, or it fails the save."
+      }
+    ],
+    "10": [
+      {
+        "name": "Violent Attraction",
+        "description": "When a creature within 60 feet hits with a weapon attack, use your reaction to deal an extra 1d10 damage of the weapon's type, or increase fall damage a creature takes by 2d10. Uses equal to your Intelligence modifier per long rest."
+      }
+    ],
+    "14": [
+      {
+        "name": "Event Horizon",
+        "description": "As an action, emit a field of crushing gravity for up to 1 minute (concentration). Hostile creatures starting their turn within 30 feet make a Strength save or take 2d10 force damage and have speed 0 until next turn; on a success they take half damage and movement is doubled in cost. Use once per long rest or by expending a 3rd-level spell slot."
+      }
+    ]
+  }
+}
+

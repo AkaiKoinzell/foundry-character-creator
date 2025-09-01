@@ -1,6 +1,6 @@
 {
   "name": "Wizard",
-  "description": "Description for Wizard class.",
+  "description": "Scholars of the arcane who wield spells through rigorous study and a spellbook.",
   "hit_die": "d6",
   "hp_at_1st_level": "6 + your Constitution modifier",
   "hp_at_higher_levels": "1d6 (or 4) + your Constitution modifier per Wizard level after 1st",
@@ -111,19 +111,149 @@
         "Shapechanger",
         "Master Transmuter"
       ]
+    },
+    {
+      "name": "Bladesinging",
+      "features": [
+        "Training in War and Song",
+        "Bladesong",
+        "Extra Attack",
+        "Song of Defense",
+        "Song of Victory"
+      ]
+    },
+    {
+      "name": "Blood Magic",
+      "features": [
+        "Blood Channeling",
+        "Sanguine Burst",
+        "Bond of Mutual Suffering",
+        "Glyph of Hemorrhaging",
+        "Bond of Mutual Suffering (14th Level)",
+        "Thicker than Water"
+      ]
+    },
+    {
+      "name": "Chronurgy Magic",
+      "features": [
+        "Chronal Shift",
+        "Temporal Awareness",
+        "Momentary Stasis",
+        "Arcane Abeyance",
+        "Convergent Future"
+      ]
+    },
+    {
+      "name": "Graviturgy Magic",
+      "features": [
+        "Adjust Density",
+        "Gravity Well",
+        "Violent Attraction",
+        "Event Horizon"
+      ]
+    },
+    {
+      "name": "Order of Scribes",
+      "features": [
+        "Wizardly Quill",
+        "Awakened Spellbook",
+        "Manifest Mind",
+        "Master Scrivener",
+        "One with the Word"
+      ]
+    },
+    {
+      "name": "War Magic",
+      "features": [
+        "Arcane Deflection",
+        "Tactical Wit",
+        "Power Surge",
+        "Durable Magic",
+        "Deflecting Shroud"
+      ]
     }
   ],
   "features_by_level": {
     "1": [
       {
-        "name": "Wizard Feature 1",
-        "description": "Description for Wizard feature at level 1."
+        "name": "Arcane Recovery",
+        "description": "Once per day after a short rest, recover expended spell slots with a combined level equal to or less than half your wizard level (rounded up) and none above 5th."
+      },
+      {
+        "name": "Spellcasting",
+        "description": "You prepare and cast wizard spells using Intelligence; your spellbook holds the spells you know, and you can cast rituals and use an arcane focus."
       }
     ],
     "2": [
       {
-        "name": "Wizard Feature 2",
-        "description": "Description for Wizard feature at level 2."
+        "name": "Arcane Tradition",
+        "description": "Choose an arcane tradition, gaining subclass features at 2nd, 6th, 10th, and 14th levels."
+      }
+    ],
+    "3": [
+      {
+        "name": "Cantrip Formulas",
+        "description": "After a long rest, you can replace one wizard cantrip you know with another from the wizard spell list."
+      }
+    ],
+    "4": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1; alternatively take a feat."
+      }
+    ],
+    "6": [
+      {
+        "name": "Arcane Tradition feature",
+        "description": "You gain a feature from your chosen Arcane Tradition."
+      }
+    ],
+    "8": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1; alternatively take a feat."
+      }
+    ],
+    "10": [
+      {
+        "name": "Arcane Tradition feature",
+        "description": "You gain a feature from your chosen Arcane Tradition."
+      }
+    ],
+    "12": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1; alternatively take a feat."
+      }
+    ],
+    "14": [
+      {
+        "name": "Arcane Tradition feature",
+        "description": "You gain a feature from your chosen Arcane Tradition."
+      }
+    ],
+    "16": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1; alternatively take a feat."
+      }
+    ],
+    "18": [
+      {
+        "name": "Spell Mastery",
+        "description": "Choose a 1st- and a 2nd-level wizard spell in your spellbook to cast at will without expending spell slots."
+      }
+    ],
+    "19": [
+      {
+        "name": "Ability Score Improvement",
+        "description": "Increase one ability score by 2 or two scores by 1; alternatively take a feat."
+      }
+    ],
+    "20": [
+      {
+        "name": "Signature Spells",
+        "description": "Choose two 3rd-level spells as signature spells; always prepared and each can be cast once without a slot per short or long rest."
       }
     ]
   },

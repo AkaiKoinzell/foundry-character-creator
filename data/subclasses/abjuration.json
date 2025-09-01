@@ -1,34 +1,35 @@
 {
   "name": "Abjuration",
-  "description": "You focus on protective magic and warding energy.",
+  "description": "Wield arcane shielding to banish harm and protect the weak.",
   "features_by_level": {
     "2": [
       {
         "name": "Abjuration Savant",
-        "description": "Description for Abjuration Savant."
+        "description": "The gold and time you must spend to copy an abjuration spell into your spellbook is halved."
       },
       {
         "name": "Arcane Ward",
-        "description": "Description for Arcane Ward."
+        "description": "When you cast an abjuration spell of 1st level or higher, you can create a magical ward that absorbs damage equal to twice your wizard level + your Intelligence modifier." 
       }
     ],
     "6": [
       {
         "name": "Projected Ward",
-        "description": "Description for Projected Ward."
+        "description": "When a creature within 30 feet of you takes damage, you can use your reaction to have your Arcane Ward absorb that damage instead."
       }
     ],
     "10": [
       {
         "name": "Improved Abjuration",
-        "description": "Description for Improved Abjuration."
+        "description": "Add your proficiency bonus to ability checks you make as part of casting abjuration spells such as dispel magic and counterspell."
       }
     ],
     "14": [
       {
         "name": "Spell Resistance",
-        "description": "Description for Spell Resistance."
+        "description": "You have advantage on saving throws against spells and resistance to spell damage."
       }
     ]
   }
 }
+

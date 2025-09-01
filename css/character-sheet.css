@@ -25,6 +25,14 @@
 .character-sheet .spells { grid-area: spells; }
 .character-sheet .backstory { grid-area: backstory; }
 
+.character-sheet .features,
+.character-sheet .spells,
+.character-sheet .backstory {
+  height: 250px;
+  overflow-y: auto;
+  border: 2px solid #000;
+}
+
 .character-sheet section {
   border: 1px solid #000;
   padding: 8px;

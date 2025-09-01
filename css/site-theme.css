@@ -226,10 +226,12 @@ th {
 
 .class-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1.5rem;
-  max-width: 1100px;
+  width: 100%;
+  max-width: 960px;      /* fits inside .step */
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 /* Accordion styles */
@@ -364,10 +366,11 @@ th {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  padding: 15px;
   border: 1px solid var(--accent-color);
   border-radius: 8px;
-  padding: 15px;
   background-color: #fff;
+  box-sizing: border-box;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;

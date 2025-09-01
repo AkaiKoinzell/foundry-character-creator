@@ -16,7 +16,19 @@
   gap: 10px;
 }
 
-.character-sheet .sheet-header { grid-area: header; }
+.character-sheet .char-header {
+  grid-area: header;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.character-sheet .char-header > div {
+  flex: 1 1 150px;
+  border: 1px solid #000;
+  padding: 4px;
+  box-sizing: border-box;
+}
 .character-sheet .abilities { grid-area: abilities; }
 .character-sheet .skills { grid-area: skills; }
 .character-sheet .features { grid-area: features; }

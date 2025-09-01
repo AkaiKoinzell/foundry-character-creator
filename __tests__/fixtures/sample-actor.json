@@ -20,11 +20,11 @@
       "prof": 2,
       "movement": { "walk": 30 }
     },
-    "details": { "background": "", "race": "", "alignment": "", "origin": "Earth", "age": 30 },
+    "details": { "background": "Sage", "race": "Elf", "alignment": "", "origin": "Earth", "age": 30 },
     "traits": {
       "size": "med",
       "senses": { "darkvision": 0 },
-      "languages": { "value": [] }
+      "languages": { "value": ["Common", "Elvish"] }
     },
     "resources": {
       "primary": { "value": 0, "max": 0, "sr": false, "lr": false, "label": "" },
@@ -47,9 +47,22 @@
     "tools": []
   },
   "items": [
+    { "name": "Elf", "type": "race", "system": {} },
+    { "name": "Sage", "type": "background", "system": {} },
     { "name": "Fighter", "type": "class", "system": { "level": 1, "subclass": "" } },
     { "name": "Lucky", "type": "feat", "system": {} },
     { "name": "Dagger", "type": "weapon", "system": {} }
   ],
-  "prototypeToken": { "name": "", "actorLink": true, "disposition": 1 }
+  "prototypeToken": { "name": "", "actorLink": true, "disposition": 1 },
+  "flags": {
+    "fcc": {
+      "race": "Elf",
+      "background": "Sage",
+      "bonusAbilities": { "str": 2, "dex": 2, "con": 2, "int": 2, "wis": 2, "cha": 2 },
+      "baseAbilities": { "str": 8, "dex": 8, "con": 8, "int": 8, "wis": 8, "cha": 8 },
+      "languages": ["Common", "Elvish"],
+      "raceChoices": { "spells": [], "spellAbility": "", "size": "", "alterations": {}, "resist": "", "tools": [], "weapons": [], "languages": [] },
+      "knownSpells": {}
+    }
+  }
 }

@@ -124,6 +124,27 @@ function renderCharacterSheet() {
     return acc;
   }, {});
 
+  const SKILL_ABILITIES = {
+    Acrobatics: "Dex",
+    "Animal Handling": "Wis",
+    Arcana: "Int",
+    Athletics: "Str",
+    Deception: "Cha",
+    History: "Int",
+    Insight: "Wis",
+    Intimidation: "Cha",
+    Investigation: "Int",
+    Medicine: "Wis",
+    Nature: "Int",
+    Perception: "Wis",
+    Performance: "Cha",
+    Persuasion: "Cha",
+    Religion: "Int",
+    "Sleight of Hand": "Dex",
+    Stealth: "Dex",
+    Survival: "Wis",
+  };
+
   const abilityScores = Object.entries(CharacterState.system.abilities || {}).reduce(
     (acc, [ab, obj]) => {
       acc[ab] = obj.value;
@@ -136,6 +157,18 @@ function renderCharacterSheet() {
     Object.values(byLevel).forEach((names) => {
       names.forEach((n) => spellSet.add(n));
     });
+  });
+
+  const skillList = Object.entries(SKILL_ABILITIES).map(([name, ability]) => {
+    const sysSkills = CharacterState.system.skills || [];
+    let prof = false;
+    if (Array.isArray(sysSkills)) {
+      prof = sysSkills.includes(name);
+    } else if (sysSkills && typeof sysSkills === "object") {
+      const entry = sysSkills[name];
+      prof = Boolean(entry?.prof ?? entry?.proficient ?? entry?.value);
+    }
+    return { name, ability, prof };
   });
 
   const summary = {
@@ -151,7 +184,7 @@ function renderCharacterSheet() {
     tools: CharacterState.system.tools || [],
     equipment: (CharacterState.equipment || []).map((e) => e.name),
     features: (CharacterState.feats || []).map((f) => f.name),
-    skills: CharacterState.system.skills || [],
+    skills: skillList,
     abilities: abilityScores,
     spells: Array.from(spellSet),
   };
@@ -176,7 +209,12 @@ function renderCharacterSheet() {
     .join("");
   const toolsHtml = summary.tools.map((t) => `<li>${t}</li>`).join("");
   const featuresHtml = summary.features.map((f) => `<li>${f}</li>`).join("");
-  const skillsHtml = summary.skills.map((s) => `<li>${s}</li>`).join("");
+  const skillsHtml = summary.skills
+    .map(
+      ({ name, ability, prof }) =>
+        `<li><input type="checkbox" disabled ${prof ? "checked" : ""}/> ${name} (${ability})</li>`
+    )
+    .join("");
   const equipmentHtml = summary.equipment
     .map((e) => `<li>${e}</li>`)
     .join("");

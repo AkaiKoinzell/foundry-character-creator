@@ -26,6 +26,7 @@ import { loadStep5, isStepComplete as isStep5Complete } from "./step5.js";
 import { loadStep6, commitAbilities } from "./step6.js";
 import { exportFoundryActor } from "./export.js";
 import { t, initI18n, applyTranslations } from "./i18n.js";
+import { exportPdf } from "./export-pdf.js";
 
 let currentStep = 1;
 let currentStepComplete = false;
@@ -251,6 +252,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     a.download = `${CharacterState.name || "character"}.json`;
     a.click();
     URL.revokeObjectURL(url);
+  });
+
+  document.getElementById("generatePdf")?.addEventListener("click", () => {
+    exportPdf(CharacterState).catch((err) => console.error(err));
   });
 
     // Step 1 inputs ----------------------------------------------------------

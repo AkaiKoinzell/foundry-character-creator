@@ -1,0 +1,16 @@
+{
+  "fields": {
+    "CharacterName": { "x": 100, "y": 750 },
+    "PlayerName": { "x": 100, "y": 730 },
+    "Class": { "x": 100, "y": 710 },
+    "Race": { "x": 100, "y": 690 },
+    "Background": { "x": 100, "y": 670 },
+    "Strength": { "x": 100, "y": 650 },
+    "Dexterity": { "x": 100, "y": 630 },
+    "Constitution": { "x": 100, "y": 610 },
+    "Intelligence": { "x": 100, "y": 590 },
+    "Wisdom": { "x": 100, "y": 570 },
+    "Charisma": { "x": 100, "y": 550 }
+  },
+  "checkboxes": {}
+}

@@ -77,6 +77,10 @@ function showStep(step) {
       bar.style.width = `${((step - 1) / 6) * 100}%`;
     }
     currentStep = step;
+    if (CharacterState.showHelp) {
+      // Placeholder for contextual help integration
+      console.log(`Help: display guidance for step ${step}`);
+    }
     if (step === 4) loadStep4(true);
     if (step === 5) loadStep5(true);
     if (step === 6) loadStep6(true);
@@ -143,6 +147,39 @@ function renderFinalRecap() {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  const createBtn = document.getElementById("createCharacterBtn");
+  if (createBtn) {
+    const beginnerCheck = document.getElementById("beginnerMode");
+    createBtn.addEventListener("click", () => {
+      const beginner = beginnerCheck?.checked ?? false;
+      CharacterState.showHelp = beginner;
+      try {
+        localStorage.setItem("showHelp", beginner ? "1" : "0");
+      } catch (e) {
+        /* ignore */
+      }
+      window.location.href = "index.html";
+    });
+    document
+      .getElementById("premadeCharactersBtn")
+      ?.addEventListener("click", () => {
+        console.log("Premade characters module not implemented yet.");
+      });
+    document
+      .getElementById("randomCharacterBtn")
+      ?.addEventListener("click", () => {
+        console.log("Random character module not implemented yet.");
+      });
+    return;
+  }
+
+  CharacterState.showHelp = false;
+  try {
+    CharacterState.showHelp = localStorage.getItem("showHelp") === "1";
+  } catch (e) {
+    /* ignore */
+  }
+
   await initI18n();
   applyTranslations();
   for (let i = 1; i <= 7; i++) {

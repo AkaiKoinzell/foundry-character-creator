@@ -163,13 +163,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
     document
       .getElementById("premadeCharactersBtn")
-      ?.addEventListener("click", () => {
-        console.log("Premade characters module not implemented yet.");
+      ?.addEventListener("click", async () => {
+        const mod = await import('./premade.js');
+        mod.showPremadeSelector();
       });
     document
       .getElementById("randomCharacterBtn")
-      ?.addEventListener("click", () => {
-        console.log("Random character module not implemented yet.");
+      ?.addEventListener("click", async () => {
+        const mod = await import('./random.js');
+        mod.generateRandomCharacter();
       });
     return;
   }
@@ -177,6 +179,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   CharacterState.showHelp = false;
   try {
     CharacterState.showHelp = localStorage.getItem("showHelp") === "1";
+  } catch (e) {
+    /* ignore */
+  }
+
+  let startAtStep7 = false;
+  try {
+    const stored = localStorage.getItem('characterState');
+    if (stored) {
+      const obj = JSON.parse(stored);
+      Object.assign(CharacterState, obj);
+      startAtStep7 = true;
+      currentStep = 7;
+      localStorage.removeItem('characterState');
+    }
   } catch (e) {
     /* ignore */
   }
@@ -238,6 +254,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       loadStep4();
       loadStep5();
       loadStep6();
+      if (startAtStep7) showStep(7);
     })
     .catch((err) => console.error(err));
 

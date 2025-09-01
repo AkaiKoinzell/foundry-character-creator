@@ -1,0 +1,31 @@
+{
+  "playerName": "",
+  "name": "Preset Fighter",
+  "type": "character",
+  "classes": [{ "name": "Fighter", "level": 1 }],
+  "feats": [],
+  "equipment": [],
+  "knownSpells": {},
+  "raceChoices": { "spells": [], "spellAbility": "", "size": "Medium", "alterations": {}, "resist": "", "tools": [], "weapons": [] },
+  "bonusAbilities": { "str": 0, "dex": 0, "con": 0, "int": 0, "wis": 0, "cha": 0 },
+  "baseAbilities": { "str": 15, "dex": 14, "con": 13, "int": 10, "wis": 12, "cha": 8 },
+  "system": {
+    "details": { "race": "Human", "background": "Soldier", "origin": "", "age": 30 },
+    "abilities": {
+      "str": { "value": 15 },
+      "dex": { "value": 14 },
+      "con": { "value": 13 },
+      "int": { "value": 10 },
+      "wis": { "value": 12 },
+      "cha": { "value": 8 }
+    },
+    "skills": ["Athletics", "Perception"],
+    "tools": [],
+    "spells": { "cantrips": [], "pact": { "value": 0, "max": 0, "level": 0 } },
+    "traits": { "languages": { "value": ["Common"] } },
+    "expertise": [],
+    "resources": {},
+    "attributes": { "prof": 2 }
+  },
+  "prototypeToken": { "name": "Preset Fighter" }
+}

@@ -1,0 +1,27 @@
+.character-sheet {
+  background: #fff;
+  color: #000;
+  padding: 20px;
+  width: 800px;
+  max-width: 100%;
+  margin: 0 auto;
+  border: 1px solid #000;
+}
+
+.character-sheet table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.character-sheet th,
+.character-sheet td {
+  border: 1px solid #000;
+  padding: 4px;
+  text-align: left;
+}
+
+.character-sheet h2,
+.character-sheet h3 {
+  text-align: center;
+  margin-top: 0;
+}

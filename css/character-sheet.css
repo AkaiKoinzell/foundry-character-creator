@@ -74,3 +74,17 @@
 .character-sheet .ability-box .mod {
   font-size: 0.8em;
 }
+
+.character-sheet .skills ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.character-sheet .skills li {
+  display: flex;
+  align-items: center;
+}
+
+.character-sheet .skills input[type='checkbox'] {
+  margin-right: 4px;
+}

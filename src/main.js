@@ -88,6 +88,10 @@ function showStep(step) {
     if (step === 7) {
       commitAbilities();
       renderCharacterSheet();
+      const backstoryInput = document.getElementById("backstoryInput");
+      if (backstoryInput) {
+        backstoryInput.value = CharacterState.system.details.origin || "";
+      }
     }
 
     const prevBtn = document.getElementById("prevStep");
@@ -236,7 +240,8 @@ function renderCharacterSheet() {
       ${summary.skills.length ? `<h3>Skills</h3><ul>${skillsHtml}</ul>` : ""}
     </section>
     <section class="features">
-      ${summary.features.length ? `<h3>Features</h3><ul>${featuresHtml}</ul>` : ""}
+      <h3>Features</h3>
+      <ul>${featuresHtml}</ul>
     </section>
     <section class="equipment">
       ${summary.equipment.length ? `<h3>Equipment</h3><ul>${equipmentHtml}</ul>` : ""}
@@ -246,7 +251,8 @@ function renderCharacterSheet() {
       ${summary.tools.length ? `<h3>Tools</h3><ul>${toolsHtml}</ul>` : ""}
     </section>
     <section class="spells">
-      ${summary.spells.length ? `<h3>Spells</h3><ul>${spellsHtml}</ul>` : ""}
+      <h3>Spells</h3>
+      <ul>${spellsHtml}</ul>
     </section>
     <section class="backstory">
       <h3>Backstory</h3>
@@ -386,6 +392,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderCharacterSheet();
     exportPdf(CharacterState).catch((err) => console.error(err));
   });
+
+  const backstoryEl = document.getElementById("backstoryInput");
+  if (backstoryEl) {
+    backstoryEl.addEventListener("input", () => {
+      CharacterState.system.details.origin = backstoryEl.value;
+      renderCharacterSheet();
+    });
+  }
 
     // Step 1 inputs ----------------------------------------------------------
     const userNameEl = document.getElementById("userName");

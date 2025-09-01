@@ -90,7 +90,7 @@ function showStep(step) {
       renderCharacterSheet();
       const backstoryInput = document.getElementById("backstoryInput");
       if (backstoryInput) {
-        backstoryInput.value = CharacterState.system.details.origin || "";
+        backstoryInput.value = CharacterState.system.details.backstory || "";
       }
     }
 
@@ -162,9 +162,25 @@ function renderCharacterSheet() {
       names.forEach((n) => spellSet.add(n));
     });
   });
+  (CharacterState.system.spells?.cantrips || []).forEach((s) =>
+    spellSet.add(s)
+  );
+  (CharacterState.raceChoices?.spells || []).forEach((s) =>
+    spellSet.add(s)
+  );
+  (CharacterState.feats || []).forEach((f) => {
+    const sp = f.spells || f.system?.spells;
+    if (sp) {
+      Object.values(sp).forEach((v) => {
+        if (Array.isArray(v)) v.forEach((n) => spellSet.add(n));
+        else if (typeof v === "string") spellSet.add(v);
+      });
+    }
+  });
 
   const skillList = Object.entries(SKILL_ABILITIES).map(([name, ability]) => {
     const sysSkills = CharacterState.system.skills || [];
+    const expertise = CharacterState.system.expertise || [];
     let prof = false;
     if (Array.isArray(sysSkills)) {
       prof = sysSkills.includes(name);
@@ -172,7 +188,8 @@ function renderCharacterSheet() {
       const entry = sysSkills[name];
       prof = Boolean(entry?.prof ?? entry?.proficient ?? entry?.value);
     }
-    return { name, ability, prof };
+    const expert = Array.isArray(expertise) && expertise.includes(name);
+    return { name, ability, prof, expert };
   });
 
   const summary = {
@@ -187,7 +204,14 @@ function renderCharacterSheet() {
     languages: CharacterState.system.traits.languages?.value || [],
     tools: CharacterState.system.tools || [],
     equipment: (CharacterState.equipment || []).map((e) => e.name),
-    features: (CharacterState.feats || []).map((f) => f.name),
+    features: (() => {
+      const classFeatures = (CharacterState.classes || []).flatMap(
+        (c) => c.features?.map((f) => f.name) || []
+      );
+      const raceFeatures = CharacterState.raceFeatures || [];
+      const featNames = (CharacterState.feats || []).map((f) => f.name);
+      return Array.from(new Set([...classFeatures, ...raceFeatures, ...featNames]));
+    })(),
     skills: skillList,
     abilities: abilityScores,
     spells: Array.from(spellSet),
@@ -215,8 +239,8 @@ function renderCharacterSheet() {
   const featuresHtml = summary.features.map((f) => `<li>${f}</li>`).join("");
   const skillsHtml = summary.skills
     .map(
-      ({ name, ability, prof }) =>
-        `<li><input type="checkbox" disabled ${prof ? "checked" : ""}/> ${name} (${ability})</li>`
+      ({ name, ability, prof, expert }) =>
+        `<li><input type="checkbox" disabled ${prof || expert ? "checked" : ""}/><input type="checkbox" disabled ${expert ? "checked" : ""}/> ${name} (${ability})</li>`
     )
     .join("");
   const equipmentHtml = summary.equipment
@@ -226,10 +250,12 @@ function renderCharacterSheet() {
 
   container.innerHTML = `
     <header class="char-header">
-      <div><strong>Name:</strong> ${CharacterState.name || ""}</div>
+      <div><strong>Character:</strong> ${summary.characterName || ""}</div>
+      <div><strong>Player:</strong> ${summary.playerName || ""}</div>
       <div><strong>Class & Level:</strong> ${classText}</div>
       <div><strong>Race:</strong> ${details.race || ""}</div>
       <div><strong>Background:</strong> ${details.background || ""}</div>
+      <div><strong>Provenienza:</strong> ${details.origin || ""}</div>
       <div><strong>Age:</strong> ${details.age || ""}</div>
     </header>
     <section class="abilities">
@@ -256,7 +282,7 @@ function renderCharacterSheet() {
     </section>
     <section class="backstory">
       <h3>Backstory</h3>
-      <p>${details.origin || ""}</p>
+      <p>${details.backstory || ""}</p>
     </section>
   `;
 }
@@ -396,7 +422,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const backstoryEl = document.getElementById("backstoryInput");
   if (backstoryEl) {
     backstoryEl.addEventListener("input", () => {
-      CharacterState.system.details.origin = backstoryEl.value;
+      CharacterState.system.details.backstory = backstoryEl.value;
       renderCharacterSheet();
     });
   }

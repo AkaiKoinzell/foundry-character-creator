@@ -12,6 +12,7 @@ jest.unstable_mockModule('../src/data.js', () => ({
       tools: [],
       traits: { languages: { value: [] } },
     },
+    showHelp: true,
   },
   logCharacterState: jest.fn(),
   fetchJsonWithRetry: jest.fn(),

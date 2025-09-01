@@ -15,11 +15,20 @@ describe('renderCharacterSheet features and backstory', () => {
     Object.assign(CharacterState, {
       playerName: 'Tester',
       name: 'Hero',
-      classes: [],
+      classes: [
+        { name: 'Fighter', level: 1, features: [{ name: 'Second Wind' }] },
+      ],
+      raceFeatures: ['Darkvision'],
       feats: [{ name: 'Brave' }],
       equipment: [],
       system: {
-        details: { origin: 'Born in a small village.', age: '', race: '', background: '' },
+        details: {
+          origin: 'Village',
+          backstory: 'Born in a small village.',
+          age: '',
+          race: '',
+          background: '',
+        },
         abilities: {
           str: { value: 8 },
           dex: { value: 8 },
@@ -38,6 +47,8 @@ describe('renderCharacterSheet features and backstory', () => {
     const html = document.getElementById('characterSheet').innerHTML;
     expect(html).toContain('<h3>Features</h3>');
     expect(html).toContain('Brave');
+    expect(html).toContain('Second Wind');
+    expect(html).toContain('Darkvision');
     expect(html).toContain('<h3>Backstory</h3>');
     expect(html).toContain('Born in a small village.');
   });

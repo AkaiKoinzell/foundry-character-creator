@@ -1056,6 +1056,9 @@ function confirmRaceSelection() {
 
   CharacterState.system.details.race = selectedBaseRace;
   CharacterState.system.details.subrace = currentRaceData.name;
+  CharacterState.raceFeatures = (currentRaceData.entries || [])
+    .filter((e) => typeof e === 'object' && e.name)
+    .map((e) => e.name);
 
   const sizeMap = { T: 'tiny', S: 'sm', M: 'med', L: 'lg', H: 'huge', G: 'grg' };
   if (currentRaceData.size) {
@@ -1385,6 +1388,7 @@ export async function loadStep3(force = false) {
       CharacterState.raceChoices.spells = [];
       CharacterState.raceChoices.spellAbility = '';
       CharacterState.raceChoices.size = '';
+      CharacterState.raceFeatures = [];
       const removeRes = [];
       (currentRaceData.resist || []).forEach((r) => {
         if (typeof r === 'string') removeRes.push(r);

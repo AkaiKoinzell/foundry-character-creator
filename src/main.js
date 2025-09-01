@@ -134,16 +134,51 @@ function renderFinalRecap() {
   );
 
   const summary = {
+    playerName: CharacterState.playerName,
+    characterName: CharacterState.name,
+    origin: CharacterState.system.details.origin,
+    age: CharacterState.system.details.age,
     race: CharacterState.system.details.race,
     background: CharacterState.system.details.background,
     classes,
+    totalLevel: Object.values(classes).reduce((a, b) => a + b, 0),
+    languages: CharacterState.system.traits.languages?.value || [],
+    tools: CharacterState.system.tools || [],
+    equipment: (CharacterState.equipment || []).map((e) => e.name),
     feats: (CharacterState.feats || []).map((f) => f.name),
     skills: CharacterState.system.skills || [],
     abilities,
   };
 
-  const pre = document.createElement("pre");
-  pre.textContent = JSON.stringify(summary, null, 2);
+  const lines = [];
+  if (summary.playerName) lines.push(`Nome giocatore: ${summary.playerName}`);
+  if (summary.characterName) lines.push(`Nome personaggio: ${summary.characterName}`);
+  if (summary.origin) lines.push(`Provenienza: ${summary.origin}`);
+  if (summary.age) lines.push(`Età: ${summary.age}`);
+  lines.push(`Race: ${summary.race}`);
+  lines.push(`Background: ${summary.background}`);
+  if (Object.keys(summary.classes).length) {
+    lines.push('Classi:');
+    Object.entries(summary.classes).forEach(([name, level]) => {
+      lines.push(`  ${name} ${level}`);
+    });
+  }
+  lines.push(`Livello totale: ${summary.totalLevel}`);
+  if (summary.languages.length) lines.push(`Lingue: ${summary.languages.join(', ')}`);
+  if (summary.tools.length) lines.push(`Strumenti: ${summary.tools.join(', ')}`);
+  if (summary.equipment.length) {
+    lines.push('Equipaggiamento:');
+    summary.equipment.forEach((item) => lines.push(`  ${item}`));
+  }
+  if (summary.feats.length) lines.push(`Feats: ${summary.feats.join(', ')}`);
+  if (summary.skills.length) lines.push(`Skills: ${summary.skills.join(', ')}`);
+  lines.push('Abilities:');
+  Object.entries(summary.abilities).forEach(([ab, val]) => {
+    lines.push(`  ${ab.toUpperCase()}: ${val}`);
+  });
+
+  const pre = document.createElement('pre');
+  pre.textContent = lines.join('\n');
   container.appendChild(pre);
 }
 

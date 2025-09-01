@@ -87,7 +87,7 @@ function showStep(step) {
     if (step === 6) loadStep6(true);
     if (step === 7) {
       commitAbilities();
-      renderFinalRecap();
+      renderCharacterSheet();
     }
 
     const prevBtn = document.getElementById("prevStep");
@@ -115,36 +115,36 @@ async function loadData() {
 }
 
 // Render a high-level summary on the final step.
-function renderFinalRecap() {
-  const container = document.getElementById("finalRecap");
+function renderCharacterSheet() {
+  const container = document.getElementById("characterSheet");
   if (!container) return;
-  container.innerHTML = "";
 
-  const classes = CharacterState.classes.reduce((acc, c) => {
-    if (c.name) acc[c.name] = c.level || 0;
-    return acc;
-  }, {});
+  const classText = (CharacterState.classes || [])
+    .map((c) => `${c.name || ""} ${c.level || ""}`.trim())
+    .filter(Boolean)
+    .join(" / ");
 
-  const abilities = Object.entries(CharacterState.system.abilities || {}).reduce(
-    (acc, [ab, obj]) => {
-      acc[ab] = obj.value;
-      return acc;
-    },
-    {}
-  );
+  const details = CharacterState.system?.details || {};
+  const abilities = CharacterState.system?.abilities || {};
+  const abilityRows = ["str", "dex", "con", "int", "wis", "cha"]
+    .map(
+      (ab) =>
+        `<tr><td>${ab.toUpperCase()}</td><td>${abilities[ab]?.value ?? ""}</td></tr>`
+    )
+    .join("");
 
-  const summary = {
-    race: CharacterState.system.details.race,
-    background: CharacterState.system.details.background,
-    classes,
-    feats: (CharacterState.feats || []).map((f) => f.name),
-    skills: CharacterState.system.skills || [],
-    abilities,
-  };
-
-  const pre = document.createElement("pre");
-  pre.textContent = JSON.stringify(summary, null, 2);
-  container.appendChild(pre);
+  container.innerHTML = `
+    <h2>${CharacterState.name || ""}</h2>
+    <p><strong>Player:</strong> ${CharacterState.playerName || ""}</p>
+    <p><strong>Race:</strong> ${details.race || ""}</p>
+    <p><strong>Background:</strong> ${details.background || ""}</p>
+    <p><strong>Class:</strong> ${classText}</p>
+    <h3>Abilities</h3>
+    <table class="abilities">
+      <thead><tr><th>Ability</th><th>Score</th></tr></thead>
+      <tbody>${abilityRows}</tbody>
+    </table>
+  `;
 }
 
 document.addEventListener("DOMContentLoaded", async () => {

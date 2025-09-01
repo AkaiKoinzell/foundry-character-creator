@@ -130,14 +130,14 @@ describe('duplicate selection prevention', () => {
   });
 });
 
-describe('choice feature descriptions', () => {
-  test('Fighting Style accordion includes feature description and select', () => {
+describe('feature descriptions', () => {
+  test('Fighting Style and Second Wind descriptions render', () => {
     const __dirname = path.dirname(fileURLToPath(import.meta.url));
     const fighterData = JSON.parse(
       readFileSync(path.join(__dirname, '../data/classes/fighter.json'), 'utf8')
     );
     DATA.classes = [fighterData];
-    CharacterState.showHelp = true;
+    CharacterState.showHelp = false;
     const cls = {
       name: 'Fighter',
       level: 1,
@@ -154,10 +154,19 @@ describe('choice feature descriptions', () => {
       item.querySelector('.accordion-header').textContent.includes('Fighting Style')
     );
     expect(fsItem).toBeTruthy();
-    const body = fsItem.querySelector('.accordion-content');
-    expect(body.textContent).toContain(
+    const fsBody = fsItem.querySelector('.accordion-content');
+    expect(fsBody.textContent).toContain(
       'Adopt a particular style of fighting as your specialty.'
     );
-    expect(body.querySelector('select')).not.toBeNull();
+    expect(fsBody.querySelector('select')).not.toBeNull();
+
+    const swItem = items.find(item =>
+      item.querySelector('.accordion-header').textContent.includes('Second Wind')
+    );
+    expect(swItem).toBeTruthy();
+    const swBody = swItem.querySelector('.accordion-content');
+    expect(swBody.textContent).toContain(
+      'Use a bonus action to regain hit points equal to 1d10 + your fighter level once per short or long rest.'
+    );
   });
 });

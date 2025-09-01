@@ -162,11 +162,13 @@ function renderCharacterSheet() {
 
   const details = CharacterState.system?.details || {};
   const systemAbilities = CharacterState.system?.abilities || {};
-  const abilityRows = ["str", "dex", "con", "int", "wis", "cha"]
-    .map(
-      (ab) =>
-        `<tr><td>${ab.toUpperCase()}</td><td>${systemAbilities[ab]?.value ?? ""}</td></tr>`
-    )
+  const abilityBoxes = ["str", "dex", "con", "int", "wis", "cha"]
+    .map((ab) => {
+      const score = systemAbilities[ab]?.value ?? "";
+      const mod = score === "" ? "" : Math.floor((score - 10) / 2);
+      const modText = mod === "" ? "" : mod >= 0 ? `+${mod}` : `${mod}`;
+      return `<div class="ability-box" data-ab="${ab.toUpperCase()}"><div class="score">${score}</div><div class="mod">${modText}</div></div>`;
+    })
     .join("");
 
   const languagesHtml = summary.languages
@@ -190,10 +192,7 @@ function renderCharacterSheet() {
     </div>
     <section class="abilities">
       <h3>Abilities</h3>
-      <table>
-        <thead><tr><th>Ability</th><th>Score</th></tr></thead>
-        <tbody>${abilityRows}</tbody>
-      </table>
+      <div class="ability-list">${abilityBoxes}</div>
     </section>
     <section class="skills">
       ${summary.skills.length ? `<h3>Skills</h3><ul>${skillsHtml}</ul>` : ""}

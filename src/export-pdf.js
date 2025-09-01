@@ -50,20 +50,20 @@ export async function exportPdf(state) {
     }
   }
 
-  const checkboxFontSize = 10;
+  const drawCheckbox = cb => {
+    const size = Math.min(cb.w, cb.h);
+    const x = cb.x + cb.w / 2;
+    const y = pageHeight - (cb.y + cb.h / 2);
+    page.drawText('X', { x, y, size, font });
+  };
+
   for (const [key, skill] of Object.entries(state.system?.skills || {})) {
     const skillName = (skill.label || key).replace(/\s+/g, '_');
     if (skill.proficient && checkboxes[`${skillName}_prof`]) {
-      const cb = checkboxes[`${skillName}_prof`];
-      const x = cb.x + cb.w / 2;
-      const y = pageHeight - (cb.y + cb.h / 2);
-      page.drawText('X', { x, y, size: checkboxFontSize, font });
+      drawCheckbox(checkboxes[`${skillName}_prof`]);
     }
     if (skill.expert && checkboxes[`${skillName}_expert`]) {
-      const cb = checkboxes[`${skillName}_expert`];
-      const x = cb.x + cb.w / 2;
-      const y = pageHeight - (cb.y + cb.h / 2);
-      page.drawText('X', { x, y, size: checkboxFontSize, font });
+      drawCheckbox(checkboxes[`${skillName}_expert`]);
     }
   }
 

@@ -496,9 +496,7 @@ function renderClassEditor(cls, index) {
         c.spellItem = newItem;
       }
     });
-    updateExpertiseSelectOptions(
-      document.querySelectorAll("select[data-type='expertise']")
-    );
+    renderSelectedClasses();
     updateStep2Completion();
   });
   card.appendChild(levelSel);

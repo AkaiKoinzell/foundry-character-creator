@@ -2,8 +2,12 @@
  * @jest-environment jsdom
  */
 
-import { loadStep5 } from '../src/step5.js';
-import { CharacterState } from '../src/data.js';
+import { jest } from '@jest/globals';
+
+jest.unstable_mockModule('../src/export-pdf.js', () => ({ exportPdf: jest.fn() }));
+
+const { loadStep5 } = await import('../src/step5.js');
+const { CharacterState } = await import('../src/data.js');
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';

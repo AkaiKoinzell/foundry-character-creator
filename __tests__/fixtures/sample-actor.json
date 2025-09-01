@@ -20,7 +20,7 @@
       "prof": 2,
       "movement": { "walk": 30 }
     },
-    "details": { "background": "Sage", "race": "Elf", "alignment": "", "origin": "Earth", "age": 30 },
+    "details": { "background": "Sage", "race": "Elf", "alignment": "", "origin": "Earth", "age": 30, "backstory": "" },
     "traits": {
       "size": "med",
       "senses": { "darkvision": 0 },

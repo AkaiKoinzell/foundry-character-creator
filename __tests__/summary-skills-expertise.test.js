@@ -9,17 +9,14 @@ jest.unstable_mockModule('../src/export-pdf.js', () => ({ exportPdf: jest.fn() }
 const { CharacterState } = await import('../src/data.js');
 await import('../src/main.js');
 
-describe('renderCharacterSheet spells', () => {
-  test('spells appear in summary', () => {
+describe('renderCharacterSheet skill expertise', () => {
+  test('expertise shows two checked boxes', () => {
     document.body.innerHTML = '<div id="characterSheet"></div>';
     Object.assign(CharacterState, {
       playerName: 'Tester',
-      name: 'Mage',
+      name: 'Rogue',
       classes: [],
-      feats: [
-        { name: 'Magic Initiate', spells: { cantrips: ['Prestidigitation'], level1: 'Shield' } },
-      ],
-      raceChoices: { spells: ['Gust of Wind'] },
+      feats: [],
       equipment: [],
       system: {
         details: { origin: '', backstory: '', age: '', race: '', background: '' },
@@ -33,18 +30,19 @@ describe('renderCharacterSheet spells', () => {
         },
         traits: { languages: { value: [] } },
         tools: [],
-        skills: [],
-        spells: { cantrips: ['Light'] },
+        skills: ['Stealth'],
+        expertise: ['Stealth'],
       },
-      knownSpells: { Wizard: { 1: ['Magic Missile'] } },
+      knownSpells: {},
     });
     renderCharacterSheet();
-    const html = document.getElementById('characterSheet').innerHTML;
-    expect(html).toContain('<h3>Spells</h3>');
-    expect(html).toContain('Magic Missile');
-    expect(html).toContain('Shield');
-    expect(html).toContain('Light');
-    expect(html).toContain('Gust of Wind');
-    expect(html).toContain('Prestidigitation');
+    const li = [...document.querySelectorAll('section.skills li')].find(el =>
+      el.textContent.includes('Stealth')
+    );
+    expect(li).toBeTruthy();
+    const boxes = li.querySelectorAll('input[type="checkbox"]');
+    expect(boxes.length).toBe(2);
+    expect(boxes[0].checked).toBe(true);
+    expect(boxes[1].checked).toBe(true);
   });
 });

@@ -166,6 +166,7 @@ export function exportFoundryActor(state) {
   if (!actor.system.details) actor.system.details = {};
   actor.system.details.origin = state.system?.details?.origin || "";
   actor.system.details.age = state.system?.details?.age ?? 0;
+  actor.system.details.backstory = state.system?.details?.backstory || "";
 
   if (state.system?.details?.race) {
     actor.items.push({ name: state.system.details.race, type: "race", system: {} });

@@ -186,6 +186,7 @@ export const CharacterState = {
   equipment: [],
   knownSpells: {},
   showHelp: false,
+  raceFeatures: [],
   raceChoices: {
     spells: [],
     spellAbility: '',
@@ -230,6 +231,7 @@ export const CharacterState = {
       alignment: "",
       origin: "",
       age: 0,
+      backstory: "",
     },
     traits: {
       size: "med",

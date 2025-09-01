@@ -225,13 +225,13 @@ function renderCharacterSheet() {
   const spellsHtml = summary.spells.map((s) => `<li>${s}</li>`).join("");
 
   container.innerHTML = `
-    <div class="sheet-header">
-      <h2>${CharacterState.name || ""}</h2>
-      <p><strong>Player:</strong> ${CharacterState.playerName || ""}</p>
-      <p><strong>Race:</strong> ${details.race || ""}</p>
-      <p><strong>Background:</strong> ${details.background || ""}</p>
-      <p><strong>Class:</strong> ${classText}</p>
-    </div>
+    <header class="char-header">
+      <div><strong>Name:</strong> ${CharacterState.name || ""}</div>
+      <div><strong>Class & Level:</strong> ${classText}</div>
+      <div><strong>Race:</strong> ${details.race || ""}</div>
+      <div><strong>Background:</strong> ${details.background || ""}</div>
+      <div><strong>Age:</strong> ${details.age || ""}</div>
+    </header>
     <section class="abilities">
       <h3>Abilities</h3>
       <div class="ability-list">${abilityBoxes}</div>

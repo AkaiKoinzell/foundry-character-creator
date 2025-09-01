@@ -148,38 +148,6 @@ function renderCharacterSheet() {
     skills: CharacterState.system.skills || [],
     abilities: abilityScores,
   };
-
-  const lines = [];
-  if (summary.playerName) lines.push(`Nome giocatore: ${summary.playerName}`);
-  if (summary.characterName) lines.push(`Nome personaggio: ${summary.characterName}`);
-  if (summary.origin) lines.push(`Provenienza: ${summary.origin}`);
-  if (summary.age) lines.push(`Età: ${summary.age}`);
-  lines.push(`Race: ${summary.race}`);
-  lines.push(`Background: ${summary.background}`);
-  if (Object.keys(summary.classes).length) {
-    lines.push('Classi:');
-    Object.entries(summary.classes).forEach(([name, level]) => {
-      lines.push(`  ${name} ${level}`);
-    });
-  }
-  lines.push(`Livello totale: ${summary.totalLevel}`);
-  if (summary.languages.length) lines.push(`Lingue: ${summary.languages.join(', ')}`);
-  if (summary.tools.length) lines.push(`Strumenti: ${summary.tools.join(', ')}`);
-  if (summary.equipment.length) {
-    lines.push('Equipaggiamento:');
-    summary.equipment.forEach((item) => lines.push(`  ${item}`));
-  }
-  if (summary.feats.length) lines.push(`Feats: ${summary.feats.join(', ')}`);
-  if (summary.skills.length) lines.push(`Skills: ${summary.skills.join(', ')}`);
-  lines.push('Abilities:');
-  Object.entries(summary.abilities).forEach(([ab, val]) => {
-    lines.push(`  ${ab.toUpperCase()}: ${val}`);
-  });
-
-  const pre = document.createElement('pre');
-  pre.textContent = lines.join('\n');
-  container.appendChild(pre);
-
   const classText = (CharacterState.classes || [])
     .map((c) => `${c.name || ""} ${c.level || ""}`.trim())
     .filter(Boolean)
@@ -194,6 +162,57 @@ function renderCharacterSheet() {
     )
     .join("");
 
+  // Gather spells grouped by level either from knownSpells or from the
+  // system.spells structure. This ensures the final character sheet lists
+  // all spells the character knows.
+  const spellsByLevel = {};
+
+  // Merge spells from knownSpells (organized by class -> level -> [spells])
+  if (CharacterState.knownSpells) {
+    Object.values(CharacterState.knownSpells).forEach((byLevel) => {
+      Object.entries(byLevel).forEach(([lvl, names]) => {
+        if (!spellsByLevel[lvl]) spellsByLevel[lvl] = [];
+        spellsByLevel[lvl].push(...names);
+      });
+    });
+  }
+
+  // Fallback: attempt to read spell lists directly from system.spells
+  const sysSpells = CharacterState.system?.spells || {};
+  if (Object.keys(spellsByLevel).length === 0) {
+    if (Array.isArray(sysSpells.cantrips)) {
+      spellsByLevel[0] = [...sysSpells.cantrips];
+    }
+    for (let i = 1; i <= 9; i++) {
+      const s = sysSpells[`spell${i}`];
+      if (Array.isArray(s)) spellsByLevel[i] = [...s];
+      else if (s && Array.isArray(s.spells)) spellsByLevel[i] = [...s.spells];
+    }
+  }
+
+  Object.keys(spellsByLevel).forEach((lvl) => {
+    spellsByLevel[lvl] = Array.from(new Set(spellsByLevel[lvl]));
+  });
+
+  const languagesHtml = summary.languages
+    .map((l) => `<li>${l}</li>`)
+    .join("");
+  const toolsHtml = summary.tools.map((t) => `<li>${t}</li>`).join("");
+  const featsHtml = summary.feats.map((f) => `<li>${f}</li>`).join("");
+  const skillsHtml = summary.skills.map((s) => `<li>${s}</li>`).join("");
+  const equipmentHtml = summary.equipment
+    .map((e) => `<li>${e}</li>`)
+    .join("");
+
+  const spellsHtml = Object.keys(spellsByLevel)
+    .sort((a, b) => Number(a) - Number(b))
+    .map((lvl) => {
+      const title = Number(lvl) === 0 ? "Cantrips" : `Level ${lvl}`;
+      const items = spellsByLevel[lvl].map((s) => `<li>${s}</li>`).join("");
+      return `<h4>${title}</h4><ul>${items}</ul>`;
+    })
+    .join("");
+
   container.innerHTML = `
     <h2>${CharacterState.name || ""}</h2>
     <p><strong>Player:</strong> ${CharacterState.playerName || ""}</p>
@@ -205,6 +224,12 @@ function renderCharacterSheet() {
       <thead><tr><th>Ability</th><th>Score</th></tr></thead>
       <tbody>${abilityRows}</tbody>
     </table>
+    ${summary.languages.length ? `<h3>Languages</h3><ul>${languagesHtml}</ul>` : ""}
+    ${summary.tools.length ? `<h3>Tools</h3><ul>${toolsHtml}</ul>` : ""}
+    ${summary.feats.length ? `<h3>Feats</h3><ul>${featsHtml}</ul>` : ""}
+    ${summary.skills.length ? `<h3>Skills</h3><ul>${skillsHtml}</ul>` : ""}
+    ${Object.keys(spellsByLevel).length ? `<h3>Spells</h3>${spellsHtml}` : ""}
+    ${summary.equipment.length ? `<h3>Equipment</h3><ul>${equipmentHtml}</ul>` : ""}
   `;
 }
 
@@ -333,6 +358,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   document.getElementById("generatePdf")?.addEventListener("click", () => {
+    // Re-render to ensure all sections are present before exporting to PDF
+    renderCharacterSheet();
     exportPdf(CharacterState).catch((err) => console.error(err));
   });
 

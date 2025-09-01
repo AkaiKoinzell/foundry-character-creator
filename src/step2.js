@@ -633,12 +633,12 @@ function renderClassEditor(cls, index) {
         const fIdx = features.findIndex(f => f.name === choice.name);
         if (fIdx >= 0) {
           const feature = features.splice(fIdx, 1)[0];
-          if (CharacterState.showHelp && feature.description)
+          if (feature.description)
             cContainer.appendChild(createElement('p', feature.description));
           appendEntries(cContainer, feature.entries);
         }
 
-        if (CharacterState.showHelp && choice.description)
+        if (choice.description)
           cContainer.appendChild(createElement('p', choice.description));
         appendEntries(cContainer, choice.entries);
         const count = choice.count || 1;
@@ -773,7 +773,7 @@ function renderClassEditor(cls, index) {
       });
       features.forEach(f => {
         const body = document.createElement('div');
-        if (CharacterState.showHelp && f.description)
+        if (f.description)
           body.appendChild(createElement('p', f.description));
         appendEntries(body, f.entries);
         accordion.appendChild(

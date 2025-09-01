@@ -7,6 +7,7 @@ export async function exportPdf(state) {
   const page = pdfDoc.getPages()[0];
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const fontSize = 12;
+  const pageHeight = page.getHeight();
 
   const classText = (state.classes || [])
     .map(c => `${c.name || ''} ${c.level || ''}`.trim())
@@ -24,9 +25,10 @@ export async function exportPdf(state) {
   };
 
   for (const [fieldId, value] of Object.entries(textFields)) {
-    if (fields[fieldId]) {
-      const { x, y } = fields[fieldId];
-      page.drawText(String(value), { x, y, size: fontSize, font });
+    const field = fields[fieldId];
+    if (field) {
+      const y = pageHeight - (field.y + field.height);
+      page.drawText(String(value), { x: field.x, y, size: fontSize, font });
     }
   }
 
@@ -43,7 +45,8 @@ export async function exportPdf(state) {
     const field = fields[fieldId];
     if (field) {
       const value = state.system?.abilities?.[ability]?.value ?? '';
-      page.drawText(String(value), { x: field.x, y: field.y, size: fontSize, font });
+      const y = pageHeight - (field.y + field.height);
+      page.drawText(String(value), { x: field.x, y, size: fontSize, font });
     }
   }
 
@@ -51,11 +54,15 @@ export async function exportPdf(state) {
   for (const [key, skill] of Object.entries(state.system?.skills || {})) {
     const skillName = (skill.label || key).replace(/\s+/g, '_');
     if (skill.proficient && checkboxes[`${skillName}_prof`]) {
-      const { x, y } = checkboxes[`${skillName}_prof`];
+      const cb = checkboxes[`${skillName}_prof`];
+      const x = cb.x + cb.w / 2;
+      const y = pageHeight - (cb.y + cb.h / 2);
       page.drawText('X', { x, y, size: checkboxFontSize, font });
     }
     if (skill.expert && checkboxes[`${skillName}_expert`]) {
-      const { x, y } = checkboxes[`${skillName}_expert`];
+      const cb = checkboxes[`${skillName}_expert`];
+      const x = cb.x + cb.w / 2;
+      const y = pageHeight - (cb.y + cb.h / 2);
       page.drawText('X', { x, y, size: checkboxFontSize, font });
     }
   }

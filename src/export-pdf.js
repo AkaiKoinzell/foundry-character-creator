@@ -43,6 +43,19 @@ export async function exportPdf(state) {
   if (fields.Charisma)
     page.drawText(String(state.system?.abilities?.cha?.value ?? ''), { x: fields.Charisma.x, y: fields.Charisma.y, size: fontSize, font });
 
+  const checkboxFontSize = 10;
+  for (const [key, skill] of Object.entries(state.system?.skills || {})) {
+    const skillName = (skill.label || key).replace(/\s+/g, '_');
+    if (skill.proficient && checkboxes[`${skillName}_prof`]) {
+      const { x, y } = checkboxes[`${skillName}_prof`];
+      page.drawText('X', { x, y, size: checkboxFontSize, font });
+    }
+    if (skill.expert && checkboxes[`${skillName}_expert`]) {
+      const { x, y } = checkboxes[`${skillName}_expert`];
+      page.drawText('X', { x, y, size: checkboxFontSize, font });
+    }
+  }
+
   const bytes = await pdfDoc.save();
   const blob = new Blob([bytes], { type: 'application/pdf' });
   const url = URL.createObjectURL(blob);

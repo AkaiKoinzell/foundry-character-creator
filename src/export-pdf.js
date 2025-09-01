@@ -8,40 +8,44 @@ export async function exportPdf(state) {
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const fontSize = 12;
 
-  if (fields.CharacterName)
-    page.drawText(state.name || '', { x: fields.CharacterName.x, y: fields.CharacterName.y, size: fontSize, font });
+  const classText = (state.classes || [])
+    .map(c => `${c.name || ''} ${c.level || ''}`.trim())
+    .join(' / ');
+  const background = state.system?.details?.background || '';
+  const race = state.system?.details?.race || '';
+  const age = state.system?.details?.age ? String(state.system.details.age) : '';
 
-  if (fields.PlayerName)
-    page.drawText(state.playerName || '', { x: fields.PlayerName.x, y: fields.PlayerName.y, size: fontSize, font });
+  const textFields = {
+    CharacterName: state.name || '',
+    PlayerName: state.playerName || '',
+    ClassBackground: [classText, background].filter(Boolean).join(' / '),
+    RaceAge: [race, age].filter(Boolean).join(' / '),
+    Alignment: state.system?.details?.alignment || '',
+  };
 
-  if (fields.Class) {
-    const classText = (state.classes || []).map(c => `${c.name || ''} ${c.level || ''}`.trim()).join(' / ');
-    page.drawText(classText, { x: fields.Class.x, y: fields.Class.y, size: fontSize, font });
+  for (const [fieldId, value] of Object.entries(textFields)) {
+    if (fields[fieldId]) {
+      const { x, y } = fields[fieldId];
+      page.drawText(String(value), { x, y, size: fontSize, font });
+    }
   }
 
-  if (fields.Race)
-    page.drawText(state.system?.details?.race || '', { x: fields.Race.x, y: fields.Race.y, size: fontSize, font });
+  const abilityMap = {
+    str: 'STR',
+    dex: 'DEX',
+    con: 'CON',
+    int: 'INT',
+    wis: 'WIS',
+    cha: 'CHA',
+  };
 
-  if (fields.Background)
-    page.drawText(state.system?.details?.background || '', { x: fields.Background.x, y: fields.Background.y, size: fontSize, font });
-
-  if (fields.Strength)
-    page.drawText(String(state.system?.abilities?.str?.value ?? ''), { x: fields.Strength.x, y: fields.Strength.y, size: fontSize, font });
-
-  if (fields.Dexterity)
-    page.drawText(String(state.system?.abilities?.dex?.value ?? ''), { x: fields.Dexterity.x, y: fields.Dexterity.y, size: fontSize, font });
-
-  if (fields.Constitution)
-    page.drawText(String(state.system?.abilities?.con?.value ?? ''), { x: fields.Constitution.x, y: fields.Constitution.y, size: fontSize, font });
-
-  if (fields.Intelligence)
-    page.drawText(String(state.system?.abilities?.int?.value ?? ''), { x: fields.Intelligence.x, y: fields.Intelligence.y, size: fontSize, font });
-
-  if (fields.Wisdom)
-    page.drawText(String(state.system?.abilities?.wis?.value ?? ''), { x: fields.Wisdom.x, y: fields.Wisdom.y, size: fontSize, font });
-
-  if (fields.Charisma)
-    page.drawText(String(state.system?.abilities?.cha?.value ?? ''), { x: fields.Charisma.x, y: fields.Charisma.y, size: fontSize, font });
+  for (const [ability, fieldId] of Object.entries(abilityMap)) {
+    const field = fields[fieldId];
+    if (field) {
+      const value = state.system?.abilities?.[ability]?.value ?? '';
+      page.drawText(String(value), { x: field.x, y: field.y, size: fontSize, font });
+    }
+  }
 
   const checkboxFontSize = 10;
   for (const [key, skill] of Object.entries(state.system?.skills || {})) {

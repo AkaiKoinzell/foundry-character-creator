@@ -124,7 +124,7 @@ function renderCharacterSheet() {
     return acc;
   }, {});
 
-  const abilities = Object.entries(CharacterState.system.abilities || {}).reduce(
+  const abilityScores = Object.entries(CharacterState.system.abilities || {}).reduce(
     (acc, [ab, obj]) => {
       acc[ab] = obj.value;
       return acc;
@@ -146,7 +146,7 @@ function renderCharacterSheet() {
     equipment: (CharacterState.equipment || []).map((e) => e.name),
     feats: (CharacterState.feats || []).map((f) => f.name),
     skills: CharacterState.system.skills || [],
-    abilities,
+    abilities: abilityScores,
   };
 
   const lines = [];
@@ -186,11 +186,11 @@ function renderCharacterSheet() {
     .join(" / ");
 
   const details = CharacterState.system?.details || {};
-  const abilities = CharacterState.system?.abilities || {};
+  const systemAbilities = CharacterState.system?.abilities || {};
   const abilityRows = ["str", "dex", "con", "int", "wis", "cha"]
     .map(
       (ab) =>
-        `<tr><td>${ab.toUpperCase()}</td><td>${abilities[ab]?.value ?? ""}</td></tr>`
+        `<tr><td>${ab.toUpperCase()}</td><td>${systemAbilities[ab]?.value ?? ""}</td></tr>`
     )
     .join("");
 

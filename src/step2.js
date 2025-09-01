@@ -618,23 +618,26 @@ function renderClassEditor(cls, index) {
     }
 
     for (let lvl = 1; lvl <= (cls.level || 1); lvl++) {
-      const levelChoices = (clsDef.choices || []).filter(c => c.level === lvl);
+      const levelChoices = [
+        ...(clsDef.choices || []).filter(c => c.level === lvl),
+        ...(cls.subclassData?.choices || []).filter(c => c.level === lvl),
+      ];
       const features = [
         ...(clsDef.features_by_level?.[lvl] || []),
         ...(cls.subclassData?.features_by_level?.[lvl] || []),
-      ].filter(f => !levelChoices.some(c => c.name === f.name));
-      features.forEach(f => {
-        const body = document.createElement('div');
-        if (CharacterState.showHelp && f.description)
-          body.appendChild(createElement('p', f.description));
-        appendEntries(body, f.entries);
-        accordion.appendChild(
-          createAccordionItem(`${t('level')} ${lvl}: ${f.name}`, body)
-        );
-      });
+      ];
 
       levelChoices.forEach(choice => {
         const cContainer = document.createElement('div');
+
+        const fIdx = features.findIndex(f => f.name === choice.name);
+        if (fIdx >= 0) {
+          const feature = features.splice(fIdx, 1)[0];
+          if (CharacterState.showHelp && feature.description)
+            cContainer.appendChild(createElement('p', feature.description));
+          appendEntries(cContainer, feature.entries);
+        }
+
         if (CharacterState.showHelp && choice.description)
           cContainer.appendChild(createElement('p', choice.description));
         appendEntries(cContainer, choice.entries);
@@ -766,6 +769,15 @@ function renderClassEditor(cls, index) {
             cContainer,
             true
           )
+        );
+      });
+      features.forEach(f => {
+        const body = document.createElement('div');
+        if (CharacterState.showHelp && f.description)
+          body.appendChild(createElement('p', f.description));
+        appendEntries(body, f.entries);
+        accordion.appendChild(
+          createAccordionItem(`${t('level')} ${lvl}: ${f.name}`, body)
         );
       });
     }
@@ -1146,4 +1158,5 @@ export {
   refreshBaseState,
   rebuildFromClasses,
   selectClass,
+  renderClassEditor,
 };

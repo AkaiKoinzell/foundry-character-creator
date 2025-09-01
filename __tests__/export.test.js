@@ -82,4 +82,30 @@ describe("exportFoundryActor", () => {
     const exported = exportFoundryActor(state);
     expect(exported).toEqual(template);
   });
+
+  test("exports tools, skills, and feats in flags", () => {
+    const state = {
+      playerName: "Bob",
+      name: "Tester",
+      type: "character",
+      feats: [{ name: "Alert" }, "Lucky"],
+      system: {
+        abilities: {},
+        tools: ["Thieves' Tools"],
+        skills: ["Stealth"],
+        attributes: {},
+        spells: {},
+        traits: { languages: { value: [] } },
+        details: {},
+      },
+      baseAbilities: {},
+      bonusAbilities: {},
+      prototypeToken: {},
+    };
+
+    const exported = exportFoundryActor(state);
+    expect(exported.flags.fcc.tools).toEqual(["Thieves' Tools"]);
+    expect(exported.flags.fcc.skills).toEqual(["Stealth"]);
+    expect(exported.flags.fcc.feats).toEqual(["Alert", "Lucky"]);
+  });
 });

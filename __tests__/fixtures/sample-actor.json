@@ -62,7 +62,10 @@
       "baseAbilities": { "str": 8, "dex": 8, "con": 8, "int": 8, "wis": 8, "cha": 8 },
       "languages": ["Common", "Elvish"],
       "raceChoices": { "spells": [], "spellAbility": "", "size": "", "alterations": {}, "resist": "", "tools": [], "weapons": [], "languages": [] },
-      "knownSpells": {}
+      "knownSpells": {},
+      "tools": [],
+      "skills": [],
+      "feats": ["Lucky"]
     }
   }
 }

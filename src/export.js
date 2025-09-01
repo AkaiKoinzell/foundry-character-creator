@@ -156,6 +156,9 @@ export function exportFoundryActor(state) {
         languages: clone(state.system?.traits?.languages?.value || []),
         raceChoices: clone(state.raceChoices || {}),
         knownSpells: clone(state.knownSpells || {}),
+        tools: clone(state.system.tools || []),
+        skills: clone(state.system.skills || []),
+        feats: clone((state.feats || []).map((f) => f.name || f)),
       },
     },
   };

@@ -6,6 +6,28 @@
   max-width: 100%;
   margin: 0 auto;
   border: 1px solid #000;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-areas:
+    "header header header"
+    "abilities skills features"
+    "abilities skills equipment"
+    "tools-languages spells backstory";
+  gap: 10px;
+}
+
+.character-sheet .sheet-header { grid-area: header; }
+.character-sheet .abilities { grid-area: abilities; }
+.character-sheet .skills { grid-area: skills; }
+.character-sheet .features { grid-area: features; }
+.character-sheet .equipment { grid-area: equipment; }
+.character-sheet .tools-languages { grid-area: tools-languages; }
+.character-sheet .spells { grid-area: spells; }
+.character-sheet .backstory { grid-area: backstory; }
+
+.character-sheet section {
+  border: 1px solid #000;
+  padding: 8px;
 }
 
 .character-sheet table {

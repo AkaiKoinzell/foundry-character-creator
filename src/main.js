@@ -150,7 +150,7 @@ function renderCharacterSheet() {
     languages: CharacterState.system.traits.languages?.value || [],
     tools: CharacterState.system.tools || [],
     equipment: (CharacterState.equipment || []).map((e) => e.name),
-    feats: (CharacterState.feats || []).map((f) => f.name),
+    features: (CharacterState.feats || []).map((f) => f.name),
     skills: CharacterState.system.skills || [],
     abilities: abilityScores,
     spells: Array.from(spellSet),
@@ -173,7 +173,7 @@ function renderCharacterSheet() {
     .map((l) => `<li>${l}</li>`)
     .join("");
   const toolsHtml = summary.tools.map((t) => `<li>${t}</li>`).join("");
-  const featsHtml = summary.feats.map((f) => `<li>${f}</li>`).join("");
+  const featuresHtml = summary.features.map((f) => `<li>${f}</li>`).join("");
   const skillsHtml = summary.skills.map((s) => `<li>${s}</li>`).join("");
   const equipmentHtml = summary.equipment
     .map((e) => `<li>${e}</li>`)
@@ -181,22 +181,40 @@ function renderCharacterSheet() {
   const spellsHtml = summary.spells.map((s) => `<li>${s}</li>`).join("");
 
   container.innerHTML = `
-    <h2>${CharacterState.name || ""}</h2>
-    <p><strong>Player:</strong> ${CharacterState.playerName || ""}</p>
-    <p><strong>Race:</strong> ${details.race || ""}</p>
-    <p><strong>Background:</strong> ${details.background || ""}</p>
-    <p><strong>Class:</strong> ${classText}</p>
-    <h3>Abilities</h3>
-    <table class="abilities">
-      <thead><tr><th>Ability</th><th>Score</th></tr></thead>
-      <tbody>${abilityRows}</tbody>
-    </table>
-    ${summary.languages.length ? `<h3>Languages</h3><ul>${languagesHtml}</ul>` : ""}
-    ${summary.tools.length ? `<h3>Tools</h3><ul>${toolsHtml}</ul>` : ""}
-    ${summary.feats.length ? `<h3>Feats</h3><ul>${featsHtml}</ul>` : ""}
-    ${summary.skills.length ? `<h3>Skills</h3><ul>${skillsHtml}</ul>` : ""}
-    ${summary.spells.length ? `<h3>Spells</h3><ul>${spellsHtml}</ul>` : ""}
-    ${summary.equipment.length ? `<h3>Equipment</h3><ul>${equipmentHtml}</ul>` : ""}
+    <div class="sheet-header">
+      <h2>${CharacterState.name || ""}</h2>
+      <p><strong>Player:</strong> ${CharacterState.playerName || ""}</p>
+      <p><strong>Race:</strong> ${details.race || ""}</p>
+      <p><strong>Background:</strong> ${details.background || ""}</p>
+      <p><strong>Class:</strong> ${classText}</p>
+    </div>
+    <section class="abilities">
+      <h3>Abilities</h3>
+      <table>
+        <thead><tr><th>Ability</th><th>Score</th></tr></thead>
+        <tbody>${abilityRows}</tbody>
+      </table>
+    </section>
+    <section class="skills">
+      ${summary.skills.length ? `<h3>Skills</h3><ul>${skillsHtml}</ul>` : ""}
+    </section>
+    <section class="features">
+      ${summary.features.length ? `<h3>Features</h3><ul>${featuresHtml}</ul>` : ""}
+    </section>
+    <section class="equipment">
+      ${summary.equipment.length ? `<h3>Equipment</h3><ul>${equipmentHtml}</ul>` : ""}
+    </section>
+    <section class="tools-languages">
+      ${summary.languages.length ? `<h3>Languages</h3><ul>${languagesHtml}</ul>` : ""}
+      ${summary.tools.length ? `<h3>Tools</h3><ul>${toolsHtml}</ul>` : ""}
+    </section>
+    <section class="spells">
+      ${summary.spells.length ? `<h3>Spells</h3><ul>${spellsHtml}</ul>` : ""}
+    </section>
+    <section class="backstory">
+      <h3>Backstory</h3>
+      <p>${details.origin || ""}</p>
+    </section>
   `;
 }
 

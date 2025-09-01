@@ -41,10 +41,10 @@ describe('renderCharacterSheet spells', () => {
     renderCharacterSheet();
     const html = document.getElementById('characterSheet').innerHTML;
     expect(html).toContain('<h3>Spells</h3>');
-    expect(html).toContain('Magic Missile');
-    expect(html).toContain('Shield');
-    expect(html).toContain('Light');
-    expect(html).toContain('Gust of Wind');
-    expect(html).toContain('Prestidigitation');
+    expect(html).toContain('Magic Missile (Class: Wizard)');
+    expect(html).toContain('Shield (Feat: Magic Initiate)');
+    expect(html).toContain('Light (Class)');
+    expect(html).toContain('Gust of Wind (Race)');
+    expect(html).toContain('Prestidigitation (Feat: Magic Initiate)');
   });
 });

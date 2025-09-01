@@ -528,14 +528,19 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
       featObj.tools = [];
       toolSelects.forEach((sel) => {
         featObj.tools.push(sel.value);
-        addUniqueProficiency('tools', sel.value, container);
+        addUniqueProficiency('tools', sel.value, container, `Feat: ${feat.name}`);
       });
     }
     if (languageSelects.length) {
       featObj.languages = [];
       languageSelects.forEach((sel) => {
         featObj.languages.push(sel.value);
-        addUniqueProficiency('languages', sel.value, container);
+        addUniqueProficiency(
+          'languages',
+          sel.value,
+          container,
+          `Feat: ${feat.name}`
+        );
       });
     }
     if (weaponSelects.length) {

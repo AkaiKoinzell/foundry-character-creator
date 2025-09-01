@@ -340,12 +340,12 @@ async function confirmBackgroundSelection() {
 
   if (Array.isArray(currentBackgroundData.tools)) {
     currentBackgroundData.tools.forEach((t) => {
-      const sel = addUniqueProficiency('tools', t, container);
+      const sel = addUniqueProficiency('tools', t, container, 'Background');
       if (sel) replacements.push(sel);
     });
   }
   pendingSelections.tools.forEach((sel) => {
-    const repl = addUniqueProficiency('tools', sel.value, container);
+    const repl = addUniqueProficiency('tools', sel.value, container, 'Background');
     if (repl) replacements.push(repl);
     sel.disabled = true;
   });
@@ -356,12 +356,22 @@ async function confirmBackgroundSelection() {
   }
   if (Array.isArray(currentBackgroundData.languages)) {
     currentBackgroundData.languages.forEach((l) => {
-      const sel = addUniqueProficiency('languages', l, container);
+      const sel = addUniqueProficiency(
+        'languages',
+        l,
+        container,
+        'Background'
+      );
       if (sel) replacements.push(sel);
     });
   }
   pendingSelections.languages.forEach((sel) => {
-    const repl = addUniqueProficiency('languages', sel.value, container);
+    const repl = addUniqueProficiency(
+      'languages',
+      sel.value,
+      container,
+      'Background'
+    );
     if (repl) replacements.push(repl);
     sel.disabled = true;
   });

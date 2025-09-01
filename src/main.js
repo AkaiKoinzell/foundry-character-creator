@@ -87,11 +87,9 @@ function showStep(step) {
     if (step === 6) loadStep6(true);
     if (step === 7) {
       commitAbilities();
+      CharacterState.playerName =
+        document.getElementById("userName")?.value || CharacterState.playerName;
       renderCharacterSheet();
-      const backstoryInput = document.getElementById("backstoryInput");
-      if (backstoryInput) {
-        backstoryInput.value = CharacterState.system.details.backstory || "";
-      }
     }
 
     const prevBtn = document.getElementById("prevStep");
@@ -156,27 +154,37 @@ function renderCharacterSheet() {
     },
     {}
   );
-  const spellSet = new Set();
-  Object.values(CharacterState.knownSpells || {}).forEach((byLevel) => {
-    Object.values(byLevel).forEach((names) => {
-      names.forEach((n) => spellSet.add(n));
+  const languageSources = CharacterState.proficiencySources?.languages || {};
+  const toolSources = CharacterState.proficiencySources?.tools || {};
+  const spells = (() => {
+    const map = new Map();
+    Object.entries(CharacterState.knownSpells || {}).forEach(
+      ([clsName, byLevel]) => {
+        Object.values(byLevel).forEach((names) =>
+          names.forEach((n) => map.set(n, `Class: ${clsName}`))
+        );
+      }
+    );
+    (CharacterState.system.spells?.cantrips || []).forEach((s) => {
+      if (!map.has(s)) map.set(s, "Class");
     });
-  });
-  (CharacterState.system.spells?.cantrips || []).forEach((s) =>
-    spellSet.add(s)
-  );
-  (CharacterState.raceChoices?.spells || []).forEach((s) =>
-    spellSet.add(s)
-  );
-  (CharacterState.feats || []).forEach((f) => {
-    const sp = f.spells || f.system?.spells;
-    if (sp) {
-      Object.values(sp).forEach((v) => {
-        if (Array.isArray(v)) v.forEach((n) => spellSet.add(n));
-        else if (typeof v === "string") spellSet.add(v);
-      });
-    }
-  });
+    (CharacterState.raceChoices?.spells || []).forEach((s) =>
+      map.set(s, "Race")
+    );
+    (CharacterState.feats || []).forEach((f) => {
+      const sp = f.spells || f.system?.spells;
+      if (sp) {
+        Object.values(sp).forEach((v) => {
+          if (Array.isArray(v))
+            v.forEach((n) => map.set(n, `Feat: ${f.name}`));
+          else if (typeof v === "string") map.set(v, `Feat: ${f.name}`);
+        });
+      }
+    });
+    return Array.from(map.entries()).map(
+      ([name, source]) => `${name} (${source})`
+    );
+  })();
 
   const skillList = Object.entries(SKILL_ABILITIES).map(([name, ability]) => {
     const sysSkills = CharacterState.system.skills || [];
@@ -201,20 +209,31 @@ function renderCharacterSheet() {
     background: CharacterState.system.details.background,
     classes,
     totalLevel: Object.values(classes).reduce((a, b) => a + b, 0),
-    languages: CharacterState.system.traits.languages?.value || [],
-    tools: CharacterState.system.tools || [],
+    languages: (CharacterState.system.traits.languages?.value || []).map(
+      (l) => (languageSources[l] ? `${l} (${languageSources[l]})` : l)
+    ),
+    tools: (CharacterState.system.tools || []).map((t) =>
+      toolSources[t] ? `${t} (${toolSources[t]})` : t
+    ),
     equipment: (CharacterState.equipment || []).map((e) => e.name),
     features: (() => {
       const classFeatures = (CharacterState.classes || []).flatMap(
-        (c) => c.features?.map((f) => f.name) || []
+        (c) =>
+          c.features?.map((f) => `${f.name} (Class: ${c.name})`) || []
       );
-      const raceFeatures = CharacterState.raceFeatures || [];
-      const featNames = (CharacterState.feats || []).map((f) => f.name);
-      return Array.from(new Set([...classFeatures, ...raceFeatures, ...featNames]));
+      const raceFeatures = (CharacterState.raceFeatures || []).map(
+        (f) => `${f} (Race)`
+      );
+      const featNames = (CharacterState.feats || []).map(
+        (f) => `${f.name} (Feat)`
+      );
+      return Array.from(
+        new Set([...classFeatures, ...raceFeatures, ...featNames])
+      );
     })(),
     skills: skillList,
     abilities: abilityScores,
-    spells: Array.from(spellSet),
+    spells,
   };
   const classText = (CharacterState.classes || [])
     .map((c) => `${c.name || ""} ${c.level || ""}`.trim())
@@ -228,7 +247,8 @@ function renderCharacterSheet() {
       const score = systemAbilities[ab]?.value ?? "";
       const mod = score === "" ? "" : Math.floor((score - 10) / 2);
       const modText = mod === "" ? "" : mod >= 0 ? `+${mod}` : `${mod}`;
-      return `<div class="ability-box" data-ab="${ab.toUpperCase()}"><div class="score">${score}</div><div class="mod">${modText}</div></div>`;
+      const label = ab.toUpperCase();
+      return `<div class="ability-box" data-ab="${label}"><div class="label">${label}</div><div class="score">${score}</div><div class="mod">${modText}</div></div>`;
     })
     .join("");
 
@@ -282,9 +302,16 @@ function renderCharacterSheet() {
     </section>
     <section class="backstory">
       <h3>Backstory</h3>
-      <p>${details.backstory || ""}</p>
+      <textarea id="backstoryInput" class="form-control" rows="4">${
+        details.backstory || ""
+      }</textarea>
     </section>
   `;
+
+  const backstoryEl = container.querySelector("#backstoryInput");
+  backstoryEl?.addEventListener("input", () => {
+    CharacterState.system.details.backstory = backstoryEl.value;
+  });
 }
 
 globalThis.renderCharacterSheet = renderCharacterSheet;
@@ -418,14 +445,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderCharacterSheet();
     exportPdf(CharacterState).catch((err) => console.error(err));
   });
-
-  const backstoryEl = document.getElementById("backstoryInput");
-  if (backstoryEl) {
-    backstoryEl.addEventListener("input", () => {
-      CharacterState.system.details.backstory = backstoryEl.value;
-      renderCharacterSheet();
-    });
-  }
 
     // Step 1 inputs ----------------------------------------------------------
     const userNameEl = document.getElementById("userName");

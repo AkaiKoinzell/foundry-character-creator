@@ -90,9 +90,10 @@ function applyBonus() {
     alert(t('invalidBonusDistribution'));
     return;
   }
-  CharacterState.bonusAbilities = {};
+  CharacterState.bonusAbilities = { ...CharacterState.bonusAbilities };
   Object.entries(counts).forEach(([ab, val]) => {
-    CharacterState.bonusAbilities[ab] = val;
+    CharacterState.bonusAbilities[ab] =
+      (CharacterState.bonusAbilities[ab] || 0) + val;
   });
   ABILITIES.forEach(updateFinal);
   validateAbilities();

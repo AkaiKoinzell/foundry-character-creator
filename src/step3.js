@@ -1137,7 +1137,12 @@ function confirmRaceSelection() {
       for (const k in obj)
         if (k !== 'any' && k !== 'choose' && obj[k]) {
           const val = capitalize(k);
-          const sel = addUniqueProficiency('tools', val, container);
+          const sel = addUniqueProficiency(
+            'tools',
+            val,
+            container,
+            'Race'
+          );
           if (sel) {
             sel.dataset.proftype = 'tools';
             replacements.push(sel);
@@ -1150,7 +1155,7 @@ function confirmRaceSelection() {
     });
   }
   pendingRaceChoices.tools.forEach((sel) => {
-    const repl = addUniqueProficiency('tools', sel.value, container);
+    const repl = addUniqueProficiency('tools', sel.value, container, 'Race');
     if (repl) {
       repl.dataset.proftype = 'tools';
       replacements.push(repl);
@@ -1205,7 +1210,12 @@ function confirmRaceSelection() {
       for (const k in obj)
         if (k !== 'anyStandard' && obj[k]) {
           const val = capitalize(k);
-          const sel = addUniqueProficiency('languages', val, container);
+          const sel = addUniqueProficiency(
+            'languages',
+            val,
+            container,
+            'Race'
+          );
           if (sel) {
             sel.dataset.proftype = 'languages';
             replacements.push(sel);
@@ -1218,7 +1228,12 @@ function confirmRaceSelection() {
     });
   }
   pendingRaceChoices.languages.forEach((sel) => {
-    const repl = addUniqueProficiency('languages', sel.value, container);
+    const repl = addUniqueProficiency(
+      'languages',
+      sel.value,
+      container,
+      'Race'
+    );
     if (repl) {
       repl.dataset.proftype = 'languages';
       replacements.push(repl);

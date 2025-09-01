@@ -46,9 +46,9 @@ describe('renderCharacterSheet features and backstory', () => {
     renderCharacterSheet();
     const html = document.getElementById('characterSheet').innerHTML;
     expect(html).toContain('<h3>Features</h3>');
-    expect(html).toContain('Brave');
-    expect(html).toContain('Second Wind');
-    expect(html).toContain('Darkvision');
+    expect(html).toContain('Brave (Feat)');
+    expect(html).toContain('Second Wind (Class: Fighter)');
+    expect(html).toContain('Darkvision (Race)');
     expect(html).toContain('<h3>Backstory</h3>');
     expect(html).toContain('Born in a small village.');
   });

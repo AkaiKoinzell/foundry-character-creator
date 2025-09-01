@@ -83,7 +83,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
   font-weight: bold;
 }
 
@@ -92,6 +92,10 @@
 }
 
 .character-sheet .ability-box .mod {
+  font-size: 0.8em;
+}
+
+.character-sheet .ability-box .label {
   font-size: 0.8em;
 }
 

@@ -187,6 +187,10 @@ export const CharacterState = {
   knownSpells: {},
   showHelp: false,
   raceFeatures: [],
+  proficiencySources: {
+    languages: {},
+    tools: {},
+  },
   raceChoices: {
     spells: [],
     spellAbility: '',

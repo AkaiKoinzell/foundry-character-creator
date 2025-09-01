@@ -100,11 +100,18 @@ export function pendingReplacements(type) {
   );
 }
 
-export function addUniqueProficiency(type, value, container) {
+export function addUniqueProficiency(type, value, container, source = '') {
   if (!value) return null;
   const list = getProficiencyList(type);
   if (!list.includes(value)) {
     list.push(value);
+    if (source) {
+      CharacterState.proficiencySources = CharacterState.proficiencySources || {};
+      const map =
+        (CharacterState.proficiencySources[type] =
+          CharacterState.proficiencySources[type] || {});
+      map[value] = source;
+    }
     logCharacterState();
     return null;
   }

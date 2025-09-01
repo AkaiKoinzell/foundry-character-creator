@@ -1,0 +1,6 @@
+{
+  "characters": [
+    { "file": "fighter.json", "name": "Sample Fighter" },
+    { "file": "wizard.json", "name": "Sample Wizard" }
+  ]
+}

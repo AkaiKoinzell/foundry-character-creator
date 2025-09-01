@@ -1,0 +1,31 @@
+{
+  "playerName": "",
+  "name": "Preset Wizard",
+  "type": "character",
+  "classes": [{ "name": "Wizard", "level": 1 }],
+  "feats": [],
+  "equipment": [],
+  "knownSpells": {},
+  "raceChoices": { "spells": [], "spellAbility": "", "size": "Medium", "alterations": {}, "resist": "", "tools": [], "weapons": [] },
+  "bonusAbilities": { "str": 0, "dex": 0, "con": 0, "int": 0, "wis": 0, "cha": 0 },
+  "baseAbilities": { "str": 8, "dex": 14, "con": 13, "int": 15, "wis": 12, "cha": 10 },
+  "system": {
+    "details": { "race": "Elf", "background": "Sage", "origin": "", "age": 120 },
+    "abilities": {
+      "str": { "value": 8 },
+      "dex": { "value": 14 },
+      "con": { "value": 13 },
+      "int": { "value": 15 },
+      "wis": { "value": 12 },
+      "cha": { "value": 10 }
+    },
+    "skills": ["Arcana", "History"],
+    "tools": [],
+    "spells": { "cantrips": ["Fire Bolt"], "pact": { "value": 0, "max": 0, "level": 0 } },
+    "traits": { "languages": { "value": ["Common", "Elvish"] } },
+    "expertise": [],
+    "resources": {},
+    "attributes": { "prof": 2 }
+  },
+  "prototypeToken": { "name": "Preset Wizard" }
+}

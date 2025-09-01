@@ -4,7 +4,10 @@
 
 import { jest } from '@jest/globals';
 import * as Step2 from '../src/step2.js';
-import { CharacterState } from '../src/data.js';
+import { CharacterState, DATA } from '../src/data.js';
+import { readFileSync } from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 describe('duplicate selection prevention', () => {
   beforeEach(() => {
@@ -124,5 +127,37 @@ describe('duplicate selection prevention', () => {
     expect(CharacterState.classes).toHaveLength(1);
     expect(alertMock).toHaveBeenCalled();
     alertMock.mockRestore();
+  });
+});
+
+describe('choice feature descriptions', () => {
+  test('Fighting Style accordion includes feature description and select', () => {
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+    const fighterData = JSON.parse(
+      readFileSync(path.join(__dirname, '../data/classes/fighter.json'), 'utf8')
+    );
+    DATA.classes = [fighterData];
+    CharacterState.showHelp = true;
+    const cls = {
+      name: 'Fighter',
+      level: 1,
+      fixed_proficiencies: [],
+      skill_choices: [],
+      spellcasting: {},
+      skills: [],
+      choiceSelections: {},
+      expertise: [],
+    };
+    const card = Step2.renderClassEditor(cls, 0);
+    const items = Array.from(card.querySelectorAll('.accordion-item'));
+    const fsItem = items.find(item =>
+      item.querySelector('.accordion-header').textContent.includes('Fighting Style')
+    );
+    expect(fsItem).toBeTruthy();
+    const body = fsItem.querySelector('.accordion-content');
+    expect(body.textContent).toContain(
+      'Adopt a particular style of fighting as your specialty.'
+    );
+    expect(body.querySelector('select')).not.toBeNull();
   });
 });

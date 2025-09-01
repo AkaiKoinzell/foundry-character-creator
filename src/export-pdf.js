@@ -1,4 +1,4 @@
-import { PDFDocument, StandardFonts } from 'pdf-lib';
+import { PDFDocument, StandardFonts } from "https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.esm.min.js";
 
 export async function exportPdf(state) {
   const templateBytes = await fetch('assets/PDF Sheet Empty.pdf').then(r => r.arrayBuffer());

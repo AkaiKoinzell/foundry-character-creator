@@ -1,34 +1,35 @@
 {
   "name": "Evocation",
-  "description": "You focus your study on magic that creates elemental effects.",
+  "description": "Specialists in elemental and explosive magic.",
   "features_by_level": {
     "2": [
       {
         "name": "Evocation Savant",
-        "description": "Description for Evocation Savant."
+        "description": "The gold and time you must spend to copy an evocation spell into your spellbook is halved."
       },
       {
         "name": "Sculpt Spells",
-        "description": "Description for Sculpt Spells."
+        "description": "When you cast an evocation spell that affects other creatures you can see, choose 1 + the spell's level creatures to automatically succeed on their saves and take no damage."
       }
     ],
     "6": [
       {
         "name": "Potent Cantrip",
-        "description": "Description for Potent Cantrip."
+        "description": "Your damaging cantrips deal half damage to creatures that succeed on their saving throws."
       }
     ],
     "10": [
       {
         "name": "Empowered Evocation",
-        "description": "Description for Empowered Evocation."
+        "description": "Add your Intelligence modifier to one damage roll of any wizard evocation spell you cast."
       }
     ],
     "14": [
       {
         "name": "Overchannel",
-        "description": "Description for Overchannel."
+        "description": "When you cast a 1st- through 5th-level wizard spell that deals damage, you can deal maximum damage. The first time causes no harm; each additional use before a long rest deals escalating 2d12 necrotic damage per spell level."
       }
     ]
   }
 }
+

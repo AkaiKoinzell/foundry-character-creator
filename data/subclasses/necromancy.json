@@ -1,34 +1,35 @@
 {
   "name": "Necromancy",
-  "description": "You study the magic of life, death, and undeath.",
+  "description": "Scholars of life and death who command undead minions.",
   "features_by_level": {
     "2": [
       {
         "name": "Necromancy Savant",
-        "description": "Description for Necromancy Savant."
+        "description": "The gold and time you must spend to copy a necromancy spell into your spellbook is halved."
       },
       {
         "name": "Grim Harvest",
-        "description": "Description for Grim Harvest."
+        "description": "Once per turn when you kill a creature with a spell of 1st level or higher, regain hit points equal to twice the spell's level, or three times if it belongs to the School of Necromancy; no effect on constructs or undead."
       }
     ],
     "6": [
       {
         "name": "Undead Thralls",
-        "description": "Description for Undead Thralls."
+        "description": "Add animate dead to your spellbook. When you cast it, create one extra undead, and all undead you create gain extra hit points equal to your wizard level and add your proficiency bonus to damage rolls."
       }
     ],
     "10": [
       {
         "name": "Inured to Undeath",
-        "description": "Description for Inured to Undeath."
+        "description": "You have resistance to necrotic damage, and your hit point maximum can't be reduced."
       }
     ],
     "14": [
       {
         "name": "Command Undead",
-        "description": "Description for Command Undead."
+        "description": "As an action, force an undead within 60 feet to make a Charisma save; on a failure it becomes friendly and obeys you until you use this feature again. Intelligent undead have advantages or repeat saves."
       }
     ]
   }
 }
+

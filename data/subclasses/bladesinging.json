@@ -1,0 +1,35 @@
+{
+  "name": "Bladesinging",
+  "description": "A fusion of swordplay and arcane artistry originating with the elves.",
+  "features_by_level": {
+    "2": [
+      {
+        "name": "Training in War and Song",
+        "description": "Gain proficiency with light armor, one type of one-handed melee weapon, and the Performance skill."
+      },
+      {
+        "name": "Bladesong",
+        "description": "As a bonus action, start a Bladesong for 1 minute, gaining an AC bonus equal to your Intelligence modifier, +10 ft speed, advantage on Acrobatics, and a bonus to concentration saves equal to your Intelligence modifier. Uses equal to your proficiency bonus per long rest."
+      }
+    ],
+    "6": [
+      {
+        "name": "Extra Attack",
+        "description": "Attack twice whenever you take the Attack action, and you can replace one attack with a cantrip."
+      }
+    ],
+    "10": [
+      {
+        "name": "Song of Defense",
+        "description": "While your Bladesong is active, use a reaction to expend a spell slot and reduce incoming damage by five times the slot's level."
+      }
+    ],
+    "14": [
+      {
+        "name": "Song of Victory",
+        "description": "While in a Bladesong, add your Intelligence modifier to the damage of your melee weapon attacks."
+      }
+    ]
+  }
+}
+

@@ -1,0 +1,35 @@
+{
+  "name": "War Magic",
+  "description": "Tactical mages who blend offensive and defensive techniques for battle.",
+  "features_by_level": {
+    "2": [
+      {
+        "name": "Arcane Deflection",
+        "description": "When you are hit by an attack or fail a saving throw, use your reaction to gain +2 AC against the attack or +4 to the saving throw. After using this feature, you can cast only cantrips until the end of your next turn."
+      },
+      {
+        "name": "Tactical Wit",
+        "description": "Add your Intelligence modifier to initiative rolls."
+      }
+    ],
+    "6": [
+      {
+        "name": "Power Surge",
+        "description": "Store up to a number of power surges equal to your Intelligence modifier. You start each day with one, gain one when you successfully end a spell with dispel magic or counterspell, and gain one after a short rest if you have none. Spend a surge to deal extra force damage equal to half your wizard level to a target of your spell."
+      }
+    ],
+    "10": [
+      {
+        "name": "Durable Magic",
+        "description": "While you maintain concentration on a spell, you gain a +2 bonus to AC and saving throws."
+      }
+    ],
+    "14": [
+      {
+        "name": "Deflecting Shroud",
+        "description": "When you use Arcane Deflection, choose up to three creatures within 60 feet; each takes force damage equal to half your wizard level."
+      }
+    ]
+  }
+}
+

@@ -1,34 +1,35 @@
 {
   "name": "Illusion",
-  "description": "You dedicate yourself to perfecting the art of tricking the senses.",
+  "description": "Masters of trickery who weave convincing falsehoods.",
   "features_by_level": {
     "2": [
       {
         "name": "Illusion Savant",
-        "description": "Description for Illusion Savant."
+        "description": "The gold and time you must spend to copy an illusion spell into your spellbook is halved."
       },
       {
         "name": "Improved Minor Illusion",
-        "description": "Description for Improved Minor Illusion."
+        "description": "You learn the minor illusion cantrip, and when you cast it you can create both sound and image with a single casting."
       }
     ],
     "6": [
       {
         "name": "Malleable Illusions",
-        "description": "Description for Malleable Illusions."
+        "description": "When you cast an illusion spell with a duration of 1 minute or longer, you can use your action to change the illusion's nature within the spell's normal parameters."
       }
     ],
     "10": [
       {
         "name": "Illusory Self",
-        "description": "Description for Illusory Self."
+        "description": "As a reaction when a creature makes an attack roll against you, create an illusory duplicate that causes the attack to miss. Usable once per short or long rest."
       }
     ],
     "14": [
       {
         "name": "Illusory Reality",
-        "description": "Description for Illusory Reality."
+        "description": "When you cast an illusion spell of 1st level or higher, you can make one inanimate, nonmagical object in the illusion real for 1 minute. The object can't deal damage or harm anyone."
       }
     ]
   }
 }
+

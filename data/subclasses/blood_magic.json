@@ -1,0 +1,39 @@
+{
+  "name": "Blood Magic",
+  "description": "Hemocraft practitioners who empower spells with their own vitality.",
+  "features_by_level": {
+    "2": [
+      {
+        "name": "Blood Channeling",
+        "description": "While below maximum hit points, you can use your body as an arcane focus. You may replace costly material components by taking 1d10 necrotic damage per 50 gp of the component; the damage can't be reduced and if it drops you to 0 HP the spell fails but the slot isn't expended."
+      },
+      {
+        "name": "Sanguine Burst",
+        "description": "When you roll damage for a spell of 1st level or higher, take necrotic damage equal to the spell's level to reroll a number of damage dice up to your Intelligence modifier, using the new rolls."
+      }
+    ],
+    "6": [
+      {
+        "name": "Bond of Mutual Suffering",
+        "description": "When a creature you can see hits you, use your reaction to deal it damage equal to the damage you took; unusable against constructs or undead and usable once per rest."
+      }
+    ],
+    "10": [
+      {
+        "name": "Glyph of Hemorrhaging",
+        "description": "When you damage a creature with a spell, you can curse it for 1 minute; while cursed, it takes an extra 1d6 necrotic damage when hit by an attack. The creature can make a Constitution save at the end of each turn to end the curse. Once used, you must finish a rest to use again."
+      }
+    ],
+    "14": [
+      {
+        "name": "Bond of Mutual Suffering (14th Level)",
+        "description": "You can use Bond of Mutual Suffering twice between rests."
+      },
+      {
+        "name": "Thicker than Water",
+        "description": "When magic causes you to regain hit points, you regain extra hit points equal to your proficiency bonus. While concentrating on a spell, you have resistance to nonmagical bludgeoning, piercing, and slashing damage."
+      }
+    ]
+  }
+}
+

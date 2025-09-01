@@ -256,12 +256,41 @@ function updateFeatSelectOptions() {
   });
 }
 
+function slugifySubclass(name = '') {
+  return name
+    .replace(/^(Path|Oath|Circle|College|Order|Domain|Way|School) of (the )?/i, '')
+    .replace(/^The /i, '')
+    .replace(/ (Domain|Tradition)$/i, '')
+    .replace(/[’']/g, '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_');
+}
+
+async function loadSubclassData(cls) {
+  if (!cls.subclass) {
+    cls.subclassData = null;
+    return;
+  }
+  const slug = slugifySubclass(cls.subclass);
+  try {
+    const resp = await fetch(`data/subclasses/${slug}.json`);
+    if (!resp.ok) throw new Error('Failed to load');
+    cls.subclassData = await resp.json();
+  } catch (e) {
+    cls.subclassData = null;
+  }
+}
+
 function compileClassFeatures(cls) {
   const data = DATA.classes.find(c => c.name === cls.name);
   if (!data) return;
   cls.features = [];
   for (let lvl = 1; lvl <= (cls.level || 1); lvl++) {
-    const feats = data.features_by_level?.[lvl] || [];
+    const feats = [
+      ...(data.features_by_level?.[lvl] || []),
+      ...(cls.subclassData?.features_by_level?.[lvl] || []),
+    ];
     feats.forEach(f => {
       cls.features.push({
         level: lvl,
@@ -568,21 +597,32 @@ function renderClassEditor(cls, index) {
       });
       sel.dataset.type = 'subclass';
       sel.value = cls.subclass || '';
-      sel.addEventListener('change', () => {
+      sel.addEventListener('change', async () => {
         cls.subclass = sel.value;
+        await loadSubclassData(cls);
         compileClassFeatures(cls);
         rebuildFromClasses();
+        renderSelectedClasses();
         updateStep2Completion();
       });
       subContainer.appendChild(sel);
       accordion.appendChild(createAccordionItem(t('subclass'), subContainer, true));
     }
 
+    if (cls.subclass && !cls.subclassData) {
+      loadSubclassData(cls).then(() => {
+        compileClassFeatures(cls);
+        rebuildFromClasses();
+        renderSelectedClasses();
+      });
+    }
+
     for (let lvl = 1; lvl <= (cls.level || 1); lvl++) {
       const levelChoices = (clsDef.choices || []).filter(c => c.level === lvl);
-      const features = (clsDef.features_by_level?.[lvl] || []).filter(
-        f => !levelChoices.some(c => c.name === f.name)
-      );
+      const features = [
+        ...(clsDef.features_by_level?.[lvl] || []),
+        ...(cls.subclassData?.features_by_level?.[lvl] || []),
+      ].filter(f => !levelChoices.some(c => c.name === f.name));
       features.forEach(f => {
         const body = document.createElement('div');
         if (CharacterState.showHelp && f.description)

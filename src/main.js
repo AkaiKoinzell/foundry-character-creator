@@ -131,6 +131,12 @@ function renderCharacterSheet() {
     },
     {}
   );
+  const spellSet = new Set();
+  Object.values(CharacterState.knownSpells || {}).forEach((byLevel) => {
+    Object.values(byLevel).forEach((names) => {
+      names.forEach((n) => spellSet.add(n));
+    });
+  });
 
   const summary = {
     playerName: CharacterState.playerName,
@@ -147,6 +153,7 @@ function renderCharacterSheet() {
     feats: (CharacterState.feats || []).map((f) => f.name),
     skills: CharacterState.system.skills || [],
     abilities: abilityScores,
+    spells: Array.from(spellSet),
   };
   const classText = (CharacterState.classes || [])
     .map((c) => `${c.name || ""} ${c.level || ""}`.trim())
@@ -162,38 +169,6 @@ function renderCharacterSheet() {
     )
     .join("");
 
-  // Gather spells grouped by level either from knownSpells or from the
-  // system.spells structure. This ensures the final character sheet lists
-  // all spells the character knows.
-  const spellsByLevel = {};
-
-  // Merge spells from knownSpells (organized by class -> level -> [spells])
-  if (CharacterState.knownSpells) {
-    Object.values(CharacterState.knownSpells).forEach((byLevel) => {
-      Object.entries(byLevel).forEach(([lvl, names]) => {
-        if (!spellsByLevel[lvl]) spellsByLevel[lvl] = [];
-        spellsByLevel[lvl].push(...names);
-      });
-    });
-  }
-
-  // Fallback: attempt to read spell lists directly from system.spells
-  const sysSpells = CharacterState.system?.spells || {};
-  if (Object.keys(spellsByLevel).length === 0) {
-    if (Array.isArray(sysSpells.cantrips)) {
-      spellsByLevel[0] = [...sysSpells.cantrips];
-    }
-    for (let i = 1; i <= 9; i++) {
-      const s = sysSpells[`spell${i}`];
-      if (Array.isArray(s)) spellsByLevel[i] = [...s];
-      else if (s && Array.isArray(s.spells)) spellsByLevel[i] = [...s.spells];
-    }
-  }
-
-  Object.keys(spellsByLevel).forEach((lvl) => {
-    spellsByLevel[lvl] = Array.from(new Set(spellsByLevel[lvl]));
-  });
-
   const languagesHtml = summary.languages
     .map((l) => `<li>${l}</li>`)
     .join("");
@@ -203,15 +178,7 @@ function renderCharacterSheet() {
   const equipmentHtml = summary.equipment
     .map((e) => `<li>${e}</li>`)
     .join("");
-
-  const spellsHtml = Object.keys(spellsByLevel)
-    .sort((a, b) => Number(a) - Number(b))
-    .map((lvl) => {
-      const title = Number(lvl) === 0 ? "Cantrips" : `Level ${lvl}`;
-      const items = spellsByLevel[lvl].map((s) => `<li>${s}</li>`).join("");
-      return `<h4>${title}</h4><ul>${items}</ul>`;
-    })
-    .join("");
+  const spellsHtml = summary.spells.map((s) => `<li>${s}</li>`).join("");
 
   container.innerHTML = `
     <h2>${CharacterState.name || ""}</h2>
@@ -228,10 +195,12 @@ function renderCharacterSheet() {
     ${summary.tools.length ? `<h3>Tools</h3><ul>${toolsHtml}</ul>` : ""}
     ${summary.feats.length ? `<h3>Feats</h3><ul>${featsHtml}</ul>` : ""}
     ${summary.skills.length ? `<h3>Skills</h3><ul>${skillsHtml}</ul>` : ""}
-    ${Object.keys(spellsByLevel).length ? `<h3>Spells</h3>${spellsHtml}` : ""}
+    ${summary.spells.length ? `<h3>Spells</h3><ul>${spellsHtml}</ul>` : ""}
     ${summary.equipment.length ? `<h3>Equipment</h3><ul>${equipmentHtml}</ul>` : ""}
   `;
 }
+
+globalThis.renderCharacterSheet = renderCharacterSheet;
 
 document.addEventListener("DOMContentLoaded", async () => {
   const createBtn = document.getElementById("createCharacterBtn");

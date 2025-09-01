@@ -75,9 +75,11 @@ function validateRaceChoices() {
   });
 
   const missing = allSelects.filter((s) => !s.value);
-  missing.forEach((s) => {
-    s.title = t('selectionRequired');
-  });
+  if (CharacterState.showHelp) {
+    missing.forEach((s) => {
+      s.title = t('selectionRequired');
+    });
+  }
 
   const counts = {};
   choiceSelects.forEach((s) => {
@@ -399,8 +401,8 @@ async function renderSelectedRace() {
       e => e.name && e.name.toLowerCase() === 'size'
     );
     if (sizeEntry) {
-      if (sizeEntry.description)
-        sizeContent.appendChild(createElement('p', sizeEntry.description));
+        if (CharacterState.showHelp && sizeEntry.description)
+          sizeContent.appendChild(createElement('p', sizeEntry.description));
       appendEntries(sizeContent, sizeEntry.entries);
       usedEntries.add(sizeEntry.name);
     }
@@ -669,7 +671,7 @@ async function renderSelectedRace() {
         e => e.name && e.name.toLowerCase() === 'languages'
       );
       if (langEntry) {
-        if (langEntry.description)
+        if (CharacterState.showHelp && langEntry.description)
           langContent.appendChild(createElement('p', langEntry.description));
         appendEntries(langContent, langEntry.entries);
         usedEntries.add(langEntry.name);
@@ -722,7 +724,7 @@ async function renderSelectedRace() {
         (e) => e.name && /resist/i.test(e.name)
       );
       if (resistEntry) {
-        if (resistEntry.description)
+        if (CharacterState.showHelp && resistEntry.description)
           resistContent.appendChild(createElement('p', resistEntry.description));
         appendEntries(resistContent, resistEntry.entries);
         usedEntries.add(resistEntry.name);
@@ -867,7 +869,7 @@ async function renderSelectedRace() {
     if (abilityOpts) {
       const abilityContent = document.createElement('div');
       if (spellEntry) {
-        if (spellEntry.description)
+        if (CharacterState.showHelp && spellEntry.description)
           abilityContent.appendChild(createElement('p', spellEntry.description));
         appendEntries(abilityContent, spellEntry.entries);
         usedEntries.add(spellEntry.name);
@@ -918,7 +920,7 @@ async function renderSelectedRace() {
       };
       const spellContent = document.createElement('div');
       if (spellEntry && !spellEntryUsed) {
-        if (spellEntry.description)
+        if (CharacterState.showHelp && spellEntry.description)
           spellContent.appendChild(createElement('p', spellEntry.description));
         appendEntries(spellContent, spellEntry.entries);
         usedEntries.add(spellEntry.name);
@@ -1008,7 +1010,8 @@ async function renderSelectedRace() {
   Object.values(entryMap).forEach(e => {
     if (!e.name || usedEntries.has(e.name)) return;
     const body = document.createElement('div');
-    if (e.description) body.appendChild(createElement('p', e.description));
+    if (CharacterState.showHelp && e.description)
+      body.appendChild(createElement('p', e.description));
     appendEntries(body, e.entries);
     accordion.appendChild(createAccordionItem(e.name, body));
   });

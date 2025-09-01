@@ -43,25 +43,29 @@ export function renderBackgroundList(query = '') {
   for (const [name, bg] of Object.entries(entries)) {
     if (!name.toLowerCase().includes(term)) continue;
     const details = [];
-    if (bg.skills && bg.skills.length)
-      details.push(createElement('p', `${t('skills')}: ${bg.skills.join(', ')}`));
-    if (Array.isArray(bg.tools) && bg.tools.length)
-      details.push(createElement('p', `${t('tools')}: ${bg.tools.join(', ')}`));
-    if (Array.isArray(bg.languages) && bg.languages.length)
-      details.push(
-        createElement('p', `${t('languages')}: ${bg.languages.join(', ')}`)
-      );
-    if (bg.featOptions && bg.featOptions.length)
-      details.push(
-        createElement(
-          'p',
-          `${t('featOptions')}: ${bg.featOptions.join(', ')}`
-        )
-      );
+    if (CharacterState.showHelp) {
+      if (bg.skills && bg.skills.length)
+        details.push(createElement('p', `${t('skills')}: ${bg.skills.join(', ')}`));
+      if (Array.isArray(bg.tools) && bg.tools.length)
+        details.push(createElement('p', `${t('tools')}: ${bg.tools.join(', ')}`));
+      if (Array.isArray(bg.languages) && bg.languages.length)
+        details.push(
+          createElement('p', `${t('languages')}: ${bg.languages.join(', ')}`)
+        );
+      if (bg.featOptions && bg.featOptions.length)
+        details.push(
+          createElement(
+            'p',
+            `${t('featOptions')}: ${bg.featOptions.join(', ')}`
+          )
+        );
+    }
     const card = createSelectableCard(
       name,
-      bg.short || bg.description || bg.summary || bg.desc || '',
-      details,
+      CharacterState.showHelp
+        ? bg.short || bg.description || bg.summary || bg.desc || ''
+        : '',
+      CharacterState.showHelp ? details : [],
       () => selectBackground(bg),
       t('details')
     );
@@ -98,34 +102,36 @@ function selectBackground(bg) {
 
   // Details summary
   const details = document.createElement('div');
-  if (currentBackgroundData.skills && currentBackgroundData.skills.length)
-    details.appendChild(
-      createElement(
-        'p',
-        `${t('skills')}: ${currentBackgroundData.skills.join(', ')}`
-      )
-    );
-  if (Array.isArray(currentBackgroundData.tools) && currentBackgroundData.tools.length)
-    details.appendChild(
-      createElement(
-        'p',
-        `${t('tools')}: ${currentBackgroundData.tools.join(', ')}`
-      )
-    );
-  if (Array.isArray(currentBackgroundData.languages) && currentBackgroundData.languages.length)
-    details.appendChild(
-      createElement(
-        'p',
-        `${t('languages')}: ${currentBackgroundData.languages.join(', ')}`
-      )
-    );
-  if (currentBackgroundData.featOptions && currentBackgroundData.featOptions.length)
-    details.appendChild(
-      createElement(
-        'p',
-        `${t('featOptions')}: ${currentBackgroundData.featOptions.join(', ')}`
-      )
-    );
+  if (CharacterState.showHelp) {
+    if (currentBackgroundData.skills && currentBackgroundData.skills.length)
+      details.appendChild(
+        createElement(
+          'p',
+          `${t('skills')}: ${currentBackgroundData.skills.join(', ')}`
+        )
+      );
+    if (Array.isArray(currentBackgroundData.tools) && currentBackgroundData.tools.length)
+      details.appendChild(
+        createElement(
+          'p',
+          `${t('tools')}: ${currentBackgroundData.tools.join(', ')}`
+        )
+      );
+    if (Array.isArray(currentBackgroundData.languages) && currentBackgroundData.languages.length)
+      details.appendChild(
+        createElement(
+          'p',
+          `${t('languages')}: ${currentBackgroundData.languages.join(', ')}`
+        )
+      );
+    if (currentBackgroundData.featOptions && currentBackgroundData.featOptions.length)
+      details.appendChild(
+        createElement(
+          'p',
+          `${t('featOptions')}: ${currentBackgroundData.featOptions.join(', ')}`
+        )
+      );
+  }
   features.appendChild(createAccordionItem(t('details'), details));
 
   // Choices --------------------------------------------------
@@ -134,7 +140,8 @@ function selectBackground(bg) {
       e => e.name && e.name.toLowerCase().includes(key)
     );
     if (entry) {
-      if (entry.description) wrapper.appendChild(createElement('p', entry.description));
+      if (CharacterState.showHelp && entry.description)
+        wrapper.appendChild(createElement('p', entry.description));
       appendEntries(wrapper, entry.entries);
     }
   };

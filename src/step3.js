@@ -401,8 +401,8 @@ async function renderSelectedRace() {
       e => e.name && e.name.toLowerCase() === 'size'
     );
     if (sizeEntry) {
-        if (CharacterState.showHelp && sizeEntry.description)
-          sizeContent.appendChild(createElement('p', sizeEntry.description));
+      if (sizeEntry.description)
+        sizeContent.appendChild(createElement('p', sizeEntry.description));
       appendEntries(sizeContent, sizeEntry.entries);
       usedEntries.add(sizeEntry.name);
     }
@@ -671,7 +671,7 @@ async function renderSelectedRace() {
         e => e.name && e.name.toLowerCase() === 'languages'
       );
       if (langEntry) {
-        if (CharacterState.showHelp && langEntry.description)
+        if (langEntry.description)
           langContent.appendChild(createElement('p', langEntry.description));
         appendEntries(langContent, langEntry.entries);
         usedEntries.add(langEntry.name);
@@ -724,7 +724,7 @@ async function renderSelectedRace() {
         (e) => e.name && /resist/i.test(e.name)
       );
       if (resistEntry) {
-        if (CharacterState.showHelp && resistEntry.description)
+        if (resistEntry.description)
           resistContent.appendChild(createElement('p', resistEntry.description));
         appendEntries(resistContent, resistEntry.entries);
         usedEntries.add(resistEntry.name);
@@ -869,7 +869,7 @@ async function renderSelectedRace() {
     if (abilityOpts) {
       const abilityContent = document.createElement('div');
       if (spellEntry) {
-        if (CharacterState.showHelp && spellEntry.description)
+        if (spellEntry.description)
           abilityContent.appendChild(createElement('p', spellEntry.description));
         appendEntries(abilityContent, spellEntry.entries);
         usedEntries.add(spellEntry.name);
@@ -920,7 +920,7 @@ async function renderSelectedRace() {
       };
       const spellContent = document.createElement('div');
       if (spellEntry && !spellEntryUsed) {
-        if (CharacterState.showHelp && spellEntry.description)
+        if (spellEntry.description)
           spellContent.appendChild(createElement('p', spellEntry.description));
         appendEntries(spellContent, spellEntry.entries);
         usedEntries.add(spellEntry.name);
@@ -1010,7 +1010,7 @@ async function renderSelectedRace() {
   Object.values(entryMap).forEach(e => {
     if (!e.name || usedEntries.has(e.name)) return;
     const body = document.createElement('div');
-    if (CharacterState.showHelp && e.description)
+    if (e.description)
       body.appendChild(createElement('p', e.description));
     appendEntries(body, e.entries);
     accordion.appendChild(createAccordionItem(e.name, body));

@@ -228,7 +228,12 @@ function validateRaceChoices() {
   return valid;
 }
 
-function createRaceCard(race, onSelect, displayName = race.name) {
+function createRaceCard(
+  race,
+  onSelect,
+  displayName = race.name,
+  imageUrl = null
+) {
   const detailItems = [];
   const shortDesc = (race.entries || []).find(e => typeof e === 'string');
   if (shortDesc) detailItems.push(shortDesc);
@@ -252,7 +257,9 @@ function createRaceCard(race, onSelect, displayName = race.name) {
     null,
     detailItems,
     onSelect,
-    t('details') || 'Details'
+    t('details') || 'Details',
+    null,
+    imageUrl
   );
 }
 
@@ -279,10 +286,12 @@ async function renderBaseRaces(search = '') {
       race = { ...data, name: base };
     }
     if (seq !== raceRenderSeq) return;
+    const slug = base.toLowerCase().replace(/\s+/g, '-');
     const card = createRaceCard(
       race,
       () => selectBaseRace(base),
-      `${base} (${subs.length})`
+      `${base} (${subs.length})`,
+      `assets/races/${slug}.jpg`
     );
     if (seq !== raceRenderSeq) return;
     container.appendChild(card);
@@ -328,16 +337,22 @@ async function renderSubraceCards(base, search = '') {
     const race = await fetchJsonWithRetry(path, `race at ${path}`);
     if (!race.name.toLowerCase().includes(term)) continue;
     if (seq !== raceRenderSeq) return;
-    const card = createRaceCard(race, async () => {
-      currentRaceData = race;
-      pendingRaceChoices.subrace = race.name;
-      await renderSelectedRace();
-      container.classList.add('hidden');
-      document.getElementById('raceSearch')?.classList.add('hidden');
-      const features = document.getElementById('raceFeatures');
-      features?.classList.remove('hidden');
-      validateRaceChoices();
-    });
+    const slug = race.name.toLowerCase().replace(/\s+/g, '-');
+    const card = createRaceCard(
+      race,
+      async () => {
+        currentRaceData = race;
+        pendingRaceChoices.subrace = race.name;
+        await renderSelectedRace();
+        container.classList.add('hidden');
+        document.getElementById('raceSearch')?.classList.add('hidden');
+        const features = document.getElementById('raceFeatures');
+        features?.classList.remove('hidden');
+        validateRaceChoices();
+      },
+      race.name,
+      `assets/races/${slug}.jpg`
+    );
     if (seq !== raceRenderSeq) return;
     container.appendChild(card);
   }

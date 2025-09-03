@@ -7,6 +7,7 @@ import {
   loadSpells
 } from './data.js';
 import { refreshBaseState, rebuildFromClasses } from './step2.js';
+import { updateChoiceSelectOptions, filterDuplicateOptions } from './choice-select-helpers.js';
 import { t } from './i18n.js';
 import * as main from './main.js';
 import {
@@ -70,9 +71,7 @@ function validateRaceChoices() {
   if (pendingRaceChoices.alterations?.combo)
     allSelects.push(pendingRaceChoices.alterations.combo);
 
-  allSelects.forEach((sel) => {
-    sel.removeAttribute('title');
-  });
+  allSelects.forEach((sel) => sel.removeAttribute('title'));
 
   const missing = allSelects.filter((s) => !s.value);
   if (CharacterState.showHelp) {
@@ -81,103 +80,7 @@ function validateRaceChoices() {
     });
   }
 
-  const counts = {};
-  choiceSelects.forEach((s) => {
-    if (s.value) counts[s.value] = (counts[s.value] || 0) + 1;
-  });
-
-  const existingCantrips = new Set([
-    ...(CharacterState.system.spells?.cantrips || []),
-    ...(CharacterState.raceChoices?.spells || []),
-  ]);
-  const existingLanguages = new Set([
-    ...(CharacterState.system.traits.languages.value || []),
-  ]);
-  const existingSkills = new Set([...(CharacterState.system.skills || [])]);
-  const existingTools = new Set([...(CharacterState.system.tools || [])]);
-  const existingWeapons = new Set([...(CharacterState.system.weapons || [])]);
-  if (currentRaceData?.skillProficiencies) {
-    currentRaceData.skillProficiencies.forEach((obj) => {
-      for (const k in obj) {
-        if (k !== 'choose' && k !== 'any' && obj[k])
-          existingSkills.add(capitalize(k));
-      }
-    });
-  }
-  if (currentRaceData?.toolProficiencies) {
-    currentRaceData.toolProficiencies.forEach((obj) => {
-      for (const k in obj) {
-        if (k !== 'choose' && k !== 'any' && obj[k])
-          existingTools.add(capitalize(k));
-      }
-    });
-  }
-  if (currentRaceData?.weaponProficiencies) {
-    currentRaceData.weaponProficiencies.forEach((obj) => {
-      if (!obj.choose) {
-        for (const k in obj) {
-          if (obj[k]) existingWeapons.add(capitalize(k.split('|')[0]));
-        }
-      }
-    });
-  }
-
-  const duplicateSet = new Set();
-  const languageDupSet = new Set();
-  const skillDupSet = new Set();
-  const toolDupSet = new Set();
-  const weaponDupSet = new Set();
-
-  choiceSelects.forEach((s) => {
-    if (s.value && counts[s.value] > 1) duplicateSet.add(s);
-  });
-
-  pendingRaceChoices.spells.forEach((s) => {
-    if (s.value && existingCantrips.has(s.value)) duplicateSet.add(s);
-  });
-
-  pendingRaceChoices.languages.forEach((s) => {
-    if (s.value && existingLanguages.has(s.value)) {
-      duplicateSet.add(s);
-      languageDupSet.add(s);
-    }
-  });
-
-  pendingRaceChoices.skills.forEach((s) => {
-    if (s.value && existingSkills.has(s.value)) {
-      duplicateSet.add(s);
-      skillDupSet.add(s);
-    }
-  });
-  pendingRaceChoices.tools.forEach((s) => {
-    if (s.value && existingTools.has(s.value)) {
-      duplicateSet.add(s);
-      toolDupSet.add(s);
-    }
-  });
-  pendingRaceChoices.weapons.forEach((s) => {
-    if (s.value && existingWeapons.has(s.value)) {
-      duplicateSet.add(s);
-      weaponDupSet.add(s);
-    }
-  });
-
-  const duplicates = Array.from(duplicateSet);
-  duplicates.forEach((s) => {
-    s.title = languageDupSet.has(s)
-      ? t('languageAlreadyKnown')
-      : skillDupSet.has(s)
-      ? t('skillAlreadyKnown')
-      : toolDupSet.has(s)
-      ? t('toolAlreadyKnown')
-      : weaponDupSet.has(s)
-      ? t('weaponAlreadyKnown')
-      : t('selectionsMustBeUnique');
-  });
-
-  const isGroupValid = (arr) =>
-    arr.length === 0 ||
-    (arr.every((s) => s.value) && arr.every((s) => !duplicateSet.has(s)));
+  const isGroupValid = (arr) => arr.length === 0 || arr.every((s) => s.value);
 
   const skillValid = isGroupValid(pendingRaceChoices.skills);
   markIncomplete(choiceAccordions.skills, skillValid);
@@ -197,16 +100,17 @@ function validateRaceChoices() {
   const weaponValid = isGroupValid(pendingRaceChoices.weapons);
   markIncomplete(choiceAccordions.weapons, weaponValid);
 
-  const sizeValid = !pendingRaceChoices.size
-    || (pendingRaceChoices.size.value && !duplicateSet.has(pendingRaceChoices.size));
+  const sizeValid =
+    !pendingRaceChoices.size || pendingRaceChoices.size.value;
   markIncomplete(choiceAccordions.size, sizeValid);
 
-  const resistValid = !pendingRaceChoices.resist
-    || (pendingRaceChoices.resist.value && !duplicateSet.has(pendingRaceChoices.resist));
+  const resistValid =
+    !pendingRaceChoices.resist || pendingRaceChoices.resist.value;
   markIncomplete(choiceAccordions.resist, resistValid);
 
-  const altComboValid = !pendingRaceChoices.alterations.combo
-    || pendingRaceChoices.alterations.combo.value;
+  const altComboValid =
+    !pendingRaceChoices.alterations.combo ||
+    pendingRaceChoices.alterations.combo.value;
   const altMinorValid = pendingRaceChoices.alterations.minor.every((s) => s.value);
   const altMajorValid = pendingRaceChoices.alterations.major.every((s) => s.value);
   const altValid = altComboValid && altMinorValid && altMajorValid;
@@ -460,7 +364,10 @@ async function renderSelectedRace() {
         });
         sel.dataset.type = 'choice';
         sel.dataset.choice = 'skill';
-        sel.addEventListener('change', validateRaceChoices);
+        sel.addEventListener('change', () => {
+          updateChoiceSelectOptions(pendingRaceChoices.skills, 'skills');
+          validateRaceChoices();
+        });
         skillContent.appendChild(sel);
         pendingRaceChoices.skills.push(sel);
       }
@@ -480,11 +387,15 @@ async function renderSelectedRace() {
             });
           sel.dataset.type = 'choice';
           sel.dataset.choice = 'skill';
-          sel.addEventListener('change', validateRaceChoices);
+          sel.addEventListener('change', () => {
+            updateChoiceSelectOptions(pendingRaceChoices.skills, 'skills');
+            validateRaceChoices();
+          });
           skillContent.appendChild(sel);
           pendingRaceChoices.skills.push(sel);
         }
       });
+      updateChoiceSelectOptions(pendingRaceChoices.skills, 'skills');
       const acc = createAccordionItem(
         `${t('skills')}`,
         skillContent,
@@ -531,7 +442,10 @@ async function renderSelectedRace() {
         });
         sel.dataset.type = 'choice';
         sel.dataset.choice = 'tool';
-        sel.addEventListener('change', validateRaceChoices);
+        sel.addEventListener('change', () => {
+          updateChoiceSelectOptions(pendingRaceChoices.tools, 'tools');
+          validateRaceChoices();
+        });
         toolContent.appendChild(sel);
         pendingRaceChoices.tools.push(sel);
       }
@@ -551,11 +465,15 @@ async function renderSelectedRace() {
             });
           sel.dataset.type = 'choice';
           sel.dataset.choice = 'tool';
-          sel.addEventListener('change', validateRaceChoices);
+          sel.addEventListener('change', () => {
+            updateChoiceSelectOptions(pendingRaceChoices.tools, 'tools');
+            validateRaceChoices();
+          });
           toolContent.appendChild(sel);
           pendingRaceChoices.tools.push(sel);
         }
       });
+      updateChoiceSelectOptions(pendingRaceChoices.tools, 'tools');
       const acc = createAccordionItem(
         `${t('tools')}`,
         toolContent,
@@ -614,26 +532,10 @@ async function renderSelectedRace() {
         });
         return names.sort();
       }
-      function updateWeaponSelects(selects, opts) {
-        const taken = new Set(selects.map((s) => s.value).filter(Boolean));
-        selects.forEach((sel) => {
-          const current = sel.value;
-          sel.innerHTML = `<option value=''>${t('select')}</option>`;
-          opts.forEach((o) => {
-            if (o !== current && taken.has(o)) return;
-            const opt = document.createElement('option');
-            opt.value = o;
-            opt.textContent = o;
-            sel.appendChild(opt);
-          });
-          sel.value = current;
-        });
-      }
       chooseGroups.forEach((grp) => {
         let opts = (grp.from || []).map((s) => capitalize(s.split('|')[0]));
         if (grp.fromFilter) opts = getWeaponsFromFilter(grp.fromFilter);
         const count = grp.count || 1;
-        const selects = [];
         for (let i = 0; i < count; i++) {
           const sel = document.createElement('select');
           sel.innerHTML = `<option value=''>${t('select')}</option>`;
@@ -648,15 +550,14 @@ async function renderSelectedRace() {
           sel.dataset.type = 'choice';
           sel.dataset.choice = 'weapon';
           sel.addEventListener('change', () => {
-            if (grp.fromFilter) updateWeaponSelects(selects, opts);
+            updateChoiceSelectOptions(pendingRaceChoices.weapons, 'weapons');
             validateRaceChoices();
           });
           weaponContent.appendChild(sel);
           pendingRaceChoices.weapons.push(sel);
-          selects.push(sel);
         }
-        if (grp.fromFilter) updateWeaponSelects(selects, opts);
       });
+      updateChoiceSelectOptions(pendingRaceChoices.weapons, 'weapons');
       const acc = createAccordionItem(
         t('weapons'),
         weaponContent,
@@ -714,11 +615,15 @@ async function renderSelectedRace() {
             });
           sel.dataset.type = 'choice';
           sel.dataset.choice = 'language';
-          sel.addEventListener('change', validateRaceChoices);
+          sel.addEventListener('change', () => {
+            updateChoiceSelectOptions(pendingRaceChoices.languages, 'languages');
+            validateRaceChoices();
+          });
           langContent.appendChild(sel);
           pendingRaceChoices.languages.push(sel);
         }
       }
+      updateChoiceSelectOptions(pendingRaceChoices.languages, 'languages');
       const acc = createAccordionItem(t('languages'), langContent, pendingLang > 0);
       if (pendingLang > 0) acc.classList.add('needs-selection');
       accordion.appendChild(acc);
@@ -942,31 +847,6 @@ async function renderSelectedRace() {
         spellEntryUsed = true;
       }
 
-      function updateSpellSelects() {
-        const chosen = new Set([
-          ...(CharacterState.system.spells?.cantrips || []),
-          ...(CharacterState.raceChoices?.spells || []),
-          ...pendingRaceChoices.spells
-            .map((s) => s.value)
-            .filter((v) => v),
-        ]);
-        pendingRaceChoices.spells.forEach((sel) => {
-          const opts = JSON.parse(sel.dataset.opts || '[]');
-          const current = sel.value;
-          if (current) chosen.delete(current);
-          sel.innerHTML = `<option value=''>${t('select')}</option>`;
-          opts.forEach((sp) => {
-            if (sp !== current && chosen.has(sp)) return;
-            const o = document.createElement('option');
-            o.value = sp;
-            o.textContent = sp;
-            sel.appendChild(o);
-          });
-          sel.value = current;
-          if (current) chosen.add(current);
-        });
-      }
-
       choices.forEach((choice) => {
         let opts = [];
         let count = 1;
@@ -1004,15 +884,33 @@ async function renderSelectedRace() {
           sel.dataset.type = 'choice';
           sel.dataset.opts = JSON.stringify(opts);
           sel.addEventListener('change', () => {
-            updateSpellSelects();
+            filterDuplicateOptions(
+              pendingRaceChoices.spells,
+              [
+                ...(CharacterState.system.spells?.cantrips || []),
+                ...(CharacterState.raceChoices?.spells || []),
+              ],
+            );
             validateRaceChoices();
+          });
+          sel.innerHTML = `<option value=''>${t('select')}</option>`;
+          opts.forEach((sp) => {
+            const o = document.createElement('option');
+            o.value = sp;
+            o.textContent = sp;
+            sel.appendChild(o);
           });
           spellContent.appendChild(sel);
           pendingRaceChoices.spells.push(sel);
         }
       });
-
-      updateSpellSelects();
+      filterDuplicateOptions(
+        pendingRaceChoices.spells,
+        [
+          ...(CharacterState.system.spells?.cantrips || []),
+          ...(CharacterState.raceChoices?.spells || []),
+        ],
+      );
       const acc = createAccordionItem(t('spells'), spellContent, true);
       acc.classList.add('needs-selection');
       accordion.appendChild(acc);

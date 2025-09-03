@@ -4,6 +4,7 @@
 
 import { jest } from '@jest/globals';
 import * as Step2 from '../src/step2.js';
+import { updateChoiceSelectOptions, updateSkillSelectOptions } from '../src/choice-select-helpers.js';
 import { CharacterState, DATA } from '../src/data.js';
 import { readFileSync } from 'fs';
 import path from 'path';
@@ -38,7 +39,7 @@ describe('duplicate selection prevention', () => {
     const skillSelects = [skillSelect1, skillSelect2];
     const choiceSkillSelects = [choiceSelect];
 
-    Step2.updateSkillSelectOptions(skillSelects, choiceSkillSelects);
+    updateSkillSelectOptions(skillSelects, choiceSkillSelects);
 
     expect(
       skillSelect2.querySelector("option[value='Acrobatics']").disabled
@@ -63,7 +64,7 @@ describe('duplicate selection prevention', () => {
     const skillSelects = [skillSelect];
     const choiceSelects = [choiceSelect1, choiceSelect2];
 
-    Step2.updateChoiceSelectOptions(
+    updateChoiceSelectOptions(
       choiceSelects,
       'skills',
       skillSelects,
@@ -90,10 +91,10 @@ describe('duplicate selection prevention', () => {
     skillSelect1.value = 'Acrobatics';
     const skillSelects = [skillSelect1, skillSelect2];
 
-    Step2.updateSkillSelectOptions(skillSelects);
+    updateSkillSelectOptions(skillSelects);
 
     skillSelect2.value = 'Athletics';
-    Step2.updateSkillSelectOptions(skillSelects);
+    updateSkillSelectOptions(skillSelects);
 
     expect(skillSelect1.value).toBe('Acrobatics');
     expect(skillSelect2.value).toBe('Athletics');
@@ -106,10 +107,10 @@ describe('duplicate selection prevention', () => {
     cantripSelect1.value = 'Fire Bolt';
     const selects = [cantripSelect1, cantripSelect2];
 
-    Step2.updateChoiceSelectOptions(selects, 'cantrips');
+    updateChoiceSelectOptions(selects, 'cantrips');
 
     cantripSelect2.value = 'Light';
-    Step2.updateChoiceSelectOptions(selects, 'cantrips');
+    updateChoiceSelectOptions(selects, 'cantrips');
 
     expect(cantripSelect1.value).toBe('Fire Bolt');
     expect(cantripSelect2.value).toBe('Light');

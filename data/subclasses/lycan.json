@@ -1,0 +1,40 @@
+{
+  "name": "Order of the Lycan",
+  "description": "Blood hunters who embrace the curse of lycanthropy, mastering a hybrid form to unleash bestial power without losing control.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Heightened Senses",
+        "description": "You have advantage on Wisdom (Perception) checks that rely on hearing or smell."
+      },
+      {
+        "name": "Hybrid Transformation",
+        "description": "As a bonus action, transform into a hybrid form for up to 1 hour, gaining feral might, resilient hide, predatory strikes, and bloodlust."
+      }
+    ],
+    "7": [
+      {
+        "name": "Stalker's Prowess",
+        "description": "Your speed and jump distance increase, and your hybrid form gains improved predatory strikes that are magical when a rite is active."
+      }
+    ],
+    "11": [
+      {
+        "name": "Advanced Transformation",
+        "description": "You can use Hybrid Transformation twice per rest and gain regeneration while below half hit points."
+      }
+    ],
+    "15": [
+      {
+        "name": "Brand of the Voracious",
+        "description": "You have advantage on bloodlust saves in hybrid form, and attacks against creatures you have branded have advantage."
+      }
+    ],
+    "18": [
+      {
+        "name": "Hybrid Transformation Mastery",
+        "description": "Use Hybrid Transformation without limit, and it lasts until you choose to end it; gain the Blood Curse of the Howl."
+      }
+    ]
+  }
+}

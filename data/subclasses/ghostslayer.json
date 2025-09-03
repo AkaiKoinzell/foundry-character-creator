@@ -1,0 +1,40 @@
+{
+  "name": "Order of the Ghostslayer",
+  "description": "The oldest blood hunter order, obsessed with understanding death and annihilating undead threats.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Rite of the Dawn",
+        "description": "Gain the Rite of the Dawn, dealing radiant rite damage, shedding light, granting necrotic resistance, and dealing an extra hemocraft die to undead."
+      },
+      {
+        "name": "Curse Specialist",
+        "description": "Gain an additional use of Blood Maledict, and your blood curses can target creatures without blood."
+      }
+    ],
+    "7": [
+      {
+        "name": "Aether Walk",
+        "description": "Step into the veil between planes, moving through creatures and objects for rounds equal to your Hemocraft modifier; once per rest, twice at 15th level."
+      }
+    ],
+    "11": [
+      {
+        "name": "Brand of Sundering",
+        "description": "Branded foes take an additional hemocraft die of rite damage and cannot move through creatures or objects if they are incorporeal."
+      }
+    ],
+    "15": [
+      {
+        "name": "Blood Curse of the Exorcist",
+        "description": "You gain the Blood Curse of the Exorcist. It does not count against your blood curses known."
+      }
+    ],
+    "18": [
+      {
+        "name": "Rite Revival",
+        "description": "If reduced to 0 hit points with a rite active, end all rites to drop to 1 hit point instead."
+      }
+    ]
+  }
+}

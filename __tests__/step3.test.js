@@ -51,8 +51,13 @@ jest.unstable_mockModule('../src/data.js', () => ({
 jest.unstable_mockModule('../src/step2.js', () => ({
   refreshBaseState: jest.fn(),
   rebuildFromClasses: jest.fn(),
-  updateChoiceSelectOptions: jest.fn(),
   loadStep2: jest.fn(),
+}));
+
+jest.unstable_mockModule('../src/choice-select-helpers.js', () => ({
+  updateChoiceSelectOptions: jest.fn(),
+  filterDuplicateOptions: jest.fn(),
+  updateSkillSelectOptions: jest.fn(),
 }));
 
 jest.unstable_mockModule('../src/main.js', () => ({

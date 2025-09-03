@@ -4,7 +4,8 @@ import {
   logCharacterState,
   fetchJsonWithRetry
 } from './data.js';
-import { refreshBaseState, rebuildFromClasses, updateChoiceSelectOptions } from './step2.js';
+import { refreshBaseState, rebuildFromClasses } from './step2.js';
+import { updateChoiceSelectOptions } from './choice-select-helpers.js';
 import { t } from './i18n.js';
 import * as main from './main.js';
 import {

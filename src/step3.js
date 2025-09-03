@@ -43,7 +43,11 @@ const pendingRaceChoices = {
 let raceRenderSeq = 0;
 
 function slugify(name = '') {
-  return name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  return name
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
 }
 
 const choiceAccordions = {

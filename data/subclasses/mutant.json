@@ -1,0 +1,36 @@
+{
+  "name": "Order of the Mutant",
+  "description": "Alchemical savants who modify their blood with unstable mutagens to adapt to any foe.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Mutagencraft",
+        "description": "Master mutagen formulas and concoct mutagens that grant benefits with side effects until your next rest."
+      }
+    ],
+    "7": [
+      {
+        "name": "Strange Metabolism",
+        "description": "Gain immunity to poison damage and the poisoned condition, and once per long rest ignore a mutagen's side effect for 1 minute."
+      }
+    ],
+    "11": [
+      {
+        "name": "Brand of Axiom",
+        "description": "Brand dispels illusions and invisibility, prevents shapechanging, and can revert a creature to its true form."
+      }
+    ],
+    "15": [
+      {
+        "name": "Blood Curse of Corrosion",
+        "description": "You gain the Blood Curse of Corrosion, which doesn't count against your blood curses known."
+      }
+    ],
+    "18": [
+      {
+        "name": "Exalted Mutation",
+        "description": "As a bonus action, replace an active mutagen with another you know a number of times per long rest equal to your Hemocraft modifier."
+      }
+    ]
+  }
+}

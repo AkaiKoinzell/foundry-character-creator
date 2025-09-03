@@ -1,0 +1,48 @@
+{
+  "name": "Order of the Profane Soul",
+  "description": "Blood hunters who forge pacts with otherworldly patrons, blending hemocraft with warlock magic.",
+  "features_by_level": {
+    "3": [
+      {
+        "name": "Otherworldly Patron",
+        "description": "Choose a patron that augments your subclass features."
+      },
+      {
+        "name": "Pact Magic",
+        "description": "Gain warlock-style spellcasting using the Profane Soul progression."
+      },
+      {
+        "name": "Rite Focus",
+        "description": "While a rite is active, your weapon serves as a spellcasting focus and grants a patron-specific benefit."
+      }
+    ],
+    "7": [
+      {
+        "name": "Mystic Frenzy",
+        "description": "After casting a cantrip, make one weapon attack as a bonus action."
+      },
+      {
+        "name": "Revealed Arcana",
+        "description": "Your patron grants a distinctive spell you can cast once per rest using a pact slot."
+      }
+    ],
+    "11": [
+      {
+        "name": "Brand of the Sapping Scar",
+        "description": "Branded creatures have disadvantage on saving throws against your warlock spells."
+      }
+    ],
+    "15": [
+      {
+        "name": "Unsealed Arcana",
+        "description": "Your patron grants an additional spell you can cast once without expending a spell slot per long rest."
+      }
+    ],
+    "18": [
+      {
+        "name": "Blood Curse of the Souleater",
+        "description": "You gain the Blood Curse of the Souleater, which doesn't count against your blood curses known."
+      }
+    ]
+  }
+}

@@ -4,7 +4,10 @@
   "hit_die": "d10",
   "hp_at_1st_level": "10 + your Constitution modifier",
   "hp_at_higher_levels": "1d10 (or 6) + your Constitution modifier per Blood Hunter level after 1st",
-  "saving_throws": ["Dexterity", "Intelligence"],
+  "saving_throws": [
+    "Dexterity",
+    "Intelligence"
+  ],
   "skill_proficiencies": {
     "choose": 3,
     "options": [
@@ -18,15 +21,37 @@
       "Survival"
     ]
   },
-  "weapon_proficiencies": ["simple weapons", "martial weapons"],
-  "armor_proficiencies": ["light armor", "medium armor", "shields"],
-  "tool_proficiencies": ["alchemist's supplies"],
+  "weapon_proficiencies": [
+    "simple weapons",
+    "martial weapons"
+  ],
+  "armor_proficiencies": [
+    "light armor",
+    "medium armor",
+    "shields"
+  ],
+  "tool_proficiencies": [
+    "alchemist's supplies"
+  ],
   "multiclassing": {
-    "prerequisites": {"Intelligence": 13, "Strength": 13, "Dexterity": 13},
+    "prerequisites": {
+      "Intelligence": 13,
+      "Strength": 13,
+      "Dexterity": 13
+    },
     "proficiencies": {
-      "weapons": ["simple weapons", "martial weapons"],
-      "armor": ["light armor", "medium armor", "shields"],
-      "tools": ["alchemist's supplies"]
+      "weapons": [
+        "simple weapons",
+        "martial weapons"
+      ],
+      "armor": [
+        "light armor",
+        "medium armor",
+        "shields"
+      ],
+      "tools": [
+        "alchemist's supplies"
+      ]
     }
   },
   "features_by_level": {
@@ -176,10 +201,51 @@
     ]
   },
   "subclasses": [
-    {"name": "Order of the Ghostslayer", "features": []},
-    {"name": "Order of the Lycan", "features": []},
-    {"name": "Order of the Mutant", "features": []},
-    {"name": "Order of the Profane Soul", "features": []}
+    {
+      "name": "Order of the Ghostslayer",
+      "features": [
+        "Rite of the Dawn",
+        "Curse Specialist",
+        "Aether Walk",
+        "Brand of Sundering",
+        "Blood Curse of the Exorcist",
+        "Rite Revival"
+      ]
+    },
+    {
+      "name": "Order of the Lycan",
+      "features": [
+        "Heightened Senses",
+        "Hybrid Transformation",
+        "Stalker's Prowess",
+        "Advanced Transformation",
+        "Brand of the Voracious",
+        "Hybrid Transformation Mastery"
+      ]
+    },
+    {
+      "name": "Order of the Mutant",
+      "features": [
+        "Mutagencraft",
+        "Strange Metabolism",
+        "Brand of Axiom",
+        "Blood Curse of Corrosion",
+        "Exalted Mutation"
+      ]
+    },
+    {
+      "name": "Order of the Profane Soul",
+      "features": [
+        "Otherworldly Patron",
+        "Pact Magic",
+        "Rite Focus",
+        "Mystic Frenzy",
+        "Revealed Arcana",
+        "Brand of the Sapping Scar",
+        "Unsealed Arcana",
+        "Blood Curse of the Souleater"
+      ]
+    }
   ],
   "choices": [
     {

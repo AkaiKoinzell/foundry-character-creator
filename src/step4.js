@@ -448,24 +448,29 @@ export function loadStep4(force = false) {
       renderBackgroundList(e.target.value);
     });
   }
-  const changeBtn = document.getElementById('changeBackground');
-  changeBtn?.addEventListener('click', () => {
-    currentBackgroundData = null;
-    resetPendingSelections();
-    const list = document.getElementById('backgroundList');
-    list?.classList.remove('hidden');
-    const search = document.getElementById('backgroundSearch');
-    search?.classList.remove('hidden');
-    const features = document.getElementById('backgroundFeatures');
-    if (features) {
-      features.classList.add('hidden');
-      features.innerHTML = '';
-    }
-    renderBackgroundList(search?.value);
-    main.invalidateStep(5);
-    main.invalidateStep(6);
-    main.invalidateStepsFrom(5);
-  });
+  let changeBtn = document.getElementById('changeBackground');
+  if (changeBtn) {
+    const newBtn = changeBtn.cloneNode(true);
+    changeBtn.parentNode.replaceChild(newBtn, changeBtn);
+    changeBtn = newBtn;
+    changeBtn.addEventListener('click', () => {
+      currentBackgroundData = null;
+      resetPendingSelections();
+      const list = document.getElementById('backgroundList');
+      list?.classList.remove('hidden');
+      const search = document.getElementById('backgroundSearch');
+      search?.classList.remove('hidden');
+      const features = document.getElementById('backgroundFeatures');
+      if (features) {
+        features.classList.add('hidden');
+        features.innerHTML = '';
+      }
+      renderBackgroundList(search?.value);
+      main.invalidateStep(5);
+      main.invalidateStep(6);
+      main.invalidateStepsFrom(5);
+    });
+  }
 }
 
 export function isStepComplete() {

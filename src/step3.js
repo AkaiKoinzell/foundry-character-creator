@@ -1243,31 +1243,36 @@ export async function loadStep3(force = false) {
     });
   }
 
-  const changeBtn = document.getElementById('changeRace');
-  changeBtn?.addEventListener('click', async () => {
-    selectedBaseRace = '';
-    currentRaceData = null;
-    resetPendingRaceChoices();
-    if (preRaceState) {
-      Object.assign(CharacterState, structuredClone(preRaceState));
-      preRaceState = null;
-      refreshBaseState();
-      rebuildFromClasses();
-      main.invalidateStep(4);
-      main.invalidateStep(5);
-      main.invalidateStep(6);
-      main.invalidateStepsFrom(4);
-    }
-    const traits = document.getElementById('raceTraits');
-    if (traits) traits.innerHTML = '';
-    const list = document.getElementById('raceList');
-    const features = document.getElementById('raceFeatures');
-    list?.classList.remove('hidden');
-    features?.classList.add('hidden');
-    searchInput?.classList.remove('hidden');
-    await renderBaseRaces(searchInput?.value);
-    validateRaceChoices();
-  });
+  let changeBtn = document.getElementById('changeRace');
+  if (changeBtn) {
+    const newBtn = changeBtn.cloneNode(true);
+    changeBtn.parentNode.replaceChild(newBtn, changeBtn);
+    changeBtn = newBtn;
+    changeBtn.addEventListener('click', async () => {
+      selectedBaseRace = '';
+      currentRaceData = null;
+      resetPendingRaceChoices();
+      if (preRaceState) {
+        Object.assign(CharacterState, structuredClone(preRaceState));
+        preRaceState = null;
+        refreshBaseState();
+        rebuildFromClasses();
+        main.invalidateStep(4);
+        main.invalidateStep(5);
+        main.invalidateStep(6);
+        main.invalidateStepsFrom(4);
+      }
+      const traits = document.getElementById('raceTraits');
+      if (traits) traits.innerHTML = '';
+      const list = document.getElementById('raceList');
+      const features = document.getElementById('raceFeatures');
+      list?.classList.remove('hidden');
+      features?.classList.add('hidden');
+      searchInput?.classList.remove('hidden');
+      await renderBaseRaces(searchInput?.value);
+      validateRaceChoices();
+    });
+  }
 }
 
 export function isStepComplete() {

@@ -724,3 +724,38 @@ describe('race trait descriptions', () => {
   });
 });
 
+describe('loadStep3 repeated navigation', () => {
+  test('change race button fires once after multiple loads', async () => {
+    jest.clearAllMocks();
+    document.body.innerHTML = `
+      <div id="raceList"></div>
+      <div id="raceFeatures"></div>
+      <div id="raceTraits"></div>
+      <input id="raceSearch" />
+      <button id="changeRace"></button>
+    `;
+    DATA.races = {
+      Lizardfolk: [{ name: 'Lizardfolk', path: 'lizard' }],
+    };
+    mockFetch.mockResolvedValue({ name: 'Lizardfolk', entries: [] });
+    const origAdd = HTMLButtonElement.prototype.addEventListener;
+    let clickCount = 0;
+    HTMLButtonElement.prototype.addEventListener = function (type, fn, opts) {
+      if (this.id === 'changeRace' && type === 'click') {
+        const wrapped = (...args) => {
+          clickCount++;
+          return fn.apply(this, args);
+        };
+        return origAdd.call(this, type, wrapped, opts);
+      }
+      return origAdd.call(this, type, fn, opts);
+    };
+    await loadStep3(true);
+    await loadStep3(true);
+    HTMLButtonElement.prototype.addEventListener = origAdd;
+    document.getElementById('changeRace').click();
+    await new Promise((r) => setTimeout(r, 0));
+    expect(clickCount).toBe(1);
+  });
+});
+

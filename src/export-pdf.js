@@ -25,14 +25,14 @@ export async function exportPdf(state) {
   const sheet = document.getElementById("characterSheet");
   if (!sheet) throw new Error("Character sheet not found");
 
-  const canvas = await html2canvas(sheet, { scale: 2 });
-  const imgData = canvas.toDataURL("image/png");
+  const canvas = await html2canvas(sheet, { scale: 1 });
+  const imgData = canvas.toDataURL("image/jpeg", 0.8);
   const jsPDF = await loadJsPDF();
   const pdf = new jsPDF("p", "mm", "a4");
   const pageWidth = pdf.internal.pageSize.getWidth();
   const imgWidth = pageWidth;
   const imgHeight = (canvas.height * imgWidth) / canvas.width;
-  pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+  pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, imgHeight);
   pdf.save(`${state?.name || "character"}.pdf`);
 }
 

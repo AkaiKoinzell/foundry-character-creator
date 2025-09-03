@@ -13,8 +13,8 @@ import {
   createAccordionItem,
   createSelectableCard,
   appendEntries,
-  markIncomplete,
 } from './ui-helpers.js';
+import { inlineWarning } from './validation.js';
 import { addUniqueProficiency, pendingReplacements } from './proficiency.js';
 import { renderFeatChoices } from './feat.js';
 
@@ -300,23 +300,32 @@ function selectBackground(bg) {
 }
 
 function validateBackgroundChoices() {
-  const skillValid = pendingSelections.skills.every((s) => s.value);
-  markIncomplete(choiceAccordions.skills, skillValid);
+  const check = (arr, container) =>
+    inlineWarning(container, arr.every((s) => s.value), arr);
 
-  const toolValid = pendingSelections.tools.every((s) => s.value);
-  markIncomplete(choiceAccordions.tools, toolValid);
-
-  const langValid = pendingSelections.languages.every((s) => s.value);
-  markIncomplete(choiceAccordions.languages, langValid);
+  const skillValid = check(pendingSelections.skills, choiceAccordions.skills);
+  const toolValid = check(pendingSelections.tools, choiceAccordions.tools);
+  const langValid = check(pendingSelections.languages, choiceAccordions.languages);
 
   let featValid = true;
   if (pendingSelections.feat) {
+    const featFields = [pendingSelections.feat];
     featValid = !!pendingSelections.feat.value;
     if (featValid && pendingSelections.featRenderer) {
       featValid = pendingSelections.featRenderer.isComplete();
+      featFields.push(
+        ...(pendingSelections.featRenderer.abilitySelects || []),
+        ...(pendingSelections.featRenderer.skillSelects || []),
+        ...(pendingSelections.featRenderer.toolSelects || []),
+        ...(pendingSelections.featRenderer.languageSelects || []),
+        ...(pendingSelections.featRenderer.spellSelects || []),
+        ...(pendingSelections.featRenderer.optionalFeatureSelects || [])
+      );
     }
+    inlineWarning(choiceAccordions.feat, featValid, featFields);
+  } else {
+    inlineWarning(choiceAccordions.feat, true);
   }
-  markIncomplete(choiceAccordions.feat, featValid);
 
   const allValid = skillValid && toolValid && langValid && featValid;
   main.setCurrentStepComplete?.(allValid);

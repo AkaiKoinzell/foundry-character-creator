@@ -15,9 +15,8 @@ import {
   createAccordionItem,
   createSelectableCard,
   appendEntries,
-  markIncomplete,
-  showToast,
 } from './ui-helpers.js';
+import { inlineWarning, globalToast } from './validation.js';
 import { renderFeatChoices } from './feat.js';
 import { renderSpellChoices } from './spell-select.js';
 import { pendingReplacements } from './proficiency.js';
@@ -142,7 +141,7 @@ function validateTotalLevel(pendingClass) {
   if (existing + pending > MAX_CHARACTER_LEVEL) {
     const allowed = Math.max(0, MAX_CHARACTER_LEVEL - existing);
     if (pendingClass) pendingClass.level = allowed;
-    showToast(t('levelCap', { max: MAX_CHARACTER_LEVEL }));
+    globalToast('levelCap', { max: MAX_CHARACTER_LEVEL });
     return false;
   }
   return true;
@@ -433,7 +432,7 @@ function renderClassEditor(cls, index) {
   card.className = 'saved-class';
   card.classList.add('needs-selection');
   cls.element = card;
-  markIncomplete(card, !classHasPendingChoices(cls));
+  inlineWarning(card, !classHasPendingChoices(cls));
 
   const header = document.createElement('div');
   const title = document.createElement('h3');
@@ -915,7 +914,7 @@ export function updateStep2Completion() {
     progressBar.style.width = `${width}%`;
   }
   (CharacterState.classes || []).forEach((cls) => {
-    if (cls.element) markIncomplete(cls.element, !classHasPendingChoices(cls));
+    if (cls.element) inlineWarning(cls.element, !classHasPendingChoices(cls));
   });
   main.setCurrentStepComplete?.(complete);
 }

@@ -1,7 +1,8 @@
 import { DATA, CharacterState, fetchJsonWithRetry } from './data.js';
 import { t } from './i18n.js';
 import * as main from './main.js';
-import { createAccordionItem, markIncomplete } from './ui-helpers.js';
+import { createAccordionItem } from './ui-helpers.js';
+import { inlineWarning } from './validation.js';
 
 let equipmentData;
 let choiceBlocks = [];
@@ -243,7 +244,7 @@ function validateEquipmentSelections() {
   let allValid = true;
   choiceBlocks.forEach((b) => {
     const ok = b.validator();
-    markIncomplete(b.element, ok);
+    inlineWarning(b.element, ok);
     if (!ok) allValid = false;
   });
   equipmentSelectionsValid = allValid;

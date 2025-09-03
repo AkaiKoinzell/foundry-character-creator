@@ -8,6 +8,7 @@ import {
 import { t } from './i18n.js';
 import { addUniqueProficiency } from './proficiency.js';
 import { createElement, capitalize, appendEntries } from './ui-helpers.js';
+import { loadEquipmentData } from './step5.js';
 
 function refreshAbility(ab) {
   const base = CharacterState.baseAbilities?.[ab];
@@ -218,9 +219,10 @@ export function renderProficiencyChoices(feat, wrapper, onChange = () => {}) {
   };
 }
 
-export function renderWeaponChoices(feat, wrapper, onChange = () => {}) {
+export async function renderWeaponChoices(feat, wrapper, onChange = () => {}) {
   const weaponSelects = [];
   if (Array.isArray(feat.weaponProficiencies)) {
+    await loadEquipmentData();
     feat.weaponProficiencies.forEach((entry) => {
       if (entry.choose?.fromFilter) {
         const opts = getWeaponsFromFilter(entry.choose.fromFilter);
@@ -309,7 +311,7 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
     languageSelects,
     saveSelects,
   } = renderProficiencyChoices(feat, wrapper, onChange);
-  const { weaponSelects } = renderWeaponChoices(feat, wrapper, onChange);
+  const { weaponSelects } = await renderWeaponChoices(feat, wrapper, onChange);
 
   const optionalFeatureSelects = [];
   if (Array.isArray(feat.optionalfeatureProgression)) {

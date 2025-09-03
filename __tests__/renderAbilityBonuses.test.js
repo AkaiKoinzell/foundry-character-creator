@@ -27,6 +27,9 @@ jest.unstable_mockModule('../src/data.js', () => ({
   loadOptionalFeatures: async () => {},
   logCharacterState: jest.fn(),
 }));
+jest.unstable_mockModule('../src/step5.js', () => ({
+  loadEquipmentData: jest.fn().mockResolvedValue([]),
+}));
 
 const { renderAbilityBonuses } = await import('../src/feat.js');
 

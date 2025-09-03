@@ -29,12 +29,13 @@ function getSimpleWeapons() {
       ];
 }
 
-async function loadEquipmentData() {
+export async function loadEquipmentData() {
   if (equipmentData) return equipmentData;
 
   try {
     const data = await fetchJsonWithRetry('data/equipment.json', 'equipment');
     equipmentData = data;
+    DATA.equipment = data;
     return equipmentData;
   } catch {
     const container = document.getElementById('equipmentSelections');

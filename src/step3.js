@@ -22,8 +22,8 @@ import {
   capitalize,
   appendEntries,
   createElement,
-  markIncomplete,
 } from './ui-helpers.js';
+import { inlineWarning } from './validation.js';
 
 let selectedBaseRace = '';
 let currentRaceData = null;
@@ -76,66 +76,39 @@ const choiceAccordions = {
 };
 
 function validateRaceChoices() {
-  const choiceSelects = [
-    ...pendingRaceChoices.skills,
-    ...pendingRaceChoices.languages,
-    ...pendingRaceChoices.spells,
-    ...pendingRaceChoices.abilities,
-    ...pendingRaceChoices.tools,
-    ...pendingRaceChoices.weapons,
-    ...(pendingRaceChoices.alterations?.minor || []),
-    ...(pendingRaceChoices.alterations?.major || []),
-  ];
-  const allSelects = [...choiceSelects];
-  if (pendingRaceChoices.size) allSelects.push(pendingRaceChoices.size);
-  if (pendingRaceChoices.resist) allSelects.push(pendingRaceChoices.resist);
-  if (pendingRaceChoices.alterations?.combo)
-    allSelects.push(pendingRaceChoices.alterations.combo);
+  const check = (arr, container) =>
+    inlineWarning(container, arr.length === 0 || arr.every((s) => s.value), arr);
 
-  allSelects.forEach((sel) => sel.removeAttribute('title'));
+  const skillValid = check(pendingRaceChoices.skills, choiceAccordions.skills);
+  const langValid = check(pendingRaceChoices.languages, choiceAccordions.languages);
+  const spellValid = check(pendingRaceChoices.spells, choiceAccordions.spells);
+  const abilityValid = check(pendingRaceChoices.abilities, choiceAccordions.abilities);
+  const toolValid = check(pendingRaceChoices.tools, choiceAccordions.tools);
+  const weaponValid = check(pendingRaceChoices.weapons, choiceAccordions.weapons);
 
-  const missing = allSelects.filter((s) => !s.value);
-  if (CharacterState.showHelp) {
-    missing.forEach((s) => {
-      s.title = t('selectionRequired');
-    });
-  }
+  const sizeValid = inlineWarning(
+    choiceAccordions.size,
+    !pendingRaceChoices.size || pendingRaceChoices.size.value,
+    pendingRaceChoices.size
+  );
 
-  const isGroupValid = (arr) => arr.length === 0 || arr.every((s) => s.value);
+  const resistValid = inlineWarning(
+    choiceAccordions.resist,
+    !pendingRaceChoices.resist || pendingRaceChoices.resist.value,
+    pendingRaceChoices.resist
+  );
 
-  const skillValid = isGroupValid(pendingRaceChoices.skills);
-  markIncomplete(choiceAccordions.skills, skillValid);
-
-  const langValid = isGroupValid(pendingRaceChoices.languages);
-  markIncomplete(choiceAccordions.languages, langValid);
-
-  const spellValid = isGroupValid(pendingRaceChoices.spells);
-  markIncomplete(choiceAccordions.spells, spellValid);
-
-  const abilityValid = isGroupValid(pendingRaceChoices.abilities);
-  markIncomplete(choiceAccordions.abilities, abilityValid);
-
-  const toolValid = isGroupValid(pendingRaceChoices.tools);
-  markIncomplete(choiceAccordions.tools, toolValid);
-
-  const weaponValid = isGroupValid(pendingRaceChoices.weapons);
-  markIncomplete(choiceAccordions.weapons, weaponValid);
-
-  const sizeValid =
-    !pendingRaceChoices.size || pendingRaceChoices.size.value;
-  markIncomplete(choiceAccordions.size, sizeValid);
-
-  const resistValid =
-    !pendingRaceChoices.resist || pendingRaceChoices.resist.value;
-  markIncomplete(choiceAccordions.resist, resistValid);
-
-  const altComboValid =
-    !pendingRaceChoices.alterations.combo ||
-    pendingRaceChoices.alterations.combo.value;
-  const altMinorValid = pendingRaceChoices.alterations.minor.every((s) => s.value);
-  const altMajorValid = pendingRaceChoices.alterations.major.every((s) => s.value);
-  const altValid = altComboValid && altMinorValid && altMajorValid;
-  markIncomplete(choiceAccordions.alterations, altValid);
+  const altFields = [
+    pendingRaceChoices.alterations.combo,
+    ...pendingRaceChoices.alterations.minor,
+    ...pendingRaceChoices.alterations.major,
+  ].filter(Boolean);
+  const altValid =
+    (!pendingRaceChoices.alterations.combo ||
+      pendingRaceChoices.alterations.combo.value) &&
+    pendingRaceChoices.alterations.minor.every((s) => s.value) &&
+    pendingRaceChoices.alterations.major.every((s) => s.value);
+  inlineWarning(choiceAccordions.alterations, altValid, altFields);
 
   const valid =
     skillValid &&

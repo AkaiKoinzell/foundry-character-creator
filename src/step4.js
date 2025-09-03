@@ -26,6 +26,14 @@ const pendingSelections = {
   feat: null,
   featRenderer: null,
 };
+
+export function resetPendingSelections() {
+  pendingSelections.skills = [];
+  pendingSelections.tools = [];
+  pendingSelections.languages = [];
+  pendingSelections.feat = null;
+  pendingSelections.featRenderer = null;
+}
 const choiceAccordions = {
   skills: null,
   tools: null,
@@ -90,12 +98,7 @@ function selectBackground(bg) {
   }
   features.classList.remove('hidden');
   features.innerHTML = '';
-
-  pendingSelections.skills = [];
-  pendingSelections.tools = [];
-  pendingSelections.languages = [];
-  pendingSelections.feat = null;
-  pendingSelections.featRenderer = null;
+  resetPendingSelections();
   choiceAccordions.skills = null;
   choiceAccordions.tools = null;
   choiceAccordions.languages = null;
@@ -387,13 +390,9 @@ async function confirmBackgroundSelection() {
     pendingSelections.feat.disabled = true;
   }
 
-    pendingSelections.skills = [];
-    pendingSelections.tools = [];
-    pendingSelections.languages = [];
-    pendingSelections.feat = null;
-    pendingSelections.featRenderer = null;
+  resetPendingSelections();
 
-    refreshBaseState();
+  refreshBaseState();
   rebuildFromClasses();
 
   const finalize = () => {
@@ -421,6 +420,7 @@ async function confirmBackgroundSelection() {
 }
 
 export function loadStep4(force = false) {
+  if (force) resetPendingSelections();
   const container = document.getElementById('backgroundList');
   let searchInput = document.getElementById('backgroundSearch');
   if (!container) return;
@@ -442,11 +442,7 @@ export function loadStep4(force = false) {
   const changeBtn = document.getElementById('changeBackground');
   changeBtn?.addEventListener('click', () => {
     currentBackgroundData = null;
-    pendingSelections.skills = [];
-    pendingSelections.tools = [];
-    pendingSelections.languages = [];
-    pendingSelections.feat = null;
-    pendingSelections.featRenderer = null;
+    resetPendingSelections();
     const list = document.getElementById('backgroundList');
     list?.classList.remove('hidden');
     const search = document.getElementById('backgroundSearch');

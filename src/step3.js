@@ -42,6 +42,10 @@ const pendingRaceChoices = {
 
 let raceRenderSeq = 0;
 
+function slugify(name = '') {
+  return name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-');
+}
+
 const choiceAccordions = {
   size: null,
   skills: null,
@@ -190,12 +194,12 @@ async function renderBaseRaces(search = '') {
       race = { ...data, name: base };
     }
     if (seq !== raceRenderSeq) return;
-    const slug = base.toLowerCase().replace(/\s+/g, '-');
+    const slug = slugify(base);
     const card = createRaceCard(
       race,
       () => selectBaseRace(base),
       `${base} (${subs.length})`,
-      `assets/races/${slug}.jpg`
+      `assets/races/${slug}.png`
     );
     if (seq !== raceRenderSeq) return;
     container.appendChild(card);
@@ -241,7 +245,7 @@ async function renderSubraceCards(base, search = '') {
     const race = await fetchJsonWithRetry(path, `race at ${path}`);
     if (!race.name.toLowerCase().includes(term)) continue;
     if (seq !== raceRenderSeq) return;
-    const slug = race.name.toLowerCase().replace(/\s+/g, '-');
+    const slug = slugify(race.name);
     const card = createRaceCard(
       race,
       async () => {
@@ -255,7 +259,7 @@ async function renderSubraceCards(base, search = '') {
         validateRaceChoices();
       },
       race.name,
-      `assets/races/${slug}.jpg`
+      `assets/races/${slug}.png`
     );
     if (seq !== raceRenderSeq) return;
     container.appendChild(card);

@@ -88,4 +88,7 @@
   "selectBackgroundToProceed": "Select a background to proceed.",
   "chooseEquipmentToProceed": "Choose your equipment to proceed.",
   "assignAbilityPointsToProceed": "Assign all ability points to proceed."
+  ,"ok": "OK"
+  ,"cancel": "Cancel"
+  ,"retry": "Retry"
 }

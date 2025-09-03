@@ -1,4 +1,5 @@
 import { t } from './i18n.js';
+import { showConfirmation } from './ui-helpers.js';
 export const DATA = {};
 
 // Maximum total level a character can reach
@@ -12,16 +13,15 @@ export const MAX_CHARACTER_LEVEL = 20;
  */
 export const fetchJsonCallbacks = {
   onRetry: (msg) =>
-    typeof window !== 'undefined' && typeof window.confirm === 'function'
-      ? window.confirm(msg)
-      : false,
-  onError: (msg) => {
-    if (typeof window !== 'undefined' && typeof window.alert === 'function') {
-      window.alert(msg);
-    } else {
-      console.error(msg);
-    }
-  },
+    showConfirmation(msg, {
+      confirmText: t('retry'),
+      cancelText: t('cancel'),
+    }),
+  onError: (msg) =>
+    showConfirmation(msg, {
+      confirmText: t('ok'),
+      cancelText: null,
+    }),
 };
 
 /**
@@ -50,13 +50,13 @@ export async function fetchJsonWithRetry(
       lastError = err;
       attempts++;
       if (attempts >= maxRetries) break;
-      const retry = callbacks.onRetry(
+      const retry = await callbacks.onRetry(
         t('fetchRetry', { resource: resourceName })
       );
       if (!retry) break;
     }
   }
-  callbacks.onError(t('fetchFailed', { resource: resourceName }));
+  await callbacks.onError(t('fetchFailed', { resource: resourceName }));
   throw lastError;
 }
 

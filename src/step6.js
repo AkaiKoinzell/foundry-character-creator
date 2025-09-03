@@ -1,6 +1,7 @@
 import { CharacterState, totalLevel } from './data.js';
 import { t } from './i18n.js';
 import * as main from './main.js';
+import { showConfirmation } from './ui-helpers.js';
 
 const ABILITIES = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
 const COST = { 8:0, 9:1, 10:2, 11:3, 12:4, 13:5, 14:7, 15:9 };
@@ -68,15 +69,18 @@ function adjustAbility(ab, delta) {
   calcRemaining();
 }
 
-function applyBonus() {
+async function applyBonus() {
   const selections = [
     document.getElementById('bonusSelect1')?.value,
     document.getElementById('bonusSelect2')?.value,
     document.getElementById('bonusSelect3')?.value,
   ];
   if (selections.some((v) => !v)) {
-    alert(t('selectThreeAbilities'));
-    return;
+    await showConfirmation(t('selectThreeAbilities'), {
+      confirmText: t('ok'),
+      cancelText: null,
+    });
+    return false;
   }
   const counts = selections.reduce((acc, ab) => {
     acc[ab] = (acc[ab] || 0) + 1;
@@ -87,8 +91,11 @@ function applyBonus() {
     (Object.keys(counts).length === 2 && values.includes(2) && values.includes(1)) ||
     (Object.keys(counts).length === 3 && values.every((v) => v === 1));
   if (!valid) {
-    alert(t('invalidBonusDistribution'));
-    return;
+    await showConfirmation(t('invalidBonusDistribution'), {
+      confirmText: t('ok'),
+      cancelText: null,
+    });
+    return false;
   }
   CharacterState.bonusAbilities = { ...CharacterState.bonusAbilities };
   Object.entries(counts).forEach(([ab, val]) => {
@@ -97,6 +104,7 @@ function applyBonus() {
   });
   ABILITIES.forEach(updateFinal);
   validateAbilities();
+  return true;
 }
 
 export function commitAbilities() {

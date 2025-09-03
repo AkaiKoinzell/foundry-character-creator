@@ -15,6 +15,7 @@ import {
   createAccordionItem,
   createSelectableCard,
   appendEntries,
+  showConfirmation,
 } from './ui-helpers.js';
 import { inlineWarning, globalToast } from './validation.js';
 import { renderFeatChoices } from './feat.js';
@@ -1077,14 +1078,15 @@ function showClassModal(cls) {
 /**
  * Salva la classe selezionata nel CharacterState
  */
-function selectClass(cls) {
+async function selectClass(cls) {
   const classes = CharacterState.classes || (CharacterState.classes = []);
   if (classes.some(c => c.name === cls.name)) {
-    if (typeof alert !== 'undefined') {
-      alert(t('classAlreadySelected', { name: cls.name }));
-    }
+    await showConfirmation(t('classAlreadySelected', { name: cls.name }), {
+      confirmText: t('ok'),
+      cancelText: null,
+    });
     loadStep2(false);
-    return;
+    return false;
   }
 
   const newCls = {
@@ -1107,6 +1109,7 @@ function selectClass(cls) {
   document.getElementById('selectedClasses')?.classList.remove('hidden');
   loadStep2(false);
   updateStep2Completion();
+  return true;
 }
 
 export {

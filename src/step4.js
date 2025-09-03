@@ -414,6 +414,8 @@ async function confirmBackgroundSelection() {
   }
 
   finalize();
+  main.invalidateStep(5);
+  main.invalidateStep(6);
   return true;
 }
 
@@ -454,6 +456,8 @@ export function loadStep4(force = false) {
       features.innerHTML = '';
     }
     renderBackgroundList(search?.value);
+    main.invalidateStep(5);
+    main.invalidateStep(6);
   });
 }
 

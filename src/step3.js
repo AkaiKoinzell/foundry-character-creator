@@ -1264,6 +1264,9 @@ function confirmRaceSelection() {
     return false;
   }
   finalize();
+  main.invalidateStep(4);
+  main.invalidateStep(5);
+  main.invalidateStep(6);
   return true;
 }
 
@@ -1356,6 +1359,9 @@ export async function loadStep3(force = false) {
     }
     refreshBaseState();
     rebuildFromClasses();
+    main.invalidateStep(4);
+    main.invalidateStep(5);
+    main.invalidateStep(6);
     const traits = document.getElementById('raceTraits');
     if (traits) traits.innerHTML = '';
     const list = document.getElementById('raceList');

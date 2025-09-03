@@ -191,15 +191,31 @@ function updateFeatSelectOptions() {
   });
 }
 
+/**
+ * Convert a subclass name into the slug used for data files.
+ *
+ * Handles several common naming patterns:
+ * - Leading articles like "The" (e.g. "The Undying" → "undying")
+ * - Standard subclass prefixes such as "Path of the", "Oath of the",
+ *   "College of", etc. (e.g. "Path of the Beast" → "beast")
+ * - Druid land circles where the terrain type is in parentheses
+ *   ("Circle of the Land (Desert)" → "desert")
+ * - Trailing descriptors like "Domain" or "Tradition"
+ * - Parenthetical notes are folded into the slug
+ *   ("Purple Dragon Knight (Banneret)" → "purple_dragon_knight_banneret")
+ */
 function slugifySubclass(name = '') {
   return name
-    .replace(/^(Path|Oath|Circle|College|Order|Domain|Way|School) of (the )?/i, '')
+    .replace(/^Circle of the Land\s*/i, '')
     .replace(/^The /i, '')
+    .replace(/^(Path|Oath|Circle|College|Order|Domain|Way|School) of (the )?/i, '')
     .replace(/ (Domain|Tradition)$/i, '')
+    .replace(/\s*\(([^)]+)\)/g, ' $1')
     .replace(/[’']/g, '')
     .trim()
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '_');
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '');
 }
 
 async function loadSubclassData(cls) {
@@ -1096,4 +1112,5 @@ export {
   rebuildFromClasses,
   selectClass,
   renderClassEditor,
+  slugifySubclass,
 };

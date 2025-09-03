@@ -55,6 +55,14 @@ function invalidateStep(stepNumber) {
   });
 }
 
+function invalidateStepsFrom(stepNumber) {
+  for (let i = stepNumber; i <= 7; i++) {
+    visitedSteps.delete(i);
+    completedSteps.delete(i);
+  }
+  updateNavButtons();
+}
+
 function updateNavButtons() {
   for (let i = 1; i <= 7; i++) {
     const btn = document.getElementById(`btnStep${i}`);
@@ -63,9 +71,10 @@ function updateNavButtons() {
       btn.disabled = false;
       continue;
     }
+    const prevInvalid = invalidatedSteps.has(i - 1);
     const isVisited = visitedSteps.has(i);
     const prevCompleted = completedSteps.has(i - 1);
-    btn.disabled = !(isVisited || prevCompleted);
+    btn.disabled = prevInvalid || !(isVisited || prevCompleted);
   }
 }
 
@@ -545,4 +554,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     validateStep1();
 });
 
-export { showStep, loadData, setCurrentStepComplete, showErrorBanner, invalidateStep };
+export {
+  showStep,
+  loadData,
+  setCurrentStepComplete,
+  showErrorBanner,
+  invalidateStep,
+  invalidateStepsFrom,
+};

@@ -21,21 +21,9 @@ function refreshAbility(ab) {
   if (finalCell) finalCell.textContent = finalVal;
 }
 
-export async function renderFeatChoices(featName, container, onChange = () => {}) {
-  const feat = await loadFeatDetails(featName);
-  const wrapper = createElement('div');
-  container.appendChild(wrapper);
-  if (feat.description) wrapper.appendChild(createElement('p', feat.description));
-  appendEntries(wrapper, feat.entries);
-
+export function renderAbilityBonuses(feat, wrapper, onChange = () => {}) {
   const abilitySelects = [];
-  const skillSelects = [];
-  const expertiseSelects = [];
-  const toolSelects = [];
-  const languageSelects = [];
-  const saveSelects = [];
   const fixedAbilityBonuses = {};
-
   if (Array.isArray(feat.ability)) {
     feat.ability.forEach((ab) => {
       if (ab.choose) {
@@ -75,6 +63,15 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
       }
     });
   }
+  return { abilitySelects, fixedAbilityBonuses };
+}
+
+export function renderProficiencyChoices(feat, wrapper, onChange = () => {}) {
+  const skillSelects = [];
+  const expertiseSelects = [];
+  const toolSelects = [];
+  const languageSelects = [];
+  const saveSelects = [];
 
   const makeSelects = (arr, list, labelKey) => {
     arr.forEach((entry) => {
@@ -116,7 +113,9 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
       }
     });
     if (expertiseSelects.length) {
-      skillSelects.forEach((sel) => sel.addEventListener('change', updateExpertiseSelects));
+      skillSelects.forEach((sel) =>
+        sel.addEventListener('change', updateExpertiseSelects)
+      );
       updateExpertiseSelects();
     }
   }
@@ -124,30 +123,11 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
     makeSelects(feat.toolProficiencies, toolSelects, 'selectToolForFeat');
   }
   if (Array.isArray(feat.languageProficiencies)) {
-    makeSelects(feat.languageProficiencies, languageSelects, 'selectLanguageForFeat');
-  }
-
-  const weaponSelects = [];
-  if (Array.isArray(feat.weaponProficiencies)) {
-    feat.weaponProficiencies.forEach((entry) => {
-      if (entry.choose?.fromFilter) {
-        const opts = getWeaponsFromFilter(entry.choose.fromFilter);
-        const count = entry.choose.count || entry.choose.amount || 1;
-        const selects = [];
-        for (let i = 0; i < count; i++) {
-          const sel = document.createElement('select');
-          sel.innerHTML = `<option value=''>${t('selectWeaponForFeat')}</option>`;
-          wrapper.appendChild(sel);
-          weaponSelects.push(sel);
-          selects.push(sel);
-          sel.addEventListener('change', () => {
-            updateWeaponSelects(selects, opts);
-            onChange();
-          });
-        }
-        updateWeaponSelects(selects, opts);
-      }
-    });
+    makeSelects(
+      feat.languageProficiencies,
+      languageSelects,
+      'selectLanguageForFeat'
+    );
   }
 
   if (Array.isArray(feat.savingThrowProficiencies)) {
@@ -177,50 +157,10 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
     updateSaveSelects();
   }
 
-  const optionalFeatureSelects = [];
-  if (Array.isArray(feat.optionalfeatureProgression)) {
-    await loadOptionalFeatures();
-    feat.optionalfeatureProgression.forEach((prog) => {
-      const vals = Object.values(prog.progression || {}).map((v) => Number(v) || 0);
-      const count = vals.length ? Math.max(...vals) : 0;
-      const opts = (prog.featureType || [])
-        .flatMap((t) => DATA.optionalFeatures?.[t] || []);
-      const selects = [];
-      for (let i = 0; i < count; i++) {
-        const sel = document.createElement('select');
-        sel.innerHTML = `<option value=''>${t('select')}</option>`;
-        wrapper.appendChild(sel);
-        optionalFeatureSelects.push(sel);
-        selects.push(sel);
-        sel.addEventListener('change', () => {
-          updateOptionalSelects(selects, opts);
-          onChange();
-        });
-      }
-      updateOptionalSelects(selects, opts);
-    });
-  }
-
-  function updateOptionalSelects(selects, opts) {
-    const taken = new Set(selects.map((s) => s.value).filter(Boolean));
-    selects.forEach((sel) => {
-      const current = sel.value;
-      sel.innerHTML = `<option value=''>${t('select')}</option>`;
-      opts.forEach((o) => {
-        if (o !== current && taken.has(o)) return;
-        const opt = document.createElement('option');
-        opt.value = o;
-        opt.textContent = o;
-        sel.appendChild(opt);
-      });
-      sel.value = current;
-    });
-  }
-
   function updateSaveSelects() {
     const taken = new Set(CharacterState.system.attributes?.saves || []);
     (CharacterState.feats || [])
-      .filter((f) => f.name !== featName)
+      .filter((f) => f.name !== feat.name)
       .forEach((f) => {
         const arr = f.saves || f.system?.attributes?.saves;
         if (Array.isArray(arr)) arr.forEach((s) => taken.add(s));
@@ -242,6 +182,63 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
       });
       sel.value = current;
       if (current) taken.add(current);
+    });
+  }
+
+  function updateExpertiseSelects() {
+    const known = new Set(CharacterState.system.skills || []);
+    skillSelects.forEach((sel) => {
+      if (sel.value) known.add(capitalize(sel.value));
+    });
+    const taken = new Set(expertiseSelects.map((s) => s.value).filter(Boolean));
+    expertiseSelects.forEach((sel) => {
+      const current = sel.value;
+      if (current) taken.delete(current);
+      sel.innerHTML = `<option value=''>${t('selectSkillForFeat')}</option>`;
+      Array.from(known)
+        .sort()
+        .forEach((sk) => {
+          if (sk !== current && taken.has(sk)) return;
+          const o = document.createElement('option');
+          o.value = sk;
+          o.textContent = sk;
+          sel.appendChild(o);
+        });
+      sel.value = current;
+      if (current) taken.add(current);
+    });
+  }
+
+  return {
+    skillSelects,
+    expertiseSelects,
+    toolSelects,
+    languageSelects,
+    saveSelects,
+  };
+}
+
+export function renderWeaponChoices(feat, wrapper, onChange = () => {}) {
+  const weaponSelects = [];
+  if (Array.isArray(feat.weaponProficiencies)) {
+    feat.weaponProficiencies.forEach((entry) => {
+      if (entry.choose?.fromFilter) {
+        const opts = getWeaponsFromFilter(entry.choose.fromFilter);
+        const count = entry.choose.count || entry.choose.amount || 1;
+        const selects = [];
+        for (let i = 0; i < count; i++) {
+          const sel = document.createElement('select');
+          sel.innerHTML = `<option value=''>${t('selectWeaponForFeat')}</option>`;
+          wrapper.appendChild(sel);
+          weaponSelects.push(sel);
+          selects.push(sel);
+          sel.addEventListener('change', () => {
+            updateWeaponSelects(selects, opts);
+            onChange();
+          });
+        }
+        updateWeaponSelects(selects, opts);
+      }
     });
   }
 
@@ -280,6 +277,69 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
     selects.forEach((sel) => {
       const current = sel.value;
       sel.innerHTML = `<option value=''>${t('selectWeaponForFeat')}</option>`;
+      opts.forEach((o) => {
+        if (o !== current && taken.has(o)) return;
+        const opt = document.createElement('option');
+        opt.value = o;
+        opt.textContent = o;
+        sel.appendChild(opt);
+      });
+      sel.value = current;
+    });
+  }
+
+  return { weaponSelects };
+}
+
+export async function renderFeatChoices(featName, container, onChange = () => {}) {
+  const feat = await loadFeatDetails(featName);
+  const wrapper = createElement('div');
+  container.appendChild(wrapper);
+  if (feat.description) wrapper.appendChild(createElement('p', feat.description));
+  appendEntries(wrapper, feat.entries);
+  const { abilitySelects, fixedAbilityBonuses } = renderAbilityBonuses(
+    feat,
+    wrapper,
+    onChange
+  );
+  const {
+    skillSelects,
+    expertiseSelects,
+    toolSelects,
+    languageSelects,
+    saveSelects,
+  } = renderProficiencyChoices(feat, wrapper, onChange);
+  const { weaponSelects } = renderWeaponChoices(feat, wrapper, onChange);
+
+  const optionalFeatureSelects = [];
+  if (Array.isArray(feat.optionalfeatureProgression)) {
+    await loadOptionalFeatures();
+    feat.optionalfeatureProgression.forEach((prog) => {
+      const vals = Object.values(prog.progression || {}).map((v) => Number(v) || 0);
+      const count = vals.length ? Math.max(...vals) : 0;
+      const opts = (prog.featureType || [])
+        .flatMap((t) => DATA.optionalFeatures?.[t] || []);
+      const selects = [];
+      for (let i = 0; i < count; i++) {
+        const sel = document.createElement('select');
+        sel.innerHTML = `<option value=''>${t('select')}</option>`;
+        wrapper.appendChild(sel);
+        optionalFeatureSelects.push(sel);
+        selects.push(sel);
+        sel.addEventListener('change', () => {
+          updateOptionalSelects(selects, opts);
+          onChange();
+        });
+      }
+      updateOptionalSelects(selects, opts);
+    });
+  }
+
+  function updateOptionalSelects(selects, opts) {
+    const taken = new Set(selects.map((s) => s.value).filter(Boolean));
+    selects.forEach((sel) => {
+      const current = sel.value;
+      sel.innerHTML = `<option value=''>${t('select')}</option>`;
       opts.forEach((o) => {
         if (o !== current && taken.has(o)) return;
         const opt = document.createElement('option');
@@ -446,30 +506,6 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
       });
       sel.value = current;
       if (current) existing.add(current);
-    });
-  }
-
-  function updateExpertiseSelects() {
-    const known = new Set(CharacterState.system.skills || []);
-    skillSelects.forEach((sel) => {
-      if (sel.value) known.add(capitalize(sel.value));
-    });
-    const taken = new Set(expertiseSelects.map((s) => s.value).filter(Boolean));
-    expertiseSelects.forEach((sel) => {
-      const current = sel.value;
-      if (current) taken.delete(current);
-      sel.innerHTML = `<option value=''>${t('selectSkillForFeat')}</option>`;
-      Array.from(known)
-        .sort()
-        .forEach((sk) => {
-          if (sk !== current && taken.has(sk)) return;
-          const o = document.createElement('option');
-          o.value = sk;
-          o.textContent = sk;
-          sel.appendChild(o);
-        });
-      sel.value = current;
-      if (current) taken.add(current);
     });
   }
 

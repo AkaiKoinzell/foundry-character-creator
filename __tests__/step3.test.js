@@ -648,3 +648,71 @@ describe('race skill proficiency choices', () => {
   });
 });
 
+describe('race trait descriptions', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    document.body.innerHTML = `
+      <div id="raceList"></div>
+      <div id="raceFeatures"></div>
+      <div id="raceTraits"></div>
+      <input id="raceSearch" />
+      <button id="changeRace"></button>
+    `;
+    CharacterState.showHelp = false;
+    DATA.races = {
+      Test: [{ name: 'Test', path: 'testRace' }],
+    };
+    const race = {
+      name: 'Test',
+      size: ['S', 'M'],
+      languageProficiencies: [{ common: true }],
+      resist: ['poison'],
+      entries: [
+        { name: 'Size', description: 'size description', entries: ['size entry'] },
+        {
+          name: 'Languages',
+          description: 'language description',
+          entries: ['language entry'],
+        },
+        {
+          name: 'Poison Resistance',
+          description: 'resist description',
+          entries: ['resist entry'],
+        },
+        {
+          name: 'Extra Trait',
+          description: 'trait description',
+          entries: ['trait entry'],
+        },
+      ],
+    };
+    CharacterState.system.traits.languages.value = [];
+    CharacterState.system.traits.damageResist = [];
+    CharacterState.raceChoices = {
+      spells: [],
+      spellAbility: '',
+      size: '',
+      resist: '',
+      tools: [],
+      weapons: [],
+    };
+    mockFetch.mockResolvedValue(race);
+  });
+
+  test('shows descriptions for size, language, resistance, and traits', async () => {
+    await loadStep3(true);
+    await selectBaseRace('Test');
+    document.querySelector('#raceList .class-card').click();
+    await new Promise((r) => setTimeout(r, 0));
+    const text = document.getElementById('raceFeatures').textContent;
+    expect(text).toContain('size description');
+    expect(text).toContain('size entry');
+    expect(text).toContain('language description');
+    expect(text).toContain('language entry');
+    expect(text).toContain('resist description');
+    expect(text).toContain('resist entry');
+    expect(text).toContain('trait description');
+    expect(text).toContain('trait entry');
+  });
+});
+

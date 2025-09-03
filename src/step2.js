@@ -19,7 +19,7 @@ import {
 } from './ui-helpers.js';
 import { renderFeatChoices } from './feat.js';
 import { renderSpellChoices } from './spell-select.js';
-import { pendingReplacements } from './proficiency.js';
+import { pendingReplacements, getProficiencyList } from './proficiency.js';
 
 const abilityMap = {
   Strength: 'str',
@@ -135,14 +135,6 @@ function validateTotalLevel(pendingClass) {
     return false;
   }
   return true;
-}
-
-function getProficiencyList(type) {
-  if (type === 'skills') return CharacterState.system.skills;
-  if (type === 'tools') return CharacterState.system.tools;
-  if (type === 'languages') return CharacterState.system.traits.languages.value;
-  if (type === 'cantrips') return CharacterState.system.spells.cantrips;
-  return [];
 }
 
 function filterDuplicateOptions(selects, existingValues = [], otherSelects = []) {

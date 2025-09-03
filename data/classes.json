@@ -3,6 +3,7 @@
         "Artificer": "data/classes/artificer.json",
         "Barbarian": "data/classes/barbarian.json",
         "Bard": "data/classes/bard.json",
+        "Blood Hunter": "data/classes/bloodhunter.json",
         "Cleric": "data/classes/cleric.json",
         "Druid": "data/classes/druid.json",
         "Fighter": "data/classes/fighter.json",

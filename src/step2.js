@@ -16,6 +16,7 @@ import {
   createSelectableCard,
   appendEntries,
   markIncomplete,
+  showToast,
 } from './ui-helpers.js';
 import { renderFeatChoices } from './feat.js';
 import { renderSpellChoices } from './spell-select.js';
@@ -135,8 +136,7 @@ function validateTotalLevel(pendingClass) {
   if (existing + pending > MAX_CHARACTER_LEVEL) {
     const allowed = Math.max(0, MAX_CHARACTER_LEVEL - existing);
     if (pendingClass) pendingClass.level = allowed;
-    if (typeof alert !== 'undefined')
-      alert(t('levelCap', { max: MAX_CHARACTER_LEVEL }));
+    showToast(t('levelCap', { max: MAX_CHARACTER_LEVEL }));
     return false;
   }
   return true;
@@ -451,7 +451,8 @@ function renderClassEditor(cls, index) {
   levelSel.value = cls.level || 1;
   levelSel.addEventListener('change', () => {
     const lvl = parseInt(levelSel.value, 10) || 1;
-    if (!validateTotalLevel({ level: lvl })) {
+    const delta = lvl - (cls.level || 1);
+    if (!validateTotalLevel({ level: delta })) {
       levelSel.value = cls.level || 1;
       return;
     }

@@ -5,7 +5,8 @@
 import { jest } from '@jest/globals';
 import * as Step2 from '../src/step2.js';
 import { updateChoiceSelectOptions, updateSkillSelectOptions } from '../src/choice-select-helpers.js';
-import { CharacterState, DATA } from '../src/data.js';
+import { CharacterState, DATA, MAX_CHARACTER_LEVEL } from '../src/data.js';
+import { t } from '../src/i18n.js';
 import { readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -128,6 +129,34 @@ describe('duplicate selection prevention', () => {
     expect(CharacterState.classes).toHaveLength(1);
     expect(alertMock).toHaveBeenCalled();
     alertMock.mockRestore();
+  });
+});
+
+describe('level cap messaging', () => {
+  test('validateTotalLevel shows toast when exceeding cap', () => {
+    const existing = document.getElementById('toast');
+    if (existing) existing.remove();
+    const result = Step2.validateTotalLevel({
+      level: MAX_CHARACTER_LEVEL + 1,
+    });
+    expect(result).toBe(false);
+    const toast = document.getElementById('toast');
+    expect(toast).not.toBeNull();
+    expect(toast.textContent).toBe(
+      t('levelCap', { max: MAX_CHARACTER_LEVEL })
+    );
+  });
+
+  test('validateTotalLevel permits reaching max level', () => {
+    CharacterState.classes = [{ level: 1 }];
+    const existing = document.getElementById('toast');
+    if (existing) existing.remove();
+    const result = Step2.validateTotalLevel({
+      level: MAX_CHARACTER_LEVEL - 1,
+    });
+    expect(result).toBe(true);
+    const toast = document.getElementById('toast');
+    expect(toast).toBeNull();
   });
 });
 

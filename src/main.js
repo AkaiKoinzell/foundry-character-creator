@@ -60,6 +60,24 @@ function setCurrentStepComplete(flag) {
 }
 globalThis.setCurrentStepComplete = setCurrentStepComplete;
 
+function showErrorBanner(message) {
+  let banner = document.getElementById('errorBanner');
+  if (!message) {
+    if (banner) banner.remove();
+    return;
+  }
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'errorBanner';
+    banner.className = 'error-banner';
+    const stepNav = document.getElementById('stepNav');
+    if (stepNav) stepNav.insertAdjacentElement('beforebegin', banner);
+    else document.body.prepend(banner);
+  }
+  banner.textContent = message;
+  banner.classList.remove('hidden');
+}
+
 function showStep(step) {
     const firstVisit = !visitedSteps.has(step);
     visitedSteps.add(step);
@@ -503,4 +521,4 @@ document.addEventListener("DOMContentLoaded", async () => {
     validateStep1();
 });
 
-export { showStep, loadData, setCurrentStepComplete };
+export { showStep, loadData, setCurrentStepComplete, showErrorBanner };

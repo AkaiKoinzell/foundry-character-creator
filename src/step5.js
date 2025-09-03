@@ -3,7 +3,7 @@ import { t } from './i18n.js';
 import * as main from './main.js';
 import { createAccordionItem, markIncomplete } from './ui-helpers.js';
 
-let equipmentData = null;
+let equipmentData;
 let choiceBlocks = [];
 
 function getSimpleWeapons() {
@@ -28,16 +28,18 @@ function getSimpleWeapons() {
 }
 
 async function loadEquipmentData() {
-  if (!equipmentData) {
-    equipmentData = await fetchJsonWithRetry('data/equipment.json', 'equipment').catch(
-      () => {
-        const container = document.getElementById('equipmentSelections');
-        if (container) container.textContent = t('equipmentLoadError');
-        return null;
-      }
-    );
+  if (equipmentData) return equipmentData;
+
+  try {
+    const data = await fetchJsonWithRetry('data/equipment.json', 'equipment');
+    equipmentData = data;
+    return equipmentData;
+  } catch {
+    const container = document.getElementById('equipmentSelections');
+    if (container) container.textContent = t('equipmentLoadError');
+    main.showErrorBanner?.(t('equipmentLoadError'));
+    return undefined;
   }
-  return equipmentData;
 }
 
 function buildSimpleWeaponSelect(count = 1) {

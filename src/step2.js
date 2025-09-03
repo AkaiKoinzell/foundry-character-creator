@@ -129,6 +129,10 @@ function rebuildFromClasses() {
   }
   updateSpellSlots();
   updateProficiencyBonus();
+  main.invalidateStep(3);
+  main.invalidateStep(4);
+  main.invalidateStep(5);
+  main.invalidateStep(6);
 }
 
 function validateTotalLevel(pendingClass) {

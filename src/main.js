@@ -32,6 +32,28 @@ let currentStep = 1;
 let currentStepComplete = false;
 const visitedSteps = new Set();
 const completedSteps = new Set();
+const invalidatedSteps = new Set();
+
+function invalidateStep(stepNumber) {
+  invalidatedSteps.add(stepNumber);
+  const containers = {
+    3: ["raceList", "raceFeatures", "raceTraits"],
+    4: [
+      "backgroundList",
+      "backgroundSkills",
+      "backgroundTools",
+      "backgroundLanguages",
+      "backgroundFeat",
+      "backgroundFeatures",
+    ],
+    5: ["equipmentSelections"],
+  };
+  const ids = containers[stepNumber] || [];
+  ids.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = "";
+  });
+}
 
 function updateNavButtons() {
   for (let i = 1; i <= 7; i++) {
@@ -79,7 +101,9 @@ function showErrorBanner(message) {
 
 function showStep(step) {
     const firstVisit = !visitedSteps.has(step);
+    const force = invalidatedSteps.has(step);
     visitedSteps.add(step);
+    invalidatedSteps.delete(step);
     for (let i = 1; i <= 7; i++) {
       const el = document.getElementById(`step${i}`);
       if (!el) continue;
@@ -100,10 +124,11 @@ function showStep(step) {
       // Placeholder for contextual help integration
       console.log(`Help: display guidance for step ${step}`);
     }
-    if (step === 3) loadStep3(firstVisit);
-    if (step === 4) loadStep4(firstVisit);
-    if (step === 5) loadStep5(firstVisit);
-    if (step === 6) loadStep6(firstVisit);
+    if (step === 2) loadStep2(firstVisit || force);
+    if (step === 3) loadStep3(firstVisit || force);
+    if (step === 4) loadStep4(firstVisit || force);
+    if (step === 5) loadStep5(firstVisit || force);
+    if (step === 6) loadStep6(firstVisit || force);
     if (step === 7) {
       commitAbilities();
       CharacterState.playerName =
@@ -520,4 +545,4 @@ document.addEventListener("DOMContentLoaded", async () => {
     validateStep1();
 });
 
-export { showStep, loadData, setCurrentStepComplete, showErrorBanner };
+export { showStep, loadData, setCurrentStepComplete, showErrorBanner, invalidateStep };

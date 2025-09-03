@@ -68,14 +68,14 @@ export const ALL_INSTRUMENTS = [
 // verify that all duplicates have been resolved before advancing.
 const pendingSelects = {};
 
-export function getProficiencyList(type) {
-  if (type === 'skills') return CharacterState.system.skills;
-  if (type === 'tools') return CharacterState.system.tools;
-  if (type === 'instruments') return CharacterState.system.tools;
-  if (type === 'weapons') return CharacterState.system.weapons || [];
-  if (type === 'languages') return CharacterState.system.traits.languages.value;
-  if (type === 'cantrips') return CharacterState.system.spells.cantrips;
-  if (type === 'feats') return CharacterState.feats;
+export function getProficiencyList(type, state = CharacterState) {
+  if (type === 'skills') return state.system.skills;
+  if (type === 'tools') return state.system.tools;
+  if (type === 'instruments') return state.system.tools;
+  if (type === 'weapons') return state.system.weapons || [];
+  if (type === 'languages') return state.system.traits.languages.value;
+  if (type === 'cantrips') return state.system.spells.cantrips;
+  if (type === 'feats') return state.feats;
   return [];
 }
 
@@ -100,19 +100,25 @@ export function pendingReplacements(type) {
   );
 }
 
-export function addUniqueProficiency(type, value, container, source = '') {
+export function addUniqueProficiency(
+  type,
+  value,
+  container,
+  source = '',
+  state = CharacterState
+) {
   if (!value) return null;
-  const list = getProficiencyList(type);
+  const list = getProficiencyList(type, state);
   if (!list.includes(value)) {
     list.push(value);
     if (source) {
-      CharacterState.proficiencySources = CharacterState.proficiencySources || {};
+      state.proficiencySources = state.proficiencySources || {};
       const map =
-        (CharacterState.proficiencySources[type] =
-          CharacterState.proficiencySources[type] || {});
+        (state.proficiencySources[type] =
+          state.proficiencySources[type] || {});
       map[value] = source;
     }
-    logCharacterState();
+    if (state === CharacterState) logCharacterState();
     return null;
   }
   const msg = document.createElement('div');
@@ -139,7 +145,7 @@ export function addUniqueProficiency(type, value, container, source = '') {
       list.push(sel.value);
       sel.disabled = true;
       pending.delete(sel);
-      logCharacterState();
+      if (state === CharacterState) logCharacterState();
     }
   });
   label.appendChild(sel);

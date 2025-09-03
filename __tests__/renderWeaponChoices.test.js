@@ -24,6 +24,9 @@ jest.unstable_mockModule('../src/data.js', () => ({
   loadOptionalFeatures: async () => {},
   logCharacterState: jest.fn(),
 }));
+jest.unstable_mockModule('../src/step5.js', () => ({
+  loadEquipmentData: jest.fn().mockResolvedValue(DATA.equipment),
+}));
 
 const { renderWeaponChoices } = await import('../src/feat.js');
 
@@ -40,7 +43,7 @@ describe('renderWeaponChoices', () => {
         },
       ],
     };
-    const { weaponSelects } = renderWeaponChoices(feat, div, () => {});
+    const { weaponSelects } = await renderWeaponChoices(feat, div, () => {});
     expect(weaponSelects.length).toBe(4);
     weaponSelects[0].value = 'Longsword';
     weaponSelects[0].dispatchEvent(new Event('change'));

@@ -63,6 +63,9 @@ jest.unstable_mockModule('../src/choice-select-helpers.js', () => ({
 jest.unstable_mockModule('../src/main.js', () => ({
   showStep: mockShowStep,
 }));
+jest.unstable_mockModule('../src/step5.js', () => ({
+  loadEquipmentData: jest.fn().mockResolvedValue([]),
+}));
 
 const {
   renderBaseRaces,

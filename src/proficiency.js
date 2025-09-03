@@ -1,5 +1,6 @@
 import { DATA, CharacterState, logCharacterState } from './data.js';
 import { t } from './i18n.js';
+import { loadEquipmentData } from './step5.js';
 
 // full list of skills for replacement handling
 export const ALL_SKILLS = [
@@ -84,10 +85,15 @@ export function getAllOptions(type) {
   if (type === 'tools') return ALL_TOOLS;
   if (type === 'instruments') return ALL_INSTRUMENTS;
   if (type === 'languages') return DATA.languages || [];
-  if (type === 'weapons')
-    return (DATA.equipment || [])
+  if (type === 'weapons') {
+    if (!Array.isArray(DATA.equipment)) {
+      loadEquipmentData();
+      return [];
+    }
+    return DATA.equipment
       .filter((i) => /weapon/i.test(i.type))
       .map((i) => i.name);
+  }
   if (type === 'feats') return DATA.feats || [];
   return [];
 }

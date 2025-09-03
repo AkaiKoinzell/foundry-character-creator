@@ -6,6 +6,7 @@ import {
   logCharacterState,
   loadSpells
 } from './data.js';
+import { loadEquipmentData } from './step5.js';
 import { refreshBaseState, rebuildFromClasses } from './step2.js';
 import { updateChoiceSelectOptions, filterDuplicateOptions } from './choice-select-helpers.js';
 import { t } from './i18n.js';
@@ -463,6 +464,7 @@ async function renderSelectedRace() {
     }
   }
   if (currentRaceData.weaponProficiencies) {
+    await loadEquipmentData();
     const raceWeapons = [];
     const chooseGroups = [];
     currentRaceData.weaponProficiencies.forEach((obj) => {

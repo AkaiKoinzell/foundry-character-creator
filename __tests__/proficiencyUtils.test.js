@@ -20,6 +20,9 @@ jest.unstable_mockModule('../src/data.js', () => ({
   loadSpells: jest.fn(),
   fetchJsonWithRetry: jest.fn(),
 }));
+jest.unstable_mockModule('../src/step5.js', () => ({
+  loadEquipmentData: jest.fn().mockResolvedValue([]),
+}));
 
 const {
   addUniqueProficiency,

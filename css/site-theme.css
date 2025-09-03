@@ -370,15 +370,38 @@ th {
   border: 1px solid var(--accent-color);
   border-radius: 8px;
   background-color: #fff;
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
   box-sizing: border-box;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.class-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  transition: background-color 0.2s ease;
+  z-index: 0;
+}
+
+.class-card > * {
+  position: relative;
+  z-index: 1;
+}
+
 .class-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.class-card:hover::before {
+  background-color: rgba(0, 0, 0, 0.6);
 }
 
 .class-card.selected {

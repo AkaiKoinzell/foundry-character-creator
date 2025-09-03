@@ -96,11 +96,14 @@ export function createSelectableCard(
   details = null,
   onClick = null,
   detailsButtonText = t('details'),
-  onDetailsClick = null
+  onDetailsClick = null,
+  imageUrl = null
 ) {
   const card = document.createElement('div');
   card.className = 'class-card';
   if (onClick) card.addEventListener('click', onClick);
+
+  if (imageUrl) card.style.backgroundImage = `url(${imageUrl})`;
 
   if (title) card.appendChild(createElement('h3', title));
   if (description) card.appendChild(createElement('p', description));

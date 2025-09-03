@@ -1024,13 +1024,17 @@ export async function loadStep2(refresh = true) {
           cls.name.toLowerCase().includes(query.toLowerCase())
       )
       .forEach(cls => {
+        const imageUrl = `assets/classes/${cls.name
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '')}.png`;
         const card = createSelectableCard(
           cls.name,
           cls.description || t('noDescription'),
           null,
           () => showClassModal(cls),
           t('details'),
-          () => showClassModal(cls)
+          () => showClassModal(cls),
+          imageUrl
         );
         classListContainer.appendChild(card);
       });

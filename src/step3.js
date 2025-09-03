@@ -27,6 +27,7 @@ import { inlineWarning } from './validation.js';
 
 let selectedBaseRace = '';
 let currentRaceData = null;
+let preRaceState = null;
 const pendingRaceChoices = {
   subrace: '',
   skills: [],
@@ -944,9 +945,24 @@ function confirmRaceSelection() {
   if (!validateRaceChoices()) return false;
   const container = document.getElementById('raceTraits');
 
-  CharacterState.system.details.race = selectedBaseRace;
-  CharacterState.system.details.subrace = currentRaceData.name;
-  CharacterState.raceFeatures = (currentRaceData.entries || [])
+  const draft = structuredClone(CharacterState);
+  draft.raceChoices = {
+    spells: [],
+    spellAbility: '',
+    size: '',
+    alterations: {},
+    resist: '',
+    tools: [],
+    weapons: [],
+    languages: [],
+    skills: [],
+    movement: {},
+  };
+  draft.raceFeatures = [];
+
+  draft.system.details.race = selectedBaseRace;
+  draft.system.details.subrace = currentRaceData.name;
+  draft.raceFeatures = (currentRaceData.entries || [])
     .filter((e) => typeof e === 'object' && e.name)
     .map((e) => e.name);
 
@@ -958,12 +974,11 @@ function confirmRaceSelection() {
     } else {
       sz = currentRaceData.size;
     }
-    CharacterState.system.traits.size =
-      sizeMap[sz] || CharacterState.system.traits.size;
-    CharacterState.raceChoices.size = sizeMap[sz] || '';
+    draft.system.traits.size = sizeMap[sz] || draft.system.traits.size;
+    draft.raceChoices.size = sizeMap[sz] || '';
   }
 
-  const move = { ...(CharacterState.system.attributes.movement || {}) };
+  const move = { ...(draft.system.attributes.movement || {}) };
   const speed = currentRaceData.speed;
   if (typeof speed === 'number') move.walk = speed;
   else if (speed && typeof speed === 'object') {
@@ -976,19 +991,16 @@ function confirmRaceSelection() {
     if (speed.fly === true && typeof move.walk === 'number') move.fly = move.walk;
     else if (typeof speed.fly === 'number') move.fly = speed.fly;
   }
-  CharacterState.system.attributes.movement = {
-    ...CharacterState.system.attributes.movement,
+  draft.system.attributes.movement = {
+    ...draft.system.attributes.movement,
     ...move,
   };
-  CharacterState.raceChoices.movement = move;
-
-  // Ability score increases are now handled in Step 6. Race selection
-  // should not apply any modifiers to ability scores directly.
+  draft.raceChoices.movement = move;
 
   if (currentRaceData.darkvision)
-    CharacterState.system.traits.senses.darkvision = currentRaceData.darkvision;
+    draft.system.traits.senses.darkvision = currentRaceData.darkvision;
   if (currentRaceData.traitTags)
-    CharacterState.system.traits.traitTags = [...currentRaceData.traitTags];
+    draft.system.traits.traitTags = [...currentRaceData.traitTags];
 
   const replacements = [];
   const weaponSummary = [];
@@ -997,29 +1009,26 @@ function confirmRaceSelection() {
       for (const k in obj) {
         if (k === 'choose' || k === 'any' || !obj[k]) continue;
         const val = capitalize(k);
-        const sel = addUniqueProficiency('skills', val, container);
+        const sel = addUniqueProficiency('skills', val, container, '', draft);
         if (sel) {
           sel.dataset.proftype = 'skills';
           replacements.push(sel);
         } else {
-          CharacterState.raceChoices.skills =
-            CharacterState.raceChoices.skills || [];
-          CharacterState.raceChoices.skills.push(val);
+          draft.raceChoices.skills = draft.raceChoices.skills || [];
+          draft.raceChoices.skills.push(val);
         }
       }
     });
   }
   pendingRaceChoices.skills.forEach((sel) => {
-    const repl = addUniqueProficiency('skills', sel.value, container);
+    const repl = addUniqueProficiency('skills', sel.value, container, '', draft);
     if (repl) {
       repl.dataset.proftype = 'skills';
       replacements.push(repl);
     }
-    if (!CharacterState.system.skills.includes(sel.value))
-      CharacterState.system.skills.push(sel.value);
-    CharacterState.raceChoices.skills =
-      CharacterState.raceChoices.skills || [];
-    CharacterState.raceChoices.skills.push(sel.value);
+    if (!draft.system.skills.includes(sel.value)) draft.system.skills.push(sel.value);
+    draft.raceChoices.skills = draft.raceChoices.skills || [];
+    draft.raceChoices.skills.push(sel.value);
     sel.disabled = true;
   });
   if (currentRaceData.toolProficiencies) {
@@ -1027,34 +1036,26 @@ function confirmRaceSelection() {
       for (const k in obj)
         if (k !== 'any' && k !== 'choose' && obj[k]) {
           const val = capitalize(k);
-          const sel = addUniqueProficiency(
-            'tools',
-            val,
-            container,
-            'Race'
-          );
+          const sel = addUniqueProficiency('tools', val, container, 'Race', draft);
           if (sel) {
             sel.dataset.proftype = 'tools';
             replacements.push(sel);
           } else {
-            CharacterState.raceChoices.tools =
-              CharacterState.raceChoices.tools || [];
-            CharacterState.raceChoices.tools.push(val);
+            draft.raceChoices.tools = draft.raceChoices.tools || [];
+            draft.raceChoices.tools.push(val);
           }
         }
     });
   }
   pendingRaceChoices.tools.forEach((sel) => {
-    const repl = addUniqueProficiency('tools', sel.value, container, 'Race');
+    const repl = addUniqueProficiency('tools', sel.value, container, 'Race', draft);
     if (repl) {
       repl.dataset.proftype = 'tools';
       replacements.push(repl);
     }
-    if (!CharacterState.system.tools.includes(sel.value))
-      CharacterState.system.tools.push(sel.value);
-    CharacterState.raceChoices.tools =
-      CharacterState.raceChoices.tools || [];
-    CharacterState.raceChoices.tools.push(sel.value);
+    if (!draft.system.tools.includes(sel.value)) draft.system.tools.push(sel.value);
+    draft.raceChoices.tools = draft.raceChoices.tools || [];
+    draft.raceChoices.tools.push(sel.value);
     sel.disabled = true;
   });
   if (currentRaceData.weaponProficiencies) {
@@ -1063,30 +1064,27 @@ function confirmRaceSelection() {
       for (const k in obj)
         if (obj[k]) {
           const val = capitalize(k.split('|')[0]);
-          const sel = addUniqueProficiency('weapons', val, container);
+          const sel = addUniqueProficiency('weapons', val, container, '', draft);
           if (sel) {
             sel.dataset.proftype = 'weapons';
             replacements.push(sel);
           } else {
-            CharacterState.raceChoices.weapons =
-              CharacterState.raceChoices.weapons || [];
-            CharacterState.raceChoices.weapons.push(val);
+            draft.raceChoices.weapons = draft.raceChoices.weapons || [];
+            draft.raceChoices.weapons.push(val);
             weaponSummary.push(val);
           }
         }
     });
   }
   pendingRaceChoices.weapons.forEach((sel) => {
-    const repl = addUniqueProficiency('weapons', sel.value, container);
+    const repl = addUniqueProficiency('weapons', sel.value, container, '', draft);
     if (repl) {
       repl.dataset.proftype = 'weapons';
       replacements.push(repl);
     }
-    if (!CharacterState.system.weapons.includes(sel.value))
-      CharacterState.system.weapons.push(sel.value);
-    CharacterState.raceChoices.weapons =
-      CharacterState.raceChoices.weapons || [];
-    CharacterState.raceChoices.weapons.push(sel.value);
+    if (!draft.system.weapons.includes(sel.value)) draft.system.weapons.push(sel.value);
+    draft.raceChoices.weapons = draft.raceChoices.weapons || [];
+    draft.raceChoices.weapons.push(sel.value);
     weaponSummary.push(sel.value);
     sel.disabled = true;
   });
@@ -1100,39 +1098,27 @@ function confirmRaceSelection() {
       for (const k in obj)
         if (k !== 'anyStandard' && obj[k]) {
           const val = capitalize(k);
-          const sel = addUniqueProficiency(
-            'languages',
-            val,
-            container,
-            'Race'
-          );
+          const sel = addUniqueProficiency('languages', val, container, 'Race', draft);
           if (sel) {
             sel.dataset.proftype = 'languages';
             replacements.push(sel);
           } else {
-            CharacterState.raceChoices.languages =
-              CharacterState.raceChoices.languages || [];
-            CharacterState.raceChoices.languages.push(val);
+            draft.raceChoices.languages = draft.raceChoices.languages || [];
+            draft.raceChoices.languages.push(val);
           }
         }
     });
   }
   pendingRaceChoices.languages.forEach((sel) => {
-    const repl = addUniqueProficiency(
-      'languages',
-      sel.value,
-      container,
-      'Race'
-    );
+    const repl = addUniqueProficiency('languages', sel.value, container, 'Race', draft);
     if (repl) {
       repl.dataset.proftype = 'languages';
       replacements.push(repl);
     }
-    if (!CharacterState.system.traits.languages.value.includes(sel.value))
-      CharacterState.system.traits.languages.value.push(sel.value);
-    CharacterState.raceChoices.languages =
-      CharacterState.raceChoices.languages || [];
-    CharacterState.raceChoices.languages.push(sel.value);
+    if (!draft.system.traits.languages.value.includes(sel.value))
+      draft.system.traits.languages.value.push(sel.value);
+    draft.raceChoices.languages = draft.raceChoices.languages || [];
+    draft.raceChoices.languages.push(sel.value);
     sel.disabled = true;
   });
   if (Array.isArray(currentRaceData.resist)) {
@@ -1142,45 +1128,45 @@ function confirmRaceSelection() {
     });
     if (pendingRaceChoices.resist && pendingRaceChoices.resist.value) {
       resists.push(pendingRaceChoices.resist.value);
-      CharacterState.raceChoices.resist = pendingRaceChoices.resist.value;
+      draft.raceChoices.resist = pendingRaceChoices.resist.value;
       pendingRaceChoices.resist.disabled = true;
     } else {
-      CharacterState.raceChoices.resist = '';
+      draft.raceChoices.resist = '';
     }
     if (resists.length) {
-      const set = new Set(CharacterState.system.traits.damageResist || []);
+      const set = new Set(draft.system.traits.damageResist || []);
       resists.forEach((r) => set.add(r));
-      CharacterState.system.traits.damageResist = Array.from(set);
+      draft.system.traits.damageResist = Array.from(set);
     }
   }
   pendingRaceChoices.spells.forEach((sel) => {
-    const repl = addUniqueProficiency('cantrips', sel.value, container);
+    const repl = addUniqueProficiency('cantrips', sel.value, container, '', draft);
     if (repl) replacements.push(repl);
-    CharacterState.raceChoices.spells.push(sel.value);
+    draft.raceChoices.spells.push(sel.value);
     sel.disabled = true;
   });
   pendingRaceChoices.abilities.forEach((sel) => {
-    CharacterState.raceChoices.spellAbility = sel.value;
+    draft.raceChoices.spellAbility = sel.value;
     sel.disabled = true;
   });
   if (
     pendingRaceChoices.alterations.minor.length ||
     pendingRaceChoices.alterations.major.length
   ) {
-    CharacterState.raceChoices.alterations = { minor: [], major: [] };
+    draft.raceChoices.alterations = { minor: [], major: [] };
     pendingRaceChoices.alterations.minor.forEach((sel) => {
-      CharacterState.raceChoices.alterations.minor.push(sel.value);
+      draft.raceChoices.alterations.minor.push(sel.value);
       sel.disabled = true;
     });
     pendingRaceChoices.alterations.major.forEach((sel) => {
-      CharacterState.raceChoices.alterations.major.push(sel.value);
+      draft.raceChoices.alterations.major.push(sel.value);
       sel.disabled = true;
     });
     if (pendingRaceChoices.alterations.combo)
       pendingRaceChoices.alterations.combo.disabled = true;
     const chosen = [
-      ...CharacterState.raceChoices.alterations.minor,
-      ...CharacterState.raceChoices.alterations.major,
+      ...draft.raceChoices.alterations.minor,
+      ...draft.raceChoices.alterations.major,
     ];
     const p = document.createElement('p');
     p.textContent = `Alterations: ${chosen.join(', ')}`;
@@ -1198,8 +1184,12 @@ function confirmRaceSelection() {
     pendingRaceChoices.size.disabled = true;
   }
   resetPendingRaceChoices();
+
+  preRaceState = structuredClone(CharacterState);
+  Object.assign(CharacterState, draft);
   refreshBaseState();
   rebuildFromClasses();
+
   const finalize = () => {
     logCharacterState();
     main.setCurrentStepComplete?.(true);
@@ -1253,69 +1243,19 @@ export async function loadStep3(force = false) {
 
   const changeBtn = document.getElementById('changeRace');
   changeBtn?.addEventListener('click', async () => {
-    if (currentRaceData) {
-      (CharacterState.raceChoices.skills || []).forEach((s) => {
-        const idx = CharacterState.system.skills.indexOf(s);
-        if (idx >= 0) CharacterState.system.skills.splice(idx, 1);
-      });
-      (CharacterState.raceChoices.tools || []).forEach((t) => {
-        const idx = CharacterState.system.tools.indexOf(t);
-        if (idx >= 0) CharacterState.system.tools.splice(idx, 1);
-      });
-      (CharacterState.raceChoices.weapons || []).forEach((w) => {
-        const idx = CharacterState.system.weapons.indexOf(w);
-        if (idx >= 0) CharacterState.system.weapons.splice(idx, 1);
-      });
-      (CharacterState.raceChoices.languages || []).forEach((l) => {
-        const idx = CharacterState.system.traits.languages.value.indexOf(l);
-        if (idx >= 0)
-          CharacterState.system.traits.languages.value.splice(idx, 1);
-      });
-      CharacterState.system.traits.size = 'med';
-      const move = CharacterState.raceChoices.movement || {};
-      const movement = CharacterState.system.attributes.movement || {};
-      Object.keys(move).forEach((m) => {
-        if (m === 'walk') movement.walk = 30;
-        else delete movement[m];
-      });
-      CharacterState.system.attributes.movement = movement;
-      // No ability score adjustments are made during race selection,
-      // so there is nothing to revert here.
-      CharacterState.raceChoices.skills = [];
-      CharacterState.raceChoices.tools = [];
-      CharacterState.raceChoices.weapons = [];
-      CharacterState.raceChoices.languages = [];
-      CharacterState.raceChoices.movement = {};
-      CharacterState.raceChoices.spells = [];
-      CharacterState.raceChoices.spellAbility = '';
-      CharacterState.raceChoices.size = '';
-      CharacterState.raceFeatures = [];
-      const removeRes = [];
-      (currentRaceData.resist || []).forEach((r) => {
-        if (typeof r === 'string') removeRes.push(r);
-      });
-      if (CharacterState.raceChoices.resist)
-        removeRes.push(CharacterState.raceChoices.resist);
-      CharacterState.system.traits.damageResist =
-        (CharacterState.system.traits.damageResist || []).filter(
-          (r) => !removeRes.includes(r)
-        );
-      CharacterState.raceChoices.resist = '';
-      CharacterState.raceChoices.alterations = {};
-    }
     selectedBaseRace = '';
     currentRaceData = null;
     resetPendingRaceChoices();
-    if (CharacterState.system?.details) {
-      CharacterState.system.details.race = '';
-      CharacterState.system.details.subrace = '';
+    if (preRaceState) {
+      Object.assign(CharacterState, structuredClone(preRaceState));
+      preRaceState = null;
+      refreshBaseState();
+      rebuildFromClasses();
+      main.invalidateStep(4);
+      main.invalidateStep(5);
+      main.invalidateStep(6);
+      main.invalidateStepsFrom(4);
     }
-    refreshBaseState();
-    rebuildFromClasses();
-    main.invalidateStep(4);
-    main.invalidateStep(5);
-    main.invalidateStep(6);
-    main.invalidateStepsFrom(4);
     const traits = document.getElementById('raceTraits');
     if (traits) traits.innerHTML = '';
     const list = document.getElementById('raceList');

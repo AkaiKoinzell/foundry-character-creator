@@ -5,6 +5,7 @@ import { createAccordionItem, markIncomplete } from './ui-helpers.js';
 
 let equipmentData;
 let choiceBlocks = [];
+let equipmentSelectionsValid = false;
 
 function getSimpleWeapons() {
   return DATA.simpleWeapons?.length
@@ -245,14 +246,16 @@ function validateEquipmentSelections() {
     markIncomplete(b.element, ok);
     if (!ok) allValid = false;
   });
+  equipmentSelectionsValid = allValid;
   const btn = document.getElementById('confirmEquipment');
-  if (btn) btn.disabled = !allValid;
-  main.setCurrentStepComplete?.(allValid);
-  return allValid;
+  if (btn) btn.disabled = !equipmentSelectionsValid;
+  main.setCurrentStepComplete?.(equipmentSelectionsValid);
+  return equipmentSelectionsValid;
 }
 
 function confirmEquipment() {
-  if (!validateEquipmentSelections()) return;
+  validateEquipmentSelections();
+  if (!equipmentSelectionsValid) return;
   const selections = [];
   (equipmentData.standard || []).forEach((item) => {
     selections.push({ name: item });
@@ -310,6 +313,5 @@ export async function loadStep5(force = false) {
 }
 
 export function isStepComplete() {
-  return Array.isArray(CharacterState.equipment) &&
-    CharacterState.equipment.length > 0;
+  return equipmentSelectionsValid;
 }

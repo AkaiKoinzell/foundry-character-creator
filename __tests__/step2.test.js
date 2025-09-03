@@ -7,6 +7,7 @@ import * as Step2 from '../src/step2.js';
 import { updateChoiceSelectOptions, updateSkillSelectOptions } from '../src/choice-select-helpers.js';
 import { CharacterState, DATA, MAX_CHARACTER_LEVEL } from '../src/data.js';
 import { t } from '../src/i18n.js';
+import * as uiHelpers from '../src/ui-helpers.js';
 import { readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -122,13 +123,15 @@ describe('duplicate selection prevention', () => {
       cantripSelect2.querySelector("option[value='Fire Bolt']").disabled
     ).toBe(true);
   });
-  test('selectClass prevents adding duplicate classes', () => {
+  test('selectClass prevents adding duplicate classes', async () => {
     CharacterState.classes = [{ name: 'Fighter', level: 1 }];
-    const alertMock = jest.spyOn(global, 'alert').mockImplementation(() => {});
-    Step2.selectClass({ name: 'Fighter' });
+    const confirmMock = jest
+      .spyOn(uiHelpers, 'showConfirmation')
+      .mockResolvedValue(true);
+    await Step2.selectClass({ name: 'Fighter' });
     expect(CharacterState.classes).toHaveLength(1);
-    expect(alertMock).toHaveBeenCalled();
-    alertMock.mockRestore();
+    expect(confirmMock).toHaveBeenCalled();
+    confirmMock.mockRestore();
   });
 });
 

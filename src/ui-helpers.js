@@ -73,6 +73,66 @@ export function showToast(message, duration = 3000) {
   if (toastTimeout) clearTimeout(toastTimeout);
   toastTimeout = setTimeout(() => toast.classList.add('hidden'), duration);
 }
+
+/**
+ * Displays a confirmation toast/modal and resolves with the user's choice.
+ * When `cancelText` is omitted the toast behaves like an alert dialog.
+ * @param {string} message - Message to display
+ * @param {object} [opts]
+ * @param {string} [opts.confirmText=t('ok')] - Confirmation button text
+ * @param {string} [opts.cancelText=t('cancel')] - Cancel button text
+ * @returns {Promise<boolean>} Resolves to `true` if confirmed, otherwise `false`
+ */
+export function showConfirmation(
+  message,
+  { confirmText = t('ok'), cancelText = t('cancel') } = {}
+) {
+  if (typeof document === 'undefined') {
+    if (typeof window !== 'undefined' && typeof window.confirm === 'function') {
+      return Promise.resolve(window.confirm(message));
+    }
+    return Promise.resolve(false);
+  }
+  return new Promise(resolve => {
+    let toast = document.getElementById('confirmToast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'confirmToast';
+      toast.className = 'toast hidden';
+      const msg = document.createElement('span');
+      msg.className = 'message';
+      const btns = document.createElement('div');
+      const okBtn = document.createElement('button');
+      okBtn.id = 'confirmOk';
+      okBtn.className = 'btn btn-primary me-2';
+      const cancelBtn = document.createElement('button');
+      cancelBtn.id = 'confirmCancel';
+      cancelBtn.className = 'btn btn-secondary';
+      btns.append(okBtn, cancelBtn);
+      toast.append(msg, btns);
+      document.body.appendChild(toast);
+    }
+    const msgEl = toast.querySelector('.message');
+    const okBtn = toast.querySelector('#confirmOk');
+    const cancelBtn = toast.querySelector('#confirmCancel');
+    msgEl.textContent = message;
+    okBtn.textContent = confirmText;
+    cancelBtn.textContent = cancelText || '';
+    cancelBtn.classList.toggle('hidden', !cancelText);
+    toast.classList.remove('hidden');
+
+    const cleanup = result => {
+      toast.classList.add('hidden');
+      okBtn.removeEventListener('click', onOk);
+      cancelBtn.removeEventListener('click', onCancel);
+      resolve(result);
+    };
+    const onOk = () => cleanup(true);
+    const onCancel = () => cleanup(false);
+    okBtn.addEventListener('click', onOk, { once: true });
+    cancelBtn.addEventListener('click', onCancel, { once: true });
+  });
+}
 export function createAccordionItem(title, content, isChoice = false, description = '') {
   const item = document.createElement('div');
   item.className = 'accordion-item' + (isChoice ? ' user-choice' : '');

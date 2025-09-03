@@ -40,6 +40,19 @@ const pendingRaceChoices = {
   alterations: { combo: null, minor: [], major: [] },
 };
 
+export function resetPendingRaceChoices() {
+  pendingRaceChoices.subrace = '';
+  pendingRaceChoices.skills = [];
+  pendingRaceChoices.languages = [];
+  pendingRaceChoices.spells = [];
+  pendingRaceChoices.abilities = [];
+  pendingRaceChoices.tools = [];
+  pendingRaceChoices.weapons = [];
+  pendingRaceChoices.size = null;
+  pendingRaceChoices.resist = null;
+  pendingRaceChoices.alterations = { combo: null, minor: [], major: [] };
+}
+
 let raceRenderSeq = 0;
 
 function slugify(name = '') {
@@ -213,16 +226,7 @@ async function renderBaseRaces(search = '') {
 async function selectBaseRace(base) {
   selectedBaseRace = base;
   currentRaceData = null;
-  pendingRaceChoices.subrace = '';
-  pendingRaceChoices.skills = [];
-  pendingRaceChoices.languages = [];
-  pendingRaceChoices.spells = [];
-  pendingRaceChoices.abilities = [];
-  pendingRaceChoices.tools = [];
-  pendingRaceChoices.weapons = [];
-  pendingRaceChoices.size = null;
-  pendingRaceChoices.resist = null;
-  pendingRaceChoices.alterations = { combo: null, minor: [], major: [] };
+  resetPendingRaceChoices();
   for (const k in choiceAccordions) choiceAccordions[k] = null;
   const traits = document.getElementById('raceTraits');
   if (traits) traits.innerHTML = '';
@@ -273,15 +277,7 @@ async function renderSelectedRace() {
   const accordion = document.getElementById('raceFeatures');
   if (!currentRaceData || !accordion) return;
   accordion.innerHTML = '';
-  pendingRaceChoices.skills = [];
-  pendingRaceChoices.languages = [];
-  pendingRaceChoices.spells = [];
-  pendingRaceChoices.abilities = [];
-  pendingRaceChoices.tools = [];
-  pendingRaceChoices.weapons = [];
-  pendingRaceChoices.size = null;
-  pendingRaceChoices.resist = null;
-  pendingRaceChoices.alterations = { combo: null, minor: [], major: [] };
+  resetPendingRaceChoices();
 
   const header = document.createElement('h3');
   header.textContent = currentRaceData.name;
@@ -1228,16 +1224,7 @@ function confirmRaceSelection() {
   if (pendingRaceChoices.size) {
     pendingRaceChoices.size.disabled = true;
   }
-
-  pendingRaceChoices.skills = [];
-  pendingRaceChoices.languages = [];
-  pendingRaceChoices.spells = [];
-  pendingRaceChoices.abilities = [];
-  pendingRaceChoices.tools = [];
-  pendingRaceChoices.weapons = [];
-  pendingRaceChoices.size = null;
-  pendingRaceChoices.resist = null;
-  pendingRaceChoices.alterations = { combo: null, minor: [], major: [] };
+  resetPendingRaceChoices();
   refreshBaseState();
   rebuildFromClasses();
   const finalize = () => {
@@ -1272,6 +1259,7 @@ function confirmRaceSelection() {
 }
 
 export async function loadStep3(force = false) {
+  if (force) resetPendingRaceChoices();
   await loadRaces();
   const container = document.getElementById('raceList');
   let searchInput = document.getElementById('raceSearch');
@@ -1344,16 +1332,7 @@ export async function loadStep3(force = false) {
     }
     selectedBaseRace = '';
     currentRaceData = null;
-    pendingRaceChoices.subrace = '';
-    pendingRaceChoices.skills = [];
-    pendingRaceChoices.languages = [];
-    pendingRaceChoices.spells = [];
-    pendingRaceChoices.abilities = [];
-    pendingRaceChoices.tools = [];
-    pendingRaceChoices.weapons = [];
-    pendingRaceChoices.size = null;
-    pendingRaceChoices.resist = null;
-    pendingRaceChoices.alterations = { combo: null, minor: [], major: [] };
+    resetPendingRaceChoices();
     if (CharacterState.system?.details) {
       CharacterState.system.details.race = '';
       CharacterState.system.details.subrace = '';

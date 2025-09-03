@@ -58,7 +58,6 @@ function setCurrentStepComplete(flag) {
   }
   updateNavButtons();
 }
-globalThis.setCurrentStepComplete = setCurrentStepComplete;
 
 function showErrorBanner(message) {
   let banner = document.getElementById('errorBanner');

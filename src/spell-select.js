@@ -1,5 +1,6 @@
 import { CharacterState, updateSpellSlots, loadSpells } from './data.js';
 import { t } from './i18n.js';
+import { updateStep2Completion } from './step2.js';
 
 export function updateSpellSelectOptions(selects) {
   const counts = new Map();
@@ -66,7 +67,7 @@ export function renderSpellChoices(cls) {
         updateSpellSelectOptions(selects);
         apply();
         updateWarning();
-        globalThis.updateStep2Completion?.();
+        updateStep2Completion();
       });
       selects.push(sel);
       container.appendChild(sel);
@@ -113,7 +114,7 @@ export function renderSpellChoices(cls) {
   loadSpells().then((data) => {
     spells = data;
     build();
-    globalThis.updateStep2Completion?.();
+    updateStep2Completion();
   });
 
   return { element: container, isComplete, apply };

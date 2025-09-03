@@ -26,6 +26,7 @@ import {
   updateChoiceSelectOptions,
   updateSkillSelectOptions,
 } from './choice-select-helpers.js';
+import * as main from './main.js';
 
 const abilityMap = {
   Strength: 'str',
@@ -893,7 +894,7 @@ function classHasPendingChoices(cls) {
   return false;
 }
 
-function updateStep2Completion() {
+export function updateStep2Completion() {
   const btnStep3 = document.getElementById('btnStep3');
   const btnStep4 = document.getElementById('btnStep4');
   const progressBar = document.getElementById('progressBar');
@@ -911,10 +912,8 @@ function updateStep2Completion() {
   (CharacterState.classes || []).forEach((cls) => {
     if (cls.element) markIncomplete(cls.element, !classHasPendingChoices(cls));
   });
-  globalThis.setCurrentStepComplete?.(complete);
+  main.setCurrentStepComplete?.(complete);
 }
-
-globalThis.updateStep2Completion = updateStep2Completion;
 
 export function isStepComplete() {
   const incomplete = (CharacterState.classes || []).some(classHasPendingChoices);

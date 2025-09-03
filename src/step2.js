@@ -133,6 +133,7 @@ function rebuildFromClasses() {
   main.invalidateStep(4);
   main.invalidateStep(5);
   main.invalidateStep(6);
+  main.invalidateStepsFrom(3);
 }
 
 function validateTotalLevel(pendingClass) {

@@ -1267,6 +1267,7 @@ function confirmRaceSelection() {
   main.invalidateStep(4);
   main.invalidateStep(5);
   main.invalidateStep(6);
+  main.invalidateStepsFrom(4);
   return true;
 }
 
@@ -1362,6 +1363,7 @@ export async function loadStep3(force = false) {
     main.invalidateStep(4);
     main.invalidateStep(5);
     main.invalidateStep(6);
+    main.invalidateStepsFrom(4);
     const traits = document.getElementById('raceTraits');
     if (traits) traits.innerHTML = '';
     const list = document.getElementById('raceList');

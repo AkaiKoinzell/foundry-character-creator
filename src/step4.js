@@ -416,6 +416,7 @@ async function confirmBackgroundSelection() {
   finalize();
   main.invalidateStep(5);
   main.invalidateStep(6);
+  main.invalidateStepsFrom(5);
   return true;
 }
 
@@ -458,6 +459,7 @@ export function loadStep4(force = false) {
     renderBackgroundList(search?.value);
     main.invalidateStep(5);
     main.invalidateStep(6);
+    main.invalidateStepsFrom(5);
   });
 }
 

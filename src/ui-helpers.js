@@ -238,7 +238,6 @@ export function initNextStepWarning() {
   }
 
   const messages = {
-    step3: t('selectRaceToProceed'),
     step4: t('selectBackgroundToProceed'),
     step5: t('chooseEquipmentToProceed'),
     step6: t('assignAbilityPointsToProceed'),
@@ -254,6 +253,15 @@ export function initNextStepWarning() {
         msg = t('selectClassToProceed');
       } else if (document.querySelector('#step2 .needs-selection.incomplete')) {
         msg = t('completeClassChoicesToProceed');
+      }
+    }
+
+    if (active?.id === 'step3' && nextBtn.disabled) {
+      const hasRace = !!globalThis.CharacterState?.system?.details?.race;
+      if (hasRace && document.querySelector('#step3 .needs-selection.incomplete')) {
+        msg = t('completeRaceSelectionsToProceed');
+      } else if (!hasRace) {
+        msg = t('selectRaceToProceed');
       }
     }
 

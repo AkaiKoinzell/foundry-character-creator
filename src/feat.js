@@ -32,7 +32,7 @@ export function renderAbilityBonuses(feat, wrapper, onChange = () => {}) {
         const from = ab.choose.from || [];
         for (let i = 0; i < amount; i++) {
           const sel = document.createElement('select');
-          sel.innerHTML = `<option value=''>${t('selectAbilityForFeat')}</option>`;
+          sel.replaceChildren(new Option(t('selectAbilityForFeat'), ''));
           from.forEach((opt) => {
             const o = document.createElement('option');
             o.value = opt;
@@ -81,7 +81,7 @@ export function renderProficiencyChoices(feat, wrapper, onChange = () => {}) {
         const from = entry.choose.from || entry.choose.options || [];
         for (let i = 0; i < amount; i++) {
           const sel = document.createElement('select');
-          sel.innerHTML = `<option value=''>${t(labelKey)}</option>`;
+          sel.replaceChildren(new Option(t(labelKey), ''));
           from.forEach((opt) => {
             const o = document.createElement('option');
             o.value = opt;
@@ -104,7 +104,7 @@ export function renderProficiencyChoices(feat, wrapper, onChange = () => {}) {
       const count = entry.anyProficientSkill || 0;
       for (let i = 0; i < count; i++) {
         const sel = document.createElement('select');
-        sel.innerHTML = `<option value=''>${t('selectSkillForFeat')}</option>`;
+        sel.replaceChildren(new Option(t('selectSkillForFeat'), ''));
         wrapper.appendChild(sel);
         expertiseSelects.push(sel);
         sel.addEventListener('change', () => {
@@ -139,7 +139,7 @@ export function renderProficiencyChoices(feat, wrapper, onChange = () => {}) {
         for (let i = 0; i < amount; i++) {
           const sel = document.createElement('select');
           sel.dataset.opts = JSON.stringify(from);
-          sel.innerHTML = `<option value=''>${t('selectSaveForFeat')}</option>`;
+          sel.replaceChildren(new Option(t('selectSaveForFeat'), ''));
           from.forEach((opt) => {
             const o = document.createElement('option');
             o.value = opt;
@@ -173,7 +173,7 @@ export function renderProficiencyChoices(feat, wrapper, onChange = () => {}) {
       const opts = JSON.parse(sel.dataset.opts || '[]');
       const current = sel.value;
       if (current) taken.delete(current);
-      sel.innerHTML = `<option value=''>${t('selectSaveForFeat')}</option>`;
+      sel.replaceChildren(new Option(t('selectSaveForFeat'), ''));
       opts.forEach((ab) => {
         if (ab !== current && taken.has(ab)) return;
         const o = document.createElement('option');
@@ -195,7 +195,7 @@ export function renderProficiencyChoices(feat, wrapper, onChange = () => {}) {
     expertiseSelects.forEach((sel) => {
       const current = sel.value;
       if (current) taken.delete(current);
-      sel.innerHTML = `<option value=''>${t('selectSkillForFeat')}</option>`;
+      sel.replaceChildren(new Option(t('selectSkillForFeat'), ''));
       Array.from(known)
         .sort()
         .forEach((sk) => {
@@ -230,7 +230,7 @@ export async function renderWeaponChoices(feat, wrapper, onChange = () => {}) {
         const selects = [];
         for (let i = 0; i < count; i++) {
           const sel = document.createElement('select');
-          sel.innerHTML = `<option value=''>${t('selectWeaponForFeat')}</option>`;
+          sel.replaceChildren(new Option(t('selectWeaponForFeat'), ''));
           wrapper.appendChild(sel);
           weaponSelects.push(sel);
           selects.push(sel);
@@ -278,7 +278,7 @@ export async function renderWeaponChoices(feat, wrapper, onChange = () => {}) {
     const taken = new Set(selects.map((s) => s.value).filter(Boolean));
     selects.forEach((sel) => {
       const current = sel.value;
-      sel.innerHTML = `<option value=''>${t('selectWeaponForFeat')}</option>`;
+      sel.replaceChildren(new Option(t('selectWeaponForFeat'), ''));
       opts.forEach((o) => {
         if (o !== current && taken.has(o)) return;
         const opt = document.createElement('option');
@@ -324,7 +324,7 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
       const selects = [];
       for (let i = 0; i < count; i++) {
         const sel = document.createElement('select');
-        sel.innerHTML = `<option value=''>${t('select')}</option>`;
+        sel.replaceChildren(new Option(t('select'), ''));
         wrapper.appendChild(sel);
         optionalFeatureSelects.push(sel);
         selects.push(sel);
@@ -341,7 +341,7 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
     const taken = new Set(selects.map((s) => s.value).filter(Boolean));
     selects.forEach((sel) => {
       const current = sel.value;
-      sel.innerHTML = `<option value=''>${t('select')}</option>`;
+      sel.replaceChildren(new Option(t('select'), ''));
       opts.forEach((o) => {
         if (o !== current && taken.has(o)) return;
         const opt = document.createElement('option');
@@ -361,7 +361,7 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
   if (Array.isArray(feat.additionalSpells) && feat.additionalSpells.length) {
     const spellWrapper = document.createElement('div');
     spellClassSelect = document.createElement('select');
-    spellClassSelect.innerHTML = `<option value=''>${t('select')}</option>`;
+    spellClassSelect.replaceChildren(new Option(t('select'), ''));
     feat.additionalSpells.forEach((opt, idx) => {
       const o = document.createElement('option');
       o.value = String(idx);
@@ -424,7 +424,7 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
             const sel = document.createElement('select');
             sel.className = 'feat-spell-select';
             sel.dataset.opts = JSON.stringify(opts);
-            sel.innerHTML = `<option value=''>${t('select')}</option>`;
+            sel.replaceChildren(new Option(t('select'), ''));
             sel.addEventListener('change', () => {
               updateSpellSelects();
               onChange();
@@ -457,7 +457,7 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
               const sel = document.createElement('select');
               sel.className = 'feat-spell-select';
               sel.dataset.opts = JSON.stringify(opts);
-              sel.innerHTML = `<option value=''>${t('select')}</option>`;
+              sel.replaceChildren(new Option(t('select'), ''));
               sel.addEventListener('change', () => {
                 updateSpellSelects();
                 onChange();
@@ -498,7 +498,7 @@ export async function renderFeatChoices(featName, container, onChange = () => {}
       const opts = JSON.parse(sel.dataset.opts || '[]');
       const current = sel.value;
       if (current) existing.delete(current);
-      sel.innerHTML = `<option value=''>${t('select')}</option>`;
+      sel.replaceChildren(new Option(t('select'), ''));
       opts.forEach((sp) => {
         if (sp !== current && existing.has(sp)) return;
         const o = document.createElement('option');

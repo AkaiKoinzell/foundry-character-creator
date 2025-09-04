@@ -49,7 +49,7 @@ export function renderSpellChoices(cls) {
 
     for (let i = 0; i < count; i++) {
       const sel = document.createElement('select');
-      sel.innerHTML = `<option value=''>${t('selectSpell')}</option>`;
+      sel.replaceChildren(new Option(t('selectSpell'), ''));
       spells
         .filter(
           (s) =>

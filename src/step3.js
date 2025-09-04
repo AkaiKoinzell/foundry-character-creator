@@ -275,7 +275,7 @@ async function renderSelectedRace() {
   ) {
     const sizeContent = document.createElement('div');
     const sel = document.createElement('select');
-    sel.innerHTML = `<option value=''>${t('select')}</option>`;
+    sel.replaceChildren(new Option(t('select'), ''));
     const sizeNames = {
       T: 'Tiny',
       S: 'Small',
@@ -334,7 +334,7 @@ async function renderSelectedRace() {
       const known = new Set([...CharacterState.system.skills, ...raceSkills]);
       for (let i = 0; i < pendingAny; i++) {
         const sel = document.createElement('select');
-        sel.innerHTML = `<option value=''>${t('select')}</option>`;
+        sel.replaceChildren(new Option(t('select'), ''));
         ALL_SKILLS.filter((sk) => !known.has(sk)).forEach((sk) => {
           const o = document.createElement('option');
           o.value = sk;
@@ -355,7 +355,7 @@ async function renderSelectedRace() {
         const count = grp.count || 1;
         for (let i = 0; i < count; i++) {
           const sel = document.createElement('select');
-          sel.innerHTML = `<option value=''>${t('select')}</option>`;
+          sel.replaceChildren(new Option(t('select'), ''));
           opts
             .filter((opt) => !known.has(opt))
             .forEach((opt) => {
@@ -412,7 +412,7 @@ async function renderSelectedRace() {
       ]);
       for (let i = 0; i < pendingAny; i++) {
         const sel = document.createElement('select');
-        sel.innerHTML = `<option value=''>${t('select')}</option>`;
+        sel.replaceChildren(new Option(t('select'), ''));
         ALL_TOOLS.filter((tl) => !known.has(tl)).forEach((tl) => {
           const o = document.createElement('option');
           o.value = tl;
@@ -433,7 +433,7 @@ async function renderSelectedRace() {
         const count = grp.count || 1;
         for (let i = 0; i < count; i++) {
           const sel = document.createElement('select');
-          sel.innerHTML = `<option value=''>${t('select')}</option>`;
+          sel.replaceChildren(new Option(t('select'), ''));
           opts
             .filter((opt) => !known.has(opt))
             .forEach((opt) => {
@@ -518,7 +518,7 @@ async function renderSelectedRace() {
         const count = grp.count || 1;
         for (let i = 0; i < count; i++) {
           const sel = document.createElement('select');
-          sel.innerHTML = `<option value=''>${t('select')}</option>`;
+          sel.replaceChildren(new Option(t('select'), ''));
           (opts || [])
             .filter((opt) => !known.has(opt))
             .forEach((opt) => {
@@ -584,7 +584,7 @@ async function renderSelectedRace() {
         ]);
         for (let i = 0; i < pendingLang; i++) {
           const sel = document.createElement('select');
-          sel.innerHTML = `<option value=''>${t('select')}</option>`;
+          sel.replaceChildren(new Option(t('select'), ''));
           (DATA.languages || [])
             .filter((l) => !known.has(l))
             .forEach((l) => {
@@ -634,7 +634,7 @@ async function renderSelectedRace() {
       }
       if (Array.isArray(chooseOpts) && chooseOpts.length) {
         const sel = document.createElement('select');
-        sel.innerHTML = `<option value=''>${t('select')}</option>`;
+        sel.replaceChildren(new Option(t('select'), ''));
         chooseOpts.forEach((opt) => {
           const o = document.createElement('option');
           o.value = opt;
@@ -664,7 +664,7 @@ async function renderSelectedRace() {
   ) {
     const alterContent = document.createElement('div');
     const comboSel = document.createElement('select');
-    comboSel.innerHTML = `<option value=''>${t('select')}</option>`;
+    comboSel.replaceChildren(new Option(t('select'), ''));
     const minorAllowed = currentRaceData.minorAlterations?.allowed || [];
     const majorAllowed = currentRaceData.majorAlterations?.allowed || [];
     const combos = [];
@@ -705,7 +705,7 @@ async function renderSelectedRace() {
 
         const rebuild = (sel, opts) => {
           const current = sel.value;
-          sel.innerHTML = `<option value=''>${t('select')}</option>`;
+          sel.replaceChildren(new Option(t('select'), ''));
           (opts || []).forEach((opt) => {
             const o = document.createElement('option');
             o.value = opt;
@@ -726,7 +726,7 @@ async function renderSelectedRace() {
 
       for (let i = 0; i < (combo.minor || 0); i++) {
         const sel = document.createElement('select');
-        sel.innerHTML = `<option value=''>${t('select')}</option>`;
+        sel.replaceChildren(new Option(t('select'), ''));
         sel.dataset.type = 'choice';
         sel.addEventListener('change', () => {
           updateAlterOptionLists();
@@ -737,7 +737,7 @@ async function renderSelectedRace() {
       }
       for (let i = 0; i < (combo.major || 0); i++) {
         const sel = document.createElement('select');
-        sel.innerHTML = `<option value=''>${t('select')}</option>`;
+        sel.replaceChildren(new Option(t('select'), ''));
         sel.dataset.type = 'choice';
         sel.addEventListener('change', () => {
           updateAlterOptionLists();
@@ -776,7 +776,7 @@ async function renderSelectedRace() {
         spellEntryUsed = true;
       }
       const sel = document.createElement('select');
-      sel.innerHTML = `<option value=''>${t('select')}</option>`;
+      sel.replaceChildren(new Option(t('select'), ''));
       abilityOpts.forEach((ab) => {
         const o = document.createElement('option');
         o.value = ab;
@@ -873,7 +873,7 @@ async function renderSelectedRace() {
             );
             validateRaceChoices();
           });
-          sel.innerHTML = `<option value=''>${t('select')}</option>`;
+          sel.replaceChildren(new Option(t('select'), ''));
           opts.forEach((sp) => {
             const o = document.createElement('option');
             o.value = sp;
@@ -917,7 +917,10 @@ function showRaceModal(race) {
   const details = document.getElementById('raceModalDetails');
   const closeBtn = document.getElementById('closeRaceModal');
   if (!modal || !details) return;
-  details.innerHTML = `<h2>${race.name}</h2>`;
+  details.textContent = '';
+  const header = document.createElement('h2');
+  header.textContent = race.name;
+  details.appendChild(header);
   (race.entries || []).forEach((entry) => {
     if (typeof entry === 'string') {
       const p = document.createElement('p');

@@ -134,7 +134,7 @@ export function addUniqueProficiency(
     type: t(type.slice(0, -1)),
   });
   const sel = document.createElement('select');
-  sel.innerHTML = `<option value=''>${t('select')}</option>`;
+  sel.replaceChildren(new Option(t('select'), ''));
   getAllOptions(type)
     .filter(opt => !list.includes(opt))
     .forEach(opt => {

@@ -49,7 +49,7 @@ function buildSimpleWeaponSelect(count = 1) {
   const selects = [];
   for (let i = 0; i < count; i++) {
     const sel = document.createElement('select');
-    sel.innerHTML = `<option value="">${t('selectSimpleWeapon')}</option>`;
+    sel.replaceChildren(new Option(t('selectSimpleWeapon'), ''));
     getSimpleWeapons().forEach((w) => {
       const o = document.createElement('option');
       o.value = w;
@@ -129,7 +129,7 @@ function buildChoiceBlock(choice, idx) {
 
   if (choice.type === 'dropdown' || choice.type === 'select') {
     const sel = document.createElement('select');
-    sel.innerHTML = `<option value="">${t('select')}</option>`;
+    sel.replaceChildren(new Option(t('select'), ''));
     (choice.options || []).forEach((opt) => {
       const o = document.createElement('option');
       o.value = opt.value;

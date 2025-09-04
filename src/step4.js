@@ -155,7 +155,7 @@ function selectBackground(bg) {
     appendFeatureDesc(wrapper, 'skill');
     for (let i = 0; i < currentBackgroundData.skillChoices.choose; i++) {
       const sel = document.createElement('select');
-      sel.innerHTML = `<option value=''>${t('selectSkill')}</option>`;
+      sel.replaceChildren(new Option(t('selectSkill'), ''));
       currentBackgroundData.skillChoices.options.forEach((opt) => {
         const o = document.createElement('option');
         o.value = opt;
@@ -186,7 +186,7 @@ function selectBackground(bg) {
     appendFeatureDesc(wrapper, 'tool');
     for (let i = 0; i < toolData.choose; i++) {
       const sel = document.createElement('select');
-      sel.innerHTML = `<option value=''>${t('selectTool')}</option>`;
+      sel.replaceChildren(new Option(t('selectTool'), ''));
       (toolData.options || []).forEach((opt) => {
         const o = document.createElement('option');
         o.value = opt;
@@ -219,7 +219,7 @@ function selectBackground(bg) {
       : DATA.languages || [];
     for (let i = 0; i < currentBackgroundData.languages.choose; i++) {
       const sel = document.createElement('select');
-      sel.innerHTML = `<option value=''>${t('selectLanguage')}</option>`;
+      sel.replaceChildren(new Option(t('selectLanguage'), ''));
       langOpts.forEach((l) => {
         const o = document.createElement('option');
         o.value = l;
@@ -244,7 +244,7 @@ function selectBackground(bg) {
     const wrapper = document.createElement('div');
     appendFeatureDesc(wrapper, 'feat');
     const sel = document.createElement('select');
-    sel.innerHTML = `<option value=''>${t('selectFeat')}</option>`;
+    sel.replaceChildren(new Option(t('selectFeat'), ''));
     currentBackgroundData.featOptions.forEach((f) => {
       const o = document.createElement('option');
       o.value = f;

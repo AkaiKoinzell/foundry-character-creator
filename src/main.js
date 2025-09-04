@@ -295,73 +295,157 @@ function renderCharacterSheet() {
 
   const details = CharacterState.system?.details || {};
   const systemAbilities = CharacterState.system?.abilities || {};
-  const abilityBoxes = ["str", "dex", "con", "int", "wis", "cha"]
-    .map((ab) => {
+  const abilityBoxes = ["str", "dex", "con", "int", "wis", "cha"].map(
+    (ab) => {
       const score = systemAbilities[ab]?.value ?? "";
       const mod = score === "" ? "" : Math.floor((score - 10) / 2);
       const modText = mod === "" ? "" : mod >= 0 ? `+${mod}` : `${mod}`;
       const label = ab.toUpperCase();
-      return `<div class="ability-box" data-ab="${label}"><div class="label">${label}</div><div class="score">${score}</div><div class="mod">${modText}</div></div>`;
-    })
-    .join("");
+      const box = document.createElement("div");
+      box.className = "ability-box";
+      box.dataset.ab = label;
+      const lab = document.createElement("div");
+      lab.className = "label";
+      lab.textContent = label;
+      const scoreDiv = document.createElement("div");
+      scoreDiv.className = "score";
+      scoreDiv.textContent = score;
+      const modDiv = document.createElement("div");
+      modDiv.className = "mod";
+      modDiv.textContent = modText;
+      box.append(lab, scoreDiv, modDiv);
+      return box;
+    }
+  );
 
-  const languagesHtml = summary.languages
-    .map((l) => `<li>${l}</li>`)
-    .join("");
-  const toolsHtml = summary.tools.map((t) => `<li>${t}</li>`).join("");
-  const featuresHtml = summary.features.map((f) => `<li>${f}</li>`).join("");
-  const skillsHtml = summary.skills
-    .map(
-      ({ name, ability, prof, expert }) =>
-        `<li><input type="checkbox" disabled ${prof || expert ? "checked" : ""}/><input type="checkbox" disabled ${expert ? "checked" : ""}/> ${name} (${ability})</li>`
-    )
-    .join("");
-  const equipmentHtml = summary.equipment
-    .map((e) => `<li>${e}</li>`)
-    .join("");
-  const spellsHtml = summary.spells.map((s) => `<li>${s}</li>`).join("");
+  container.textContent = "";
 
-  container.innerHTML = `
-    <header class="char-header">
-      <div><strong>Character:</strong> ${summary.characterName || ""}</div>
-      <div><strong>Player:</strong> ${summary.playerName || ""}</div>
-      <div><strong>Class & Level:</strong> ${classText}</div>
-      <div><strong>Race:</strong> ${details.race || ""}</div>
-      <div><strong>Background:</strong> ${details.background || ""}</div>
-      <div><strong>Provenienza:</strong> ${details.origin || ""}</div>
-      <div><strong>Age:</strong> ${details.age || ""}</div>
-    </header>
-    <section class="abilities">
-      <h3>Abilities</h3>
-      <div class="ability-list">${abilityBoxes}</div>
-    </section>
-    <section class="skills">
-      ${summary.skills.length ? `<h3>Skills</h3><ul>${skillsHtml}</ul>` : ""}
-    </section>
-    <section class="features">
-      <h3>Features</h3>
-      <ul>${featuresHtml}</ul>
-    </section>
-    <section class="equipment">
-      ${summary.equipment.length ? `<h3>Equipment</h3><ul>${equipmentHtml}</ul>` : ""}
-    </section>
-    <section class="tools-languages">
-      ${summary.languages.length ? `<h3>Languages</h3><ul>${languagesHtml}</ul>` : ""}
-      ${summary.tools.length ? `<h3>Tools</h3><ul>${toolsHtml}</ul>` : ""}
-    </section>
-    <section class="spells">
-      <h3>Spells</h3>
-      <ul>${spellsHtml}</ul>
-    </section>
-    <section class="backstory">
-      <h3>Backstory</h3>
-      <textarea id="backstoryInput" class="form-control" rows="4">${
-        details.backstory || ""
-      }</textarea>
-    </section>
-  `;
+  const header = document.createElement("header");
+  header.className = "char-header";
+  const addHeaderRow = (label, value) => {
+    const div = document.createElement("div");
+    const strong = document.createElement("strong");
+    strong.textContent = label;
+    div.append(strong, ` ${value || ""}`);
+    header.appendChild(div);
+  };
+  addHeaderRow("Character:", summary.characterName || "");
+  addHeaderRow("Player:", summary.playerName || "");
+  addHeaderRow("Class & Level:", classText);
+  addHeaderRow("Race:", details.race || "");
+  addHeaderRow("Background:", details.background || "");
+  addHeaderRow("Provenienza:", details.origin || "");
+  addHeaderRow("Age:", details.age || "");
+  container.appendChild(header);
 
-  const backstoryEl = container.querySelector("#backstoryInput");
+  const abilitiesSection = document.createElement("section");
+  abilitiesSection.className = "abilities";
+  abilitiesSection.appendChild(document.createElement("h3")).textContent =
+    "Abilities";
+  const abilityList = document.createElement("div");
+  abilityList.className = "ability-list";
+  abilityList.append(...abilityBoxes);
+  abilitiesSection.appendChild(abilityList);
+  container.appendChild(abilitiesSection);
+
+  const skillsSection = document.createElement("section");
+  skillsSection.className = "skills";
+  if (summary.skills.length) {
+    skillsSection.appendChild(document.createElement("h3")).textContent =
+      "Skills";
+    const ul = document.createElement("ul");
+    summary.skills.forEach(({ name, ability, prof, expert }) => {
+      const li = document.createElement("li");
+      const profBox = document.createElement("input");
+      profBox.type = "checkbox";
+      profBox.disabled = true;
+      profBox.checked = prof || expert;
+      const expertBox = document.createElement("input");
+      expertBox.type = "checkbox";
+      expertBox.disabled = true;
+      expertBox.checked = expert;
+      li.append(
+        profBox,
+        expertBox,
+        document.createTextNode(` ${name} (${ability})`)
+      );
+      ul.appendChild(li);
+    });
+    skillsSection.appendChild(ul);
+  }
+  container.appendChild(skillsSection);
+
+  const featuresSection = document.createElement("section");
+  featuresSection.className = "features";
+  featuresSection.appendChild(document.createElement("h3")).textContent =
+    "Features";
+  const featuresList = document.createElement("ul");
+  summary.features.forEach(
+    (f) =>
+      (featuresList.appendChild(document.createElement("li")).textContent = f)
+  );
+  featuresSection.appendChild(featuresList);
+  container.appendChild(featuresSection);
+
+  const equipmentSection = document.createElement("section");
+  equipmentSection.className = "equipment";
+  if (summary.equipment.length) {
+    equipmentSection.appendChild(document.createElement("h3")).textContent =
+      "Equipment";
+    const equipmentList = document.createElement("ul");
+    summary.equipment.forEach(
+      (e) =>
+        (equipmentList.appendChild(document.createElement("li")).textContent = e)
+    );
+    equipmentSection.appendChild(equipmentList);
+  }
+  container.appendChild(equipmentSection);
+
+  const tlSection = document.createElement("section");
+  tlSection.className = "tools-languages";
+  if (summary.languages.length) {
+    tlSection.appendChild(document.createElement("h3")).textContent =
+      "Languages";
+    const langList = document.createElement("ul");
+    summary.languages.forEach(
+      (l) => (langList.appendChild(document.createElement("li")).textContent = l)
+    );
+    tlSection.appendChild(langList);
+  }
+  if (summary.tools.length) {
+    tlSection.appendChild(document.createElement("h3")).textContent = "Tools";
+    const toolsList = document.createElement("ul");
+    summary.tools.forEach(
+      (t) => (toolsList.appendChild(document.createElement("li")).textContent = t)
+    );
+    tlSection.appendChild(toolsList);
+  }
+  container.appendChild(tlSection);
+
+  const spellsSection = document.createElement("section");
+  spellsSection.className = "spells";
+  spellsSection.appendChild(document.createElement("h3")).textContent =
+    "Spells";
+  const spellsList = document.createElement("ul");
+  summary.spells.forEach(
+    (s) => (spellsList.appendChild(document.createElement("li")).textContent = s)
+  );
+  spellsSection.appendChild(spellsList);
+  container.appendChild(spellsSection);
+
+  const backstorySection = document.createElement("section");
+  backstorySection.className = "backstory";
+  backstorySection.appendChild(document.createElement("h3")).textContent =
+    "Backstory";
+  const backstoryInput = document.createElement("textarea");
+  backstoryInput.id = "backstoryInput";
+  backstoryInput.className = "form-control";
+  backstoryInput.rows = 4;
+  backstoryInput.value = details.backstory || "";
+  backstorySection.appendChild(backstoryInput);
+  container.appendChild(backstorySection);
+
+  const backstoryEl = backstoryInput;
   backstoryEl?.addEventListener("input", () => {
     CharacterState.system.details.backstory = backstoryEl.value;
   });

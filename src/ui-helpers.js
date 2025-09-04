@@ -31,28 +31,33 @@ export function parse5eLinks(str) {
   });
 }
 
+function appendHTML(el, html) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  el.append(...doc.body.childNodes);
+}
+
 export function appendEntries(container, entries) {
   (entries || []).forEach(e => {
     if (!e) return;
     if (typeof e === 'string') {
       const p = document.createElement('p');
-      p.innerHTML = parse5eLinks(e);
+      appendHTML(p, parse5eLinks(e));
       container.appendChild(p);
     } else if (typeof e === 'object') {
       if (e.description) {
         const p = document.createElement('p');
-        p.innerHTML = parse5eLinks(e.description);
+        appendHTML(p, parse5eLinks(e.description));
         container.appendChild(p);
       }
       if (typeof e.entry === 'string') {
         const p = document.createElement('p');
-        p.innerHTML = parse5eLinks(e.entry);
+        appendHTML(p, parse5eLinks(e.entry));
         container.appendChild(p);
       }
       if (Array.isArray(e.entries)) appendEntries(container, e.entries);
       else if (e.name && !e.entry && !e.entries && !e.description) {
         const p = document.createElement('p');
-        p.innerHTML = parse5eLinks(e.name);
+        appendHTML(p, parse5eLinks(e.name));
         container.appendChild(p);
       }
     }

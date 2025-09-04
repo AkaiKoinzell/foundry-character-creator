@@ -153,7 +153,7 @@ function updateExpertiseSelectOptions(selects) {
   const profSkills = [...CharacterState.system.skills].sort();
   list.forEach(sel => {
     const current = sel.value;
-    sel.innerHTML = `<option value=''>${t('select')}</option>`;
+    sel.replaceChildren(new Option(t('select'), ''));
     profSkills.forEach(sk => {
       const o = document.createElement('option');
       o.value = sk;
@@ -293,7 +293,7 @@ function createAbilitySelect() {
     'Charisma',
   ];
   const sel = document.createElement('select');
-  sel.innerHTML = `<option value=''>${t('selectAbility')}</option>`;
+  sel.replaceChildren(new Option(t('selectAbility'), ''));
   abilities.forEach(ab => {
     const o = document.createElement('option');
     o.value = ab;
@@ -306,7 +306,7 @@ function createAbilitySelect() {
 
 function createFeatSelect(current = '') {
   const sel = document.createElement('select');
-  sel.innerHTML = `<option value=''>${t('selectFeat')}</option>`;
+  sel.replaceChildren(new Option(t('selectFeat'), ''));
   const taken = getExistingFeats();
   (DATA.feats || []).forEach(feat => {
     if (!taken.has(feat) || feat === current) {
@@ -506,7 +506,7 @@ function renderClassEditor(cls, index) {
       }
       for (let i = 0; i < clsDef.skill_proficiencies.choose; i++) {
         const sel = document.createElement('select');
-        sel.innerHTML = `<option value=''>${t('select')}</option>`;
+        sel.replaceChildren(new Option(t('select'), ''));
         clsDef.skill_proficiencies.options.forEach(opt => {
           const o = document.createElement('option');
           o.value = opt;
@@ -546,7 +546,7 @@ function renderClassEditor(cls, index) {
         subContainer.appendChild(desc);
       }
       const sel = document.createElement('select');
-      sel.innerHTML = `<option value=''>${t('select')}</option>`;
+      sel.replaceChildren(new Option(t('select'), ''));
       clsDef.subclasses.forEach(sc => {
         const o = document.createElement('option');
         o.value = sc.name;
@@ -623,7 +623,7 @@ function renderClassEditor(cls, index) {
         }
         for (let i = 0; i < count; i++) {
           const sel = document.createElement('select');
-          sel.innerHTML = `<option value=''>${t('select')}</option>`;
+          sel.replaceChildren(new Option(t('select'), ''));
           const choiceId = `${choice.name}-${lvl}-${i}`;
           sel.dataset.choiceId = choiceId;
           if (isExpertise) {

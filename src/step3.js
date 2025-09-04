@@ -40,6 +40,7 @@ const pendingRaceChoices = {
   size: null,
   resist: null,
   alterations: { combo: null, minor: [], major: [] },
+  variants: [],
 };
 
 export function resetPendingRaceChoices() {
@@ -53,6 +54,7 @@ export function resetPendingRaceChoices() {
   pendingRaceChoices.size = null;
   pendingRaceChoices.resist = null;
   pendingRaceChoices.alterations = { combo: null, minor: [], major: [] };
+  pendingRaceChoices.variants = [];
 }
 
 let raceRenderSeq = 0;
@@ -112,6 +114,12 @@ function validateRaceChoices() {
     pendingRaceChoices.alterations.major.every((s) => s.value);
   inlineWarning(choiceAccordions.alterations, altValid, altFields);
 
+  const variantValid = pendingRaceChoices.variants.every((v) => {
+    const chosen = v.radios.some((r) => r.checked);
+    inlineWarning(v.container, chosen, v.radios);
+    return chosen;
+  });
+
   const valid =
     skillValid &&
     langValid &&
@@ -122,6 +130,7 @@ function validateRaceChoices() {
     sizeValid &&
     resistValid &&
     altValid &&
+    variantValid &&
     !!pendingRaceChoices.subrace;
 
   main.setCurrentStepComplete?.(valid);
@@ -253,6 +262,7 @@ async function renderSelectedRace() {
   if (!currentRaceData || !accordion) return;
   accordion.innerHTML = '';
   resetPendingRaceChoices();
+  pendingRaceChoices.subrace = currentRaceData.name;
 
   const header = document.createElement('h3');
   header.textContent = currentRaceData.name;
@@ -268,6 +278,48 @@ async function renderSelectedRace() {
     e.entries.some(sub => typeof sub === 'string' && /@spell|spell/i.test(sub))
   );
   let spellEntryUsed = false;
+
+  (currentRaceData.entries || []).forEach((entry) => {
+    if (!entry.data?.overwrite || !Array.isArray(entry.entries)) return;
+    const variantContent = document.createElement('div');
+    const group = [];
+    const dataMap = {};
+    const optMap = {};
+    (entry.entries || []).forEach((opt, idx) => {
+      const id = `var-${slugify(opt.name)}-${idx}`;
+      const label = document.createElement('label');
+      const radio = document.createElement('input');
+      radio.type = 'radio';
+      radio.name = `var-${slugify(entry.data.overwrite)}`;
+      radio.id = id;
+      radio.value = opt.name;
+      radio.dataset.type = 'choice';
+      radio.addEventListener('change', () => {
+        const variant = dataMap[radio.value];
+        if (variant?.skillProficiencies === null) {
+          pendingRaceChoices.skills = [];
+          choiceAccordions.skills?.remove();
+          choiceAccordions.skills = null;
+        }
+        validateRaceChoices();
+      });
+      label.appendChild(radio);
+      label.appendChild(document.createTextNode(opt.name));
+      variantContent.appendChild(label);
+      if (opt.entries) appendEntries(variantContent, opt.entries);
+      group.push(radio);
+      optMap[opt.name] = opt;
+      const ver = (currentRaceData._versions || []).find((v) =>
+        v.name.split(';').pop().trim() === opt.name
+      );
+      if (ver) dataMap[opt.name] = ver;
+    });
+    const acc = createAccordionItem(entry.name, variantContent, true);
+    acc.classList.add('needs-selection');
+    accordion.appendChild(acc);
+    pendingRaceChoices.variants.push({ radios: group, dataMap, optMap, container: acc, overwrite: entry.name });
+    usedEntries.add(entry.name);
+  });
 
   if (
     Array.isArray(currentRaceData.size) &&
@@ -950,7 +1002,33 @@ function confirmRaceSelection() {
   if (!validateRaceChoices()) return false;
   const container = document.getElementById('raceTraits');
 
-  const draft = structuredClone(CharacterState);
+  let raceData = JSON.parse(JSON.stringify(currentRaceData));
+  let variantInfo = null;
+  pendingRaceChoices.variants.forEach((v) => {
+    const sel = v.radios.find((r) => r.checked);
+    if (sel) {
+      variantInfo = {
+        version: v.dataMap[sel.value],
+        entry: v.optMap[sel.value],
+        overwrite: v.overwrite,
+      };
+      sel.disabled = true;
+    }
+  });
+  if (variantInfo) {
+    raceData.entries = (raceData.entries || []).filter(
+      (e) => e.name !== variantInfo.overwrite
+    );
+    if (variantInfo.entry) raceData.entries.push(variantInfo.entry);
+    const ver = variantInfo.version || {};
+    Object.entries(ver).forEach(([k, val]) => {
+      if (['name', 'source', '_mod'].includes(k)) return;
+      if (val === null) delete raceData[k];
+      else raceData[k] = val;
+    });
+  }
+
+  const draft = JSON.parse(JSON.stringify(CharacterState));
   draft.raceChoices = {
     spells: [],
     spellAbility: '',
@@ -966,25 +1044,25 @@ function confirmRaceSelection() {
   draft.raceFeatures = [];
 
   draft.system.details.race = selectedBaseRace;
-  draft.system.details.subrace = currentRaceData.name;
-  draft.raceFeatures = (currentRaceData.entries || [])
+  draft.system.details.subrace = raceData.name;
+  draft.raceFeatures = (raceData.entries || [])
     .filter((e) => typeof e === 'object' && e.name)
     .map((e) => e.name);
 
   const sizeMap = { T: 'tiny', S: 'sm', M: 'med', L: 'lg', H: 'huge', G: 'grg' };
-  if (currentRaceData.size) {
+  if (raceData.size) {
     let sz;
-    if (Array.isArray(currentRaceData.size)) {
-      sz = pendingRaceChoices.size?.value || currentRaceData.size[0];
+    if (Array.isArray(raceData.size)) {
+      sz = pendingRaceChoices.size?.value || raceData.size[0];
     } else {
-      sz = currentRaceData.size;
+      sz = raceData.size;
     }
     draft.system.traits.size = sizeMap[sz] || draft.system.traits.size;
     draft.raceChoices.size = sizeMap[sz] || '';
   }
 
   const move = { ...(draft.system.attributes.movement || {}) };
-  const speed = currentRaceData.speed;
+  const speed = raceData.speed;
   if (typeof speed === 'number') move.walk = speed;
   else if (speed && typeof speed === 'object') {
     if (typeof speed.walk === 'number') move.walk = speed.walk;
@@ -1002,15 +1080,15 @@ function confirmRaceSelection() {
   };
   draft.raceChoices.movement = move;
 
-  if (currentRaceData.darkvision)
-    draft.system.traits.senses.darkvision = currentRaceData.darkvision;
-  if (currentRaceData.traitTags)
-    draft.system.traits.traitTags = [...currentRaceData.traitTags];
+  if (raceData.darkvision)
+    draft.system.traits.senses.darkvision = raceData.darkvision;
+  if (raceData.traitTags)
+    draft.system.traits.traitTags = [...raceData.traitTags];
 
   const replacements = [];
   const weaponSummary = [];
-  if (currentRaceData.skillProficiencies) {
-    currentRaceData.skillProficiencies.forEach((obj) => {
+  if (raceData.skillProficiencies) {
+    raceData.skillProficiencies.forEach((obj) => {
       for (const k in obj) {
         if (k === 'choose' || k === 'any' || !obj[k]) continue;
         const val = capitalize(k);
@@ -1036,8 +1114,8 @@ function confirmRaceSelection() {
     draft.raceChoices.skills.push(sel.value);
     sel.disabled = true;
   });
-  if (currentRaceData.toolProficiencies) {
-    currentRaceData.toolProficiencies.forEach((obj) => {
+  if (raceData.toolProficiencies) {
+    raceData.toolProficiencies.forEach((obj) => {
       for (const k in obj)
         if (k !== 'any' && k !== 'choose' && obj[k]) {
           const val = capitalize(k);
@@ -1063,8 +1141,8 @@ function confirmRaceSelection() {
     draft.raceChoices.tools.push(sel.value);
     sel.disabled = true;
   });
-  if (currentRaceData.weaponProficiencies) {
-    currentRaceData.weaponProficiencies.forEach((obj) => {
+  if (raceData.weaponProficiencies) {
+    raceData.weaponProficiencies.forEach((obj) => {
       if (obj.choose) return;
       for (const k in obj)
         if (obj[k]) {
@@ -1098,8 +1176,8 @@ function confirmRaceSelection() {
     p.textContent = `Weapons: ${weaponSummary.join(', ')}`;
     container.appendChild(p);
   }
-  if (currentRaceData.languageProficiencies) {
-    currentRaceData.languageProficiencies.forEach((obj) => {
+  if (raceData.languageProficiencies) {
+    raceData.languageProficiencies.forEach((obj) => {
       for (const k in obj)
         if (k !== 'anyStandard' && obj[k]) {
           const val = capitalize(k);
@@ -1126,9 +1204,9 @@ function confirmRaceSelection() {
     draft.raceChoices.languages.push(sel.value);
     sel.disabled = true;
   });
-  if (Array.isArray(currentRaceData.resist)) {
+  if (Array.isArray(raceData.resist)) {
     const resists = [];
-    currentRaceData.resist.forEach((r) => {
+    raceData.resist.forEach((r) => {
       if (typeof r === 'string') resists.push(r);
     });
     if (pendingRaceChoices.resist && pendingRaceChoices.resist.value) {
@@ -1190,7 +1268,7 @@ function confirmRaceSelection() {
   }
   resetPendingRaceChoices();
 
-  preRaceState = structuredClone(CharacterState);
+  preRaceState = JSON.parse(JSON.stringify(CharacterState));
   Object.assign(CharacterState, draft);
   refreshBaseState();
   rebuildFromClasses();
@@ -1256,7 +1334,9 @@ export async function loadStep3(force = false) {
       currentRaceData = null;
       resetPendingRaceChoices();
       if (preRaceState) {
-        Object.assign(CharacterState, structuredClone(preRaceState));
+        Object.assign(CharacterState, JSON.parse(JSON.stringify(preRaceState)));
+        CharacterState.system.attributes.movement =
+          CharacterState.system.attributes.movement || {};
         preRaceState = null;
         refreshBaseState();
         rebuildFromClasses();

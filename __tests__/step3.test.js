@@ -28,7 +28,7 @@ jest.unstable_mockModule('../src/data.js', () => ({
       },
     },
     
-    raceChoices: { spells: [], spellAbility: '', size: '', resist: '', tools: [], weapons: [] },
+    raceChoices: { spells: [], spellAbility: '', size: '', resist: '', tools: [], weapons: [], languages: [], skills: [] },
     bonusAbilities: {
       str: 0,
       dex: 0,
@@ -62,6 +62,9 @@ jest.unstable_mockModule('../src/choice-select-helpers.js', () => ({
 
 jest.unstable_mockModule('../src/main.js', () => ({
   showStep: mockShowStep,
+  invalidateStep: jest.fn(),
+  invalidateStepsFrom: jest.fn(),
+  setCurrentStepComplete: jest.fn(),
 }));
 jest.unstable_mockModule('../src/step5.js', () => ({
   loadEquipmentData: jest.fn().mockResolvedValue([]),
@@ -187,7 +190,7 @@ describe('race size selection', () => {
   afterEach(() => {
     CharacterState.system.details = {};
     CharacterState.system.traits.damageResist = [];
-    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [], weapons: [] };
+    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [], weapons: [], languages: [], skills: [] };
   });
 
   test('requires selecting size when multiple options', async () => {
@@ -227,7 +230,7 @@ describe('race damage resistance selection', () => {
   afterEach(() => {
     CharacterState.system.details = {};
     CharacterState.system.traits.damageResist = [];
-    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', weapons: [] };
+    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', weapons: [], languages: [], skills: [] };
   });
 
   test('requires selecting damage type and applies result', async () => {
@@ -257,7 +260,7 @@ describe('Aarakocra selections', () => {
     };
     DATA.languages = [];
     CharacterState.system.details = {};
-    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', weapons: [] };
+    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', weapons: [], languages: [], skills: [] };
     CharacterState.system.traits.damageResist = [];
     const race = {
       name: 'Aarakocra',
@@ -298,6 +301,78 @@ describe('Aarakocra selections', () => {
   });
 });
 
+describe('variant feature selection', () => {
+  beforeEach(() => {
+    document.body.innerHTML = `
+      <div id="raceList"></div>
+      <div id="raceFeatures"></div>
+      <button id="confirmRaceSelection"></button>
+    `;
+    DATA.races = {
+      HalfElf: [{ name: 'Half-Elf Variant', path: 'half' }],
+    };
+    const race = {
+      name: 'Half-Elf Variant',
+      entries: [
+        {
+          type: 'inset',
+          name: 'Variant Feature (Choose 1)',
+          data: { overwrite: 'Skill Versatility' },
+          entries: [
+            {
+              name: 'Skill Versatility',
+              type: 'entries',
+              entries: ['You gain proficiency in two skills of your choice.'],
+            },
+            {
+              name: 'Elf Weapon Training',
+              type: 'entries',
+              entries: ['You have proficiency with the longsword.'],
+            },
+          ],
+        },
+      ],
+      skillProficiencies: [{ any: 2 }],
+      _versions: [
+        {
+          name: 'Variant; Elf Weapon Training',
+          weaponProficiencies: [{ 'longsword|phb': true }],
+          skillProficiencies: null,
+        },
+      ],
+    };
+    mockFetch.mockResolvedValue(race);
+    CharacterState.system.details = {};
+    CharacterState.system.skills = [];
+    CharacterState.system.weapons = [];
+    CharacterState.raceChoices = {
+      spells: [],
+      spellAbility: '',
+      size: '',
+      resist: '',
+      tools: [],
+      weapons: [],
+      languages: [],
+      skills: [],
+    };
+  });
+
+  test('requires selection and applies variant effects', async () => {
+    await selectBaseRace('HalfElf');
+    const card = document.querySelector('#raceList .class-card');
+    card.click();
+    await new Promise((r) => setTimeout(r, 0));
+    expect(await confirmStep()).toBe(false);
+    const radios = document.querySelectorAll('#raceFeatures input[type="radio"]');
+    radios[1].checked = true;
+    radios[1].dispatchEvent(new Event('change'));
+    await new Promise((r) => setTimeout(r, 0));
+    expect(await confirmStep()).toBe(true);
+    expect(CharacterState.raceChoices.skills).toHaveLength(0);
+    expect(CharacterState.raceChoices.weapons).toContain('Longsword');
+  });
+});
+
 describe('race tool proficiency choices', () => {
   beforeEach(() => {
     document.body.innerHTML = `
@@ -321,8 +396,11 @@ describe('race tool proficiency choices', () => {
       spells: [],
       spellAbility: '',
       size: '',
+      resist: '',
       tools: [],
       weapons: [],
+      languages: [],
+      skills: [],
     };
     CharacterState.system.tools = [];
   });
@@ -372,8 +450,11 @@ describe('race weapon proficiency choices', () => {
       spells: [],
       spellAbility: '',
       size: '',
+      resist: '',
       tools: [],
       weapons: [],
+      languages: [],
+      skills: [],
     };
     CharacterState.system.weapons = [];
   });
@@ -526,7 +607,7 @@ describe('duplicate proficiency replacement', () => {
     DATA.languages = ['Common', 'Dwarvish'];
     CharacterState.system.details = {};
     CharacterState.system.traits.damageResist = [];
-    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [], weapons: [] };
+    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [], weapons: [], languages: [], skills: [] };
     CharacterState.system.traits.languages.value = ['Elvish'];
     const race = {
       name: 'Elf (High)',
@@ -574,7 +655,7 @@ describe('change race cleanup', () => {
     };
     CharacterState.system.details = {};
     CharacterState.system.traits.damageResist = [];
-    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [], weapons: [] };
+    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [], weapons: [], languages: [], skills: [] };
     CharacterState.system.skills = [];
     CharacterState.system.traits.languages.value = [];
     CharacterState.system.attributes = {};
@@ -633,7 +714,7 @@ describe('race skill proficiency choices', () => {
     };
     CharacterState.system.details = {};
     CharacterState.system.traits.damageResist = [];
-    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [], weapons: [] };
+    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [], weapons: [], languages: [], skills: [] };
     CharacterState.system.skills = [];
     mockFetch.mockImplementation(() => Promise.resolve(race));
   });
@@ -703,6 +784,8 @@ describe('race trait descriptions', () => {
       resist: '',
       tools: [],
       weapons: [],
+      languages: [],
+      skills: [],
     };
     mockFetch.mockResolvedValue(race);
   });

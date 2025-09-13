@@ -159,6 +159,9 @@ export function exportFoundryActor(state) {
         tools: clone(state.system.tools || []),
         skills: clone(state.system.skills || []),
         feats: clone((state.feats || []).map((f) => f.name || f)),
+        ...(state.infusions && state.infusions.length
+          ? { infusions: clone((state.infusions || []).map((i) => i.name || i)) }
+          : {}),
       },
     },
   };
@@ -193,6 +196,12 @@ export function exportFoundryActor(state) {
   (state.feats || []).forEach((feat) => {
     const name = typeof feat === "string" ? feat : feat.name;
     const system = typeof feat === "string" ? {} : feat.system || {};
+    actor.items.push({ name, type: "feat", system });
+  });
+
+  (state.infusions || []).forEach((inf) => {
+    const name = typeof inf === "string" ? inf : inf.name;
+    const system = typeof inf === "string" ? {} : inf.system || {};
     actor.items.push({ name, type: "feat", system });
   });
 

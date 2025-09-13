@@ -87,11 +87,10 @@ export async function loadFeats() {
 }
 
 /**
- * Fetches artificer infusions if not already loaded.
+ * Fetches artificer infusion names if not already loaded.
  */
 export async function loadInfusions() {
-  if (Array.isArray(DATA.infusions) && DATA.infusions.length)
-    return DATA.infusions;
+  if (Array.isArray(DATA.infusions) && DATA.infusions.length) return;
   const json = await fetchJsonWithRetry('data/infusions.json', 'infusions');
   DATA.infusions = json.infusions || [];
   return DATA.infusions;
@@ -99,6 +98,8 @@ export async function loadInfusions() {
 
 // Cache for individual feat details keyed by feat name
 DATA.featDetails = DATA.featDetails || {};
+// Cache for individual infusion details keyed by infusion name
+DATA.infusionDetails = DATA.infusionDetails || {};
 
 /**
  * Fetches detailed data for a single feat by name and caches the result.
@@ -114,6 +115,22 @@ export async function loadFeatDetails(name) {
   const feat = await fetchJsonWithRetry(path, `feat ${name}`);
   DATA.featDetails[name] = feat;
   return feat;
+}
+
+/**
+ * Fetches detailed data for a single infusion by name and caches the result.
+ * The infusion JSON files are stored under `data/infusions/<slug>.json` where
+ * the slug is the lowercase name stripped of non-alphanumeric characters.
+ * @param {string} name - The infusion name
+ * @returns {Promise<Object>} The infusion detail object
+ */
+export async function loadInfusionDetails(name) {
+  if (DATA.infusionDetails[name]) return DATA.infusionDetails[name];
+  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '');
+  const path = `data/infusions/${slug}.json`;
+  const infusion = await fetchJsonWithRetry(path, `infusion ${name}`);
+  DATA.infusionDetails[name] = infusion;
+  return infusion;
 }
 
 /**
@@ -194,6 +211,7 @@ export const CharacterState = {
   type: "character",
   classes: [],
   feats: [],
+  infusions: [],
   equipment: [],
   knownSpells: {},
   showHelp: false,

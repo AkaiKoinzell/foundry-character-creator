@@ -39,4 +39,15 @@
       }
     ]
   }
+  ,
+  "choices": [
+    {
+      "level": 3,
+      "name": "Armor Model",
+      "description": "Choose a model for your Arcane Armor",
+      "count": 1,
+      "type": "Armor Model",
+      "selection": ["Guardian", "Infiltrator"]
+    }
+  ]
 }

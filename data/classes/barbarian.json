@@ -265,6 +265,7 @@
       "description": "Gain proficiency in one skill from the barbarian list",
       "count": 1,
       "type": "skills",
+      "optional": true,
       "selection": [
         "Animal Handling",
         "Athletics",
@@ -296,6 +297,22 @@
         "Increase one ability score by 2",
         "Increase two ability scores by 1",
         "Feat"
+      ]
+    },
+    {
+      "level": 10,
+      "name": "Primal Knowledge",
+      "description": "Gain proficiency in one skill from the barbarian list",
+      "count": 1,
+      "type": "skills",
+      "optional": true,
+      "selection": [
+        "Animal Handling",
+        "Athletics",
+        "Intimidation",
+        "Nature",
+        "Perception",
+        "Survival"
       ]
     },
     {

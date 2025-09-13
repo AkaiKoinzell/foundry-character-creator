@@ -27,4 +27,16 @@
       }
     ]
   }
+  ,
+  "choices": [
+    {
+      "level": 6,
+      "name": "Bestial Soul",
+      "description": "Choose a Bestial Soul adaptation",
+      "count": 1,
+      "type": "Bestial Soul",
+      "selection": ["Swimming", "Climbing", "Jumping"],
+      "optional": true
+    }
+  ]
 }

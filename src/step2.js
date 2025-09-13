@@ -276,7 +276,9 @@ function compileClassFeatures(cls) {
   }
   if (cls.choiceSelections) {
     for (const [name, entries] of Object.entries(cls.choiceSelections)) {
-      const choiceDef = (data.choices || []).find(c => c.name === name);
+      const choiceDef =
+        (data.choices || []).find(c => c.name === name) ||
+        (cls.subclassData?.choices || []).find(c => c.name === name);
       entries.forEach(e => {
         if (choiceDef?.type === 'infusion') {
           cls.features.push({
@@ -921,9 +923,12 @@ function classHasPendingChoices(cls) {
     return true;
   }
 
-  const choices = (clsDef.choices || []).filter(c => c.level <= (cls.level || 1));
+  const choices = [
+    ...(clsDef.choices || []),
+    ...(cls.subclassData?.choices || []),
+  ].filter(c => c.level <= (cls.level || 1));
   for (const choice of choices) {
-    const needed = choice.count || 1;
+    const needed = choice.optional ? 0 : (choice.count || 1);
     const isExpertise = choice.name === 'Expertise' || choice.requiresProficiency;
     if (isExpertise) {
       const selections = (cls.expertise || []).filter(e => e.level === choice.level);

@@ -31,4 +31,15 @@
       }
     ]
   }
+  ,
+  "choices": [
+    {
+      "level": 3,
+      "name": "Divine Fury",
+      "description": "Choose necrotic or radiant damage for Divine Fury",
+      "count": 1,
+      "type": "damage type",
+      "selection": ["Necrotic", "Radiant"]
+    }
+  ]
 }

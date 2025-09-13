@@ -27,4 +27,15 @@
       }
     ]
   }
+  ,
+  "choices": [
+    {
+      "level": 3,
+      "name": "Storm Aura",
+      "description": "Choose an environment for your Storm Aura",
+      "count": 1,
+      "type": "Storm Aura",
+      "selection": ["Desert", "Sea", "Tundra"]
+    }
+  ]
 }

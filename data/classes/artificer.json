@@ -251,15 +251,10 @@
     {
       "level": 2,
       "name": "Infusion",
-      "description": "Choose two infusions to learn",
-      "count": 2,
+      "description": "Choose four infusions to learn",
+      "count": 4,
       "type": "infusion",
-      "selection": [
-        "Enhanced Defense",
-        "Enhanced Weapon",
-        "Repeating Shot",
-        "Returning Weapon"
-      ]
+      "selection": "data/infusions.json"
     },
     {
       "level": 4,
@@ -274,6 +269,14 @@
       ]
     },
     {
+      "level": 6,
+      "name": "Infusion",
+      "description": "Learn two additional infusions",
+      "count": 6,
+      "type": "infusion",
+      "selection": "data/infusions.json"
+    },
+    {
       "level": 8,
       "name": "Ability Score Improvement",
       "description": "Increase one ability score by 2, two ability scores by 1, or take a feat if allowed.",
@@ -286,6 +289,14 @@
       ]
     },
     {
+      "level": 10,
+      "name": "Infusion",
+      "description": "Learn two additional infusions",
+      "count": 8,
+      "type": "infusion",
+      "selection": "data/infusions.json"
+    },
+    {
       "level": 12,
       "name": "Ability Score Improvement",
       "description": "Increase one ability score by 2, two ability scores by 1, or take a feat if allowed.",
@@ -296,6 +307,14 @@
         "Increase two ability scores by 1",
         "Feat"
       ]
+    },
+    {
+      "level": 14,
+      "name": "Infusion",
+      "description": "Learn two additional infusions",
+      "count": 10,
+      "type": "infusion",
+      "selection": "data/infusions.json"
     },
     {
       "level": 16,

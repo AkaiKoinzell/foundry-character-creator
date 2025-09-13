@@ -47,6 +47,7 @@ const baseState = {
   languages: [],
   cantrips: [],
   feats: [],
+  infusions: [],
   abilities: {},
   expertise: [],
 };
@@ -60,6 +61,9 @@ function refreshBaseState() {
     : [];
   baseState.feats = Array.isArray(CharacterState.feats)
     ? CharacterState.feats.map(f => ({ ...f }))
+    : [];
+  baseState.infusions = Array.isArray(CharacterState.infusions)
+    ? [...CharacterState.infusions]
     : [];
   baseState.expertise = Array.isArray(CharacterState.system.expertise)
     ? [...CharacterState.system.expertise]
@@ -76,6 +80,7 @@ function rebuildFromClasses() {
   const languages = new Set(baseState.languages);
   const cantrips = new Set(baseState.cantrips);
   const feats = new Map();
+  const infusions = new Set(baseState.infusions);
   const expertise = new Set(baseState.expertise);
   baseState.feats.forEach(f => feats.set(f.name, { ...f }));
   CharacterState.bonusAbilities = {};
@@ -96,6 +101,7 @@ function rebuildFromClasses() {
           else if (e.type === 'tools') tools.add(e.option);
           else if (e.type === 'languages') languages.add(e.option);
           else if (e.type === 'cantrips') cantrips.add(e.option);
+          else if (e.type === 'infusion') infusions.add(e.option);
           if (e.feat) {
             if (!feats.has(e.feat)) feats.set(e.feat, { name: e.feat });
           }
@@ -124,6 +130,7 @@ function rebuildFromClasses() {
   CharacterState.system.spells.cantrips = Array.from(cantrips);
   CharacterState.system.expertise = Array.from(expertise);
   CharacterState.feats = Array.from(feats.values());
+  CharacterState.infusions = Array.from(infusions);
   for (const [ab, base] of Object.entries(baseState.abilities)) {
     CharacterState.system.abilities[ab].value =
       base + (CharacterState.bonusAbilities[ab] || 0);

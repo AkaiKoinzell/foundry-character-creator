@@ -272,6 +272,7 @@ function renderCharacterSheet() {
       toolSources[t] ? `${t} (${toolSources[t]})` : t
     ),
     equipment: (CharacterState.equipment || []).map((e) => e.name),
+    infusions: (CharacterState.infusions || []).slice(),
     features: (() => {
       const classFeatures = (CharacterState.classes || []).flatMap(
         (c) =>
@@ -389,6 +390,20 @@ function renderCharacterSheet() {
   );
   featuresSection.appendChild(featuresList);
   container.appendChild(featuresSection);
+
+  const infusionsSection = document.createElement("section");
+  infusionsSection.className = "infusions";
+  if (summary.infusions.length) {
+    infusionsSection.appendChild(document.createElement("h3")).textContent =
+      "Infusions";
+    const infList = document.createElement("ul");
+    summary.infusions.forEach(
+      (i) =>
+        (infList.appendChild(document.createElement("li")).textContent = i)
+    );
+    infusionsSection.appendChild(infList);
+  }
+  container.appendChild(infusionsSection);
 
   const equipmentSection = document.createElement("section");
   equipmentSection.className = "equipment";

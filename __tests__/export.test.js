@@ -108,4 +108,33 @@ describe("exportFoundryActor", () => {
     expect(exported.flags.fcc.skills).toEqual(["Stealth"]);
     expect(exported.flags.fcc.feats).toEqual(["Alert", "Lucky"]);
   });
+
+  test("exports infusions in flags and items", () => {
+    const state = {
+      playerName: "Bob",
+      name: "Tester",
+      type: "character",
+      infusions: ["Enhanced Defense"],
+      system: {
+        abilities: {},
+        tools: [],
+        skills: [],
+        attributes: {},
+        spells: {},
+        traits: { languages: { value: [] } },
+        details: {},
+      },
+      baseAbilities: {},
+      bonusAbilities: {},
+      prototypeToken: {},
+    };
+
+    const exported = exportFoundryActor(state);
+    expect(exported.flags.fcc.infusions).toEqual(["Enhanced Defense"]);
+    expect(
+      exported.items.find(
+        (i) => i.name === "Enhanced Defense" && i.type === "feat"
+      )
+    ).toBeTruthy();
+  });
 });

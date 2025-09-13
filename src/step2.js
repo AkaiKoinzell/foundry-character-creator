@@ -211,7 +211,7 @@ function updateFeatSelectOptions() {
  *   ("Purple Dragon Knight (Banneret)" → "purple_dragon_knight_banneret")
  */
 function slugifySubclass(name = '') {
-  return name
+  const slug = name
     .replace(/^Circle of the Land\s*/i, '')
     .replace(/^The /i, '')
     .replace(/^(Path|Oath|Circle|College|Order|Domain|Way|School) of (the )?/i, '')
@@ -222,6 +222,7 @@ function slugifySubclass(name = '') {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '_')
     .replace(/^_+|_+$/g, '');
+  return slug || 'land';
 }
 
 async function loadSubclassData(cls) {

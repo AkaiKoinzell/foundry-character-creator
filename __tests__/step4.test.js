@@ -36,10 +36,12 @@ jest.unstable_mockModule('../src/i18n.js', () => ({ t: (k) => k }));
 jest.unstable_mockModule('../src/main.js', () => ({
   showStep: jest.fn(),
   TOTAL_STEPS: 7,
+  invalidateStep: jest.fn(),
+  invalidateStepsFrom: jest.fn(),
 }));
 
 const { loadStep4 } = await import('../src/step4.js');
-const { DATA } = await import('../src/data.js');
+const { DATA, CharacterState } = await import('../src/data.js');
 
 describe('change background button', () => {
   beforeEach(() => {
@@ -90,7 +92,8 @@ describe('renderBackgroundList description and details', () => {
     };
   });
 
-  test('shows description and toggles details', () => {
+  test('shows description and details even when help is hidden', () => {
+    CharacterState.showHelp = false;
     loadStep4();
     const card = document.querySelector('#backgroundList .class-card');
     const desc = card.querySelector('p');
@@ -100,6 +103,43 @@ describe('renderBackgroundList description and details', () => {
     detailsBtn.click();
     const detailsDiv = card.querySelector('.race-details');
     expect(detailsDiv.classList.contains('hidden')).toBe(false);
+    expect(detailsDiv.textContent).toContain('skills: Insight');
+  });
+});
+
+describe('selectBackground feature descriptions', () => {
+  beforeEach(() => {
+    document.body.innerHTML = `
+      <input id="backgroundSearch" />
+      <div id="backgroundList"></div>
+      <button id="confirmBackgroundSelection"></button>
+      <button id="changeBackground" class="hidden"></button>
+    `;
+    DATA.backgrounds = {
+      Acolyte: {
+        name: 'Acolyte',
+        description: 'Devout servant',
+        skills: ['Insight'],
+        languages: [],
+        featOptions: [],
+        skillChoices: { choose: 1, options: ['Arcana'] },
+        entries: [
+          { name: 'Skill Proficiencies', description: 'Choose a skill description', entries: [] }
+        ]
+      },
+    };
+  });
+
+  test('shows details and feature descriptions without help', () => {
+    CharacterState.showHelp = false;
+    loadStep4();
+    const card = document.querySelector('#backgroundList .class-card');
+    card.click();
+    const detailsAcc = document.querySelector('#backgroundFeatures .accordion-item .accordion-content');
+    expect(detailsAcc.textContent).toContain('skills: Insight');
+    const skillAcc = document.querySelectorAll('#backgroundFeatures .accordion-item')[1];
+    const skillDesc = skillAcc.querySelector('p');
+    expect(skillDesc.textContent).toBe('Choose a skill description');
   });
 });
 

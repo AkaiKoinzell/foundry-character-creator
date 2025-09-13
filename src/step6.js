@@ -117,7 +117,7 @@ export function commitAbilities() {
 
 function confirmAbilities() {
   commitAbilities();
-  main.showStep?.(7);
+  main.showStep?.(main.TOTAL_STEPS);
 }
 
 export function loadStep6(force = false) {

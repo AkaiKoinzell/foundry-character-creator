@@ -132,7 +132,7 @@ function rebuildFromClasses() {
   main.invalidateStep(3);
   main.invalidateStep(4);
   main.invalidateStep(5);
-  main.invalidateStep(6);
+  main.invalidateStep(main.TOTAL_STEPS - 1);
   main.invalidateStepsFrom(3);
 }
 
@@ -911,7 +911,7 @@ export function updateStep2Completion() {
     btnStep4.disabled =
       !complete || !CharacterState.system.details.race;
   if (progressBar) {
-    const width = (complete ? 2 : 1) / 6 * 100;
+    const width = ((complete ? 2 : 1) / (main.TOTAL_STEPS - 1)) * 100;
     progressBar.style.width = `${width}%`;
   }
   (CharacterState.classes || []).forEach((cls) => {

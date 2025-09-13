@@ -274,7 +274,7 @@ function confirmEquipment() {
     });
   });
   CharacterState.equipment = selections;
-  main.showStep(6);
+  main.showStep(main.TOTAL_STEPS - 1);
 }
 
 export async function loadStep5(force = false) {

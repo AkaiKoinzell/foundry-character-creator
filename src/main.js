@@ -28,6 +28,9 @@ import { exportFoundryActor } from "./export.js";
 import { t, initI18n, applyTranslations } from "./i18n.js";
 import { exportPdf } from "./export-pdf.js";
 
+const TOTAL_STEPS = 7;
+const LAST_STEP = TOTAL_STEPS;
+
 let currentStep = 1;
 let currentStepComplete = false;
 const visitedSteps = new Set();
@@ -56,7 +59,7 @@ function invalidateStep(stepNumber) {
 }
 
 function invalidateStepsFrom(stepNumber) {
-  for (let i = stepNumber; i <= 7; i++) {
+  for (let i = stepNumber; i <= TOTAL_STEPS; i++) {
     visitedSteps.delete(i);
     completedSteps.delete(i);
   }
@@ -64,7 +67,7 @@ function invalidateStepsFrom(stepNumber) {
 }
 
 function updateNavButtons() {
-  for (let i = 1; i <= 7; i++) {
+  for (let i = 1; i <= TOTAL_STEPS; i++) {
     const btn = document.getElementById(`btnStep${i}`);
     if (!btn) continue;
     if (i === 1) {
@@ -81,7 +84,7 @@ function updateNavButtons() {
 function setCurrentStepComplete(flag) {
   currentStepComplete = flag;
   const nextBtn = document.getElementById("nextStep");
-  if (nextBtn) nextBtn.disabled = !flag || currentStep >= 7;
+  if (nextBtn) nextBtn.disabled = !flag || currentStep >= LAST_STEP;
   if (flag) {
     completedSteps.add(currentStep);
   } else {
@@ -113,7 +116,7 @@ function showStep(step) {
     const force = invalidatedSteps.has(step);
     visitedSteps.add(step);
     invalidatedSteps.delete(step);
-    for (let i = 1; i <= 7; i++) {
+    for (let i = 1; i <= TOTAL_STEPS; i++) {
       const el = document.getElementById(`step${i}`);
       if (!el) continue;
       if (i === step) {
@@ -126,7 +129,7 @@ function showStep(step) {
     }
     const bar = document.getElementById("progressBar");
     if (bar) {
-      bar.style.width = `${((step - 1) / 6) * 100}%`;
+      bar.style.width = `${((step - 1) / (TOTAL_STEPS - 1)) * 100}%`;
     }
     currentStep = step;
     if (CharacterState.showHelp) {
@@ -137,8 +140,8 @@ function showStep(step) {
     if (step === 3) loadStep3(firstVisit || force);
     if (step === 4) loadStep4(firstVisit || force);
     if (step === 5) loadStep5(firstVisit || force);
-    if (step === 6) loadStep6(firstVisit || force);
-    if (step === 7) {
+    if (step === TOTAL_STEPS - 1) loadStep6(firstVisit || force);
+    if (step === LAST_STEP) {
       commitAbilities();
       CharacterState.playerName =
         document.getElementById("userName")?.value || CharacterState.playerName;
@@ -496,7 +499,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const obj = JSON.parse(stored);
       Object.assign(CharacterState, obj);
       startAtStep7 = true;
-      currentStep = 7;
+      currentStep = LAST_STEP;
       localStorage.removeItem('characterState');
     }
   } catch (e) {
@@ -505,7 +508,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await initI18n();
   applyTranslations();
-  for (let i = 1; i <= 7; i++) {
+  for (let i = 1; i <= TOTAL_STEPS; i++) {
     const btn = document.getElementById(`btnStep${i}`);
     if (btn) {
       btn.addEventListener("click", () => {
@@ -514,7 +517,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (i === 3) loadStep3(true);
         if (i === 4) loadStep4(true);
         if (i === 5) loadStep5(true);
-        if (i === 6) loadStep6(true);
+        if (i === TOTAL_STEPS - 1) loadStep6(true);
       });
     }
   }
@@ -560,7 +563,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       loadStep4();
       loadStep5();
       loadStep6();
-      if (startAtStep7) showStep(7);
+      if (startAtStep7) showStep(LAST_STEP);
     })
     .catch((err) => console.error(err));
 
@@ -645,4 +648,6 @@ export {
   showErrorBanner,
   invalidateStep,
   invalidateStepsFrom,
+  TOTAL_STEPS,
+  LAST_STEP,
 };

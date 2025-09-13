@@ -1299,7 +1299,7 @@ function confirmRaceSelection() {
   finalize();
   main.invalidateStep(4);
   main.invalidateStep(5);
-  main.invalidateStep(6);
+  main.invalidateStep(main.TOTAL_STEPS - 1);
   main.invalidateStepsFrom(4);
   return true;
 }
@@ -1342,7 +1342,7 @@ export async function loadStep3(force = false) {
         rebuildFromClasses();
         main.invalidateStep(4);
         main.invalidateStep(5);
-        main.invalidateStep(6);
+        main.invalidateStep(main.TOTAL_STEPS - 1);
         main.invalidateStepsFrom(4);
       }
       const traits = document.getElementById('raceTraits');

@@ -9,6 +9,7 @@ const showErrorBanner = jest.fn();
 let loadStep5;
 let CharacterState;
 let fetchJsonWithRetry;
+let TOTAL_STEPS;
 
 beforeEach(async () => {
   jest.resetModules();
@@ -22,10 +23,15 @@ beforeEach(async () => {
     fetchJsonWithRetry: jest.fn(),
   }));
   jest.unstable_mockModule('../src/i18n.js', () => ({ t: (k) => k }));
-  jest.unstable_mockModule('../src/main.js', () => ({ showStep, showErrorBanner }));
+  jest.unstable_mockModule('../src/main.js', () => ({
+    showStep,
+    showErrorBanner,
+    TOTAL_STEPS: 7,
+  }));
 
   ({ loadStep5 } = await import('../src/step5.js'));
   ({ CharacterState, fetchJsonWithRetry } = await import('../src/data.js'));
+  ({ TOTAL_STEPS } = await import('../src/main.js'));
 
   document.body.innerHTML =
     '<div id="equipmentSelections"></div><button id="confirmEquipment"></button>';
@@ -47,7 +53,7 @@ describe('step5 re-entry', () => {
     const btn = document.getElementById('confirmEquipment');
     btn.click();
     expect(showStep).toHaveBeenCalledTimes(1);
-    expect(showStep).toHaveBeenCalledWith(6);
+    expect(showStep).toHaveBeenCalledWith(TOTAL_STEPS - 1);
   });
 
   test('failed fetch surfaces error and allows retry', async () => {

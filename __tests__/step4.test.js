@@ -33,7 +33,10 @@ jest.unstable_mockModule('../src/choice-select-helpers.js', () => ({
 }));
 
 jest.unstable_mockModule('../src/i18n.js', () => ({ t: (k) => k }));
-jest.unstable_mockModule('../src/main.js', () => ({ showStep: jest.fn() }));
+jest.unstable_mockModule('../src/main.js', () => ({
+  showStep: jest.fn(),
+  TOTAL_STEPS: 7,
+}));
 
 const { loadStep4 } = await import('../src/step4.js');
 const { DATA } = await import('../src/data.js');

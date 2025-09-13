@@ -65,6 +65,7 @@ jest.unstable_mockModule('../src/main.js', () => ({
   invalidateStep: jest.fn(),
   invalidateStepsFrom: jest.fn(),
   setCurrentStepComplete: jest.fn(),
+  TOTAL_STEPS: 7,
 }));
 jest.unstable_mockModule('../src/step5.js', () => ({
   loadEquipmentData: jest.fn().mockResolvedValue([]),

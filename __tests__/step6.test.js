@@ -8,6 +8,7 @@ const setCurrentStepComplete = jest.fn();
 jest.unstable_mockModule('../src/main.js', () => ({
   setCurrentStepComplete,
   showStep: jest.fn(),
+  TOTAL_STEPS: 7,
 }));
 
 jest.unstable_mockModule('../src/i18n.js', () => ({ t: (k) => k }));

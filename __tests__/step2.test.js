@@ -203,3 +203,28 @@ describe('feature descriptions', () => {
     );
   });
 });
+
+describe('optional class choices', () => {
+  test('unselected optional choices do not block completion', () => {
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+    const barbarianData = JSON.parse(
+      readFileSync(path.join(__dirname, '../data/classes/barbarian.json'), 'utf8')
+    );
+    const prevClasses = DATA.classes;
+    DATA.classes = [barbarianData];
+    CharacterState.classes = [
+      {
+        name: 'Barbarian',
+        level: 10,
+        skills: ['Athletics', 'Survival'],
+        choiceSelections: {},
+        expertise: [],
+        subclass: 'Berserker',
+      },
+    ];
+    const complete = Step2.isStepComplete();
+    expect(complete).toBe(true);
+    DATA.classes = prevClasses;
+    CharacterState.classes = [];
+  });
+});

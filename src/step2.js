@@ -21,6 +21,7 @@ import {
 import { inlineWarning, globalToast } from './validation.js';
 import { renderFeatChoices } from './feat.js';
 import { renderSpellChoices } from './spell-select.js';
+import { renderInfusion } from './infusion.js';
 import { pendingReplacements } from './proficiency.js';
 import {
   filterDuplicateOptions,
@@ -63,7 +64,9 @@ function refreshBaseState() {
     ? CharacterState.feats.map(f => ({ ...f }))
     : [];
   baseState.infusions = Array.isArray(CharacterState.infusions)
-    ? [...CharacterState.infusions]
+    ? CharacterState.infusions.map(i =>
+        typeof i === 'string' ? { name: i } : { ...i }
+      )
     : [];
   baseState.expertise = Array.isArray(CharacterState.system.expertise)
     ? [...CharacterState.system.expertise]
@@ -80,7 +83,9 @@ function rebuildFromClasses() {
   const languages = new Set(baseState.languages);
   const cantrips = new Set(baseState.cantrips);
   const feats = new Map();
-  const infusions = new Set(baseState.infusions);
+  const infusions = new Map(
+    baseState.infusions.map(i => [i.name || i, typeof i === 'string' ? { name: i } : { ...i }])
+  );
   const expertise = new Set(baseState.expertise);
   baseState.feats.forEach(f => feats.set(f.name, { ...f }));
   CharacterState.bonusAbilities = {};
@@ -101,7 +106,10 @@ function rebuildFromClasses() {
           else if (e.type === 'tools') tools.add(e.option);
           else if (e.type === 'languages') languages.add(e.option);
           else if (e.type === 'cantrips') cantrips.add(e.option);
-          else if (e.type === 'infusion') infusions.add(e.option);
+          else if (e.type === 'infusion') {
+            const name = e.option;
+            if (!infusions.has(name)) infusions.set(name, { name });
+          }
           if (e.feat) {
             if (!feats.has(e.feat)) feats.set(e.feat, { name: e.feat });
           }
@@ -130,7 +138,7 @@ function rebuildFromClasses() {
   CharacterState.system.spells.cantrips = Array.from(cantrips);
   CharacterState.system.expertise = Array.from(expertise);
   CharacterState.feats = Array.from(feats.values());
-  CharacterState.infusions = Array.from(infusions);
+  CharacterState.infusions = Array.from(infusions.values());
   for (const [ab, base] of Object.entries(baseState.abilities)) {
     CharacterState.system.abilities[ab].value =
       base + (CharacterState.bonusAbilities[ab] || 0);
@@ -270,15 +278,25 @@ function compileClassFeatures(cls) {
     for (const [name, entries] of Object.entries(cls.choiceSelections)) {
       const choiceDef = (data.choices || []).find(c => c.name === name);
       entries.forEach(e => {
-        cls.features.push({
-          level: e.level || null,
-          name: `${name}: ${e.option}`,
-          abilities: e.abilities,
-          feat: e.feat,
-          optionalFeatures: e.optionalFeatures,
-          description: choiceDef?.description || '',
-          entries: choiceDef?.entries || [],
-        });
+        if (choiceDef?.type === 'infusion') {
+          cls.features.push({
+            level: e.level || null,
+            name: e.option,
+            type: 'infusion',
+            description: '',
+            entries: [],
+          });
+        } else {
+          cls.features.push({
+            level: e.level || null,
+            name: `${name}: ${e.option}`,
+            abilities: e.abilities,
+            feat: e.feat,
+            optionalFeatures: e.optionalFeatures,
+            description: choiceDef?.description || '',
+            entries: choiceDef?.entries || [],
+          });
+        }
       });
     }
   }
@@ -756,13 +774,29 @@ function renderClassEditor(cls, index) {
         );
       });
       features.forEach(f => {
-        const body = document.createElement('div');
-        if (f.description)
-          body.appendChild(createElement('p', f.description));
-        appendEntries(body, f.entries);
-        accordion.appendChild(
-          createAccordionItem(`${t('level')} ${lvl}: ${f.name}`, body)
-        );
+        if (f.type === 'infusion') {
+          const existing = (CharacterState.infusions || []).find(
+            i => i.name === f.name
+          );
+          f.infusionRenderer = renderInfusion(
+            f.name,
+            existing || {}
+          );
+          accordion.appendChild(
+            createAccordionItem(
+              `${t('level')} ${lvl}: ${f.name}`,
+              f.infusionRenderer.element
+            )
+          );
+        } else {
+          const body = document.createElement('div');
+          if (f.description)
+            body.appendChild(createElement('p', f.description));
+          appendEntries(body, f.entries);
+          accordion.appendChild(
+            createAccordionItem(`${t('level')} ${lvl}: ${f.name}`, body)
+          );
+        }
       });
     }
   }

@@ -272,7 +272,9 @@ function renderCharacterSheet() {
       toolSources[t] ? `${t} (${toolSources[t]})` : t
     ),
     equipment: (CharacterState.equipment || []).map((e) => e.name),
-    infusions: (CharacterState.infusions || []).slice(),
+    infusions: (CharacterState.infusions || []).map((i) =>
+      typeof i === 'string' ? { name: i, description: '' } : i
+    ),
     features: (() => {
       const classFeatures = (CharacterState.classes || []).flatMap(
         (c) =>
@@ -397,10 +399,14 @@ function renderCharacterSheet() {
     infusionsSection.appendChild(document.createElement("h3")).textContent =
       "Infusions";
     const infList = document.createElement("ul");
-    summary.infusions.forEach(
-      (i) =>
-        (infList.appendChild(document.createElement("li")).textContent = i)
-    );
+    summary.infusions.forEach((i) => {
+      const li = document.createElement('li');
+      const strong = document.createElement('strong');
+      strong.textContent = i.name;
+      li.appendChild(strong);
+      if (i.description) li.append(`: ${i.description}`);
+      infList.appendChild(li);
+    });
     infusionsSection.appendChild(infList);
   }
   container.appendChild(infusionsSection);

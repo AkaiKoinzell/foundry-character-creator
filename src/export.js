@@ -200,9 +200,13 @@ export function exportFoundryActor(state) {
   });
 
   (state.infusions || []).forEach((inf) => {
-    const name = typeof inf === "string" ? inf : inf.name;
-    const system = typeof inf === "string" ? {} : inf.system || {};
-    actor.items.push({ name, type: "feat", system });
+    const name = typeof inf === 'string' ? inf : inf.name;
+    const description = typeof inf === 'string' ? '' : inf.description || '';
+    const system = typeof inf === 'string' ? {} : clone(inf.system || {});
+    if (description && !system.description) {
+      system.description = { value: description };
+    }
+    actor.items.push({ name, type: 'feat', system });
   });
 
   (state.equipment || []).forEach((item) => {

@@ -8,6 +8,7 @@ import {
   updateProficiencyBonus,
   MAX_CHARACTER_LEVEL,
   loadSpells,
+  loadInfusions,
 } from './data.js';
 import { t } from './i18n.js';
 import {
@@ -612,6 +613,7 @@ function renderClassEditor(cls, index) {
           existing = cls.choiceSelections[choice.name] || [];
         }
         let cantripOptionsPromise;
+        let infusionOptionsPromise;
         if (choice.type === 'cantrips' && !isExpertise) {
           cantripOptionsPromise = loadSpells().then(spells =>
             spells
@@ -621,6 +623,8 @@ function renderClassEditor(cls, index) {
               .map(s => s.name)
               .sort()
           );
+        } else if (choice.type === 'infusion' && !isExpertise) {
+          infusionOptionsPromise = loadInfusions().then(list => list.slice().sort());
         }
         for (let i = 0; i < count; i++) {
           const sel = document.createElement('select');
@@ -657,6 +661,16 @@ function renderClassEditor(cls, index) {
             choiceSelects.push(sel);
             if (choice.type === 'cantrips') {
               cantripOptionsPromise.then(opts => {
+                opts.forEach(opt => {
+                  const o = document.createElement('option');
+                  o.value = opt;
+                  o.textContent = opt;
+                  sel.appendChild(o);
+                });
+                if (stored) sel.value = stored.option;
+              });
+            } else if (choice.type === 'infusion') {
+              infusionOptionsPromise.then(opts => {
                 opts.forEach(opt => {
                   const o = document.createElement('option');
                   o.value = opt;
@@ -717,6 +731,10 @@ function renderClassEditor(cls, index) {
           });
         } else if (choice.type === 'cantrips') {
           cantripOptionsPromise.then(() => {
+            updateChoiceSelectOptions(choiceSelects, choice.type, skillSelects, skillChoiceSelects);
+          });
+        } else if (choice.type === 'infusion') {
+          infusionOptionsPromise.then(() => {
             updateChoiceSelectOptions(choiceSelects, choice.type, skillSelects, skillChoiceSelects);
           });
         } else {

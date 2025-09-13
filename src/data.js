@@ -86,6 +86,17 @@ export async function loadFeats() {
   DATA.feats = Object.keys(json.feats || {});
 }
 
+/**
+ * Fetches artificer infusions if not already loaded.
+ */
+export async function loadInfusions() {
+  if (Array.isArray(DATA.infusions) && DATA.infusions.length)
+    return DATA.infusions;
+  const json = await fetchJsonWithRetry('data/infusions.json', 'infusions');
+  DATA.infusions = json.infusions || [];
+  return DATA.infusions;
+}
+
 // Cache for individual feat details keyed by feat name
 DATA.featDetails = DATA.featDetails || {};
 

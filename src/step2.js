@@ -830,6 +830,10 @@ function removeClass(index) {
     delete (CharacterState.knownSpells || {})[removed.name];
   }
   rebuildFromClasses();
+  if (!classes.length) {
+    loadStep2(false);
+    return;
+  }
   renderSelectedClasses();
   updateStep2Completion();
 }

@@ -1,12 +1,18 @@
 {
-        "name": "Harengon",
-        "raceName": "Harengon",
-        "source": "MPMM",
+	"name": "Harengon",
+	"raceName": "Harengon",
+	"source": "MPMM",
 	"page": 22,
 	"lineage": "VRGR",
 	"size": [
-		"S",
-		"M"
+		{
+			"choose": {
+				"from": [
+					"S",
+					"M"
+				]
+			}
+		}
 	],
 	"speed": 30,
 	"skillProficiencies": [

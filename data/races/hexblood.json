@@ -1,15 +1,21 @@
 {
-        "name": "Hexblood",
-        "raceName": "Hexblood",
-        "source": "VRGR",
+	"name": "Hexblood",
+	"raceName": "Hexblood",
+	"source": "VRGR",
 	"page": 18,
 	"lineage": "VRGR",
 	"creatureTypes": [
 		"fey"
 	],
 	"size": [
-		"S",
-		"M"
+		{
+			"choose": {
+				"from": [
+					"S",
+					"M"
+				]
+			}
+		}
 	],
 	"speed": 30,
 	"darkvision": 60,

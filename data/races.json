@@ -5,6 +5,8 @@
         "Aasimar (Protector)": "data/races/aasimarprotector.json",
         "Aasimar (Scourge)": "data/races/aasimarscourge.json",
         "Altered": "data/races/altered.json",
+        "Astral Elf": "data/races/astralelf.json",
+        "Autognome": "data/races/autognome.json",
         "Bugbear": "data/races/bugbear.json",
         "Centaur": "data/races/centaur.json",
         "Changeling": "data/races/changeling.json",
@@ -28,6 +30,7 @@
         "Genasi (Earth)": "data/races/genasiearth.json",
         "Genasi (Fire)": "data/races/genasifire.json",
         "Genasi (Water)": "data/races/genasiwater.json",
+        "Giff": "data/races/giff.json",
         "Githyanki": "data/races/githyanki.json",
         "Githzerai": "data/races/githzerai.json",
         "Gnome (Deep)": "data/races/gnomedeep.json",
@@ -35,6 +38,7 @@
         "Gnome (Rock)": "data/races/gnomerock.json",
         "Goblin": "data/races/goblin.json",
         "Goliath": "data/races/goliath.json",
+        "Hadozee": "data/races/hadozee.json",
         "Half-Elf (Acquatic)": "data/races/halfelfacquatic.json",
         "Half-Elf (Drow)": "data/races/halfelfdrow.json",
         "Half-Elf (Moon/Sun)": "data/races/halfelfmoonsun.json",
@@ -56,6 +60,8 @@
         "Leonin": "data/races/leonin.json",
         "Lizardfolk": "data/races/lizardfolk.json",
         "Locathah": "data/races/locathah.json",
-        "Loxodon": "data/races/loxodon.json"
+        "Loxodon": "data/races/loxodon.json",
+        "Plasmoid": "data/races/plasmoid.json",
+        "Thri-kreen": "data/races/thrikreen.json"
     }
 }

@@ -32,10 +32,6 @@
 	"languageProficiencies": [
 		{
 			"common": true,
-			"elvish": true
-		},
-		{
-			"common": true,
 			"elvish": true,
 			"aquan": true
 		}

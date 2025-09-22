@@ -4,8 +4,14 @@
 	"page": 16,
 	"lineage": "VRGR",
 	"size": [
-		"S",
-		"M"
+		{
+			"choose": {
+				"from": [
+					"S",
+					"M"
+				]
+			}
+		}
 	],
 	"speed": 35,
 	"age": {

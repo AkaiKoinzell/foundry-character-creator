@@ -1,27 +1,33 @@
 {
-        "name": "Dhampir",
-        "raceName": "Dhampir",
-        "source": "VRGR",
+	"name": "Dhampir",
+	"raceName": "Dhampir",
+	"source": "VRGR",
 	"page": 16,
 	"lineage": "VRGR",
 	"size": [
-		"S",
-		"M"
+		{
+			"choose": {
+				"from": [
+					"S",
+					"M"
+				]
+			}
+		}
 	],
 	"speed": {
 		"walk": 35,
 		"climb": 35
 	},
-"darkvision": 60,
-"traitTags": [
-"Natural Weapon"
-],
+	"darkvision": 60,
+	"traitTags": [
+		"Natural Weapon"
+	],
 	"skillProficiencies": [
 		{
 			"any": 2
 		}
 	],
-"entries": [
+	"entries": [
 		{
 			"type": "entries",
 			"name": "Size",

@@ -1,118 +1,159 @@
 {
-  "name": "Altered",
-  "raceName": "Altered",
-  "source": "HB",
-  "size": ["S", "M"],
-  "speed": 30,
-  "ability": [
-    {
-      "choose": {
-        "weighted": {
-          "from": ["str", "dex", "con", "int", "wis", "cha"],
-          "weights": [2, 1]
-        }
-      }
-    },
-    {
-      "choose": {
-        "weighted": {
-          "from": ["str", "dex", "con", "int", "wis", "cha"],
-          "weights": [1, 1, 1]
-        }
-      }
-    }
-  ],
-  "skillProficiencies": [
-    { "any": 1 }
-  ],
-  "languageProficiencies": [
-    { "common": true, "anyStandard": 1 }
-  ],
-  "minorAlterations": {
-    "allowed": [3, 2],
-    "options": [
-      "Aquatic Adaptation",
-      "Altered Metabolism",
-      "Darkvision",
-      "Fleet of Foot",
-      "Glider",
-      "Natural Weapon",
-      "Nimble Climber",
-      "Mutated Eyes",
-      "Silent Speech",
-      "Skilled",
-      "Strong-Minded",
-      "Supernatural Resistance"
-    ]
-  },
-  "majorAlterations": {
-    "allowed": [0, 1],
-    "options": [
-      "Amorphous",
-      "Augmented Toughness",
-      "Blind Sense",
-      "Magical Affinity",
-      "Massive Build",
-      "Painful Regeneration",
-      "Secondary Arms",
-      "Shapechanger",
-      "Unnatural Armor"
-    ]
-  },
-  "entries": [
-    {
-      "name": "Size",
-      "type": "entries",
-      "entries": [
-        "You are Medium or Small. You choose the size when you select this race."
-      ]
-    },
-    {
-      "name": "Alterations",
-      "type": "entries",
-      "entries": [
-        "You gain three Minor Alterations or two Minor and one Major Alteration.",
-        "{@bold Minor Alterations}",
-        {
-          "type": "list",
-          "items": [
-            "Aquatic Adaptation. You can breathe air and water, and you gain a swim speed equal to your walking speed.",
-            "Altered Metabolism. You don’t need to eat, drink, or breathe. You have advantage on saving throws against diseases and being poisoned, and you have resistance to poison damage. When you take a long rest, you must remain motionless for at least six hours but stay conscious.",
-            "Darkvision. You can see in dim light within 60 feet of you as if it were bright light and in darkness as if it were dim light.",
-            "Fleet of Foot. Your base walking speed increases to 35 feet.",
-            "Glider. When you fall and are not incapacitated, reduce any fall distance by up to 100 feet and move horizontally 2 feet for every foot you fall.",
-            "Natural Weapon. You have a natural weapon for unarmed strikes dealing 1d6 bludgeoning, piercing, or slashing damage (chosen when you select this race) and you may use Dexterity for attack and damage rolls.",
-            "Nimble Climber. You have a climb speed equal to your walking speed.",
-            "Mutated Eyes. You have advantage on Wisdom (Perception) checks that rely on sight.",
-            "Silent Speech. You can speak telepathically to a creature within 30 feet that shares a language with you.",
-            "Skilled. You gain proficiency in one skill of your choice.",
-            "Strong-Minded. You have advantage on saving throws against being charmed or frightened.",
-            "Supernatural Resistance. You gain resistance to one damage type of your choice: acid, cold, fire, force, lightning, necrotic, psychic, radiant, or thunder."
-          ]
-        },
-        "{@bold Major Alterations}",
-        {
-          "type": "list",
-          "items": [
-            "Amorphous. You can squeeze through a space as narrow as 1 inch if you are carrying or wearing nothing, and you have advantage on checks and saves to escape a grapple or restraint.",
-            "Augmented Toughness. Your hit point maximum increases by 1, and it increases by 1 again whenever you gain a level.",
-            "Blind Sense. You have blindsight out to 30 feet and are blind beyond that distance; you have advantage on Perception checks that rely on hearing or smell.",
-            "Magical Affinity. You know one cantrip of your choice from any class spell list. Intelligence, Wisdom, or Charisma (chosen when you select this race) is your spellcasting ability.",
-            "Massive Build. You have advantage on Strength checks and saving throws and count as one size larger for carrying capacity and the weight you can push, drag, or lift.",
-            "Painful Regeneration. When you start your turn at half hit points or fewer, you may roll a d3 to regain that many hit points and take a penalty equal to the roll on attack rolls, ability checks, and saving throws until the start of your next turn.",
-            "Secondary Arms. You have two smaller secondary arms that can manipulate objects or wield a light weapon.",
-            "Shapechanger. As an action, you can change your appearance and voice as described in the trait, remaining in the new form until you revert or die.",
-            "Unnatural Armor. While not wearing heavy armor, you gain a +1 bonus to AC."
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Languages",
-      "type": "entries",
-      "entries": [
-        "You can speak, read, and write Common and one extra language of your choice."
-      ]
-    }
-  ]
+	"name": "Altered",
+	"raceName": "Altered",
+	"source": "HB",
+	"size": [
+		{
+			"choose": {
+				"from": [
+					"S",
+					"M"
+				]
+			}
+		}
+	],
+	"speed": 30,
+	"ability": [
+		{
+			"choose": {
+				"weighted": {
+					"from": [
+						"str",
+						"dex",
+						"con",
+						"int",
+						"wis",
+						"cha"
+					],
+					"weights": [
+						2,
+						1
+					]
+				}
+			}
+		},
+		{
+			"choose": {
+				"weighted": {
+					"from": [
+						"str",
+						"dex",
+						"con",
+						"int",
+						"wis",
+						"cha"
+					],
+					"weights": [
+						1,
+						1,
+						1
+					]
+				}
+			}
+		}
+	],
+	"skillProficiencies": [
+		{
+			"any": 1
+		}
+	],
+	"languageProficiencies": [
+		{
+			"common": true,
+			"anyStandard": 1
+		}
+	],
+	"minorAlterations": {
+		"allowed": [
+			3,
+			2
+		],
+		"options": [
+			"Aquatic Adaptation",
+			"Altered Metabolism",
+			"Darkvision",
+			"Fleet of Foot",
+			"Glider",
+			"Natural Weapon",
+			"Nimble Climber",
+			"Mutated Eyes",
+			"Silent Speech",
+			"Skilled",
+			"Strong-Minded",
+			"Supernatural Resistance"
+		]
+	},
+	"majorAlterations": {
+		"allowed": [
+			0,
+			1
+		],
+		"options": [
+			"Amorphous",
+			"Augmented Toughness",
+			"Blind Sense",
+			"Magical Affinity",
+			"Massive Build",
+			"Painful Regeneration",
+			"Secondary Arms",
+			"Shapechanger",
+			"Unnatural Armor"
+		]
+	},
+	"entries": [
+		{
+			"name": "Size",
+			"type": "entries",
+			"entries": [
+				"You are Medium or Small. You choose the size when you select this race."
+			]
+		},
+		{
+			"name": "Alterations",
+			"type": "entries",
+			"entries": [
+				"You gain three Minor Alterations or two Minor and one Major Alteration.",
+				"{@bold Minor Alterations}",
+				{
+					"type": "list",
+					"items": [
+						"Aquatic Adaptation. You can breathe air and water, and you gain a swim speed equal to your walking speed.",
+						"Altered Metabolism. You don’t need to eat, drink, or breathe. You have advantage on saving throws against diseases and being poisoned, and you have resistance to poison damage. When you take a long rest, you must remain motionless for at least six hours but stay conscious.",
+						"Darkvision. You can see in dim light within 60 feet of you as if it were bright light and in darkness as if it were dim light.",
+						"Fleet of Foot. Your base walking speed increases to 35 feet.",
+						"Glider. When you fall and are not incapacitated, reduce any fall distance by up to 100 feet and move horizontally 2 feet for every foot you fall.",
+						"Natural Weapon. You have a natural weapon for unarmed strikes dealing 1d6 bludgeoning, piercing, or slashing damage (chosen when you select this race) and you may use Dexterity for attack and damage rolls.",
+						"Nimble Climber. You have a climb speed equal to your walking speed.",
+						"Mutated Eyes. You have advantage on Wisdom (Perception) checks that rely on sight.",
+						"Silent Speech. You can speak telepathically to a creature within 30 feet that shares a language with you.",
+						"Skilled. You gain proficiency in one skill of your choice.",
+						"Strong-Minded. You have advantage on saving throws against being charmed or frightened.",
+						"Supernatural Resistance. You gain resistance to one damage type of your choice: acid, cold, fire, force, lightning, necrotic, psychic, radiant, or thunder."
+					]
+				},
+				"{@bold Major Alterations}",
+				{
+					"type": "list",
+					"items": [
+						"Amorphous. You can squeeze through a space as narrow as 1 inch if you are carrying or wearing nothing, and you have advantage on checks and saves to escape a grapple or restraint.",
+						"Augmented Toughness. Your hit point maximum increases by 1, and it increases by 1 again whenever you gain a level.",
+						"Blind Sense. You have blindsight out to 30 feet and are blind beyond that distance; you have advantage on Perception checks that rely on hearing or smell.",
+						"Magical Affinity. You know one cantrip of your choice from any class spell list. Intelligence, Wisdom, or Charisma (chosen when you select this race) is your spellcasting ability.",
+						"Massive Build. You have advantage on Strength checks and saving throws and count as one size larger for carrying capacity and the weight you can push, drag, or lift.",
+						"Painful Regeneration. When you start your turn at half hit points or fewer, you may roll a d3 to regain that many hit points and take a penalty equal to the roll on attack rolls, ability checks, and saving throws until the start of your next turn.",
+						"Secondary Arms. You have two smaller secondary arms that can manipulate objects or wield a light weapon.",
+						"Shapechanger. As an action, you can change your appearance and voice as described in the trait, remaining in the new form until you revert or die.",
+						"Unnatural Armor. While not wearing heavy armor, you gain a +1 bonus to AC."
+					]
+				}
+			]
+		},
+		{
+			"name": "Languages",
+			"type": "entries",
+			"entries": [
+				"You can speak, read, and write Common and one extra language of your choice."
+			]
+		}
+	]
 }

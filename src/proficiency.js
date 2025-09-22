@@ -77,6 +77,7 @@ export function getProficiencyList(type, state = CharacterState) {
   if (type === 'languages') return state.system.traits.languages.value;
   if (type === 'cantrips') return state.system.spells.cantrips;
   if (type === 'feats') return state.feats;
+  if (type === 'infusion') return (state.infusions || []).map((i) => i.name || i);
   return [];
 }
 
@@ -159,4 +160,3 @@ export function addUniqueProficiency(
   container.appendChild(msg);
   return sel;
 }
-

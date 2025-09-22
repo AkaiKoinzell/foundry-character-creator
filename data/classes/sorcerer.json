@@ -8,6 +8,7 @@
 	"class": [
 		{
 			"name": "Sorcerer",
+			"description": "Innate spellcasters who wield raw arcane power through force of will.",
 			"source": "PHB",
 			"page": 99,
 			"srd": true,

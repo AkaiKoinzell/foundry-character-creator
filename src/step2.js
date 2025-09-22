@@ -651,7 +651,14 @@ function renderClassEditor(cls, index) {
               .sort()
           );
         } else if (choice.type === 'infusion' && !isExpertise) {
-          infusionOptionsPromise = loadInfusions().then(list => list.slice().sort());
+          infusionOptionsPromise = loadInfusions().then(list =>
+            list
+              .filter(opt => (opt.minLevel || 2) <= lvl)
+              .map(opt => opt.name)
+              .sort((a, b) =>
+                a.localeCompare(b, undefined, { sensitivity: 'base' })
+              )
+          );
         }
         for (let i = 0; i < count; i++) {
           const sel = document.createElement('select');

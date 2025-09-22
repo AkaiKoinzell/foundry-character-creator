@@ -36,30 +36,118 @@ function appendHTML(el, html) {
   el.append(...doc.body.childNodes);
 }
 
+const ABILITY_LABELS = {
+  str: 'Strength',
+  dex: 'Dexterity',
+  con: 'Constitution',
+  int: 'Intelligence',
+  wis: 'Wisdom',
+  cha: 'Charisma',
+};
+
+function formatAbilityList(list = []) {
+  const names = list
+    .map(name => ABILITY_LABELS[name?.toLowerCase()] || name)
+    .filter(Boolean);
+  if (!names.length) return '';
+  if (names.length === 1) return names[0];
+  const head = names.slice(0, -1);
+  return `${head.join(', ')} or ${names[names.length - 1]}`;
+}
+
+function createAbilityFormula(entry) {
+  const abilities = formatAbilityList(entry.attributes);
+  const prefix = entry.name ? `${entry.name} ` : '';
+  const modifierText = abilities
+    ? `your ${abilities} modifier`
+    : 'your spellcasting ability modifier';
+  const text = entry.type === 'abilityDc'
+    ? `${prefix}Save DC = 8 + your proficiency bonus + ${modifierText}`
+    : `${prefix}Attack Modifier = your proficiency bonus + ${modifierText}`;
+  return createElement('p', text);
+}
+
 export function appendEntries(container, entries) {
-  (entries || []).forEach(e => {
-    if (!e) return;
-    if (typeof e === 'string') {
+  (entries || []).forEach(entry => {
+    if (!entry) return;
+    if (typeof entry === 'string') {
       const p = document.createElement('p');
-      appendHTML(p, parse5eLinks(e));
+      appendHTML(p, parse5eLinks(entry));
       container.appendChild(p);
-    } else if (typeof e === 'object') {
-      if (e.description) {
-        const p = document.createElement('p');
-        appendHTML(p, parse5eLinks(e.description));
-        container.appendChild(p);
-      }
-      if (typeof e.entry === 'string') {
-        const p = document.createElement('p');
-        appendHTML(p, parse5eLinks(e.entry));
-        container.appendChild(p);
-      }
-      if (Array.isArray(e.entries)) appendEntries(container, e.entries);
-      else if (e.name && !e.entry && !e.entries && !e.description) {
-        const p = document.createElement('p');
-        appendHTML(p, parse5eLinks(e.name));
-        container.appendChild(p);
-      }
+      return;
+    }
+    if (Array.isArray(entry)) {
+      appendEntries(container, entry);
+      return;
+    }
+    if (typeof entry !== 'object') return;
+
+    if (entry.type === 'list') {
+      const listEl = document.createElement('ul');
+      (entry.items || []).forEach(item => {
+        const li = document.createElement('li');
+        if (typeof item === 'string') appendHTML(li, parse5eLinks(item));
+        else appendEntries(li, [item]);
+        listEl.appendChild(li);
+      });
+      if (listEl.childElementCount) container.appendChild(listEl);
+      return;
+    }
+
+    if (entry.type === 'entries') {
+      if (entry.name) container.appendChild(createElement('h4', entry.name));
+      appendEntries(container, entry.entries);
+      return;
+    }
+
+    if (entry.type === 'inset') {
+      const inset = document.createElement('div');
+      inset.className = 'accordion-inset';
+      if (entry.name) inset.appendChild(createElement('strong', entry.name));
+      appendEntries(inset, entry.entries);
+      container.appendChild(inset);
+      return;
+    }
+
+    if (entry.type === 'refClassFeature') {
+      const refName = typeof entry.classFeature === 'string'
+        ? entry.classFeature.split('|')[0]
+        : '';
+      const text = refName
+        ? `See ${refName} for details.`
+        : 'See related class feature for details.';
+      container.appendChild(createElement('p', text));
+      return;
+    }
+
+    if (entry.type === 'abilityDc' || entry.type === 'abilityAttackMod') {
+      container.appendChild(createAbilityFormula(entry));
+      return;
+    }
+
+    if (entry.description) {
+      const p = document.createElement('p');
+      appendHTML(p, parse5eLinks(entry.description));
+      container.appendChild(p);
+    }
+
+    if (typeof entry.entry === 'string') {
+      const p = document.createElement('p');
+      appendHTML(p, parse5eLinks(entry.entry));
+      container.appendChild(p);
+    } else if (entry.entry) {
+      appendEntries(container, [entry.entry]);
+    }
+
+    if (Array.isArray(entry.entries)) {
+      appendEntries(container, entry.entries);
+      return;
+    }
+
+    if (entry.name && !entry.entry && !entry.entries && !entry.description) {
+      const p = document.createElement('p');
+      appendHTML(p, parse5eLinks(entry.name));
+      container.appendChild(p);
     }
   });
 }
@@ -291,4 +379,6 @@ export function initNextStepWarning() {
   updateWarning();
 }
 
-document.addEventListener('DOMContentLoaded', initNextStepWarning);
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', initNextStepWarning);
+}

@@ -8,6 +8,7 @@
 	"class": [
 		{
 			"name": "Druid",
+			"description": "Wardens of nature who wield primal magic and shapeshift into beasts.",
 			"source": "PHB",
 			"page": 64,
 			"srd": true,

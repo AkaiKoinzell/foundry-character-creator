@@ -7,6 +7,7 @@
 	"class": [
 		{
 			"name": "Paladin",
+			"description": "Sworn champions who blend martial prowess with sacred power.",
 			"source": "PHB",
 			"page": 82,
 			"srd": true,

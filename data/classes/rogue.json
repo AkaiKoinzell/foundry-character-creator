@@ -7,6 +7,7 @@
 	"class": [
 		{
 			"name": "Rogue",
+			"description": "Cunning specialists who rely on stealth, agility, and precise strikes.",
 			"source": "PHB",
 			"page": 94,
 			"srd": true,

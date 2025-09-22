@@ -8,6 +8,7 @@
 	"class": [
 		{
 			"name": "Cleric",
+			"description": "Divine agents who channel the power of their gods to heal and smite.",
 			"source": "PHB",
 			"page": 56,
 			"srd": true,

@@ -8,6 +8,7 @@
 	"class": [
 		{
 			"name": "Wizard",
+			"description": "Scholarly mages who study arcane lore to cast a vast array of spells.",
 			"source": "PHB",
 			"page": 112,
 			"srd": true,

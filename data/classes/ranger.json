@@ -7,6 +7,7 @@
 	"class": [
 		{
 			"name": "Ranger",
+			"description": "Skilled hunters who combine martial skill with nature-based magic.",
 			"source": "PHB",
 			"page": 89,
 			"srd": true,

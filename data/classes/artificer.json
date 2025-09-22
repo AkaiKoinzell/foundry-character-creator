@@ -2,6 +2,7 @@
 	"class": [
 		{
 			"name": "Artificer",
+			"description": "Inventive spellcasters who blend arcane theory with crafted tools, channeling magic through ingenious gadgets and infusions.",
 			"source": "TCE",
 			"page": 9,
 			"otherSources": [

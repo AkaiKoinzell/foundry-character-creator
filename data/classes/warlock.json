@@ -8,6 +8,7 @@
 	"class": [
 		{
 			"name": "Warlock",
+			"description": "Pact-bound wielders of eldritch magic granted by mysterious patrons.",
 			"source": "PHB",
 			"page": 105,
 			"srd": true,

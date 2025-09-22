@@ -7,6 +7,7 @@
 	"class": [
 		{
 			"name": "Monk",
+			"description": "Disciplined martial artists who harness ki for lightning-fast strikes.",
 			"source": "PHB",
 			"page": 76,
 			"srd": true,

@@ -523,6 +523,106 @@ function renderClassEditor(cls, index) {
   const skillSelects = [];
   const skillChoiceSelects = [];
   const skillChoiceSelectMap = new Map();
+  const repeatedChoiceState = new Map();
+
+  const updateInfusionDescription = (descriptionEl, baseText, total, delta) => {
+    if (!descriptionEl) return;
+    const totalSuffix = total ? ` (${total} total)` : '';
+    if (delta > 0 && baseText) {
+      descriptionEl.textContent = `${baseText}${totalSuffix}`;
+      return;
+    }
+    if (delta > 0) {
+      descriptionEl.textContent = `Choose ${delta} infusions${totalSuffix}`;
+      return;
+    }
+    if (baseText) {
+      descriptionEl.textContent = `${baseText}${totalSuffix}`;
+      return;
+    }
+    if (total) {
+      const plural = total === 1 ? '' : 's';
+      descriptionEl.textContent = `You can know ${total} infusion${plural}.`;
+      return;
+    }
+    descriptionEl.textContent = '';
+  };
+
+  const extendInfusionChoice = (state, choice, level, features) => {
+    const baseText = choice.description || '';
+    const targetCount = choice.count || 0;
+    const currentCount = state.count || state.choiceSelects.length;
+    const delta = Math.max(0, targetCount - currentCount);
+
+    const fIdx = features.findIndex(f => f.name === choice.name);
+    if (fIdx >= 0) {
+      const feature = features.splice(fIdx, 1)[0];
+      if (feature.description)
+        state.container.appendChild(createElement('p', feature.description));
+      appendEntries(state.container, feature.entries);
+    }
+
+    cls.choiceSelections = cls.choiceSelections || {};
+    const existing = cls.choiceSelections[choice.name] || [];
+    cls.choiceSelections[choice.name] = existing;
+
+    if (delta > 0 && state.optionsPromise) {
+      const startIdx = currentCount;
+      for (let idx = startIdx; idx < targetCount; idx += 1) {
+        const sel = document.createElement('select');
+        sel.replaceChildren(new Option(t('select'), ''));
+        const choiceId = `${choice.name}-${level}-${idx}`;
+        sel.dataset.choiceId = choiceId;
+        sel.dataset.type = 'choice';
+        sel.dataset.choiceName = choice.name;
+        sel.dataset.choiceType = choice.type || '';
+        const stored = existing[idx];
+        state.choiceSelects.push(sel);
+        state.optionsPromise.then(opts => {
+          opts.forEach(opt => {
+            const o = document.createElement('option');
+            o.value = opt;
+            o.textContent = opt;
+            sel.appendChild(o);
+          });
+          if (stored) sel.value = stored.option;
+        });
+        sel.addEventListener('change', () => {
+          const arr = cls.choiceSelections[choice.name];
+          const entry = arr[idx] || { level, type: choice.type };
+          entry.option = sel.value;
+          arr[idx] = entry;
+          handleASISelection(sel, state.container, entry, cls);
+          updateChoiceSelectOptions(
+            state.choiceSelects,
+            choice.type,
+            skillSelects,
+            skillChoiceSelects
+          );
+          compileClassFeatures(cls);
+          rebuildFromClasses();
+          updateExpertiseSelectOptions(
+            document.querySelectorAll("select[data-type='expertise']")
+          );
+          updateFeatSelectOptions();
+          updateStep2Completion();
+        });
+        state.container.appendChild(sel);
+        if (stored) handleASISelection(sel, state.container, stored, cls);
+      }
+      state.optionsPromise.then(() => {
+        updateChoiceSelectOptions(
+          state.choiceSelects,
+          choice.type,
+          skillSelects,
+          skillChoiceSelects
+        );
+      });
+    }
+
+    updateInfusionDescription(state.descriptionEl, baseText, targetCount, delta);
+    state.count = Math.max(currentCount, targetCount);
+  };
 
   const clsDef = DATA.classes.find(c => c.name === cls.name);
   if (clsDef) {
@@ -615,6 +715,15 @@ function renderClassEditor(cls, index) {
       ];
 
       levelChoices.forEach(choice => {
+        const isInfusionChoice = choice.type === 'infusion';
+        const choiceKey = isInfusionChoice ? `${choice.type}:${choice.name}` : null;
+        const existingState = choiceKey ? repeatedChoiceState.get(choiceKey) : null;
+
+        if (isInfusionChoice && existingState) {
+          extendInfusionChoice(existingState, choice, lvl, features);
+          return;
+        }
+
         const cContainer = document.createElement('div');
 
         const fIdx = features.findIndex(f => f.name === choice.name);
@@ -625,10 +734,23 @@ function renderClassEditor(cls, index) {
           appendEntries(cContainer, feature.entries);
         }
 
-        if (choice.description)
-          cContainer.appendChild(createElement('p', choice.description));
+        const baseDescription = choice.description || '';
+        let descriptionEl = null;
+        if (baseDescription) {
+          descriptionEl = createElement('p', baseDescription);
+          cContainer.appendChild(descriptionEl);
+        } else if (isInfusionChoice) {
+          descriptionEl = createElement('p', '');
+          cContainer.appendChild(descriptionEl);
+        }
+
         appendEntries(cContainer, choice.entries);
+
         const count = choice.count || 1;
+        if (isInfusionChoice) {
+          updateInfusionDescription(descriptionEl, baseDescription, count, count);
+        }
+
         const choiceSelects = [];
         const isExpertise = choice.name === 'Expertise' || choice.requiresProficiency;
         let existing = [];
@@ -774,13 +896,22 @@ function renderClassEditor(cls, index) {
         } else {
           updateChoiceSelectOptions(choiceSelects, choice.type, skillSelects, skillChoiceSelects);
         }
-        accordion.appendChild(
-          createAccordionItem(
-            `${t('level')} ${choice.level}: ${choice.name}`,
-            cContainer,
-            true
-          )
+        const accordionItem = createAccordionItem(
+          `${t('level')} ${choice.level}: ${choice.name}`,
+          cContainer,
+          true
         );
+        if (isInfusionChoice) {
+          const optionsPromise = infusionOptionsPromise || Promise.resolve([]);
+          repeatedChoiceState.set(choiceKey, {
+            container: cContainer,
+            choiceSelects,
+            descriptionEl,
+            optionsPromise,
+            count,
+          });
+        }
+        accordion.appendChild(accordionItem);
       });
       features.forEach(f => {
         if (f.type === 'infusion') {

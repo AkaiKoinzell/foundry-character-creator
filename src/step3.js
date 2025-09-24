@@ -269,10 +269,37 @@ async function renderSelectedRace() {
   accordion.appendChild(header);
 
   const entryMap = {};
-  (currentRaceData.entries || []).forEach(e => {
+  const entryList = (currentRaceData.entries || []).filter(
+    (e) => e && typeof e === 'object'
+  );
+  entryList.forEach((e) => {
     if (e.name) entryMap[e.name] = e;
   });
-  const usedEntries = new Set();
+  const usedEntryNames = new Set();
+  const entryContainsText = (entry, regex) => {
+    const queue = Array.isArray(entry.entries) ? [...entry.entries] : [];
+    while (queue.length) {
+      const sub = queue.shift();
+      if (typeof sub === 'string') {
+        if (regex.test(sub)) return true;
+      } else if (sub && typeof sub === 'object') {
+        if (sub.name && regex.test(sub.name)) return true;
+        if (Array.isArray(sub.entries)) queue.push(...sub.entries);
+      }
+    }
+    return false;
+  };
+  const entryContainsAllText = (entry, patterns) =>
+    patterns.every((pat) => entryContainsText(entry, pat));
+  const entryNameMatches = (entry, regex) =>
+    Boolean(entry.name && regex.test(entry.name));
+  const consumeEntry = (predicate) => {
+    const entry = entryList.find(
+      (e) => predicate(e) && (!e.name || !usedEntryNames.has(e.name))
+    );
+    if (entry && entry.name) usedEntryNames.add(entry.name);
+    return entry || null;
+  };
   const spellEntry = Object.values(entryMap).find(e =>
     Array.isArray(e.entries) &&
     e.entries.some(sub => typeof sub === 'string' && /@spell|spell/i.test(sub))
@@ -318,7 +345,7 @@ async function renderSelectedRace() {
     acc.classList.add('needs-selection');
     accordion.appendChild(acc);
     pendingRaceChoices.variants.push({ radios: group, dataMap, optMap, container: acc, overwrite: entry.name });
-    usedEntries.add(entry.name);
+    if (entry.name) usedEntryNames.add(entry.name);
   });
 
   if (
@@ -347,14 +374,11 @@ async function renderSelectedRace() {
     sel.addEventListener('change', validateRaceChoices);
     sizeContent.appendChild(sel);
     pendingRaceChoices.size = sel;
-    const sizeEntry = Object.values(entryMap).find(
-      e => e.name && e.name.toLowerCase() === 'size'
-    );
+    const sizeEntry = consumeEntry((e) => entryNameMatches(e, /^size$/i));
     if (sizeEntry) {
       if (sizeEntry.description)
         sizeContent.appendChild(createElement('p', sizeEntry.description));
       appendEntries(sizeContent, sizeEntry.entries);
-      usedEntries.add(sizeEntry.name);
     }
     const acc = createAccordionItem(t('size'), sizeContent, true);
     acc.classList.add('needs-selection');
@@ -378,6 +402,16 @@ async function renderSelectedRace() {
     });
     if (raceSkills.length || pendingAny > 0 || chooseGroups.length) {
       const skillContent = document.createElement('div');
+      const skillEntry = consumeEntry(
+        (e) =>
+          entryNameMatches(e, /skill/i) ||
+          entryContainsAllText(e, [/skill/i, /proficien/i])
+      );
+      if (skillEntry) {
+        if (skillEntry.description)
+          skillContent.appendChild(createElement('p', skillEntry.description));
+        appendEntries(skillContent, skillEntry.entries);
+      }
       if (raceSkills.length) {
         const p = document.createElement('p');
         p.textContent = raceSkills.join(', ');
@@ -453,6 +487,16 @@ async function renderSelectedRace() {
     });
     if (raceTools.length || pendingAny > 0 || chooseGroups.length) {
       const toolContent = document.createElement('div');
+      const toolEntry = consumeEntry(
+        (e) =>
+          entryNameMatches(e, /tool|artisan|specialized|maker/i) ||
+          entryContainsAllText(e, [/tool/i, /proficien/i])
+      );
+      if (toolEntry) {
+        if (toolEntry.description)
+          toolContent.appendChild(createElement('p', toolEntry.description));
+        appendEntries(toolContent, toolEntry.entries);
+      }
       if (raceTools.length) {
         const p = document.createElement('p');
         p.textContent = raceTools.join(', ');
@@ -531,6 +575,16 @@ async function renderSelectedRace() {
     });
     if (raceWeapons.length || chooseGroups.length) {
       const weaponContent = document.createElement('div');
+      const weaponEntry = consumeEntry(
+        (e) =>
+          entryNameMatches(e, /weapon|combat/i) ||
+          entryContainsAllText(e, [/weapon/i, /proficien/i])
+      );
+      if (weaponEntry) {
+        if (weaponEntry.description)
+          weaponContent.appendChild(createElement('p', weaponEntry.description));
+        appendEntries(weaponContent, weaponEntry.entries);
+      }
       if (raceWeapons.length) {
         weaponContent.appendChild(createElement('p', raceWeapons.join(', ')));
       }
@@ -615,14 +669,11 @@ async function renderSelectedRace() {
         DATA.languages = langs.languages || langs;
       }
       const langContent = document.createElement('div');
-      const langEntry = Object.values(entryMap).find(
-        e => e.name && e.name.toLowerCase() === 'languages'
-      );
+      const langEntry = consumeEntry((e) => entryNameMatches(e, /languages?/i));
       if (langEntry) {
         if (langEntry.description)
           langContent.appendChild(createElement('p', langEntry.description));
         appendEntries(langContent, langEntry.entries);
-        usedEntries.add(langEntry.name);
       }
       if (raceLang.length) {
         langContent.appendChild(
@@ -672,14 +723,15 @@ async function renderSelectedRace() {
     });
     if (fixed.length || chooseOpts) {
       const resistContent = document.createElement('div');
-      const resistEntry = Object.values(entryMap).find(
-        (e) => e.name && /resist/i.test(e.name)
+      const resistEntry = consumeEntry(
+        (e) =>
+          entryNameMatches(e, /resist|resil|ancestry/i) ||
+          entryContainsText(e, /resist/i)
       );
       if (resistEntry) {
         if (resistEntry.description)
           resistContent.appendChild(createElement('p', resistEntry.description));
         appendEntries(resistContent, resistEntry.entries);
-        usedEntries.add(resistEntry.name);
       }
       if (fixed.length) {
         resistContent.appendChild(createElement('p', fixed.join(', ')));
@@ -824,7 +876,7 @@ async function renderSelectedRace() {
         if (spellEntry.description)
           abilityContent.appendChild(createElement('p', spellEntry.description));
         appendEntries(abilityContent, spellEntry.entries);
-        usedEntries.add(spellEntry.name);
+        usedEntryNames.add(spellEntry.name);
         spellEntryUsed = true;
       }
       const sel = document.createElement('select');
@@ -875,7 +927,7 @@ async function renderSelectedRace() {
         if (spellEntry.description)
           spellContent.appendChild(createElement('p', spellEntry.description));
         appendEntries(spellContent, spellEntry.entries);
-        usedEntries.add(spellEntry.name);
+        usedEntryNames.add(spellEntry.name);
         spellEntryUsed = true;
       }
 
@@ -953,7 +1005,7 @@ async function renderSelectedRace() {
   const traitsDiv = document.createElement('div');
   traitsDiv.id = 'raceTraits';
   Object.values(entryMap).forEach(e => {
-    if (!e.name || usedEntries.has(e.name)) return;
+    if (!e.name || usedEntryNames.has(e.name)) return;
     const body = document.createElement('div');
     if (e.description)
       body.appendChild(createElement('p', e.description));

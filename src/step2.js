@@ -16,6 +16,7 @@ import {
   createAccordionItem,
   createSelectableCard,
   appendEntries,
+  createDetailsSection,
   showConfirmation,
 } from './ui-helpers.js';
 import { inlineWarning, globalToast } from './validation.js';
@@ -686,15 +687,89 @@ function renderClassEditor(cls, index) {
       });
       sel.dataset.type = 'subclass';
       sel.value = cls.subclass || '';
+
+      subContainer.appendChild(sel);
+
+      const detailSection = createDetailsSection();
+      detailSection.wrapper.classList.add('subclass-details');
+      subContainer.appendChild(detailSection.wrapper);
+
+      const renderSubclassDetails = () => {
+        detailSection.content.innerHTML = '';
+        if (!cls.subclass) {
+          detailSection.wrapper.classList.add('hidden');
+          detailSection.setExpanded(false);
+          return;
+        }
+        const data = cls.subclassData;
+        if (!data) {
+          detailSection.wrapper.classList.remove('hidden');
+          detailSection.setExpanded(false);
+          detailSection.content.appendChild(createElement('p', t('loadingDetails')));
+          return;
+        }
+
+        let hasContent = false;
+
+        if (data.description) {
+          detailSection.content.appendChild(createElement('p', data.description));
+          hasContent = true;
+        }
+
+        if (Array.isArray(data.entries)) {
+          const before = detailSection.content.childElementCount;
+          appendEntries(detailSection.content, data.entries);
+          if (detailSection.content.childElementCount > before) hasContent = true;
+        }
+
+        const featureGroups = data.features_by_level && typeof data.features_by_level === 'object'
+          ? Object.keys(data.features_by_level)
+              .map(lvl => parseInt(lvl, 10))
+              .filter(lvl => !Number.isNaN(lvl))
+              .sort((a, b) => a - b)
+          : [];
+
+        featureGroups.forEach(lvl => {
+          const featureList = data.features_by_level?.[lvl];
+          if (!Array.isArray(featureList) || !featureList.length) return;
+          const section = document.createElement('div');
+          section.className = 'subclass-feature';
+          section.appendChild(createElement('h4', `${t('level')} ${lvl}`));
+          featureList.forEach(feature => {
+            if (!feature) return;
+            if (feature.name) section.appendChild(createElement('h5', feature.name));
+            if (feature.description) section.appendChild(createElement('p', feature.description));
+            const entryList = [];
+            if (Array.isArray(feature.entries)) entryList.push(...feature.entries);
+            else if (feature.entries) entryList.push(feature.entries);
+            if (Array.isArray(feature.entry)) entryList.push(...feature.entry);
+            else if (feature.entry) entryList.push(feature.entry);
+            if (entryList.length) appendEntries(section, entryList);
+          });
+          detailSection.content.appendChild(section);
+          hasContent = true;
+        });
+
+        if (!hasContent) {
+          detailSection.content.appendChild(createElement('p', t('noDetailsAvailable')));
+        }
+
+        detailSection.wrapper.classList.remove('hidden');
+      };
+
+      renderSubclassDetails();
+
       sel.addEventListener('change', async () => {
         cls.subclass = sel.value;
+        if (cls.subclass) cls.subclassData = null;
+        renderSubclassDetails();
         await loadSubclassData(cls);
+        renderSubclassDetails();
         compileClassFeatures(cls);
         rebuildFromClasses();
         renderSelectedClasses();
         updateStep2Completion();
       });
-      subContainer.appendChild(sel);
       accordion.appendChild(createAccordionItem(t('subclass'), subContainer, true));
     }
 

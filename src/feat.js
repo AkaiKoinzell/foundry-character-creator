@@ -7,7 +7,12 @@ import {
 } from './data.js';
 import { t } from './i18n.js';
 import { addUniqueProficiency } from './proficiency.js';
-import { createElement, capitalize, appendEntries } from './ui-helpers.js';
+import {
+  createElement,
+  capitalize,
+  appendEntries,
+  createDetailsSection,
+} from './ui-helpers.js';
 import { loadEquipmentData } from './step5.js';
 
 function refreshAbility(ab) {
@@ -295,10 +300,28 @@ export async function renderWeaponChoices(feat, wrapper, onChange = () => {}) {
 
 export async function renderFeatChoices(featName, container, onChange = () => {}) {
   const feat = await loadFeatDetails(featName);
-  const wrapper = createElement('div');
-  container.appendChild(wrapper);
-  if (feat.description) wrapper.appendChild(createElement('p', feat.description));
-  appendEntries(wrapper, feat.entries);
+  const root = createElement('div');
+  container.appendChild(root);
+
+  const detailSection = createDetailsSection();
+  detailSection.wrapper.classList.add('feat-details');
+  let hasDetailContent = false;
+  if (feat.description) {
+    detailSection.content.appendChild(createElement('p', feat.description));
+    hasDetailContent = true;
+  }
+  if (Array.isArray(feat.entries)) {
+    const before = detailSection.content.childElementCount;
+    appendEntries(detailSection.content, feat.entries);
+    if (detailSection.content.childElementCount > before) hasDetailContent = true;
+  }
+  if (hasDetailContent) {
+    root.appendChild(detailSection.wrapper);
+  }
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'feat-choice-fields';
+  root.appendChild(wrapper);
   const { abilitySelects, fixedAbilityBonuses } = renderAbilityBonuses(
     feat,
     wrapper,

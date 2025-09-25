@@ -1,6 +1,7 @@
 import { CharacterState, updateSpellSlots, loadSpells } from './data.js';
 import { t } from './i18n.js';
 import { updateStep2Completion } from './step2.js';
+import { createElement, createDetailsSection } from './ui-helpers.js';
 
 export function updateSpellSelectOptions(selects) {
   const counts = new Map();
@@ -33,6 +34,58 @@ export function renderSpellChoices(cls) {
   warning.className = 'warning';
 
   let spells = [];
+  const detailSection = createDetailsSection();
+  detailSection.wrapper.classList.add('spell-details', 'hidden');
+
+  function refreshDetails() {
+    detailSection.content.innerHTML = '';
+    const selected = selects.map(sel => sel.value).filter(Boolean);
+    if (!selected.length) {
+      detailSection.wrapper.classList.add('hidden');
+      detailSection.setExpanded(false);
+      return;
+    }
+
+    const seen = new Set();
+    selected.forEach(name => {
+      if (!name || seen.has(name)) return;
+      seen.add(name);
+      const block = document.createElement('div');
+      block.className = 'spell-detail-block';
+      block.appendChild(createElement('h4', name));
+
+      const spell = spells.find(s => s.name === name);
+      if (spell) {
+        if (typeof spell.level === 'number') {
+          block.appendChild(createElement('p', `${t('level')} ${spell.level}`));
+        }
+
+        if (spell.school) {
+          block.appendChild(createElement('p', `${t('spellSchool')}: ${spell.school}`));
+        }
+
+        if (Array.isArray(spell.spell_list) && spell.spell_list.length) {
+          block.appendChild(
+            createElement('p', `${t('spellAvailableTo')}: ${spell.spell_list.join(', ')}`)
+          );
+        }
+
+        if (typeof spell.ritual === 'boolean') {
+          block.appendChild(
+            createElement('p', `${t('spellRitual')}: ${spell.ritual ? t('yes') : t('no')}`)
+          );
+        }
+      }
+
+      if (block.childElementCount === 1) {
+        block.appendChild(createElement('p', t('noDetailsAvailable')));
+      }
+
+      detailSection.content.appendChild(block);
+    });
+
+    detailSection.wrapper.classList.remove('hidden');
+  }
 
   function build() {
     updateSpellSlots();
@@ -67,6 +120,7 @@ export function renderSpellChoices(cls) {
         updateSpellSelectOptions(selects);
         apply();
         updateWarning();
+        refreshDetails();
         updateStep2Completion();
       });
       selects.push(sel);
@@ -81,7 +135,9 @@ export function renderSpellChoices(cls) {
     updateSpellSelectOptions(selects);
     apply();
     updateWarning();
+    container.appendChild(detailSection.wrapper);
     container.appendChild(warning);
+    refreshDetails();
   }
 
   function isComplete() {
@@ -109,6 +165,7 @@ export function renderSpellChoices(cls) {
     });
     CharacterState.knownSpells = CharacterState.knownSpells || {};
     CharacterState.knownSpells[cls.name] = byLevel;
+    refreshDetails();
   }
 
   loadSpells().then((data) => {

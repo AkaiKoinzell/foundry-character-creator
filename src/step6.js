@@ -12,6 +12,7 @@ let controller;
 function ensureAbilityState(force = false) {
   CharacterState.baseAbilities = CharacterState.baseAbilities || {};
   CharacterState.bonusAbilities = CharacterState.bonusAbilities || {};
+  CharacterState.bonusPointAllocations = CharacterState.bonusPointAllocations || {};
 
   ABILITIES.forEach((ability) => {
     const bonus = CharacterState.bonusAbilities[ability] ?? 0;
@@ -67,6 +68,10 @@ function createController(container) {
     setBonus: (ability, value) => {
       CharacterState.bonusAbilities = CharacterState.bonusAbilities || {};
       CharacterState.bonusAbilities[ability] = value;
+    },
+    getAppliedBonusCounts: () => CharacterState.bonusPointAllocations || {},
+    setAppliedBonusCounts: (counts) => {
+      CharacterState.bonusPointAllocations = counts || {};
     },
     onRemainingChange: (remaining) => {
       main.setCurrentStepComplete?.(remaining === 0);

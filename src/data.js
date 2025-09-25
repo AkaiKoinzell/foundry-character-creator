@@ -1191,6 +1191,8 @@ export const CharacterState = {
     tools: [],
     weapons: [],
   },
+  // Tracks the last-applied Step 6 bonus distribution (e.g. { dex: 2, con: 1 })
+  bonusPointAllocations: {},
   bonusAbilities: {
     str: 0,
     dex: 0,

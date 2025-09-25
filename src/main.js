@@ -32,7 +32,7 @@ import {
   resetEquipmentDataCache,
 } from "./step5.js";
 import { loadStep6, commitAbilities } from "./step6.js";
-import { exportFoundryActor } from "./export.js";
+import { exportFoundryActor, exportFoundryActorV13 } from "./export.js";
 import { t, initI18n, applyTranslations } from "./i18n.js";
 import { exportPdf } from "./export-pdf.js";
 import { onCustomDataUpdated } from "./custom-data.js";
@@ -688,17 +688,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     })
     .catch((err) => console.error(err));
 
-  document.getElementById("downloadJson")?.addEventListener("click", () => {
-    const actor = exportFoundryActor(CharacterState);
-    const blob = new Blob([JSON.stringify(actor, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${CharacterState.name || "character"}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
+  document.getElementById("downloadJson")?.addEventListener("click", async () => {
+    // Export a Foundry-ready actor using the modern dnd5e schema
+    try {
+      const actor = await exportFoundryActorV13(CharacterState);
+      const blob = new Blob([JSON.stringify(actor, null, 2)], {
+        type: "application/json",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${CharacterState.name || "character"}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Export failed', err);
+    }
   });
 
   document.getElementById("generatePdf")?.addEventListener("click", () => {

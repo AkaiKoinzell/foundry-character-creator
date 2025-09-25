@@ -17,6 +17,8 @@ export class PointBuyController {
    * @param {(ability: string, value: number) => void} options.setBase Persists the base score
    * @param {(ability: string) => number} options.getBonus Returns current bonus value
    * @param {(ability: string, value: number) => void} options.setBonus Persists a bonus value
+   * @param {() => Record<string, number>} [options.getAppliedBonusCounts] Returns the last applied bonus distribution (by ability)
+   * @param {(counts: Record<string, number>) => void} [options.setAppliedBonusCounts] Persists the last applied bonus distribution (by ability)
    * @param {number} [options.maxPoints=27] Total points available to spend
    * @param {string[]} [options.abilities] Ability codes to manage
    * @param {(remaining: number) => void} [options.onRemainingChange] Callback invoked after recalculating remaining points
@@ -31,6 +33,8 @@ export class PointBuyController {
     setBase,
     getBonus,
     setBonus,
+    getAppliedBonusCounts,
+    setAppliedBonusCounts,
     maxPoints = 27,
     abilities = DEFAULT_ABILITIES,
     onRemainingChange,
@@ -44,6 +48,19 @@ export class PointBuyController {
     this.setBase = setBase;
     this.getBonus = getBonus;
     this.setBonus = setBonus;
+    // Persisted record of the most recently applied "bonus selection" counts
+    // (e.g. { dex: 2, con: 1 }). If not provided, falls back to an internal
+    // ephemeral store so the controller remains backward compatible.
+    this.getAppliedBonusCounts =
+      typeof getAppliedBonusCounts === 'function'
+        ? getAppliedBonusCounts
+        : () => this._appliedBonusCounts || {};
+    this.setAppliedBonusCounts =
+      typeof setAppliedBonusCounts === 'function'
+        ? setAppliedBonusCounts
+        : (counts) => {
+            this._appliedBonusCounts = { ...(counts || {}) };
+          };
     this.maxPoints = maxPoints;
     this.abilities = abilities;
     this.onRemainingChange = onRemainingChange;
@@ -139,10 +156,21 @@ export class PointBuyController {
       return false;
     }
 
+    // Reset previously applied selection before applying the new one so
+    // re-applying does not stack bonuses.
+    const previous = this.getAppliedBonusCounts?.() || {};
+    Object.entries(previous).forEach(([ability, prevInc]) => {
+      const current = this.#coerceScore(this.getBonus?.(ability));
+      const next = Math.max(0, current - (Number(prevInc) || 0));
+      this.setBonus?.(ability, next);
+    });
+
+    // Apply new selection and persist as the latest applied distribution.
     Object.entries(counts).forEach(([ability, increment]) => {
       const current = this.#coerceScore(this.getBonus?.(ability));
       this.setBonus?.(ability, current + increment);
     });
+    this.setAppliedBonusCounts?.(counts);
 
     this.updateAll();
     return true;

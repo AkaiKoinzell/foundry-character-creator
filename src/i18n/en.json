@@ -114,4 +114,10 @@
   ,"customDataTextPlaceholder": "Example:\nName: Crystalborn\nGroup: Crystalborn\nAbility: CON +2, WIS +1\nSize: Medium\nSpeed: 30\nLanguages: Common, Terran\nTraits:\nShardlight: You can cast the guidance cantrip.\n---\nName: Crystalborn (Ember)\nAbility: STR +1\nTraits:\nEmber Shield: You gain resistance to fire damage."
   ,"customDataTextExample": "View sample text"
   ,"customDataParsingUnavailable": "Guided text mode is not available for this category yet."
+  ,"customDataEntryLabel": "Entry"
+  ,"customDataEntryPlaceholder": "New entry"
+  ,"customDataNewEntry": "Start Blank"
+  ,"customDataEntryCore": "core"
+  ,"customDataEntryCustom": "custom"
+  ,"customDataEntryLoadFailed": "Unable to load the selected entry."
 }

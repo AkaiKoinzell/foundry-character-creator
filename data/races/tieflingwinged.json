@@ -1,0 +1,114 @@
+{
+	"name": "Tiefling (Variant; Winged)",
+	"source": "SCAG",
+	"page": 118,
+	"size": [
+		"M"
+	],
+	"speed": {
+		"walk": 30,
+		"fly": 30
+	},
+	"ability": [
+		{
+			"int": 1,
+			"choose": {
+				"from": [
+					"dex",
+					"cha"
+				],
+				"count": 1,
+				"amount": 2
+			}
+		}
+	],
+	"heightAndWeight": {
+		"baseHeight": 57,
+		"heightMod": "2d8",
+		"baseWeight": 110,
+		"weightMod": "2d4"
+	},
+	"age": {
+		"mature": 20,
+		"max": 100
+	},
+	"darkvision": 60,
+	"traitTags": [
+		"Uncommon Race"
+	],
+	"languageProficiencies": [
+		{
+			"common": true,
+			"infernal": true
+		}
+	],
+	"resist": [
+		"fire"
+	],
+	"soundClip": {
+		"type": "internal",
+		"path": "races/tiefling.mp3"
+	},
+	"entries": [
+		{
+			"name": "Age",
+			"type": "entries",
+			"entries": [
+				"Tieflings mature at the same rate as humans but live a few years longer."
+			]
+		},
+		{
+			"type": "entries",
+			"name": "Size",
+			"entries": [
+				"Tieflings are about the same size and build as humans. Your size is Medium."
+			]
+		},
+		{
+			"name": "Darkvision",
+			"entries": [
+				"Thanks to your infernal heritage, you have superior vision in dark and dim conditions. You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light. You can't discern color in darkness, only shades of gray."
+			],
+			"type": "entries"
+		},
+		{
+			"name": "Hellish Resistance",
+			"entries": [
+				"You have resistance to fire damage."
+			],
+			"type": "entries"
+		},
+		{
+			"type": "entries",
+			"name": "Winged",
+			"entries": [
+				"You have bat-like wings sprouting from your shoulder blades. You have a flying speed of 30 feet while you aren't wearing heavy armor."
+			],
+			"data": {
+				"overwrite": "Infernal Legacy"
+			}
+		},
+		{
+			"name": "Languages",
+			"entries": [
+				"You can speak, read, and write Common and Infernal."
+			],
+			"type": "entries"
+		},
+		{
+			"name": "Appearance",
+			"entries": [
+				"Your tiefling might not look like other tieflings. Rather than having the physical characteristics described in the Player's Handbook, choose {@dice 1d4+1} of the following features: small horns; fangs or sharp teeth; a forked tongue; catlike eyes; six fingers on each hand; goatlike legs; cloven hoofs; a forked tail; leathery or scaly skin; red or dark blue skin; cast no shadow or reflection; exude a smell of brimstone."
+			],
+			"type": "entries"
+		}
+	],
+	"raceName": "Tiefling",
+	"raceSource": "PHB",
+	"overwrite": {
+		"ability": true,
+		"traitTags": true
+	},
+	"hasFluff": true,
+	"hasFluffImages": true
+}

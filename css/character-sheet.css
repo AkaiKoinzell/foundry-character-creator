@@ -2,8 +2,8 @@
   background: #fff;
   color: #000;
   padding: 20px;
-  width: 800px;
-  max-width: 100%;
+  width: 100%;
+  max-width: 1120px;
   margin: 0 auto;
   border: 1px solid #000;
   box-sizing: border-box;
@@ -14,7 +14,7 @@
     "abilities skills features"
     "abilities skills equipment"
     "tools-languages spells backstory";
-  gap: 12px;
+  gap: 16px;
 }
 
 .character-sheet .char-header {
@@ -44,7 +44,7 @@
 .character-sheet .backstory {
   min-height: 260px;
   height: auto;
-  overflow-y: auto;
+  overflow-y: visible; /* show full content on screen */
   border: 2px solid #000;
 }
 
@@ -53,6 +53,13 @@
   min-height: 220px;
   resize: vertical;
   box-sizing: border-box;
+  max-width: none; /* override global .form-control limit */
+}
+
+/* Ensure all inputs within the rendered sheet can use full width */
+.character-sheet .form-control {
+  max-width: none;
+  width: 100%;
 }
 
 .character-sheet section {
@@ -121,4 +128,45 @@
 
 .character-sheet .skills input[type='checkbox'] {
   margin-right: 4px;
+}
+
+/* Compact export mode: applied only during PDF generation */
+.character-sheet.compact {
+  padding: 12px;
+  gap: 10px;
+}
+
+.character-sheet.compact section {
+  padding: 6px;
+}
+
+.character-sheet.compact h2,
+.character-sheet.compact h3 {
+  margin: 2px 0 6px;
+  font-size: 1rem;
+}
+
+.character-sheet.compact .char-header > div {
+  padding: 3px;
+}
+
+.character-sheet.compact .ability-list {
+  gap: 6px;
+}
+
+.character-sheet.compact .ability-box {
+  width: 74px;
+  height: 84px;
+}
+
+.character-sheet.compact .ability-box .score {
+  font-size: 1.6em;
+}
+
+.character-sheet.compact .skills li {
+  line-height: 1.15;
+}
+
+.character-sheet.compact ul {
+  margin: 0.25rem 0 0.25rem 1rem;
 }

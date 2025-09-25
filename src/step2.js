@@ -465,6 +465,7 @@ function renderClassEditor(cls, index) {
   card.className = 'saved-class';
   card.classList.add('needs-selection');
   cls.element = card;
+  cls.uiState = cls.uiState || {};
   inlineWarning(card, !classHasPendingChoices(cls));
 
   const header = document.createElement('div');
@@ -580,6 +581,11 @@ function renderClassEditor(cls, index) {
         sel.dataset.choiceName = choice.name;
         sel.dataset.choiceType = choice.type || '';
         const stored = existing[idx];
+        if (stored) {
+          stored.level = stored.level || level;
+          stored.type = stored.type || choice.type;
+          if (stored.slot === undefined) stored.slot = idx;
+        }
         state.choiceSelects.push(sel);
         state.optionsPromise.then(opts => {
           opts.forEach(opt => {
@@ -593,6 +599,9 @@ function renderClassEditor(cls, index) {
         sel.addEventListener('change', () => {
           const arr = cls.choiceSelections[choice.name];
           const entry = arr[idx] || { level, type: choice.type };
+          entry.level = level;
+          entry.type = choice.type;
+          entry.slot = idx;
           entry.option = sel.value;
           arr[idx] = entry;
           handleASISelection(sel, state.container, entry, cls);
@@ -762,6 +771,7 @@ function renderClassEditor(cls, index) {
       sel.addEventListener('change', async () => {
         cls.subclass = sel.value;
         if (cls.subclass) cls.subclassData = null;
+        cls.uiState.subclassOpen = true;
         renderSubclassDetails();
         await loadSubclassData(cls);
         renderSubclassDetails();
@@ -770,7 +780,25 @@ function renderClassEditor(cls, index) {
         renderSelectedClasses();
         updateStep2Completion();
       });
-      accordion.appendChild(createAccordionItem(t('subclass'), subContainer, true));
+      const subclassAccordion = createAccordionItem(
+        t('subclass'),
+        subContainer,
+        true
+      );
+      const subclassHeader = subclassAccordion.querySelector('.accordion-header');
+      const subclassBody = subclassAccordion.querySelector('.accordion-content');
+      const shouldOpen =
+        cls.uiState.subclassOpen !== undefined
+          ? cls.uiState.subclassOpen
+          : !cls.subclass;
+      if (shouldOpen) {
+        subclassHeader.classList.add('active');
+        subclassBody.classList.add('show');
+      }
+      subclassHeader.addEventListener('click', () => {
+        cls.uiState.subclassOpen = subclassHeader.classList.contains('active');
+      });
+      accordion.appendChild(subclassAccordion);
     }
 
     if (cls.subclass && !cls.subclassData) {
@@ -833,10 +861,16 @@ function renderClassEditor(cls, index) {
         let existing = [];
         if (isExpertise) {
           cls.expertise = cls.expertise || [];
-          existing = cls.expertise.filter(e => e.id.startsWith(`${choice.name}-${choice.level}-`));
+          existing = cls.expertise.filter(e =>
+            e.id.startsWith(`${choice.name}-${choice.level}-`)
+          );
         } else {
           cls.choiceSelections = cls.choiceSelections || {};
-          existing = cls.choiceSelections[choice.name] || [];
+          const allExisting = Array.isArray(cls.choiceSelections[choice.name])
+            ? cls.choiceSelections[choice.name]
+            : [];
+          cls.choiceSelections[choice.name] = allExisting;
+          existing = allExisting.filter(entry => (entry.level || 1) === lvl);
         }
         let cantripOptionsPromise;
         let infusionOptionsPromise;
@@ -890,7 +924,12 @@ function renderClassEditor(cls, index) {
             sel.dataset.type = 'choice';
             sel.dataset.choiceName = choice.name;
             sel.dataset.choiceType = choice.type || '';
-            const stored = existing[i];
+            const stored = existing.find(entry => entry.slot === i) || existing[i];
+            if (stored) {
+              stored.level = stored.level || lvl;
+              stored.type = stored.type || choice.type;
+              if (stored.slot === undefined) stored.slot = i;
+            }
             choiceSelects.push(sel);
             if (choice.type === 'cantrips') {
               cantripOptionsPromise.then(opts => {
@@ -925,11 +964,21 @@ function renderClassEditor(cls, index) {
               skillChoiceSelects.push(sel);
             }
             sel.addEventListener('change', () => {
-              cls.choiceSelections[choice.name] = cls.choiceSelections[choice.name] || [];
+              cls.choiceSelections[choice.name] =
+                cls.choiceSelections[choice.name] || [];
               const arr = cls.choiceSelections[choice.name];
-              const entry = arr[i] || { level: lvl, type: choice.type };
+              const sameLevelEntries = arr.filter(
+                entry => (entry.level || 1) === lvl
+              );
+              let entry = sameLevelEntries.find(e => e.slot === i) || sameLevelEntries[i];
+              if (!entry) {
+                entry = { level: lvl, type: choice.type };
+                arr.push(entry);
+              }
+              entry.level = lvl;
+              entry.type = choice.type;
+              entry.slot = i;
               entry.option = sel.value;
-              arr[i] = entry;
               handleASISelection(sel, cContainer, entry, cls);
               updateChoiceSelectOptions(choiceSelects, choice.type, skillSelects, skillChoiceSelects);
               if (choice.type === 'skills') {

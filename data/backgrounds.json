@@ -23,7 +23,7 @@
     "Knight": "data/backgrounds/knight.json",
     "Medic": "data/backgrounds/medic.json",
     "Merchant": "data/backgrounds/merchant.json",
-    "Miner": "data/backgrounds/miner.json",
+    "Miner": "data/backgrounds/miner_background.json",
     "Noble": "data/backgrounds/noble.json",
     "Outlander": "data/backgrounds/outlander.json",
     "Prostitute": "data/backgrounds/prostitute.json",

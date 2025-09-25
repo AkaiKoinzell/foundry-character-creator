@@ -435,6 +435,17 @@ function normalizeEntries(cfg, value) {
   return value;
 }
 
+function sortEntriesByKey(category, items) {
+  if (!Array.isArray(items)) return items;
+  return items
+    .slice()
+    .sort((a, b) => {
+      const aKey = entryKey(category, a) || '';
+      const bKey = entryKey(category, b) || '';
+      return aKey.localeCompare(bKey);
+    });
+}
+
 function updateCustomDataset(category, entries) {
   if (category === 'equipment') {
     const existing = getCustomEntries(category) || {};
@@ -463,7 +474,7 @@ function updateCustomDataset(category, entries) {
     const key = entryKey(category, entry);
     if (!overrides.has(key)) result.push(entry);
   });
-  setCustomEntries(category, result);
+  setCustomEntries(category, sortEntriesByKey(category, result));
   return incoming;
 }
 

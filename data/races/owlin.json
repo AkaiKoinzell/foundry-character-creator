@@ -3,10 +3,16 @@
 	"source": "SCC",
 	"page": 29,
 	"lineage": "VRGR",
-	"size": [
-		"S",
-		"M"
-	],
+        "size": [
+                {
+                        "choose": {
+                                "from": [
+                                        "S",
+                                        "M"
+                                ]
+                        }
+                }
+        ],
 	"speed": {
 		"walk": 30,
 		"fly": true

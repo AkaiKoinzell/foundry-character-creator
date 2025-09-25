@@ -172,7 +172,18 @@ function mergeRaceData() {
         else base[group].push(entry);
       });
   }
-  DATA.races = base;
+  const sorted = Object.keys(base)
+    .sort((a, b) => a.localeCompare(b))
+    .reduce((acc, key) => {
+      const items = base[key] || [];
+      acc[key] = items.slice().sort((a, b) => {
+        const aName = a?.name || '';
+        const bName = b?.name || '';
+        return aName.localeCompare(bName);
+      });
+      return acc;
+    }, {});
+  DATA.races = sorted;
 }
 
 function mergeSpellData() {

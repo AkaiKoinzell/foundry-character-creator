@@ -3,10 +3,16 @@
 	"source": "VRGR",
 	"page": 20,
 	"lineage": "VRGR",
-	"size": [
-		"S",
-		"M"
-	],
+        "size": [
+                {
+                        "choose": {
+                                "from": [
+                                        "S",
+                                        "M"
+                                ]
+                        }
+                }
+        ],
 	"speed": 30,
 	"traitTags": [
 		"Improved Resting"

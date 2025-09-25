@@ -454,11 +454,27 @@ async function renderSelectedRace() {
         p.textContent = raceSkills.join(', ');
         skillContent.appendChild(p);
       }
+      // Compute how many selections are actually possible and cap UI accordingly
       const known = new Set([...CharacterState.system.skills, ...raceSkills]);
-      for (let i = 0; i < pendingAny; i++) {
+      const baseAvail = ALL_SKILLS.filter((sk) => !known.has(sk));
+      let remaining = baseAvail.length;
+
+      // Pre-allocate for choose groups first to avoid starving them
+      const groupAlloc = chooseGroups.map((grp) => {
+        const opts = (grp.from || [])
+          .map((s) => capitalize(s))
+          .filter((s) => !known.has(s));
+        const toCreate = Math.min(grp.count || 1, opts.length, Math.max(0, remaining));
+        remaining -= toCreate;
+        return { opts, toCreate };
+      });
+      const anyToCreate = Math.min(pendingAny, Math.max(0, remaining));
+
+      // Render "any" selects
+      for (let i = 0; i < anyToCreate; i++) {
         const sel = document.createElement('select');
         sel.replaceChildren(new Option(t('select'), ''));
-        ALL_SKILLS.filter((sk) => !known.has(sk)).forEach((sk) => {
+        baseAvail.forEach((sk) => {
           const o = document.createElement('option');
           o.value = sk;
           o.textContent = sk;
@@ -473,20 +489,18 @@ async function renderSelectedRace() {
         skillContent.appendChild(sel);
         pendingRaceChoices.skills.push(sel);
       }
-      chooseGroups.forEach((grp) => {
-        const opts = (grp.from || []).map((s) => capitalize(s));
-        const count = grp.count || 1;
-        for (let i = 0; i < count; i++) {
+
+      // Render group-limited selects
+      groupAlloc.forEach(({ opts, toCreate }) => {
+        for (let i = 0; i < toCreate; i++) {
           const sel = document.createElement('select');
           sel.replaceChildren(new Option(t('select'), ''));
-          opts
-            .filter((opt) => !known.has(opt))
-            .forEach((opt) => {
-              const o = document.createElement('option');
-              o.value = opt;
-              o.textContent = opt;
-              sel.appendChild(o);
-            });
+          opts.forEach((opt) => {
+            const o = document.createElement('option');
+            o.value = opt;
+            o.textContent = opt;
+            sel.appendChild(o);
+          });
           sel.dataset.type = 'choice';
           sel.dataset.choice = 'skill';
           sel.addEventListener('change', () => {
@@ -543,10 +557,27 @@ async function renderSelectedRace() {
         ...(CharacterState.system.tools || []),
         ...raceTools,
       ]);
-      for (let i = 0; i < pendingAny; i++) {
+      const baseAvail = ALL_TOOLS.filter((tl) => !known.has(tl));
+      let remainingTools = baseAvail.length;
+
+      const groupAllocTools = chooseGroups.map((grp) => {
+        const opts = (grp.from || grp.options || [])
+          .map((s) => capitalize(s))
+          .filter((s) => !known.has(s));
+        const toCreate = Math.min(
+          grp.count || grp.amount || 1,
+          opts.length,
+          Math.max(0, remainingTools)
+        );
+        remainingTools -= toCreate;
+        return { opts, toCreate };
+      });
+      const anyToolsToCreate = Math.min(pendingAny, Math.max(0, remainingTools));
+
+      for (let i = 0; i < anyToolsToCreate; i++) {
         const sel = document.createElement('select');
         sel.replaceChildren(new Option(t('select'), ''));
-        ALL_TOOLS.filter((tl) => !known.has(tl)).forEach((tl) => {
+        baseAvail.forEach((tl) => {
           const o = document.createElement('option');
           o.value = tl;
           o.textContent = tl;
@@ -561,20 +592,16 @@ async function renderSelectedRace() {
         toolContent.appendChild(sel);
         pendingRaceChoices.tools.push(sel);
       }
-      chooseGroups.forEach((grp) => {
-        const opts = (grp.from || []).map((s) => capitalize(s));
-        const count = grp.count || 1;
-        for (let i = 0; i < count; i++) {
+      groupAllocTools.forEach(({ opts, toCreate }) => {
+        for (let i = 0; i < toCreate; i++) {
           const sel = document.createElement('select');
           sel.replaceChildren(new Option(t('select'), ''));
-          opts
-            .filter((opt) => !known.has(opt))
-            .forEach((opt) => {
-              const o = document.createElement('option');
-              o.value = opt;
-              o.textContent = opt;
-              sel.appendChild(o);
-            });
+          opts.forEach((opt) => {
+            const o = document.createElement('option');
+            o.value = opt;
+            o.textContent = opt;
+            sel.appendChild(o);
+          });
           sel.dataset.type = 'choice';
           sel.dataset.choice = 'tool';
           sel.addEventListener('change', () => {
@@ -655,21 +682,32 @@ async function renderSelectedRace() {
         });
         return names.sort();
       }
-      chooseGroups.forEach((grp) => {
-        let opts = (grp.from || []).map((s) => capitalize(s.split('|')[0]));
+      // Pre-calc union of available weapon options and cap total selections
+      const groupData = chooseGroups.map((grp) => {
+        let opts = (grp.from || grp.options || []).map((s) => capitalize(String(s).split('|')[0]));
         if (grp.fromFilter) opts = getWeaponsFromFilter(grp.fromFilter);
-        const count = grp.count || 1;
-        for (let i = 0; i < count; i++) {
+        const available = Array.from(new Set(opts)).filter((opt) => !known.has(opt));
+        return { available, count: grp.count || grp.amount || 1 };
+      });
+      const union = new Set();
+      groupData.forEach(({ available }) => available.forEach((x) => union.add(x)));
+      let remainingWeapons = union.size;
+      const alloc = groupData.map(({ available, count }) => {
+        const toCreate = Math.min(count, available.length, Math.max(0, remainingWeapons));
+        remainingWeapons -= toCreate;
+        return { available, toCreate };
+      });
+
+      alloc.forEach(({ available, toCreate }) => {
+        for (let i = 0; i < toCreate; i++) {
           const sel = document.createElement('select');
           sel.replaceChildren(new Option(t('select'), ''));
-          (opts || [])
-            .filter((opt) => !known.has(opt))
-            .forEach((opt) => {
-              const o = document.createElement('option');
-              o.value = opt;
-              o.textContent = opt;
-              sel.appendChild(o);
-            });
+          (available || []).forEach((opt) => {
+            const o = document.createElement('option');
+            o.value = opt;
+            o.textContent = opt;
+            sel.appendChild(o);
+          });
           sel.dataset.type = 'choice';
           sel.dataset.choice = 'weapon';
           sel.addEventListener('change', () => {
@@ -722,17 +760,18 @@ async function renderSelectedRace() {
           ...CharacterState.system.traits.languages.value,
           ...raceLang,
         ]);
-        for (let i = 0; i < pendingLang; i++) {
+        const avail = (DATA.languages || []).filter((l) => !known.has(l));
+        const toCreate = Math.min(pendingLang, avail.length);
+        for (let i = 0; i < toCreate; i++) {
           const sel = document.createElement('select');
           sel.replaceChildren(new Option(t('select'), ''));
-          (DATA.languages || [])
-            .filter((l) => !known.has(l))
-            .forEach((l) => {
-              const o = document.createElement('option');
-              o.value = l;
-              o.textContent = l;
-              sel.appendChild(o);
-            });
+          avail.forEach((l) => {
+            const o = document.createElement('option');
+            o.value = l;
+            o.textContent = l;
+            sel.appendChild(o);
+          });
+        
           sel.dataset.type = 'choice';
           sel.dataset.choice = 'language';
           sel.addEventListener('change', () => {
@@ -744,8 +783,12 @@ async function renderSelectedRace() {
         }
       }
       updateChoiceSelectOptions(pendingRaceChoices.languages, 'languages');
-      const acc = createAccordionItem(t('languages'), langContent, pendingLang > 0);
-      if (pendingLang > 0) acc.classList.add('needs-selection');
+      const acc = createAccordionItem(
+        t('languages'),
+        langContent,
+        pendingRaceChoices.languages.length > 0
+      );
+      if (pendingRaceChoices.languages.length > 0) acc.classList.add('needs-selection');
       accordion.appendChild(acc);
       choiceAccordions.languages = acc;
     }
@@ -968,7 +1011,12 @@ async function renderSelectedRace() {
         spellEntryUsed = true;
       }
 
-      choices.forEach((choice) => {
+      // Calculate available spells per choice and cap total selections by unique options
+      const existingSpells = new Set([
+        ...(CharacterState.system.spells?.cantrips || []),
+        ...(CharacterState.raceChoices?.spells || []),
+      ]);
+      const choiceData = choices.map((choice) => {
         let opts = [];
         let count = 1;
         if (typeof choice === 'string') {
@@ -988,9 +1036,7 @@ async function renderSelectedRace() {
                     .split(';')
                     .map((c) => capitalize(c.trim()))
                     .filter((c) => c);
-                  return classes.some((c) =>
-                    (sp.spell_list || []).includes(c)
-                  );
+                  return classes.some((c) => (sp.spell_list || []).includes(c));
                 }
                 return true;
               });
@@ -1000,10 +1046,23 @@ async function renderSelectedRace() {
           opts = choice.from;
           if (choice.count) count = choice.count;
         }
-        for (let i = 0; i < count; i++) {
+        const available = opts.filter((sp) => !existingSpells.has(sp));
+        return { available, count };
+      });
+      const unionSpells = new Set();
+      choiceData.forEach(({ available }) => available.forEach((s) => unionSpells.add(s)));
+      let remainingSpellPicks = unionSpells.size;
+      const alloc = choiceData.map(({ available, count }) => {
+        const toCreate = Math.min(count, available.length, Math.max(0, remainingSpellPicks));
+        remainingSpellPicks -= toCreate;
+        return { available, toCreate };
+      });
+
+      alloc.forEach(({ available, toCreate }) => {
+        for (let i = 0; i < toCreate; i++) {
           const sel = document.createElement('select');
           sel.dataset.type = 'choice';
-          sel.dataset.opts = JSON.stringify(opts);
+          sel.dataset.opts = JSON.stringify(available);
           sel.addEventListener('change', () => {
             filterDuplicateOptions(
               pendingRaceChoices.spells,
@@ -1015,7 +1074,7 @@ async function renderSelectedRace() {
             validateRaceChoices();
           });
           sel.replaceChildren(new Option(t('select'), ''));
-          opts.forEach((sp) => {
+          available.forEach((sp) => {
             const o = document.createElement('option');
             o.value = sp;
             o.textContent = sp;
@@ -1032,8 +1091,12 @@ async function renderSelectedRace() {
           ...(CharacterState.raceChoices?.spells || []),
         ],
       );
-      const acc = createAccordionItem(t('spells'), spellContent, true);
-      acc.classList.add('needs-selection');
+      const acc = createAccordionItem(
+        t('spells'),
+        spellContent,
+        pendingRaceChoices.spells.length > 0
+      );
+      if (pendingRaceChoices.spells.length > 0) acc.classList.add('needs-selection');
       accordion.appendChild(acc);
       choiceAccordions.spells = acc;
     }

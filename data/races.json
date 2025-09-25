@@ -83,6 +83,7 @@
         "Triton": "data/races/triton.json",
         "Vedalken": "data/races/vedalken.json",
         "Warforged": "data/races/warforged.json",
-        "Yuan-Ti": "data/races/yuan-ti.json"
+        "Yuan-Ti": "data/races/yuan-ti.json",
+        "Zoomorph": "data/races/zoomorph.json"
     }
 }

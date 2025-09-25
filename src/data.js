@@ -658,6 +658,46 @@ export function normalizeClassData(raw, optionalFeaturesMap = {}) {
   return normalized;
 }
 
+/**
+ * Attempt to derive normalized subclass data from the raw SRD/5etools class
+ * JSON when a prebuilt file is not available under data/subclasses.
+ *
+ * Returns an object matching the normalized subclass format used by the UI:
+ * { name, description?, entries?, features_by_level?, choices? }
+ */
+export function deriveSubclassData(className, subclassName) {
+  try {
+    if (!Array.isArray(BASE_CLASSES)) return null;
+    const raw = BASE_CLASSES.find((c) => c?.class?.[0]?.name === className);
+    if (!raw) return null;
+    const sc = (raw.subclass || []).find((s) => s?.name === subclassName);
+    if (!sc) return null;
+    const short = sc.shortName || sc.name;
+    const features = (raw.subclassFeature || []).filter(
+      (f) => f && f.subclassShortName === short
+    );
+    const byLevel = {};
+    features.forEach((feature) => {
+      const level = feature.level || 1;
+      const entry = { name: feature.name };
+      const summary = extractFeatureSummary(feature.entries);
+      if (summary) entry.description = summary;
+      if (Array.isArray(feature.entries) && feature.entries.length) {
+        entry.entries = feature.entries;
+      }
+      const key = String(level);
+      (byLevel[key] = byLevel[key] || []).push(entry);
+    });
+    const result = { name: subclassName };
+    if (sc.description) result.description = cleanText(sc.description);
+    if (Object.keys(byLevel).length) result.features_by_level = byLevel;
+    return result;
+  } catch (err) {
+    console.warn('deriveSubclassData failed', err);
+    return null;
+  }
+}
+
 function cleanText(str) {
   if (!str) return '';
   return String(str)

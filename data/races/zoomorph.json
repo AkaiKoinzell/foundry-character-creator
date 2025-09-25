@@ -1,0 +1,235 @@
+{
+        "name": "Zoomorphic",
+        "raceName": "Zoomorphic",
+        "source": "HB",
+        "size": [
+                {
+                        "choose": {
+                                "from": [
+                                        "S",
+                                        "M"
+                                ]
+                        }
+                }
+        ],
+        "speed": 30,
+        "darkvision": 60,
+        "traitTags": [
+                "Natural Weapon"
+        ],
+        "skillProficiencies": [
+                {
+                        "any": 1
+                }
+        ],
+        "ability": [
+                {
+                        "choose": {
+                                "weighted": {
+                                        "from": [
+                                                "str",
+                                                "dex",
+                                                "con",
+                                                "int",
+                                                "wis",
+                                                "cha"
+                                        ],
+                                        "weights": [
+                                                2,
+                                                1
+                                        ]
+                                }
+                        }
+                },
+                {
+                        "choose": {
+                                "weighted": {
+                                        "from": [
+                                                "str",
+                                                "dex",
+                                                "con",
+                                                "int",
+                                                "wis",
+                                                "cha"
+                                        ],
+                                        "weights": [
+                                                1,
+                                                1,
+                                                1
+                                        ]
+                                }
+                        }
+                }
+        ],
+        "languageProficiencies": [
+                {
+                        "common": true,
+                        "anyStandard": 1
+                }
+        ],
+        "entries": [
+                {
+                        "type": "entries",
+                        "name": "Size",
+                        "entries": [
+                                "You are Medium or Small. You choose the size when you select this race."
+                        ]
+                },
+                {
+                        "type": "entries",
+                        "name": "Darkvision",
+                        "entries": [
+                                "You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light. You can't discern color in darkness, only shades of gray."
+                        ]
+                },
+                {
+                        "type": "entries",
+                        "name": "Natural Weapon",
+                        "entries": [
+                                "You have a natural weapon that you can use to make unarmed strikes. You can add your Dexterity modifier, instead of your Strength modifier, to the attack and damage rolls when you attack with this natural weapon. It deals {@damage 1d6} bludgeoning, piercing, or slashing damage on a hit (choose the damage type when you select this race)."
+                        ]
+                },
+                {
+                        "type": "entries",
+                        "name": "Adaptive Skills",
+                        "entries": [
+                                "You gain proficiency in one skill of your choice."
+                        ]
+                },
+                {
+                        "type": "entries",
+                        "name": "Animal Features",
+                        "entries": [
+                                "When you choose this race, you gain one common trait and one special trait from the lists below. The traits you choose should match the kind of zoomorphic you represent; for instance, a fishlike zoomorphic is unlikely to have climbing claws or wings.",
+                                "{@bold Common Traits}",
+                                {
+                                        "type": "list",
+                                        "style": "list-hang-notitle",
+                                        "items": [
+                                                {
+                                                        "type": "item",
+                                                        "name": "Amphibious.",
+                                                        "entry": "You can breathe air and water, and you gain a swim speed equal to your walking speed."
+                                                },
+                                                {
+                                                        "type": "item",
+                                                        "name": "Blindsight.",
+                                                        "entry": "You have blindsight with a range of 10 feet. Within that range you can effectively see anything that isn't behind total cover, even if you're blinded or in darkness. Moreover, you can see an invisible creature within that range unless the creature successfully hides from you."
+                                                },
+                                                {
+                                                        "type": "item",
+                                                        "name": "Charge.",
+                                                        "entry": "Immediately after you take the Dash action on your turn and move at least 20 feet, you can make one melee attack with your natural weapon as a bonus action. If you hit, you deal an extra {@damage 1d6} damage to the target."
+                                                },
+                                                {
+                                                        "type": "item",
+                                                        "name": "Climber.",
+                                                        "entry": "You have a climb speed equal to your walking speed."
+                                                },
+                                                {
+                                                        "type": "item",
+                                                        "name": "Dexterous Limb.",
+                                                        "entry": "As a bonus action, you can use appendages such as feet, tail, or prehensile limbs to manipulate an object, open or close a door or container, or pick up or set down a Tiny object."
+                                                },
+                                                {
+                                                        "type": "item",
+                                                        "name": "Fleet of Foot.",
+                                                        "entry": "Your base walking speed increases to 35 feet."
+                                                },
+                                                {
+                                                        "type": "item",
+                                                        "name": "Hunting Game.",
+                                                        "entry": "You can add your proficiency bonus to your initiative rolls."
+                                                },
+                                                {
+                                                        "type": "item",
+                                                        "name": "Keen Sense.",
+                                                        "entry": "You have advantage on Wisdom ({@skill Perception}), Wisdom ({@skill Survival}), and Intelligence ({@skill Investigation}) checks that rely on hearing, smell, or sight (choose one of those senses when you select this trait)."
+                                                },
+                                                {
+                                                        "type": "item",
+                                                        "name": "Mimetic.",
+                                                        "entry": "You are proficient in the {@skill Stealth} skill. As an action, you can change the color and texture of your skin or carapace to match your surroundings, granting you advantage on Dexterity ({@skill Stealth}) checks made to hide in those surroundings."
+                                                },
+                                                {
+                                                        "type": "item",
+                                                        "name": "Mimicry (Flight or Smart only).",
+                                                        "entry": "You can accurately mimic sounds you have heard, including voices. A creature that hears the sounds you make can tell they are imitations only with a successful Wisdom ({@skill Insight}) check against a DC equal to 8 + your proficiency bonus + your Charisma modifier."
+                                                },
+                                                {
+                                                        "type": "item",
+                                                        "name": "Ranged.",
+                                                        "entry": "Your natural weapon becomes a ranged weapon with a normal range of 15 feet and a long range of 30 feet. You can use your Dexterity or Strength modifier for its attack and damage rolls, and being within 5 feet of a hostile creature doesn't impose disadvantage on your attacks with it."
+                                                },
+                                                {
+                                                        "type": "item",
+                                                        "name": "Reach.",
+                                                        "entry": "When you make a melee attack with your natural weapon, its reach increases by 5 feet."
+                                                }
+                                        ]
+                                },
+                                "{@bold Special Traits}",
+                                {
+                                        "type": "list",
+                                        "style": "list-hang-notitle",
+                                        "items": [
+                                                {
+                                                        "type": "item",
+                                                        "name": "Flight.",
+                                                        "entry": "Because of your wings, you have a flying speed equal to your walking speed. You can't use this flying speed if you're wearing medium or heavy armor."
+                                                },
+                                                {
+                                                        "type": "item",
+                                                        "name": "Clencher.",
+                                                        "entry": "When you hit a creature or an uncarried, unworn object with a melee natural weapon attack, you can grapple it. You can have only one creature or object grappled in this way at a time. You have advantage on attack rolls against a creature you are grappling in this way, and while grappling a creature or object you can still make attacks with your natural weapon, but only against the grappled target."
+                                                },
+                                                {
+                                                        "type": "item",
+                                                        "name": "Hungry Jaws.",
+                                                        "entry": "As a bonus action, you can make a special attack with your natural weapon. If the attack hits, it deals its normal damage, and you gain temporary hit points equal to your proficiency bonus. You can use this trait a number of times equal to your proficiency bonus, and you regain all expended uses when you finish a long rest."
+                                                },
+                                                {
+                                                        "type": "item",
+                                                        "name": "Massive Build.",
+                                                        "entry": "You have advantage on Strength-based ability checks and Strength saving throws. In addition, you count as one size larger when determining your carrying capacity and the weight you can push, drag, or lift."
+                                                },
+                                                {
+                                                        "type": "item",
+                                                        "name": "Natural Armor.",
+                                                        "entry": "You have tough, scaly skin. Bludgeoning, piercing, and slashing damage you take from nonmagical attacks is reduced by 2. When you aren't wearing armor, your base AC is 13 + your Constitution modifier. You can use your natural armor to determine your AC if the armor you wear would leave you with a lower AC. A shield's benefits apply as normal while you use your natural armor."
+                                                },
+                                                {
+                                                        "type": "item",
+                                                        "name": "Prodigious Leap.",
+                                                        "entry": "As a bonus action, you can jump a number of feet equal to five times your proficiency bonus without provoking opportunity attacks. You can use this trait only if your speed is greater than 0. You can use it a number of times equal to your proficiency bonus, and you regain all expended uses when you finish a long rest."
+                                                },
+                                                {
+                                                        "type": "item",
+                                                        "name": "Smart.",
+                                                        "entry": "Thanks to your supernaturally good memory, you gain proficiency in one additional skill or tool of your choice. Moreover, when you make an ability check using any skill in which you have proficiency, you can give yourself advantage on the check before rolling the d20. You can use this benefit a number of times equal to your proficiency bonus, and you regain all expended uses when you finish a long rest."
+                                                },
+                                                {
+                                                        "type": "item",
+                                                        "name": "Sprinter.",
+                                                        "entry": "When you move on your turn in combat, you can double your speed until the end of that turn. Once you use this trait, you can't use it again until you move 0 feet on one of your turns."
+                                                },
+                                                {
+                                                        "type": "item",
+                                                        "name": "Venomous.",
+                                                        "entry": "You have advantage on saving throws against poison, and you have resistance to poison damage. When you hit a creature with your natural weapon, you can force it to make a Constitution saving throw (DC = 8 + your Constitution modifier + your proficiency bonus). On a failed save, the creature takes {@damage 1d6} poison damage. On a successful save, it takes half as much damage. This damage increases to {@damage 2d6} at 5th level, {@damage 3d6} at 11th level, and {@damage 4d6} at 17th level. You can use this poison a number of times equal to your proficiency bonus, and you regain all expended uses when you finish a long rest."
+                                                }
+                                        ]
+                                }
+                        ]
+                },
+                {
+                        "type": "entries",
+                        "name": "Languages",
+                        "entries": [
+                                "You can speak, read, and write Common and one other language that you and your DM agree is appropriate for your character."
+                        ]
+                }
+        ],
+        "hasFluff": true,
+        "hasFluffImages": true  
+}

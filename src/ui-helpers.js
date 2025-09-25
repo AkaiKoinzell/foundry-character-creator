@@ -24,7 +24,10 @@ export function parse5eLinks(str) {
   };
 
   return (str || '').replace(/\{@(\w+)\s([^}|]+)(?:\|[^}]+)?}/g, (match, type, name) => {
-    const base = TOKEN_URLS[type.toLowerCase()];
+    const kind = type.toLowerCase();
+    if (kind === 'i' || kind === 'italic') return `<em>${name}</em>`;
+    if (kind === 'b' || kind === 'bold') return `<strong>${name}</strong>`;
+    const base = TOKEN_URLS[kind];
     if (!base) return match;
     const slug = encodeURIComponent(name.trim().toLowerCase());
     return `<a href="https://5e.tools/#${base}:${slug}" target="_blank" rel="noopener noreferrer">${name}</a>`;

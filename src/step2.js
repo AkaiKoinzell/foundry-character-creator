@@ -9,6 +9,7 @@ import {
   MAX_CHARACTER_LEVEL,
   loadSpells,
   loadInfusions,
+  deriveSubclassData,
 } from './data.js';
 import { t } from './i18n.js';
 import {
@@ -23,7 +24,7 @@ import { inlineWarning, globalToast } from './validation.js';
 import { renderFeatChoices } from './feat.js';
 import { renderSpellChoices } from './spell-select.js';
 import { renderInfusion } from './infusion.js';
-import { pendingReplacements } from './proficiency.js';
+import { pendingReplacements, getProficiencyList } from './proficiency.js';
 import {
   filterDuplicateOptions,
   updateChoiceSelectOptions,
@@ -97,6 +98,9 @@ function rebuildFromClasses() {
   (CharacterState.classes || []).forEach(cls => {
     (cls.skills || []).forEach(s => skills.add(s));
     (cls.expertise || []).forEach(e => expertise.add(e.skill || e));
+    // Add fixed tools and languages from the class definition so they are
+    // tracked for later duplicate checks
+    (cls.fixed_tools || []).forEach(t => tools.add(t));
     if (Array.isArray(cls.fixed_proficiencies)) {
       cls.fixed_proficiencies.forEach(l => languages.add(l));
     }
@@ -255,7 +259,9 @@ async function loadSubclassData(cls) {
     if (!resp.ok) throw new Error('Failed to load');
     cls.subclassData = await resp.json();
   } catch (e) {
-    cls.subclassData = null;
+    // Fallback: derive features from the raw class JSON if the file is
+    // missing. This covers edge cases like homebrew or PSA subclasses.
+    cls.subclassData = deriveSubclassData(cls.name, cls.subclass) || null;
   }
 }
 
@@ -264,10 +270,16 @@ function compileClassFeatures(cls) {
   if (!data) return;
   cls.features = [];
   for (let lvl = 1; lvl <= (cls.level || 1); lvl++) {
-    const feats = [
+    let feats = [
       ...(data.features_by_level?.[lvl] || []),
       ...(cls.subclassData?.features_by_level?.[lvl] || []),
     ];
+    const hasSubclassFeats = Array.isArray(cls.subclassData?.features_by_level?.[lvl])
+      && (cls.subclassData.features_by_level[lvl] || []).length > 0;
+    if (hasSubclassFeats) {
+      const PLACEHOLDER_RE = /(Specialist|Domain|Archetype|College|Path|Oath|Tradition|Circle|Patron|Order|School)\s+feature$/i;
+      feats = feats.filter(f => !PLACEHOLDER_RE.test(f?.name || ''));
+    }
     feats.forEach(f => {
       cls.features.push({
         level: lvl,
@@ -645,10 +657,20 @@ function renderClassEditor(cls, index) {
         desc.textContent = `${t('skillProficiencyExplanation')} ${t('chooseSkills', { count: clsDef.skill_proficiencies.choose })}`;
         sContainer.appendChild(desc);
       }
-      for (let i = 0; i < clsDef.skill_proficiencies.choose; i++) {
+      // Cap required skill choices to available unique options
+      const skillOpts = (clsDef.skill_proficiencies.options || []).slice();
+      const knownSkills = new Set(CharacterState.system.skills || []);
+      const availSkills = skillOpts.filter(opt => !knownSkills.has(opt));
+      const skillCount = Math.min(
+        clsDef.skill_proficiencies.choose || 0,
+        availSkills.length
+      );
+      cls.uiState = cls.uiState || {};
+      cls.uiState.effectiveSkillChoose = skillCount;
+      for (let i = 0; i < skillCount; i++) {
         const sel = document.createElement('select');
         sel.replaceChildren(new Option(t('select'), ''));
-        clsDef.skill_proficiencies.options.forEach(opt => {
+        availSkills.forEach(opt => {
           const o = document.createElement('option');
           o.value = opt;
           o.textContent = opt;
@@ -814,10 +836,23 @@ function renderClassEditor(cls, index) {
         ...(clsDef.choices || []).filter(c => c.level === lvl),
         ...(cls.subclassData?.choices || []).filter(c => c.level === lvl),
       ];
-      const features = [
+      let features = [
         ...(clsDef.features_by_level?.[lvl] || []),
         ...(cls.subclassData?.features_by_level?.[lvl] || []),
       ];
+
+      // If subclass provides concrete features at this level, hide generic
+      // placeholder entries like "Divine Domain feature", "Artificer Specialist Feature", etc.
+      const hasSubclassFeats = Array.isArray(cls.subclassData?.features_by_level?.[lvl])
+        && (cls.subclassData.features_by_level[lvl] || []).length > 0;
+      if (hasSubclassFeats) {
+        const PLACEHOLDER_RE = /(Specialist|Domain|Archetype|College|Path|Oath|Tradition|Circle|Patron|Order|School)\s+feature$/i;
+        features = features.filter(f => !PLACEHOLDER_RE.test(f?.name || ''));
+      }
+
+      // track effective counts for gating
+      cls.effectiveChoiceCounts = cls.effectiveChoiceCounts || {};
+      if (!cls.effectiveChoiceCounts.__levels) cls.effectiveChoiceCounts.__levels = {};
 
       levelChoices.forEach(choice => {
         const isInfusionChoice = choice.type === 'infusion';
@@ -851,7 +886,7 @@ function renderClassEditor(cls, index) {
 
         appendEntries(cContainer, choice.entries);
 
-        const count = choice.count || 1;
+        let count = choice.count || 1;
         if (isInfusionChoice) {
           updateInfusionDescription(descriptionEl, baseDescription, count, count);
         }
@@ -893,7 +928,23 @@ function renderClassEditor(cls, index) {
               )
           );
         }
-        for (let i = 0; i < count; i++) {
+        // Determine effective number of selects to render based on availability
+        let toCreate = count;
+        if (isExpertise) {
+          // Expertise must choose from currently proficient skills
+          const profSkills = Array.from(CharacterState.system.skills || []);
+          toCreate = Math.min(count, profSkills.length);
+        } else if (choice.type === 'skills' || choice.type === 'tools' || choice.type === 'languages') {
+          const base = Array.isArray(choice.selection) ? choice.selection.slice() : [];
+          const knownList = getProficiencyList(choice.type) || [];
+          const available = base.filter(opt => !knownList.includes(opt));
+          toCreate = Math.min(count, available.length);
+        }
+        // Store effective count for gating
+        const perName = (cls.effectiveChoiceCounts[choice.name] = cls.effectiveChoiceCounts[choice.name] || {});
+        perName[lvl] = toCreate;
+
+        for (let i = 0; i < toCreate; i++) {
           const sel = document.createElement('select');
           sel.replaceChildren(new Option(t('select'), ''));
           const choiceId = `${choice.name}-${lvl}-${i}`;
@@ -940,6 +991,13 @@ function renderClassEditor(cls, index) {
                   sel.appendChild(o);
                 });
                 if (stored) sel.value = stored.option;
+                // Adjust effective count after async list resolves, capping to available unique options
+                const known = new Set(CharacterState.system.spells.cantrips || []);
+                const avail = opts.filter(o => !known.has(o));
+                const eff = Math.min(count, avail.length);
+                const per = (cls.effectiveChoiceCounts[choice.name] = cls.effectiveChoiceCounts[choice.name] || {});
+                per[lvl] = eff;
+                updateStep2Completion();
               });
             } else if (choice.type === 'infusion') {
               infusionOptionsPromise.then(opts => {
@@ -950,6 +1008,12 @@ function renderClassEditor(cls, index) {
                   sel.appendChild(o);
                 });
                 if (stored) sel.value = stored.option;
+                const existing = new Set((CharacterState.infusions || []).map(i => i.name || i));
+                const avail = opts.filter(o => !existing.has(o));
+                const eff = Math.min(count, avail.length);
+                const per = (cls.effectiveChoiceCounts[choice.name] = cls.effectiveChoiceCounts[choice.name] || {});
+                per[lvl] = eff;
+                updateStep2Completion();
               });
             } else {
               (choice.selection || []).forEach(opt => {
@@ -1184,7 +1248,8 @@ function classHasPendingChoices(cls) {
 
   if (clsDef.skill_proficiencies?.options) {
     const required = clsDef.skill_proficiencies.choose || 0;
-    if ((cls.skills || []).length < required) return true;
+    const effective = cls.uiState?.effectiveSkillChoose ?? required;
+    if ((cls.skills || []).filter(Boolean).length < effective) return true;
   }
 
   if (Array.isArray(clsDef.subclasses) && clsDef.subclasses.length && !cls.subclass) {
@@ -1196,7 +1261,9 @@ function classHasPendingChoices(cls) {
     ...(cls.subclassData?.choices || []),
   ].filter(c => c.level <= (cls.level || 1));
   for (const choice of choices) {
-    const needed = choice.optional ? 0 : (choice.count || 1);
+    const effectiveCount = (cls.effectiveChoiceCounts?.[choice.name]?.[choice.level])
+      ?? (choice.count || 1);
+    const needed = choice.optional ? 0 : effectiveCount;
     const isExpertise = choice.name === 'Expertise' || choice.requiresProficiency;
     if (isExpertise) {
       const selections = (cls.expertise || []).filter(e => e.level === choice.level);
@@ -1426,6 +1493,7 @@ async function selectClass(cls) {
     name: cls.name,
     level: 1,
     fixed_proficiencies: cls.language_proficiencies?.fixed || [],
+    fixed_tools: Array.isArray(cls.tool_proficiencies) ? cls.tool_proficiencies.slice() : [],
     skill_choices: cls.skill_proficiencies || [],
     spellcasting: cls.spellcasting || {},
     skills: [],

@@ -337,6 +337,71 @@ export function createSelectableCard(
   return card;
 }
 
+export function createDetailsSection({
+  showLabel,
+  hideLabel,
+  initiallyExpanded = false,
+  buttonClass = 'btn btn-secondary btn-sm',
+} = {}) {
+  let showText = showLabel ?? t('showDetails');
+  if (!showText || showText === 'showDetails') showText = t('details');
+  let hideText = hideLabel ?? t('hideDetails');
+  if (!hideText || hideText === 'hideDetails') hideText = t('details');
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'details-section';
+
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = buttonClass;
+  button.classList.add('details-toggle');
+
+  const content = document.createElement('div');
+  content.className = 'details-content';
+
+  let expanded = !!initiallyExpanded;
+
+  const sync = () => {
+    if (expanded) {
+      content.classList.remove('hidden');
+      button.textContent = hideText;
+      button.setAttribute('aria-expanded', 'true');
+      content.setAttribute('aria-hidden', 'false');
+    } else {
+      content.classList.add('hidden');
+      button.textContent = showText;
+      button.setAttribute('aria-expanded', 'false');
+      content.setAttribute('aria-hidden', 'true');
+    }
+  };
+
+  button.addEventListener('click', event => {
+    event.preventDefault();
+    event.stopPropagation();
+    expanded = !expanded;
+    sync();
+  });
+
+  wrapper.append(button, content);
+  sync();
+
+  return {
+    wrapper,
+    button,
+    content,
+    setExpanded(value) {
+      expanded = !!value;
+      sync();
+    },
+    isExpanded: () => expanded,
+    setLabels({ show, hide } = {}) {
+      if (show) showText = show;
+      if (hide) hideText = hide;
+      sync();
+    },
+  };
+}
+
 export function markIncomplete(section, isValid) {
   if (!section) return;
   section.classList.add('needs-selection');

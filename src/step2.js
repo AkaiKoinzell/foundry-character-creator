@@ -145,11 +145,13 @@ function rebuildFromClasses() {
   }
   updateSpellSlots();
   updateProficiencyBonus();
-  main.invalidateStep(3);
-  main.invalidateStep(4);
-  main.invalidateStep(5);
-  main.invalidateStep(main.TOTAL_STEPS - 1);
-  main.invalidateStepsFrom(3);
+  main.invalidateStep?.(3);
+  main.invalidateStep?.(4);
+  main.invalidateStep?.(5);
+  if (main.TOTAL_STEPS != null) {
+    main.invalidateStep?.(main.TOTAL_STEPS - 1);
+  }
+  main.invalidateStepsFrom?.(3);
 }
 
 function validateTotalLevel(pendingClass) {
@@ -1141,7 +1143,7 @@ export function confirmStep() {
 /**
  * Inizializza lo Step 2: Selezione Classe
  */
-export async function loadStep2(refresh = true) {
+export async function loadStep2(refresh = true, forceDataReload = false) {
   const classListContainer = document.getElementById('classList');
   const selectedClassesContainer = document.getElementById('selectedClasses');
   let searchInput = document.getElementById('classSearch');
@@ -1151,8 +1153,8 @@ export async function loadStep2(refresh = true) {
 
   // Ensure the class data has been loaded before rendering
   try {
-    await loadClasses();
-    await loadFeats();
+    await loadClasses(forceDataReload);
+    await loadFeats(forceDataReload);
   } catch (err) {
     console.error(t('classDataUnavailable'), err);
     return;

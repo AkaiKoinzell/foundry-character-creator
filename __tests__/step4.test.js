@@ -19,6 +19,8 @@ jest.unstable_mockModule('../src/data.js', () => ({
   loadSpells: jest.fn(),
   loadFeatDetails: jest.fn(),
   loadOptionalFeatures: jest.fn(),
+  loadEquipment: jest.fn(),
+  loadBackgrounds: jest.fn().mockResolvedValue(),
 }));
 
 jest.unstable_mockModule('../src/step2.js', () => ({
@@ -56,8 +58,8 @@ describe('change background button', () => {
     };
   });
 
-  test('repopulates list and shows search when changing background', () => {
-    loadStep4();
+  test('repopulates list and shows search when changing background', async () => {
+    await loadStep4();
     const card = document.querySelector('#backgroundList .class-card');
     card.click();
     DATA.backgrounds = {
@@ -92,9 +94,9 @@ describe('renderBackgroundList description and details', () => {
     };
   });
 
-  test('shows description and details even when help is hidden', () => {
+  test('shows description and details even when help is hidden', async () => {
     CharacterState.showHelp = false;
-    loadStep4();
+    await loadStep4();
     const card = document.querySelector('#backgroundList .class-card');
     const desc = card.querySelector('p');
     expect(desc.textContent).toBe('Devout servant');
@@ -130,9 +132,9 @@ describe('selectBackground feature descriptions', () => {
     };
   });
 
-  test('shows details and feature descriptions without help', () => {
+  test('shows details and feature descriptions without help', async () => {
     CharacterState.showHelp = false;
-    loadStep4();
+    await loadStep4();
     const card = document.querySelector('#backgroundList .class-card');
     card.click();
     const detailsAcc = document.querySelector('#backgroundFeatures .accordion-item .accordion-content');
@@ -142,4 +144,3 @@ describe('selectBackground feature descriptions', () => {
     expect(skillDesc.textContent).toBe('Choose a skill description');
   });
 });
-

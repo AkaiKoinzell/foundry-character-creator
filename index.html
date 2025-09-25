@@ -7,23 +7,6 @@
   <link rel="stylesheet" href="css/site-theme.css">
   <link rel="stylesheet" href="css/character-sheet.css">
   <link rel="icon" href="assets/Tales-Ivory-Logo-white-white.png">
-  <style>
-  #progressContainer {
-    width: 100%;
-    background-color: var(--primary-hover);
-    height: 10px;
-    border-radius: 5px;
-    margin: 10px 0;
-  }
-
-  #progressBar {
-    height: 100%;
-    width: 0%;
-    background-color: var(--accent-color);
-    border-radius: 5px;
-    transition: width 0.3s ease;
-  }
-  </style>
 </head>
 <body>
   <header class="banner">
@@ -31,7 +14,17 @@
       <img src="assets/Tales-Ivory-Logo-white-white.png" alt="Tales from Ivory logo">
       <h1>Creazione Personaggio Tales from Ivory</h1>
     </div>
-    <button id="resetButton" class="btn">Reset Character</button>
+    <div class="header-actions">
+      <button
+        id="customDataButton"
+        class="btn btn-secondary"
+        type="button"
+        data-i18n="manageCustomData"
+      >
+        Manage Custom Data
+      </button>
+      <button id="resetButton" class="btn" type="button">Reset Character</button>
+    </div>
   </header>
   <div class="section-divider"></div>
   <div id="progressContainer">
@@ -221,74 +214,78 @@
             </div>
           </div>
         </div>
-        <table>
-          <tr>
-            <th>Caratteristiche</th>
-            <th>Spendi i tuoi punti</th>
-            <th>Punteggi Iniziali</th>
-            <th>Punteggi Bonus</th>
-            <th>Punteggi Finali</th>
-          </tr>
-          <tr>
-            <td>FOR</td>
-            <td>
-              <button class="btn">+</button>
-              <button class="btn">-</button>
-            </td>
-            <td><span id="strPoints">8</span></td>
-            <td><span id="strBonusModifier">0</span></td>
-            <td id="strFinalScore">8</td>
-          </tr>
-          <tr>
-            <td>DES</td>
-            <td>
-              <button class="btn">+</button>
-              <button class="btn">-</button>
-            </td>
-            <td><span id="dexPoints">8</span></td>
-            <td><span id="dexBonusModifier">0</span></td>
-            <td id="dexFinalScore">8</td>
-          </tr>
-          <tr>
-            <td>COS</td>
-            <td>
-              <button class="btn">+</button>
-              <button class="btn">-</button>
-            </td>
-            <td><span id="conPoints">8</span></td>
-            <td><span id="conBonusModifier">0</span></td>
-            <td id="conFinalScore">8</td>
-          </tr>
-          <tr>
-            <td>INT</td>
-            <td>
-              <button class="btn">+</button>
-              <button class="btn">-</button>
-            </td>
-            <td><span id="intPoints">8</span></td>
-            <td><span id="intBonusModifier">0</span></td>
-            <td id="intFinalScore">8</td>
-          </tr>
-          <tr>
-            <td>SAG</td>
-            <td>
-              <button class="btn">+</button>
-              <button class="btn">-</button>
-            </td>
-            <td><span id="wisPoints">8</span></td>
-            <td><span id="wisBonusModifier">0</span></td>
-            <td id="wisFinalScore">8</td>
-          </tr>
-          <tr>
-            <td>CAR</td>
-            <td>
-              <button class="btn">+</button>
-              <button class="btn">-</button>
-            </td>
-            <td><span id="chaPoints">8</span></td>
-            <td><span id="chaBonusModifier">0</span></td>
-            <td id="chaFinalScore">8</td>
-          </tr>
+        <table class="pointbuy-table">
+          <thead>
+            <tr>
+              <th>Caratteristiche</th>
+              <th>Spendi i tuoi punti</th>
+              <th>Punteggi Iniziali</th>
+              <th>Punteggi Bonus</th>
+              <th>Punteggi Finali</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>FOR</td>
+              <td>
+                <button class="btn" data-ability="str" data-action="increase" type="button">+</button>
+                <button class="btn" data-ability="str" data-action="decrease" type="button">-</button>
+              </td>
+              <td><span id="strPoints">8</span></td>
+              <td><span id="strBonusModifier">0</span></td>
+              <td id="strFinalScore">8</td>
+            </tr>
+            <tr>
+              <td>DES</td>
+              <td>
+                <button class="btn" data-ability="dex" data-action="increase" type="button">+</button>
+                <button class="btn" data-ability="dex" data-action="decrease" type="button">-</button>
+              </td>
+              <td><span id="dexPoints">8</span></td>
+              <td><span id="dexBonusModifier">0</span></td>
+              <td id="dexFinalScore">8</td>
+            </tr>
+            <tr>
+              <td>COS</td>
+              <td>
+                <button class="btn" data-ability="con" data-action="increase" type="button">+</button>
+                <button class="btn" data-ability="con" data-action="decrease" type="button">-</button>
+              </td>
+              <td><span id="conPoints">8</span></td>
+              <td><span id="conBonusModifier">0</span></td>
+              <td id="conFinalScore">8</td>
+            </tr>
+            <tr>
+              <td>INT</td>
+              <td>
+                <button class="btn" data-ability="int" data-action="increase" type="button">+</button>
+                <button class="btn" data-ability="int" data-action="decrease" type="button">-</button>
+              </td>
+              <td><span id="intPoints">8</span></td>
+              <td><span id="intBonusModifier">0</span></td>
+              <td id="intFinalScore">8</td>
+            </tr>
+            <tr>
+              <td>SAG</td>
+              <td>
+                <button class="btn" data-ability="wis" data-action="increase" type="button">+</button>
+                <button class="btn" data-ability="wis" data-action="decrease" type="button">-</button>
+              </td>
+              <td><span id="wisPoints">8</span></td>
+              <td><span id="wisBonusModifier">0</span></td>
+              <td id="wisFinalScore">8</td>
+            </tr>
+            <tr>
+              <td>CAR</td>
+              <td>
+                <button class="btn" data-ability="cha" data-action="increase" type="button">+</button>
+                <button class="btn" data-ability="cha" data-action="decrease" type="button">-</button>
+              </td>
+              <td><span id="chaPoints">8</span></td>
+              <td><span id="chaBonusModifier">0</span></td>
+              <td id="chaFinalScore">8</td>
+            </tr>
+          </tbody>
         </table>
         <input type="hidden" id="strBackgroundTalent" value="0">
         <input type="hidden" id="dexBackgroundTalent" value="0">
@@ -343,6 +340,67 @@
       <span id="closeBackgroundModal" class="close">&times;</span>
       <div id="backgroundModalDetails"></div>
       <button id="addBackgroundButton" class="btn btn-primary">Aggiungi Background</button>
+    </div>
+  </div>
+
+  <div
+    id="customDataModal"
+    class="custom-data-modal hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="customDataModalTitle"
+  >
+    <div class="custom-data-modal__panel">
+      <div class="custom-data-modal__header">
+        <h2 id="customDataModalTitle" data-i18n="manageCustomData">Custom Data Manager</h2>
+        <button type="button" class="custom-data-modal__close" data-action="close" aria-label="Close">&times;</button>
+      </div>
+      <div class="custom-data-modal__body">
+        <nav class="custom-data-modal__tabs" data-role="category-tabs"></nav>
+        <div class="custom-data-modal__content">
+          <div class="custom-data-modal__mode" data-role="mode-toggle">
+            <label>
+              <input type="radio" name="customDataMode" value="json" data-role="mode-json" checked>
+              <span data-i18n="customDataModeJson">JSON Editor</span>
+            </label>
+            <label>
+              <input type="radio" name="customDataMode" value="freeform" data-role="mode-text">
+              <span data-i18n="customDataModeText">Guided Text</span>
+            </label>
+          </div>
+          <div class="custom-data-modal__section">
+            <h3 data-role="category-title"></h3>
+            <p class="custom-data-modal__description" data-role="description"></p>
+          </div>
+          <div class="custom-data-modal__helper" data-role="helper"></div>
+          <textarea
+            class="custom-data-modal__editor"
+            data-role="editor"
+            spellcheck="false"
+            placeholder="[]"
+          ></textarea>
+          <textarea
+            class="custom-data-modal__editor hidden"
+            data-role="freeform"
+            spellcheck="true"
+            placeholder=""
+          ></textarea>
+          <div class="custom-data-modal__feedback" data-role="feedback"></div>
+          <div class="custom-data-modal__actions">
+            <div class="custom-data-modal__actions-left">
+              <button type="button" class="btn btn-secondary" data-action="sample">Load Sample</button>
+              <button type="button" class="btn btn-secondary" data-action="import">Import JSON</button>
+              <input id="customDataFileInput" type="file" accept="application/json" class="hidden" />
+              <button type="button" class="btn btn-secondary" data-action="export">Export</button>
+              <button type="button" class="btn btn-secondary hidden" data-action="parse" data-i18n="customDataParse">Parse Text</button>
+            </div>
+            <div class="custom-data-modal__actions-right">
+              <button type="button" class="btn btn-secondary" data-action="reset">Reset Category</button>
+              <button type="button" class="btn btn-primary" data-action="save">Save Changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 

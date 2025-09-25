@@ -19,6 +19,7 @@ jest.unstable_mockModule('../src/data.js', () => ({
   logCharacterState: jest.fn(),
   loadSpells: jest.fn(),
   fetchJsonWithRetry: jest.fn(),
+  loadEquipment: jest.fn(),
 }));
 jest.unstable_mockModule('../src/step5.js', () => ({
   loadEquipmentData: jest.fn().mockResolvedValue([]),
@@ -65,4 +66,3 @@ test('getAllOptions supplies feats and instruments', () => {
   expect(getAllOptions('feats')).toEqual(['Lucky']);
   expect(getAllOptions('instruments')).toContain('Lute');
 });
-

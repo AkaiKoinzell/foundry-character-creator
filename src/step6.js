@@ -2,122 +2,88 @@ import { CharacterState, totalLevel } from './data.js';
 import { t } from './i18n.js';
 import * as main from './main.js';
 import { showConfirmation } from './ui-helpers.js';
+import { PointBuyController, ABILITIES } from './pointbuy-controller.js';
 
-const ABILITIES = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
-const COST = { 8:0, 9:1, 10:2, 11:3, 12:4, 13:5, 14:7, 15:9 };
+const MAX_POINTS = 27;
 
 let confirmBtn;
+let controller;
 
-function calcRemaining() {
-  const remaining = 27 - ABILITIES.reduce((sum, ab) => sum + (COST[CharacterState.baseAbilities[ab]] || 0), 0);
-  const span = document.getElementById('pointsRemaining');
-  if (span) span.textContent = remaining;
-  main.setCurrentStepComplete?.(remaining === 0);
-  return remaining;
+function ensureAbilityState(force = false) {
+  CharacterState.baseAbilities = CharacterState.baseAbilities || {};
+  CharacterState.bonusAbilities = CharacterState.bonusAbilities || {};
+
+  ABILITIES.forEach((ability) => {
+    const bonus = CharacterState.bonusAbilities[ability] ?? 0;
+    const value = CharacterState.system.abilities[ability]?.value ?? 8;
+    if (force || CharacterState.baseAbilities[ability] == null) {
+      CharacterState.baseAbilities[ability] = value - bonus;
+    }
+    if (CharacterState.bonusAbilities[ability] == null) {
+      CharacterState.bonusAbilities[ability] = bonus;
+    }
+  });
 }
 
-export function updateFinal(ab) {
-  const base = CharacterState.baseAbilities[ab];
-  const bonus = CharacterState.bonusAbilities?.[ab] || 0;
+export function updateFinal(ability) {
+  if (controller) {
+    controller.updateAbilityRow(ability);
+    return;
+  }
+  const base = CharacterState.baseAbilities[ability];
+  const bonus = CharacterState.bonusAbilities?.[ability] || 0;
   const finalVal = base + bonus;
-  const baseSpan = document.getElementById(`${ab}Points`);
-  const bonusSpan = document.getElementById(`${ab}BonusModifier`);
-  const finalCell = document.getElementById(`${ab}FinalScore`);
+  const baseSpan = document.getElementById(`${ability}Points`);
+  const bonusSpan = document.getElementById(`${ability}BonusModifier`);
+  const finalCell = document.getElementById(`${ability}FinalScore`);
   if (baseSpan) baseSpan.textContent = base;
   if (bonusSpan) bonusSpan.textContent = bonus;
   if (finalCell) finalCell.textContent = finalVal;
 }
 
-function validateAbilities() {
-  const isLevelOne = totalLevel() === 1;
-  let invalid = false;
-  ABILITIES.forEach((ab) => {
-    const final =
-      (CharacterState.baseAbilities[ab] || 0) +
-      (CharacterState.bonusAbilities?.[ab] || 0);
-    const finalCell = document.getElementById(`${ab}FinalScore`);
-    const row = finalCell?.closest('tr');
-    if (!row) return;
-    let warn = finalCell.querySelector('small');
-    if (!warn) {
-      warn = document.createElement('small');
-      warn.className = 'text-danger ms-2';
-      finalCell.appendChild(warn);
-    }
-    if (isLevelOne && final > 17) {
-      row.classList.add('incomplete');
-      warn.textContent = t('maxScoreLevel1');
-      invalid = true;
-    } else {
-      row.classList.remove('incomplete');
-      warn.textContent = '';
-    }
-  });
-  if (confirmBtn) confirmBtn.disabled = invalid;
-}
-
-function adjustAbility(ab, delta) {
-  const current = CharacterState.baseAbilities[ab];
-  const next = current + delta;
-  if (next < 8 || next > 15) return;
-  const costDiff = (COST[next] || 0) - (COST[current] || 0);
-  const remaining = calcRemaining();
-  if (delta > 0 && costDiff > remaining) return;
-  CharacterState.baseAbilities[ab] = next;
-  updateFinal(ab);
-  validateAbilities();
-  calcRemaining();
-}
-
-async function applyBonus() {
-  const selections = [
-    document.getElementById('bonusSelect1')?.value,
-    document.getElementById('bonusSelect2')?.value,
-    document.getElementById('bonusSelect3')?.value,
-  ];
-  if (selections.some((v) => !v)) {
-    await showConfirmation(t('selectThreeAbilities'), {
-      confirmText: t('ok'),
-      cancelText: null,
-    });
-    return false;
-  }
-  const counts = selections.reduce((acc, ab) => {
-    acc[ab] = (acc[ab] || 0) + 1;
-    return acc;
-  }, {});
-  const values = Object.values(counts);
-  const valid =
-    (Object.keys(counts).length === 2 && values.includes(2) && values.includes(1)) ||
-    (Object.keys(counts).length === 3 && values.every((v) => v === 1));
-  if (!valid) {
-    await showConfirmation(t('invalidBonusDistribution'), {
-      confirmText: t('ok'),
-      cancelText: null,
-    });
-    return false;
-  }
-  CharacterState.bonusAbilities = { ...CharacterState.bonusAbilities };
-  Object.entries(counts).forEach(([ab, val]) => {
-    CharacterState.bonusAbilities[ab] =
-      (CharacterState.bonusAbilities[ab] || 0) + val;
-  });
-  ABILITIES.forEach(updateFinal);
-  validateAbilities();
-  return true;
-}
-
 export function commitAbilities() {
-  ABILITIES.forEach((ab) => {
-    const base = CharacterState.baseAbilities[ab];
-    const bonus = CharacterState.bonusAbilities?.[ab] || 0;
-    CharacterState.system.abilities[ab].value = base + bonus;
+  ABILITIES.forEach((ability) => {
+    const base = CharacterState.baseAbilities[ability];
+    const bonus = CharacterState.bonusAbilities?.[ability] || 0;
+    CharacterState.system.abilities[ability].value = base + bonus;
   });
 }
 
 function confirmAbilities() {
   commitAbilities();
   main.showStep?.(main.TOTAL_STEPS);
+}
+
+function createController(container) {
+  controller = new PointBuyController({
+    container,
+    maxPoints: MAX_POINTS,
+    getBase: (ability) => CharacterState.baseAbilities?.[ability] ?? 8,
+    setBase: (ability, value) => {
+      CharacterState.baseAbilities = CharacterState.baseAbilities || {};
+      CharacterState.baseAbilities[ability] = value;
+    },
+    getBonus: (ability) => CharacterState.bonusAbilities?.[ability] ?? 0,
+    setBonus: (ability, value) => {
+      CharacterState.bonusAbilities = CharacterState.bonusAbilities || {};
+      CharacterState.bonusAbilities[ability] = value;
+    },
+    onRemainingChange: (remaining) => {
+      main.setCurrentStepComplete?.(remaining === 0);
+    },
+    onValidityChange: (isValid) => {
+      if (confirmBtn) confirmBtn.disabled = !isValid;
+    },
+    getLevel: () => totalLevel(),
+    showMessage: (message) =>
+      showConfirmation(message, {
+        confirmText: t('ok'),
+        cancelText: null,
+      }),
+    translate: (key) => t(key),
+  });
+  controller.init();
+  controller.setConfirmButton(confirmBtn);
 }
 
 export function loadStep6(force = false) {
@@ -137,39 +103,9 @@ export function loadStep6(force = false) {
   confirmBtn = document.getElementById('confirmAbilities');
   confirmBtn.addEventListener('click', confirmAbilities);
 
-  if (!CharacterState.baseAbilities || force) {
-    CharacterState.baseAbilities = CharacterState.baseAbilities || {};
-  }
-  ABILITIES.forEach((ab) => {
-    const bonus = CharacterState.bonusAbilities?.[ab] || 0;
-    const val = CharacterState.system.abilities[ab]?.value ?? 8;
-    if (!CharacterState.baseAbilities[ab] || force) {
-      CharacterState.baseAbilities[ab] = val - bonus;
-    }
-  });
-
-  ABILITIES.forEach((ab) => {
-    updateFinal(ab);
-    const baseSpan = document.getElementById(`${ab}Points`);
-    const row = baseSpan?.closest('tr');
-    if (!row) return;
-    const btns = row.querySelectorAll('button');
-    if (btns[0]) btns[0].replaceWith(btns[0].cloneNode(true));
-    if (btns[1]) btns[1].replaceWith(btns[1].cloneNode(true));
-    const newBtns = row.querySelectorAll('button');
-    newBtns[0]?.addEventListener('click', () => adjustAbility(ab, 1));
-    newBtns[1]?.addEventListener('click', () => adjustAbility(ab, -1));
-  });
-
-  let applyBtn = document.getElementById('applyBonus');
-  if (applyBtn) {
-    applyBtn.replaceWith(applyBtn.cloneNode(true));
-    applyBtn = document.getElementById('applyBonus');
-    applyBtn.addEventListener('click', applyBonus);
-  }
-
-  validateAbilities();
-  calcRemaining();
+  ensureAbilityState(force);
+  createController(container);
+  controller.updateAll();
 }
 
 export default { loadStep6, commitAbilities };

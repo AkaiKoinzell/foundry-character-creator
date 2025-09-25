@@ -2,7 +2,8 @@ import {
   DATA,
   CharacterState,
   logCharacterState,
-  fetchJsonWithRetry
+  fetchJsonWithRetry,
+  loadBackgrounds,
 } from './data.js';
 import { refreshBaseState, rebuildFromClasses } from './step2.js';
 import { updateChoiceSelectOptions } from './choice-select-helpers.js';
@@ -422,7 +423,13 @@ async function confirmBackgroundSelection() {
   return true;
 }
 
-export function loadStep4(force = false) {
+export async function loadStep4(force = false) {
+  try {
+    await loadBackgrounds(force);
+  } catch (err) {
+    console.error('Unable to load backgrounds', err);
+    return;
+  }
   if (force) resetPendingSelections();
   const container = document.getElementById('backgroundList');
   let searchInput = document.getElementById('backgroundSearch');
@@ -475,4 +482,3 @@ export async function confirmStep() {
   if (isStepComplete()) return true;
   return confirmBackgroundSelection();
 }
-

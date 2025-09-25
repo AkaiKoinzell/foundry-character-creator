@@ -59,6 +59,39 @@ export function resetPendingRaceChoices() {
 
 let raceRenderSeq = 0;
 
+function cloneRaceData(data) {
+  if (!data || typeof data !== 'object') return data;
+  if (typeof globalThis.structuredClone === 'function') {
+    try {
+      return globalThis.structuredClone(data);
+    } catch (err) {
+      console.warn('structuredClone failed for race data, falling back', err);
+    }
+  }
+  try {
+    return JSON.parse(JSON.stringify(data));
+  } catch (err) {
+    console.warn('Unable to clone race data', err);
+    return data;
+  }
+}
+
+async function resolveRaceEntry(entry) {
+  if (!entry || typeof entry !== 'object') return null;
+  if (entry.data) {
+    const cloned = cloneRaceData(entry.data);
+    if (cloned && !cloned.name) cloned.name = entry.name;
+    if (cloned) cloned.isCustom = entry.isCustom || cloned.isCustom;
+    return cloned;
+  }
+  if (entry.path) {
+    const race = await fetchJsonWithRetry(entry.path, `race at ${entry.path}`);
+    if (race && entry.isCustom) race.isCustom = true;
+    return race;
+  }
+  return null;
+}
+
 function slugify(name = '') {
   return name
     .trim()
@@ -189,10 +222,14 @@ async function renderBaseRaces(search = '') {
     const subMatch = subs.some((s) => s.name.toLowerCase().includes(term));
     if (term && !baseMatch && !subMatch) continue;
     let race = { name: base };
-    const path = subs[0]?.path;
-    if (path) {
-      const data = await fetchJsonWithRetry(path, `race at ${path}`);
-      race = { ...data, name: base };
+    const sample = subs[0];
+    if (sample) {
+      const data = await resolveRaceEntry(sample);
+      if (data) {
+        race = { ...data };
+        race.name = base;
+        race.isCustom = sample.isCustom || data.isCustom;
+      }
     }
     if (seq !== raceRenderSeq) return;
     const slug = slugify(base);
@@ -233,9 +270,9 @@ async function renderSubraceCards(base, search = '') {
   changeBtn?.classList.remove('hidden');
   const subraces = DATA.races[base] || [];
   const term = (search || '').toLowerCase();
-  for (const { name, path } of subraces) {
-    const race = await fetchJsonWithRetry(path, `race at ${path}`);
-    if (!race.name.toLowerCase().includes(term)) continue;
+  for (const entry of subraces) {
+    const race = await resolveRaceEntry(entry);
+    if (!race || !race.name || !race.name.toLowerCase().includes(term)) continue;
     if (seq !== raceRenderSeq) return;
     const slug = slugify(race.name);
     const card = createRaceCard(
@@ -1358,7 +1395,7 @@ function confirmRaceSelection() {
 
 export async function loadStep3(force = false) {
   if (force) resetPendingRaceChoices();
-  await loadRaces();
+  await loadRaces(force);
   const container = document.getElementById('raceList');
   let searchInput = document.getElementById('raceSearch');
   if (!container) return;

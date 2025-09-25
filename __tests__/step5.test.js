@@ -8,19 +8,20 @@ const showStep = jest.fn();
 const showErrorBanner = jest.fn();
 let loadStep5;
 let CharacterState;
-let fetchJsonWithRetry;
 let TOTAL_STEPS;
+let loadEquipment;
 
 beforeEach(async () => {
   jest.resetModules();
   showStep.mockClear();
   showErrorBanner.mockClear();
 
+  loadEquipment = jest.fn();
   jest.unstable_mockModule('../src/data.js', () => ({
     DATA: {},
     CharacterState: { classes: [{ name: 'Test', level: 1 }], equipment: [] },
     loadSpells: jest.fn(),
-    fetchJsonWithRetry: jest.fn(),
+    loadEquipment,
   }));
   jest.unstable_mockModule('../src/i18n.js', () => ({ t: (k) => k }));
   jest.unstable_mockModule('../src/main.js', () => ({
@@ -30,13 +31,13 @@ beforeEach(async () => {
   }));
 
   ({ loadStep5 } = await import('../src/step5.js'));
-  ({ CharacterState, fetchJsonWithRetry } = await import('../src/data.js'));
+  ({ CharacterState } = await import('../src/data.js'));
   ({ TOTAL_STEPS } = await import('../src/main.js'));
 
   document.body.innerHTML =
     '<div id="equipmentSelections"></div><button id="confirmEquipment"></button>';
 
-  fetchJsonWithRetry.mockResolvedValue({
+  loadEquipment.mockResolvedValue({
     standard: [],
     classes: { Test: { fixed: [], choices: [] } },
   });
@@ -57,8 +58,8 @@ describe('step5 re-entry', () => {
   });
 
   test('failed fetch surfaces error and allows retry', async () => {
-    fetchJsonWithRetry.mockReset();
-    fetchJsonWithRetry
+    loadEquipment.mockReset();
+    loadEquipment
       .mockRejectedValueOnce(new Error('fail'))
       .mockResolvedValueOnce({
         standard: [],
@@ -67,12 +68,12 @@ describe('step5 re-entry', () => {
 
     await loadStep5(true);
 
-    expect(fetchJsonWithRetry).toHaveBeenCalledTimes(1);
+    expect(loadEquipment).toHaveBeenCalledTimes(1);
     expect(showErrorBanner).toHaveBeenCalledWith('equipmentLoadError');
 
     await loadStep5(true);
 
-    expect(fetchJsonWithRetry).toHaveBeenCalledTimes(2);
+    expect(loadEquipment).toHaveBeenCalledTimes(2);
     const accs = document.querySelectorAll('#equipmentSelections .accordion');
     expect(accs).toHaveLength(1);
   });

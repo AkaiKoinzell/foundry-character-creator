@@ -34,6 +34,7 @@ jest.unstable_mockModule('../src/data.js', () => ({
   totalLevel: () => 1,
   loadSpells: jest.fn(),
   fetchJsonWithRetry: jest.fn(),
+  loadEquipment: jest.fn(),
 }));
 
 const { loadStep6 } = await import('../src/step6.js');

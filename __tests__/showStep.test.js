@@ -17,6 +17,7 @@ jest.unstable_mockModule('../src/step4.js', () => ({
 jest.unstable_mockModule('../src/step5.js', () => ({
   loadStep5,
   isStepComplete: jest.fn(),
+  resetEquipmentDataCache: jest.fn(),
 }));
 
 jest.unstable_mockModule('../src/step6.js', () => ({
@@ -30,6 +31,10 @@ jest.unstable_mockModule('../src/data.js', () => ({
   loadClasses: jest.fn(),
   loadBackgrounds: jest.fn(),
   fetchJsonWithRetry: jest.fn(),
+  loadEquipment: jest.fn(),
+  loadFeats: jest.fn(),
+  loadRaces: jest.fn(),
+  loadSpells: jest.fn(),
 }));
 
 jest.unstable_mockModule('../src/step2.js', () => ({
@@ -89,4 +94,3 @@ test('loadStep3-5 receive firstVisit flag correctly', () => {
   expect(loadStep5).toHaveBeenNthCalledWith(1, true);
   expect(loadStep5).toHaveBeenNthCalledWith(2, false);
 });
-

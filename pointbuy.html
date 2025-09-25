@@ -1,103 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sistema Point Buy per il server di Tales from Ivory</title>
-<link rel="stylesheet" href="css/site-theme.css">
-<style>
-    @media screen and (max-width: 768px) {
-        body {
-            margin: 10px;
-        }
-        table, th, td {
-            font-size: 14px;
-            padding: 6px;
-        }
-        td button {
-            display: block;
-            margin: 5px 0;
-            width: 100%;
-        }
-        input[type="number"] {
-            width: 100%;
-        }
-    }
-    @media screen and (max-width: 480px) {
-        table, th, td {
-            font-size: 12px;
-            padding: 4px;
-        }
-        td button {
-            margin: 3px 0;
-        }
-        input[type="number"] {
-            width: 100%;
-        }
-    }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tales from Ivory - Point Buy</title>
+  <link rel="stylesheet" href="css/site-theme.css">
+  <link rel="icon" href="assets/Tales-Ivory-Logo-white-white.png">
 </head>
 <body>
-
-<h2 class="text-center">Sistema Point Buy per il server di Tales from Ivory</h2>
-<p class="text-center"><strong>Total Points Remaining:</strong> <span id="pointsRemaining">27</span></p>
-<p class="text-center">Assegna i tuoi punti tra i punteggi di caratteristica (FOR, DES, COS, INT, SAG, CAR). Hai 27 punti da spendere.</p>
-
-<table>
-    <tr>
-        <th>Caratteristiche</th>
-        <th>Spendi i tuoi punti</th>
+  <header class="banner">
+    <div class="header-top">
+      <img src="assets/Tales-Ivory-Logo-white-white.png" alt="Tales from Ivory logo">
+      <h1>Tales from Ivory - Point Buy</h1>
+    </div>
+  </header>
+  <div class="section-divider"></div>
+  <main id="step6" class="step pointbuy-page">
+    <h2>Sistema Point Buy</h2>
+    <div class="pointbuy-summary">
+      <p class="text-center"><strong>Total Points Remaining:</strong> <span id="pointsRemaining">27</span></p>
+      <p class="text-center">Assegna i tuoi punti tra i punteggi di caratteristica (FOR, DES, COS, INT, SAG, CAR).</p>
+    </div>
+    <section id="bonusSelection">
+      <h3>Distribuzione Punteggi Bonus</h3>
+      <p>Distribuisci i tuoi 3 punti extra in una delle seguenti combinazioni:</p>
+      <ul>
+        <li>+2 a una caratteristica e +1 a un'altra</li>
+        <li>+1 a tre caratteristiche diverse</li>
+      </ul>
+      <div id="bonusRow">
+        <div class="form-group">
+          <label for="bonusSelect1">Bonus 1:</label>
+          <select id="bonusSelect1" class="form-control">
+            <option value="">Seleziona</option>
+            <option value="str">Forza</option>
+            <option value="dex">Destrezza</option>
+            <option value="con">Costituzione</option>
+            <option value="int">Intelligenza</option>
+            <option value="wis">Saggezza</option>
+            <option value="cha">Carisma</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="bonusSelect2">Bonus 2:</label>
+          <select id="bonusSelect2" class="form-control">
+            <option value="">Seleziona</option>
+            <option value="str">Forza</option>
+            <option value="dex">Destrezza</option>
+            <option value="con">Costituzione</option>
+            <option value="int">Intelligenza</option>
+            <option value="wis">Saggezza</option>
+            <option value="cha">Carisma</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="bonusSelect3">Bonus 3:</label>
+          <select id="bonusSelect3" class="form-control">
+            <option value="">Seleziona</option>
+            <option value="str">Forza</option>
+            <option value="dex">Destrezza</option>
+            <option value="con">Costituzione</option>
+            <option value="int">Intelligenza</option>
+            <option value="wis">Saggezza</option>
+            <option value="cha">Carisma</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <button id="applyBonus" class="btn btn-primary" type="button">Applica Punteggi Bonus</button>
+        </div>
+      </div>
+    </section>
+    <table class="pointbuy-table">
+      <thead>
+        <tr>
+          <th>Caratteristiche</th>
+          <th>Spendi i tuoi punti</th>
           <th>Punteggi Iniziali</th>
           <th>Punteggi Bonus</th>
-          <th>Talento di BG</th>
           <th>Punteggi Finali</th>
-    </tr>
-    <tr>
-        <td>FOR</td>
-        <td><button>+</button><button>-</button></td>
-        <td><span id="strPoints">8</span></td>
-        <td><input type="number" id="strBonusModifier" value="0" min="0" max="2"></td>
-        <td><input type="number" id="strBackgroundTalent" value="0" min="0" max="1"></td>
-        <td id="strFinalScore">8</td>
-    </tr>
-    <tr>
-        <td>DES</td>
-        <td><button>+</button><button>-</button></td>
-        <td><span id="dexPoints">8</span></td>
-        <td><input type="number" id="dexBonusModifier" value="0" min="0" max="2"></td>
-        <td><input type="number" id="dexBackgroundTalent" value="0" min="0" max="1"></td>
-        <td id="dexFinalScore">8</td>
-    </tr>
-    <tr>
-        <td>COS</td>
-        <td><button>+</button><button>-</button></td>
-        <td><span id="conPoints">8</span></td>
-        <td><input type="number" id="conBonusModifier" value="0" min="0" max="2"></td>
-        <td><input type="number" id="conBackgroundTalent" value="0" min="0" max="1"></td>
-        <td id="conFinalScore">8</td>
-    </tr>
-    <tr>
-        <td>INT</td>
-        <td><button>+</button><button>-</button></td>
-        <td><span id="intPoints">8</span></td>
-        <td><input type="number" id="intBonusModifier" value="0" min="0" max="2"></td>
-        <td><input type="number" id="intBackgroundTalent" value="0" min="0" max="1"></td>
-        <td id="intFinalScore">8</td>
-    </tr>
-    <tr>
-        <td>SAG</td>
-        <td><button>+</button><button>-</button></td>
-        <td><span id="wisPoints">8</span></td>
-        <td><input type="number" id="wisBonusModifier" value="0" min="0" max="2"></td>
-        <td><input type="number" id="wisBackgroundTalent" value="0" min="0" max="1"></td>
-        <td id="wisFinalScore">8</td>
-    </tr>
-    <tr>
-        <td>CAR</td>
-        <td><button>+</button><button>-</button></td>
-        <td><span id="chaPoints">8</span></td>
-        <td><input type="number" id="chaBonusModifier" value="0" min="0" max="2"></td>
-        <td><input type="number" id="chaBackgroundTalent" value="0" min="0" max="1"></td>
-        <td id="chaFinalScore">8</td>
-    </tr>
-</table>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>FOR</td>
+          <td>
+            <button class="btn" data-ability="str" data-action="increase" type="button">+</button>
+            <button class="btn" data-ability="str" data-action="decrease" type="button">-</button>
+          </td>
+          <td><span id="strPoints">8</span></td>
+          <td><span id="strBonusModifier">0</span></td>
+          <td id="strFinalScore">8</td>
+        </tr>
+        <tr>
+          <td>DES</td>
+          <td>
+            <button class="btn" data-ability="dex" data-action="increase" type="button">+</button>
+            <button class="btn" data-ability="dex" data-action="decrease" type="button">-</button>
+          </td>
+          <td><span id="dexPoints">8</span></td>
+          <td><span id="dexBonusModifier">0</span></td>
+          <td id="dexFinalScore">8</td>
+        </tr>
+        <tr>
+          <td>COS</td>
+          <td>
+            <button class="btn" data-ability="con" data-action="increase" type="button">+</button>
+            <button class="btn" data-ability="con" data-action="decrease" type="button">-</button>
+          </td>
+          <td><span id="conPoints">8</span></td>
+          <td><span id="conBonusModifier">0</span></td>
+          <td id="conFinalScore">8</td>
+        </tr>
+        <tr>
+          <td>INT</td>
+          <td>
+            <button class="btn" data-ability="int" data-action="increase" type="button">+</button>
+            <button class="btn" data-ability="int" data-action="decrease" type="button">-</button>
+          </td>
+          <td><span id="intPoints">8</span></td>
+          <td><span id="intBonusModifier">0</span></td>
+          <td id="intFinalScore">8</td>
+        </tr>
+        <tr>
+          <td>SAG</td>
+          <td>
+            <button class="btn" data-ability="wis" data-action="increase" type="button">+</button>
+            <button class="btn" data-ability="wis" data-action="decrease" type="button">-</button>
+          </td>
+          <td><span id="wisPoints">8</span></td>
+          <td><span id="wisBonusModifier">0</span></td>
+          <td id="wisFinalScore">8</td>
+        </tr>
+        <tr>
+          <td>CAR</td>
+          <td>
+            <button class="btn" data-ability="cha" data-action="increase" type="button">+</button>
+            <button class="btn" data-ability="cha" data-action="decrease" type="button">-</button>
+          </td>
+          <td><span id="chaPoints">8</span></td>
+          <td><span id="chaBonusModifier">0</span></td>
+          <td id="chaFinalScore">8</td>
+        </tr>
+      </tbody>
+    </table>
+    <input type="hidden" id="strBackgroundTalent" value="0">
+    <input type="hidden" id="dexBackgroundTalent" value="0">
+    <input type="hidden" id="conBackgroundTalent" value="0">
+    <input type="hidden" id="intBackgroundTalent" value="0">
+    <input type="hidden" id="wisBackgroundTalent" value="0">
+    <input type="hidden" id="chaBackgroundTalent" value="0">
+  </main>
+  <script type="module" src="src/pointbuy.js"></script>
+</body>
+</html>

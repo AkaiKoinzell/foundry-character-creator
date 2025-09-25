@@ -114,4 +114,10 @@
   ,"customDataTextPlaceholder": "Esempio:\nNome: Crystalborn\nGruppo: Crystalborn\nAbility: COS +2, SAG +1\nTaglia: Media\nVelocità: 30\nLingue: Comune, Terran\nTratti:\nShardlight: Puoi lanciare il trucchetto guida.\n---\nNome: Crystalborn (Ember)\nAbility: FOR +1\nTratti:\nEmber Shield: Ottieni resistenza ai danni da fuoco."
   ,"customDataTextExample": "Vedi esempio"
   ,"customDataParsingUnavailable": "La modalità testo guidato non è ancora disponibile per questa categoria."
+  ,"customDataEntryLabel": "Voce"
+  ,"customDataEntryPlaceholder": "Nuova voce"
+  ,"customDataNewEntry": "Nuova"
+  ,"customDataEntryCore": "base"
+  ,"customDataEntryCustom": "personalizzata"
+  ,"customDataEntryLoadFailed": "Impossibile caricare la voce selezionata."
 }

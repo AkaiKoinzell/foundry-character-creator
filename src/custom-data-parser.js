@@ -86,6 +86,7 @@ function parseClassBlock(block) {
   if (!lines.length) return null;
   const cls = { features_by_level: {} };
   let currentFeature = null;
+  const miscDescription = [];
 
   lines.forEach((line) => {
     const featureMatch = line.match(/^(?:[-*]\s*)?level\s*(\d+)\s*-\s*([^:]+):?\s*(.*)$/i);
@@ -147,11 +148,15 @@ function parseClassBlock(block) {
         // Treat remainder as traits collection
         if (currentFeature) {
           currentFeature.data.entries.push(value);
+        } else if (value) {
+          miscDescription.push(value);
         }
         break;
       default:
         if (currentFeature) {
           currentFeature.data.entries.push(line);
+        } else {
+          miscDescription.push(line);
         }
         break;
     }
@@ -160,6 +165,9 @@ function parseClassBlock(block) {
   pushFeature(cls.features_by_level, currentFeature);
 
   if (!Object.keys(cls.features_by_level).length) delete cls.features_by_level;
+  if (!cls.description && miscDescription.length) {
+    cls.description = miscDescription.join(' ');
+  }
   return cls.name ? cls : null;
 }
 
@@ -187,9 +195,15 @@ function parseSpellBlock(block) {
       case 'range':
         spell.range = value;
         break;
-      case 'components':
-        spell.components = parseList(value);
+      case 'components': {
+        const flags = {};
+        parseList(value).forEach((token) => {
+          const key = token.trim().charAt(0).toLowerCase();
+          if (key) flags[key] = true;
+        });
+        spell.components = Object.keys(flags).length ? flags : undefined;
         break;
+      }
       case 'duration':
         spell.duration = value;
         break;

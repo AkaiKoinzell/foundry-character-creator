@@ -648,6 +648,30 @@ th {
   line-height: 1.5;
 }
 
+.custom-data-modal__entry {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.custom-data-modal__entry label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.custom-data-modal__entry select {
+  margin-top: 4px;
+  min-width: 220px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(15, 23, 42, 0.16);
+  font-size: 0.95rem;
+}
+
 .custom-data-modal__helper ul {
   margin: 8px 0 12px;
   padding-left: 20px;

@@ -48,11 +48,9 @@ export async function exportPdf(state) {
       ".features, .spells, .backstory, .equipment, .infusions"
     )
   );
-  const minHeightFractions = {
-    features: 0.35,
-    spells: 0.28,
-    backstory: 0.5,
-  };
+  // Avoid enforcing large minimum heights that add whitespace.
+  // We'll let content determine section height for a tighter layout.
+  const minHeightFractions = {};
   const textAreas = Array.from(sheet.querySelectorAll("textarea"));
   const optionalEmptySections = Array.from(
     sheet.querySelectorAll(".equipment, .infusions")
@@ -88,12 +86,16 @@ export async function exportPdf(state) {
     "gridTemplateAreas",
     "gap",
   ]);
+  // Apply compact styling only during export to reduce height and maximize scale
+  sheet.classList.add('compact');
   sheet.style.width = `${a4WidthPx}px`;
   sheet.style.maxWidth = "unset";
   const a4HeightPx = Math.round(297 * pxPerMm);
-  sheet.style.minHeight = `${a4HeightPx}px`;
-  sheet.style.height = `${a4HeightPx}px`;
-  sheet.style.gridTemplateRows = "auto 1fr 1fr auto 2fr";
+  // Let height expand to fit content to avoid clipping during capture
+  sheet.style.minHeight = "unset";
+  sheet.style.height = "auto";
+  // Allow rows to size to content naturally
+  sheet.style.gridTemplateRows = "auto auto auto auto auto";
   sheet.style.gridTemplateColumns = "0.9fr 1.1fr 1.6fr";
   sheet.style.gap = "16px";
 
@@ -112,27 +114,43 @@ export async function exportPdf(state) {
     section.style.overflow = "visible";
   });
 
+  // Replace textareas with plain elements for reliable rendering in html2canvas
+  const restoreTextareas = [];
   textAreas.forEach((area) => {
-    rememberStyle(area, [
-      "height",
-      "overflow",
-      "resize",
-      "border",
-      "background",
-      "padding",
-      "whiteSpace",
-      "width",
-    ]);
-    area.style.overflow = "hidden";
-    area.style.resize = "none";
-    area.style.height = "auto";
-    area.style.height = `${area.scrollHeight}px`;
-    area.style.border = "none";
-    area.style.background = "transparent";
-    area.style.padding = "0";
-    area.style.whiteSpace = "pre-wrap";
-    area.style.width = "100%";
+    const cs = window.getComputedStyle(area);
+    const placeholder = document.createElement('div');
+    placeholder.className = 'textarea-render';
+    placeholder.textContent = area.value || '';
+    placeholder.style.whiteSpace = 'pre-wrap';
+    placeholder.style.wordWrap = 'break-word';
+    placeholder.style.width = '100%';
+    placeholder.style.minHeight = `${area.scrollHeight || area.clientHeight || 0}px`;
+    placeholder.style.border = 'none';
+    placeholder.style.background = 'transparent';
+    // Keep text dense to save vertical space in one-page export
+    placeholder.style.padding = '0';
+    placeholder.style.margin = '0';
+    placeholder.style.fontFamily = cs.fontFamily;
+    placeholder.style.fontSize = cs.fontSize;
+    placeholder.style.lineHeight = '1.2';
+    placeholder.style.color = cs.color;
+    // If this is the backstory textarea and it's long, render in two columns
+    try {
+      const isBackstory = area.closest('.backstory') != null || area.id === 'backstoryInput';
+      if (isBackstory && (area.value?.length || 0) > 500) {
+        placeholder.style.columnCount = '2';
+        placeholder.style.columnGap = '12px';
+      }
+    } catch (_) { /* ignore */ }
+    area.insertAdjacentElement('afterend', placeholder);
+    rememberStyle(area, ["display"]);
+    area.style.display = 'none';
+    restoreTextareas.push(() => {
+      placeholder.remove();
+      area.style.display = '';
+    });
   });
+  revertActions.push(() => restoreTextareas.forEach((fn) => fn()))
 
   optionalEmptySections.forEach((section) => {
     if (!section.textContent.trim()) {
@@ -149,13 +167,8 @@ export async function exportPdf(state) {
 
   if (backstorySection) {
     rememberStyle(backstorySection, ["alignSelf", "minHeight"]);
-    backstorySection.style.alignSelf = "stretch";
-    const currentMin = parseFloat(backstorySection.style.minHeight) || 0;
-    const minPx = Math.max(
-      currentMin,
-      Math.round(a4HeightPx * (minHeightFractions.backstory || 0.45))
-    );
-    backstorySection.style.minHeight = `${minPx}px`;
+    backstorySection.style.alignSelf = "start";
+    backstorySection.style.minHeight = "0";
   }
 
   const hasEquipment = Boolean(
@@ -269,6 +282,7 @@ export async function exportPdf(state) {
     canvas = await html2canvas(sheet, { scale });
     canvas = trimCanvasWhitespace(canvas);
   } finally {
+    sheet.classList.remove('compact');
     revertActions.reverse().forEach((revert) => revert());
   }
 
@@ -281,21 +295,53 @@ export async function exportPdf(state) {
   const sheetWidthMm = (canvas.width / scale) / pxPerMm;
   const sheetHeightMm = (canvas.height / scale) / pxPerMm;
 
-  const pageMarginMm = 6;
+  const pageMarginMm = 2;
   const targetWidth = pageWidth - pageMarginMm * 2;
   const targetHeight = pageHeight - pageMarginMm * 2;
 
-  const scaleFactor = Math.min(
-    targetWidth / sheetWidthMm,
-    targetHeight / sheetHeightMm
-  );
+  // Attempt to fit everything on a single page by scaling if reasonable.
+  const scaleToWidth = targetWidth / sheetWidthMm;
+  const scaleToHeight = targetHeight / sheetHeightMm;
+  const fitScale = Math.min(scaleToWidth, scaleToHeight);
+  const MIN_READABLE_SCALE = 0.55; // below this, fallback to multipage
 
-  const imgWidth = sheetWidthMm * scaleFactor;
-  const imgHeight = sheetHeightMm * scaleFactor;
-  const offsetX = (pageWidth - imgWidth) / 2;
-  const offsetY = (pageHeight - imgHeight) / 2;
+  if (fitScale >= MIN_READABLE_SCALE) {
+    const imgWidth = sheetWidthMm * fitScale;
+    const imgHeight = sheetHeightMm * fitScale;
+    const offsetX = (pageWidth - imgWidth) / 2;
+    const offsetY = (pageHeight - imgHeight) / 2;
+    pdf.addImage(imgData, "JPEG", offsetX, offsetY, imgWidth, imgHeight);
+  } else {
+    // Multi-page: slice the captured canvas vertically (fit to width)
+    const widthScale = targetWidth / sheetWidthMm;
+    const scaledHeightMm = sheetHeightMm * widthScale;
+    const pages = Math.ceil(scaledHeightMm / targetHeight);
+    const fullPageMm = targetHeight;
+    const mmPerPxScaled = (scaledHeightMm) / canvas.height;
+    let yPx = 0;
+    for (let i = 0; i < pages; i += 1) {
+      const remainingMm = scaledHeightMm - i * fullPageMm;
+      const thisPageMm = Math.min(fullPageMm, remainingMm);
+      const thisPagePx = Math.round(thisPageMm / mmPerPxScaled);
 
-  pdf.addImage(imgData, "JPEG", offsetX, offsetY, imgWidth, imgHeight);
+      const pageCanvas = document.createElement('canvas');
+      pageCanvas.width = canvas.width;
+      pageCanvas.height = Math.min(thisPagePx, canvas.height - yPx);
+      const ctx = pageCanvas.getContext('2d');
+      ctx.drawImage(
+        canvas,
+        0, yPx, canvas.width, pageCanvas.height,
+        0, 0, canvas.width, pageCanvas.height
+      );
+      yPx += pageCanvas.height;
+
+      const pageImg = pageCanvas.toDataURL('image/jpeg', 0.9);
+      // Place at left margin, top margin, full target width, and computed mm height
+      pdf.addImage(pageImg, 'JPEG', pageMarginMm, pageMarginMm, targetWidth, thisPageMm);
+      if (i < pages - 1) pdf.addPage();
+    }
+  }
+
   pdf.save(`${state?.name || "character"}.pdf`);
 }
 

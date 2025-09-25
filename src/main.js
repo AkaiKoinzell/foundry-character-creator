@@ -536,8 +536,16 @@ function renderCharacterSheet() {
   container.appendChild(backstorySection);
 
   const backstoryEl = backstoryInput;
+  // Auto-resize textarea so content is never visually clipped on screen
+  const autoResize = () => {
+    if (!backstoryEl) return;
+    backstoryEl.style.height = 'auto';
+    backstoryEl.style.height = `${backstoryEl.scrollHeight}px`;
+  };
+  autoResize();
   backstoryEl?.addEventListener("input", () => {
     CharacterState.system.details.backstory = backstoryEl.value;
+    autoResize();
   });
 
   const midRow = hasEquipment

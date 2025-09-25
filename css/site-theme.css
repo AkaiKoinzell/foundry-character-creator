@@ -282,7 +282,7 @@ th {
 }
 
 #stepContainer {
-  max-width: 1000px;
+  max-width: 1200px;
   width: 100%;
   margin: 0 auto;
 }
@@ -291,7 +291,7 @@ th {
   display: flex;
   align-items: center;
   justify-content: center;
-  max-width: 1080px;
+  max-width: 1200px;
   width: 100%;
   margin: 0 auto;
 }

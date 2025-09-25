@@ -112,26 +112,11 @@
               "label": "Woodcarver's Tools"
             }
           ]
-        },
-        {
-          "label": "Pack",
-          "type": "radio",
-          "options": [
-            {
-              "value": "Explorer's Pack",
-              "label": "Explorer's Pack"
-            },
-            {
-              "value": "Explorer's Pack",
-              "label": "Explorer's Pack"
-            }
-          ]
         }
       ]
     },
     "Barbarian": {
       "fixed": [
-        "Explorer's Pack",
         "Javelins (4)"
       ],
       "choices": [
@@ -186,20 +171,6 @@
             {
               "value": "Simple weapon",
               "label": "Simple weapon"
-            }
-          ]
-        },
-        {
-          "label": "Pack",
-          "type": "radio",
-          "options": [
-            {
-              "value": "Diplomat's Pack",
-              "label": "Diplomat's Pack"
-            },
-            {
-              "value": "Entertainer's Pack",
-              "label": "Entertainer's Pack"
             }
           ]
         },
@@ -270,27 +241,12 @@
               "label": "Simple weapon"
             }
           ]
-        },
-        {
-          "label": "Pack",
-          "type": "radio",
-          "options": [
-            {
-              "value": "Priest's Pack",
-              "label": "Priest's Pack"
-            },
-            {
-              "value": "Explorer's Pack",
-              "label": "Explorer's Pack"
-            }
-          ]
         }
       ]
     },
     "Druid": {
       "fixed": [
         "Leather armor",
-        "Explorer's Pack",
         "Druidic focus"
       ],
       "choices": [
@@ -378,20 +334,6 @@
               "label": "Simple weapon"
             }
           ]
-        },
-        {
-          "label": "Pack",
-          "type": "radio",
-          "options": [
-            {
-              "value": "Explorer's Pack",
-              "label": "Explorer's Pack"
-            },
-            {
-              "value": "Explorer's Pack",
-              "label": "Explorer's Pack"
-            }
-          ]
         }
       ]
     },
@@ -428,20 +370,6 @@
               "label": "Simple melee weapon"
             }
           ]
-        },
-        {
-          "label": "Pack",
-          "type": "radio",
-          "options": [
-            {
-              "value": "Priest's Pack",
-              "label": "Priest's Pack"
-            },
-            {
-              "value": "Explorer's Pack",
-              "label": "Explorer's Pack"
-            }
-          ]
         }
       ]
     },
@@ -475,20 +403,6 @@
             {
               "value": "Two simple melee weapons",
               "label": "Two simple melee weapons"
-            }
-          ]
-        },
-        {
-          "label": "Pack",
-          "type": "radio",
-          "options": [
-            {
-              "value": "Explorer's Pack",
-              "label": "Explorer's Pack"
-            },
-            {
-              "value": "Explorer's Pack",
-              "label": "Explorer's Pack"
             }
           ]
         }
@@ -528,24 +442,6 @@
               "label": "Shortsword"
             }
           ]
-        },
-        {
-          "label": "Pack",
-          "type": "radio",
-          "options": [
-            {
-              "value": "Burglar's Pack",
-              "label": "Burglar's Pack"
-            },
-            {
-              "value": "Explorer's Pack",
-              "label": "Explorer's Pack"
-            },
-            {
-              "value": "Explorer's Pack",
-              "label": "Explorer's Pack"
-            }
-          ]
         }
       ]
     },
@@ -579,20 +475,6 @@
             {
               "value": "Arcane focus",
               "label": "Arcane focus"
-            }
-          ]
-        },
-        {
-          "label": "Pack",
-          "type": "radio",
-          "options": [
-            {
-              "value": "Explorer's Pack",
-              "label": "Explorer's Pack"
-            },
-            {
-              "value": "Explorer's Pack",
-              "label": "Explorer's Pack"
             }
           ]
         }
@@ -630,20 +512,6 @@
             {
               "value": "Arcane focus",
               "label": "Arcane focus"
-            }
-          ]
-        },
-        {
-          "label": "Pack",
-          "type": "radio",
-          "options": [
-            {
-              "value": "Scholar's Pack",
-              "label": "Scholar's Pack"
-            },
-            {
-              "value": "Explorer's Pack",
-              "label": "Explorer's Pack"
             }
           ]
         }

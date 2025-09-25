@@ -26,6 +26,7 @@ jest.unstable_mockModule('../src/data.js', () => ({
   loadSpells: async () => {},
   loadOptionalFeatures: async () => {},
   logCharacterState: jest.fn(),
+  loadEquipment: jest.fn(),
 }));
 jest.unstable_mockModule('../src/step5.js', () => ({
   loadEquipmentData: jest.fn().mockResolvedValue([]),
@@ -50,4 +51,3 @@ describe('renderAbilityBonuses', () => {
     expect(CharacterState.system.abilities.dex.value).toBe(11);
   });
 });
-

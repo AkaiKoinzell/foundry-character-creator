@@ -5,7 +5,12 @@
 import { jest } from '@jest/globals';
 import * as Step2 from '../src/step2.js';
 import { updateChoiceSelectOptions, updateSkillSelectOptions } from '../src/choice-select-helpers.js';
-import { CharacterState, DATA, MAX_CHARACTER_LEVEL } from '../src/data.js';
+import {
+  CharacterState,
+  DATA,
+  MAX_CHARACTER_LEVEL,
+  normalizeClassData,
+} from '../src/data.js';
 import { t } from '../src/i18n.js';
 import * as uiHelpers from '../src/ui-helpers.js';
 import { readFileSync } from 'fs';
@@ -125,13 +130,12 @@ describe('duplicate selection prevention', () => {
   });
   test('selectClass prevents adding duplicate classes', async () => {
     CharacterState.classes = [{ name: 'Fighter', level: 1 }];
-    const confirmMock = jest
-      .spyOn(uiHelpers, 'showConfirmation')
-      .mockResolvedValue(true);
+    const confirmMock = jest.fn().mockResolvedValue(true);
+    uiHelpers.__setShowConfirmationImpl(confirmMock);
     await Step2.selectClass({ name: 'Fighter' });
     expect(CharacterState.classes).toHaveLength(1);
     expect(confirmMock).toHaveBeenCalled();
-    confirmMock.mockRestore();
+    uiHelpers.__setShowConfirmationImpl();
   });
 });
 
@@ -166,10 +170,10 @@ describe('level cap messaging', () => {
 describe('feature descriptions', () => {
   test('Fighting Style and Second Wind descriptions render', () => {
     const __dirname = path.dirname(fileURLToPath(import.meta.url));
-    const fighterData = JSON.parse(
+    const fighterRaw = JSON.parse(
       readFileSync(path.join(__dirname, '../data/classes/fighter.json'), 'utf8')
     );
-    DATA.classes = [fighterData];
+    DATA.classes = [normalizeClassData(fighterRaw)];
     CharacterState.showHelp = false;
     const cls = {
       name: 'Fighter',
@@ -189,7 +193,7 @@ describe('feature descriptions', () => {
     expect(fsItem).toBeTruthy();
     const fsBody = fsItem.querySelector('.accordion-content');
     expect(fsBody.textContent).toContain(
-      'Adopt a particular style of fighting as your specialty.'
+      'You adopt a particular style of fighting as your specialty.'
     );
     expect(fsBody.querySelector('select')).not.toBeNull();
 
@@ -199,7 +203,7 @@ describe('feature descriptions', () => {
     expect(swItem).toBeTruthy();
     const swBody = swItem.querySelector('.accordion-content');
     expect(swBody.textContent).toContain(
-      'Use a bonus action to regain hit points equal to 1d10 + your fighter level once per short or long rest.'
+      'On your turn, you can use a bonus action to regain hit points equal to 1d10 + your fighter level.'
     );
   });
 });

@@ -23,6 +23,7 @@ jest.unstable_mockModule('../src/data.js', () => ({
   loadSpells: async () => {},
   loadOptionalFeatures: async () => {},
   logCharacterState: jest.fn(),
+  loadEquipment: jest.fn(),
 }));
 jest.unstable_mockModule('../src/step5.js', () => ({
   loadEquipmentData: jest.fn().mockResolvedValue(DATA.equipment),
@@ -31,7 +32,7 @@ jest.unstable_mockModule('../src/step5.js', () => ({
 const { renderWeaponChoices } = await import('../src/feat.js');
 
 describe('renderWeaponChoices', () => {
-  test('selects unique weapons', () => {
+  test('selects unique weapons', async () => {
     const div = document.createElement('div');
     const feat = {
       weaponProficiencies: [
@@ -51,4 +52,3 @@ describe('renderWeaponChoices', () => {
     expect(opts2).not.toContain('Longsword');
   });
 });
-

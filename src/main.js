@@ -4,6 +4,10 @@ import {
   loadClasses,
   fetchJsonWithRetry,
   loadBackgrounds,
+  loadFeats,
+  loadRaces,
+  loadSpells,
+  loadEquipment,
 } from "./data.js";
 import {
   loadStep2,
@@ -22,11 +26,18 @@ import {
   isStepComplete as isStep4Complete,
   confirmStep as confirmStep4,
 } from "./step4.js";
-import { loadStep5, isStepComplete as isStep5Complete } from "./step5.js";
+import {
+  loadStep5,
+  isStepComplete as isStep5Complete,
+  resetEquipmentDataCache,
+} from "./step5.js";
 import { loadStep6, commitAbilities } from "./step6.js";
 import { exportFoundryActor } from "./export.js";
 import { t, initI18n, applyTranslations } from "./i18n.js";
 import { exportPdf } from "./export-pdf.js";
+import { onCustomDataUpdated } from "./custom-data.js";
+import { initCustomDataManager } from "./custom-data-ui.js";
+import { showToast } from "./ui-helpers.js";
 
 const TOTAL_STEPS = 7;
 const LAST_STEP = TOTAL_STEPS;
@@ -36,6 +47,50 @@ let currentStepComplete = false;
 const visitedSteps = new Set();
 const completedSteps = new Set();
 const invalidatedSteps = new Set();
+
+let customDataReloadPromise = null;
+
+async function refreshCustomDataCaches() {
+  try {
+    resetEquipmentDataCache();
+    DATA.classes = [];
+    DATA.backgrounds = {};
+    DATA.races = {};
+    DATA.spells = [];
+    DATA.feats = [];
+    DATA.equipment = undefined;
+    DATA.featDetails = {};
+
+    await Promise.all([
+      loadClasses(true),
+      loadBackgrounds(true),
+      loadRaces(true),
+      loadFeats(true),
+      loadSpells(true),
+      loadEquipment(true),
+    ]);
+
+    if (currentStep === 2) await loadStep2(false, true);
+    if (currentStep === 3) await loadStep3(true);
+    if (currentStep === 4) await loadStep4(true);
+    if (currentStep === 5) await loadStep5(true);
+    if (currentStep === TOTAL_STEPS - 1) loadStep6(true);
+
+    showToast(t('customDataReloaded'));
+    showErrorBanner('');
+  } catch (err) {
+    console.error('Failed to refresh custom data', err);
+    showErrorBanner(t('customDataReloadFailed'));
+  }
+}
+
+function scheduleCustomDataReload() {
+  if (customDataReloadPromise) return customDataReloadPromise;
+  customDataReloadPromise = refreshCustomDataCaches().finally(() => {
+    customDataReloadPromise = null;
+  });
+  return customDataReloadPromise;
+}
 
 function invalidateStep(stepNumber) {
   invalidatedSteps.add(stepNumber);
@@ -110,6 +165,10 @@ function showErrorBanner(message) {
   banner.textContent = message;
   banner.classList.remove('hidden');
 }
+
+onCustomDataUpdated(() => {
+  scheduleCustomDataReload();
+});
 
 function showStep(step) {
     const firstVisit = !visitedSteps.has(step);
@@ -395,25 +454,27 @@ function renderCharacterSheet() {
 
   const infusionsSection = document.createElement("section");
   infusionsSection.className = "infusions";
-  if (summary.infusions.length) {
+  const hasInfusions = summary.infusions.length > 0;
+  if (hasInfusions) {
     infusionsSection.appendChild(document.createElement("h3")).textContent =
       "Infusions";
     const infList = document.createElement("ul");
     summary.infusions.forEach((i) => {
-      const li = document.createElement('li');
-      const strong = document.createElement('strong');
+      const li = document.createElement("li");
+      const strong = document.createElement("strong");
       strong.textContent = i.name;
       li.appendChild(strong);
       if (i.description) li.append(`: ${i.description}`);
       infList.appendChild(li);
     });
     infusionsSection.appendChild(infList);
+    container.appendChild(infusionsSection);
   }
-  container.appendChild(infusionsSection);
 
   const equipmentSection = document.createElement("section");
   equipmentSection.className = "equipment";
-  if (summary.equipment.length) {
+  const hasEquipment = summary.equipment.length > 0;
+  if (hasEquipment) {
     equipmentSection.appendChild(document.createElement("h3")).textContent =
       "Equipment";
     const equipmentList = document.createElement("ul");
@@ -422,12 +483,14 @@ function renderCharacterSheet() {
         (equipmentList.appendChild(document.createElement("li")).textContent = e)
     );
     equipmentSection.appendChild(equipmentList);
+    container.appendChild(equipmentSection);
   }
-  container.appendChild(equipmentSection);
 
   const tlSection = document.createElement("section");
   tlSection.className = "tools-languages";
-  if (summary.languages.length) {
+  const hasLanguages = summary.languages.length > 0;
+  const hasTools = summary.tools.length > 0;
+  if (hasLanguages) {
     tlSection.appendChild(document.createElement("h3")).textContent =
       "Languages";
     const langList = document.createElement("ul");
@@ -436,7 +499,7 @@ function renderCharacterSheet() {
     );
     tlSection.appendChild(langList);
   }
-  if (summary.tools.length) {
+  if (hasTools) {
     tlSection.appendChild(document.createElement("h3")).textContent = "Tools";
     const toolsList = document.createElement("ul");
     summary.tools.forEach(
@@ -444,7 +507,9 @@ function renderCharacterSheet() {
     );
     tlSection.appendChild(toolsList);
   }
-  container.appendChild(tlSection);
+  if (hasLanguages || hasTools) {
+    container.appendChild(tlSection);
+  }
 
   const spellsSection = document.createElement("section");
   spellsSection.className = "spells";
@@ -466,6 +531,7 @@ function renderCharacterSheet() {
   backstoryInput.className = "form-control";
   backstoryInput.rows = 4;
   backstoryInput.value = details.backstory || "";
+  backstoryInput.textContent = backstoryInput.value;
   backstorySection.appendChild(backstoryInput);
   container.appendChild(backstorySection);
 
@@ -473,6 +539,31 @@ function renderCharacterSheet() {
   backstoryEl?.addEventListener("input", () => {
     CharacterState.system.details.backstory = backstoryEl.value;
   });
+
+  const midRow = hasEquipment
+    ? '"abilities skills equipment"'
+    : hasInfusions
+    ? '"abilities skills infusions"'
+    : '"abilities skills features"';
+  const tlRow = hasLanguages || hasTools
+    ? '"tools-languages spells spells"'
+    : '"spells spells spells"';
+  const gridRows = [
+    '"header header header"',
+    '"abilities skills features"',
+    midRow,
+    tlRow,
+    '"backstory backstory backstory"',
+  ];
+  container.style.gridTemplateAreas = gridRows.join(" ");
+  container.style.gridTemplateColumns = "0.9fr 1.1fr 1.6fr";
+  container.style.gap = "16px";
+
+  if (!hasEquipment && !hasInfusions) {
+    featuresSection.style.gridRow = "2 / span 2";
+  } else {
+    featuresSection.style.gridRow = "auto";
+  }
 }
 
 globalThis.renderCharacterSheet = renderCharacterSheet;
@@ -529,6 +620,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await initI18n();
   applyTranslations();
+  initCustomDataManager();
   for (let i = 1; i <= TOTAL_STEPS; i++) {
     const btn = document.getElementById(`btnStep${i}`);
     if (btn) {

@@ -6,6 +6,7 @@
   max-width: 100%;
   margin: 0 auto;
   border: 1px solid #000;
+  box-sizing: border-box;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-areas:
@@ -13,7 +14,7 @@
     "abilities skills features"
     "abilities skills equipment"
     "tools-languages spells backstory";
-  gap: 10px;
+  gap: 12px;
 }
 
 .character-sheet .char-header {
@@ -36,13 +37,22 @@
 .character-sheet .tools-languages { grid-area: tools-languages; }
 .character-sheet .spells { grid-area: spells; }
 .character-sheet .backstory { grid-area: backstory; }
+.character-sheet .infusions { grid-area: infusions; }
 
 .character-sheet .features,
 .character-sheet .spells,
 .character-sheet .backstory {
-  height: 250px;
+  min-height: 260px;
+  height: auto;
   overflow-y: auto;
   border: 2px solid #000;
+}
+
+.character-sheet .backstory textarea {
+  width: 100%;
+  min-height: 220px;
+  resize: vertical;
+  box-sizing: border-box;
 }
 
 .character-sheet section {

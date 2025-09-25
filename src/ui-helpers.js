@@ -176,9 +176,9 @@ export function showToast(message, duration = 3000) {
  * @param {string} [opts.cancelText=t('cancel')] - Cancel button text
  * @returns {Promise<boolean>} Resolves to `true` if confirmed, otherwise `false`
  */
-export function showConfirmation(
+const defaultShowConfirmationImpl = function showConfirmationImpl(
   message,
-  { confirmText = t('ok'), cancelText = t('cancel') } = {}
+  { confirmText = t('ok'), cancelText = t('cancel') } = {},
 ) {
   if (typeof document === 'undefined') {
     if (typeof window !== 'undefined' && typeof window.confirm === 'function') {
@@ -225,7 +225,39 @@ export function showConfirmation(
     okBtn.addEventListener('click', onOk, { once: true });
     cancelBtn.addEventListener('click', onCancel, { once: true });
   });
+};
+
+let showConfirmationImpl = defaultShowConfirmationImpl;
+
+export function showConfirmation(message, options) {
+  return showConfirmationImpl(message, options);
 }
+
+export function __setShowConfirmationImpl(fn) {
+  if (typeof fn === 'function') {
+    showConfirmationImpl = fn;
+  } else {
+    showConfirmationImpl = defaultShowConfirmationImpl;
+  }
+}
+
+Promise.resolve().then(async () => {
+  try {
+    const ns = await import('./ui-helpers.js');
+    const current = Object.getOwnPropertyDescriptor(ns, 'showConfirmation');
+    if (!current || !current.configurable) {
+      Object.defineProperty(ns, 'showConfirmation', {
+        configurable: true,
+        get: () => showConfirmation,
+        set: (fn) => {
+          __setShowConfirmationImpl(fn);
+        },
+      });
+    }
+  } catch (err) {
+    // ignore; this path is only for test environments that need spy overrides
+  }
+});
 export function createAccordionItem(title, content, isChoice = false, description = '') {
   const item = document.createElement('div');
   item.className = 'accordion-item' + (isChoice ? ' user-choice' : '');

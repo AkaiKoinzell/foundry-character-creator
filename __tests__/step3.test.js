@@ -46,6 +46,7 @@ jest.unstable_mockModule('../src/data.js', () => ({
   updateSpellSlots: jest.fn(),
   loadBackgrounds: jest.fn(),
   loadSpells: jest.fn(),
+  loadEquipment: jest.fn(),
 }));
 
 jest.unstable_mockModule('../src/step2.js', () => ({
@@ -842,4 +843,3 @@ describe('loadStep3 repeated navigation', () => {
     expect(clickCount).toBe(1);
   });
 });
-

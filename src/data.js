@@ -1,5 +1,10 @@
 import { t } from './i18n.js';
 import { showConfirmation } from './ui-helpers.js';
+import {
+  getCustomEntries,
+  getCustomFeatDetail,
+  getCustomEquipmentOverrides,
+} from './custom-data.js';
 export const DATA = {};
 
 // Maximum total level a character can reach
@@ -63,6 +68,262 @@ const PACT_BOON_OPTIONS = [
   'Pact of the Talisman',
   'Pact of the Tome',
 ];
+
+function deepClone(value) {
+  if (value == null || typeof value !== 'object') return value;
+  if (typeof globalThis.structuredClone === 'function') {
+    try {
+      return globalThis.structuredClone(value);
+    } catch (err) {
+      console.warn('structuredClone failed in data clone, falling back', err);
+    }
+  }
+  try {
+    return JSON.parse(JSON.stringify(value));
+  } catch (err) {
+    console.warn('Unable to deep clone value in data.js', err);
+    return undefined;
+  }
+}
+
+let BASE_CLASSES = null;
+let BASE_BACKGROUNDS = null;
+let BASE_RACES = null;
+let BASE_SPELLS = null;
+let BASE_FEATS = null;
+let BASE_EQUIPMENT = null;
+
+function mergeClassData() {
+  const classes = Array.isArray(BASE_CLASSES) ? BASE_CLASSES.map((c) => ({ ...c })) : [];
+  const custom = getCustomEntries('classes');
+  const map = new Map();
+  classes.forEach((cls) => {
+    if (cls?.name) map.set(cls.name, { ...cls, isCustom: false });
+  });
+  if (Array.isArray(custom)) {
+    custom.forEach((cls) => {
+      if (!cls || typeof cls !== 'object') return;
+      const name = cls.name || cls.class?.name;
+      if (!name) return;
+      const cloned = deepClone(cls) || cls;
+      cloned.isCustom = true;
+      map.set(name, cloned);
+    });
+  }
+  DATA.classes = Array.from(map.values());
+}
+
+function mergeBackgroundData() {
+  const merged = BASE_BACKGROUNDS ? { ...BASE_BACKGROUNDS } : {};
+  const custom = getCustomEntries('backgrounds');
+  if (Array.isArray(custom)) {
+    custom.forEach((bg) => {
+      if (!bg || typeof bg !== 'object') return;
+      const name = bg.name;
+      if (!name) return;
+      const cloned = deepClone(bg) || bg;
+      cloned.isCustom = true;
+      merged[name] = cloned;
+    });
+  }
+  DATA.backgrounds = merged;
+}
+
+function sanitizeCustomRace(entry) {
+  if (!entry || typeof entry !== 'object') return null;
+  const group = entry.group || entry.base || entry.raceName || entry.name;
+  if (!group) return null;
+  const items = Array.isArray(entry.items) ? entry.items : [entry];
+  return items
+    .map((item) => {
+      if (!item || typeof item !== 'object') return null;
+      const name = item.name || group;
+      if (!name) return null;
+      const data = item.data && typeof item.data === 'object' ? item.data : item;
+      return {
+        group,
+        name,
+        data: deepClone(data) || data,
+      };
+    })
+    .filter(Boolean);
+}
+
+function mergeRaceData() {
+  const base = {};
+  if (BASE_RACES) {
+    for (const [grp, subs] of Object.entries(BASE_RACES)) {
+      base[grp] = subs.map((sub) => ({ ...sub }));
+    }
+  }
+  const custom = getCustomEntries('races');
+  if (Array.isArray(custom)) {
+    custom
+      .map(sanitizeCustomRace)
+      .filter(Boolean)
+      .flat()
+      .forEach(({ group, name, data }) => {
+        if (!group) return;
+        base[group] = base[group] || [];
+        const existingIndex = base[group].findIndex((r) => r.name === name);
+        const entry = { name, isCustom: true };
+        if (data) entry.data = data;
+        if (existingIndex >= 0) base[group][existingIndex] = entry;
+        else base[group].push(entry);
+      });
+  }
+  DATA.races = base;
+}
+
+function mergeSpellData() {
+  const map = new Map();
+  (Array.isArray(BASE_SPELLS) ? BASE_SPELLS : []).forEach((spell) => {
+    if (spell?.name) map.set(spell.name, { ...spell, isCustom: false });
+  });
+  const custom = getCustomEntries('spells');
+  if (Array.isArray(custom)) {
+    custom.forEach((spell) => {
+      if (!spell || typeof spell !== 'object') return;
+      const name = spell.name;
+      if (!name) return;
+      const cloned = deepClone(spell) || spell;
+      cloned.isCustom = true;
+      map.set(name, cloned);
+    });
+  }
+  DATA.spells = Array.from(map.values());
+}
+
+function mergeFeatData(baseNames) {
+  const set = new Set(baseNames);
+  const custom = getCustomEntries('feats');
+  if (Array.isArray(custom)) {
+    custom.forEach((feat) => {
+      if (!feat) return;
+      const name = feat.name || feat.title;
+      if (!name) return;
+      set.add(name);
+      if (feat.details || feat.data) {
+        const detail = feat.details || feat.data;
+        if (detail && typeof detail === 'object') {
+          DATA.featDetails = DATA.featDetails || {};
+          DATA.featDetails[name] = deepClone(detail) || detail;
+        }
+      }
+    });
+  }
+  DATA.feats = Array.from(set);
+}
+
+function mergeEquipmentDataInternal() {
+  const base = BASE_EQUIPMENT && typeof BASE_EQUIPMENT === 'object'
+    ? deepClone(BASE_EQUIPMENT) || BASE_EQUIPMENT
+    : { standard: [], classes: {}, upgrades: {} };
+  const merged = {
+    standard: Array.isArray(base.standard) ? [...base.standard] : [],
+    classes: base.classes && typeof base.classes === 'object' ? { ...base.classes } : {},
+    upgrades: base.upgrades && typeof base.upgrades === 'object' ? { ...base.upgrades } : {},
+  };
+
+  // Ensure deep clones for nested class data
+  for (const [cls, details] of Object.entries(merged.classes)) {
+    if (!details || typeof details !== 'object') {
+      merged.classes[cls] = {};
+      continue;
+    }
+    merged.classes[cls] = {
+      fixed: Array.isArray(details.fixed) ? [...details.fixed] : [],
+      choices: Array.isArray(details.choices)
+        ? details.choices.map((choice) => deepClone(choice) || choice)
+        : [],
+      upgrades:
+        Array.isArray(details.upgrades)
+          ? details.upgrades.map((choice) => deepClone(choice) || choice)
+          : [],
+    };
+  }
+
+  const overrides = getCustomEquipmentOverrides();
+  if (!overrides || typeof overrides !== 'object') {
+    return merged;
+  }
+
+  if (Array.isArray(overrides.standard)) {
+    overrides.standard.forEach((item) => {
+      if (typeof item !== 'string') return;
+      if (!merged.standard.includes(item)) merged.standard.push(item);
+    });
+  }
+
+  if (overrides.upgrades && typeof overrides.upgrades === 'object') {
+    merged.upgrades = {
+      ...merged.upgrades,
+      ...deepClone(overrides.upgrades),
+    };
+  }
+
+  if (overrides.classes && typeof overrides.classes === 'object') {
+    for (const [clsName, override] of Object.entries(overrides.classes)) {
+      if (!override || typeof override !== 'object') continue;
+      const baseEntry = merged.classes[clsName] || { fixed: [], choices: [], upgrades: [] };
+      if (override.replace) {
+        const { replace, ...rest } = override;
+        merged.classes[clsName] = {
+          fixed: Array.isArray(rest.fixed) ? [...rest.fixed] : [],
+          choices: Array.isArray(rest.choices)
+            ? rest.choices.map((choice) => deepClone(choice) || choice)
+            : [],
+          upgrades: Array.isArray(rest.upgrades)
+            ? rest.upgrades.map((choice) => deepClone(choice) || choice)
+            : [],
+        };
+        continue;
+      }
+
+      if (Array.isArray(override.fixed)) {
+        const existing = Array.isArray(baseEntry.fixed) ? [...baseEntry.fixed] : [];
+        override.fixed.forEach((item) => {
+          if (typeof item !== 'string') return;
+          if (!existing.includes(item)) existing.push(item);
+        });
+        baseEntry.fixed = existing;
+      }
+
+      if (Array.isArray(override.choices)) {
+        const existingChoices = Array.isArray(baseEntry.choices)
+          ? [...baseEntry.choices]
+          : [];
+        override.choices.forEach((choice) => {
+          if (!choice || typeof choice !== 'object') return;
+          const label = choice.label || choice.id;
+          const type = choice.type;
+          const idx = existingChoices.findIndex(
+            (c) => c && c.label === label && c.type === type
+          );
+          const cloned = deepClone(choice) || choice;
+          if (idx >= 0) existingChoices[idx] = cloned;
+          else existingChoices.push(cloned);
+        });
+        baseEntry.choices = existingChoices;
+      }
+
+      if (Array.isArray(override.upgrades)) {
+        const existing = Array.isArray(baseEntry.upgrades)
+          ? [...baseEntry.upgrades]
+          : [];
+        override.upgrades.forEach((choice) => {
+          if (!choice || typeof choice !== 'object') return;
+          existing.push(deepClone(choice) || choice);
+        });
+        baseEntry.upgrades = existing;
+      }
+
+      merged.classes[clsName] = baseEntry;
+    }
+  }
+
+  return merged;
+}
 
 const OPTIONAL_FEATURE_HANDLERS = {
   AI: { type: 'infusion', label: 'Infusion' },
@@ -132,36 +393,42 @@ export async function fetchJsonWithRetry(
  * Fetches class data from the JSON index if it hasn't been loaded yet.
  * The resulting array of class objects is stored on `DATA.classes`.
  */
-export async function loadClasses() {
-  // Avoid re-fetching if classes are already present
-  if (Array.isArray(DATA.classes) && DATA.classes.length) return;
+export async function loadClasses(forceReload = false) {
+  if (!forceReload && Array.isArray(DATA.classes) && DATA.classes.length) return;
 
-  const index = await fetchJsonWithRetry('data/classes.json', 'class index');
-  let optionalFeatures = {};
-  try {
-    optionalFeatures = await fetchJsonWithRetry(
-      'data/optionalfeatures.json',
-      'optional features'
+  if (!BASE_CLASSES || forceReload) {
+    const index = await fetchJsonWithRetry('data/classes.json', 'class index');
+    let optionalFeatures = {};
+    try {
+      optionalFeatures = await fetchJsonWithRetry(
+        'data/optionalfeatures.json',
+        'optional features'
+      );
+    } catch (err) {
+      console.warn('Optional features unavailable', err);
+    }
+
+    BASE_CLASSES = await Promise.all(
+      Object.values(index.items || {}).map(async (path) => {
+        const raw = await fetchJsonWithRetry(path, `class at ${path}`);
+        return normalizeClassData(raw, optionalFeatures);
+      })
     );
-  } catch (err) {
-    console.warn('Optional features unavailable', err);
   }
 
-  DATA.classes = await Promise.all(
-    Object.values(index.items || {}).map(async (path) => {
-      const raw = await fetchJsonWithRetry(path, `class at ${path}`);
-      return normalizeClassData(raw, optionalFeatures);
-    })
-  );
+  mergeClassData();
 }
 
 /**
  * Fetches feats list if not already loaded.
  */
-export async function loadFeats() {
-  if (Array.isArray(DATA.feats) && DATA.feats.length) return;
-  const json = await fetchJsonWithRetry('data/feats.json', 'feats');
-  DATA.feats = Object.keys(json.feats || {});
+export async function loadFeats(forceReload = false) {
+  if (!forceReload && Array.isArray(DATA.feats) && DATA.feats.length) return;
+  if (!BASE_FEATS || forceReload) {
+    const json = await fetchJsonWithRetry('data/feats.json', 'feats');
+    BASE_FEATS = Object.keys(json.feats || {});
+  }
+  mergeFeatData(BASE_FEATS || []);
 }
 
 /**
@@ -200,6 +467,11 @@ DATA.infusionDetails = DATA.infusionDetails || {};
  */
 export async function loadFeatDetails(name) {
   if (DATA.featDetails[name]) return DATA.featDetails[name];
+  const customDetail = getCustomFeatDetail(name);
+  if (customDetail) {
+    DATA.featDetails[name] = customDetail;
+    return customDetail;
+  }
   const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '');
   const path = `data/feats/${slug}.json`;
   const feat = await fetchJsonWithRetry(path, `feat ${name}`);
@@ -227,59 +499,74 @@ export async function loadInfusionDetails(name) {
  * Fetches background data from the JSON index and stores full objects
  * keyed by their background name on `DATA.backgrounds`.
  */
-export async function loadBackgrounds() {
-  if (DATA.backgrounds && Object.keys(DATA.backgrounds).length) return;
+export async function loadBackgrounds(forceReload = false) {
+  if (!forceReload && DATA.backgrounds && Object.keys(DATA.backgrounds).length) return;
 
-  const index = await fetchJsonWithRetry(
-    'data/backgrounds.json',
-    'background index'
-  );
-  const entries = index.items || {};
-  DATA.backgrounds = {};
+  if (!BASE_BACKGROUNDS || forceReload) {
+    const index = await fetchJsonWithRetry(
+      'data/backgrounds.json',
+      'background index'
+    );
+    const entries = index.items || {};
+    const collection = {};
 
-  await Promise.all(
-    Object.entries(entries).map(async ([name, path]) => {
-      const bg = await fetchJsonWithRetry(path, `background at ${path}`);
-      if (!bg.name) bg.name = name;
-      DATA.backgrounds[name] = bg;
-    })
-  );
+    await Promise.all(
+      Object.entries(entries).map(async ([name, path]) => {
+        const bg = await fetchJsonWithRetry(path, `background at ${path}`);
+        if (!bg.name) bg.name = name;
+        collection[name] = bg;
+      })
+    );
+
+    BASE_BACKGROUNDS = collection;
+  }
+
+  mergeBackgroundData();
 }
 
 /**
  * Fetches race data and groups variants by their base race name.
  */
-export async function loadRaces() {
-  if (DATA.races && Object.keys(DATA.races).length) return;
+export async function loadRaces(forceReload = false) {
+  if (!forceReload && DATA.races && Object.keys(DATA.races).length) return;
 
-  const index = await fetchJsonWithRetry('data/races.json', 'race index');
-  const entries = index.items || {};
-  const groups = {};
+  if (!BASE_RACES || forceReload) {
+    const index = await fetchJsonWithRetry('data/races.json', 'race index');
+    const entries = index.items || {};
+    const groups = {};
 
-  await Promise.all(
-    Object.values(entries).map(async (path) => {
-      const race = await fetchJsonWithRetry(path, `race at ${path}`);
-      const base = race.raceName || race.name;
-      if (!groups[base]) groups[base] = [];
-      groups[base].push({ name: race.name, path });
-    })
-  );
+    await Promise.all(
+      Object.values(entries).map(async (path) => {
+        const race = await fetchJsonWithRetry(path, `race at ${path}`);
+        const base = race.raceName || race.name;
+        if (!base) return;
+        if (!groups[base]) groups[base] = [];
+        groups[base].push({ name: race.name, path });
+      })
+    );
 
-  DATA.races = groups;
+    BASE_RACES = groups;
+  }
+
+  mergeRaceData();
 }
 
 /**
  * Fetches spell data for levels 0-9 and caches the combined array on
  * `DATA.spells`.
  */
-export async function loadSpells() {
-  if (Array.isArray(DATA.spells) && DATA.spells.length) return DATA.spells;
-  const promises = [];
-  for (let i = 0; i <= 9; i++) {
-    const path = `data/spells/level${i}.json`;
-    promises.push(fetchJsonWithRetry(path, `spells level ${i}`));
+export async function loadSpells(forceReload = false) {
+  if (!forceReload && Array.isArray(DATA.spells) && DATA.spells.length) return DATA.spells;
+  if (!BASE_SPELLS || forceReload) {
+    const promises = [];
+    for (let i = 0; i <= 9; i++) {
+      const path = `data/spells/level${i}.json`;
+      promises.push(fetchJsonWithRetry(path, `spells level ${i}`));
+    }
+    BASE_SPELLS = (await Promise.all(promises)).flat();
   }
-  DATA.spells = (await Promise.all(promises)).flat();
+
+  mergeSpellData();
   return DATA.spells;
 }
 
@@ -295,7 +582,16 @@ export async function loadOptionalFeatures() {
   return DATA.optionalFeatures;
 }
 
-function normalizeClassData(raw, optionalFeaturesMap = {}) {
+export async function loadEquipment(forceReload = false) {
+  if (!forceReload && DATA.equipment) return DATA.equipment;
+  if (!BASE_EQUIPMENT || forceReload) {
+    BASE_EQUIPMENT = await fetchJsonWithRetry('data/equipment.json', 'equipment');
+  }
+  DATA.equipment = mergeEquipmentDataInternal();
+  return DATA.equipment;
+}
+
+export function normalizeClassData(raw, optionalFeaturesMap = {}) {
   if (!raw || typeof raw !== 'object') return raw;
   if (raw.name && raw.features_by_level) return raw;
   if (!Array.isArray(raw.class) || !raw.class.length) return raw;

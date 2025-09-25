@@ -1,4 +1,4 @@
-import { DATA, CharacterState, fetchJsonWithRetry } from './data.js';
+import { DATA, CharacterState, loadEquipment } from './data.js';
 import { t } from './i18n.js';
 import * as main from './main.js';
 import { createAccordionItem } from './ui-helpers.js';
@@ -29,13 +29,16 @@ function getSimpleWeapons() {
       ];
 }
 
-export async function loadEquipmentData() {
-  if (equipmentData) return equipmentData;
+export function resetEquipmentDataCache() {
+  equipmentData = undefined;
+}
+
+export async function loadEquipmentData(forceReload = false) {
+  if (!forceReload && equipmentData) return equipmentData;
 
   try {
-    const data = await fetchJsonWithRetry('data/equipment.json', 'equipment');
+    const data = await loadEquipment(forceReload);
     equipmentData = data;
-    DATA.equipment = data;
     return equipmentData;
   } catch {
     const container = document.getElementById('equipmentSelections');
@@ -285,7 +288,7 @@ export async function loadStep5(force = false) {
   confirmBtn.replaceWith(confirmBtn.cloneNode(true));
   confirmBtn = document.getElementById('confirmEquipment');
 
-  const data = await loadEquipmentData();
+  const data = await loadEquipmentData(force);
   if (!data) return;
 
   if (force) container.innerHTML = '';

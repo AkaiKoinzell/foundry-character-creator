@@ -3,7 +3,11 @@
  */
 import { jest } from '@jest/globals';
 
-jest.unstable_mockModule('../src/i18n.js', () => ({ t: (k) => k }));
+jest.unstable_mockModule('../src/i18n.js', () => ({
+  t: (k) => k,
+  applyTranslations: jest.fn(),
+  initI18n: jest.fn(),
+}));
 
 const { updateExpertiseSelectOptions, rebuildFromClasses, refreshBaseState } = await import('../src/step2.js');
 const { CharacterState } = await import('../src/data.js');

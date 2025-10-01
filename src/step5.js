@@ -1,7 +1,7 @@
 import { DATA, CharacterState, loadEquipment } from './data.js';
 import { t } from './i18n.js';
 import * as main from './main.js';
-import { createAccordionItem } from './ui-helpers.js';
+import { createAccordionItem, appendEntries } from './ui-helpers.js';
 import { inlineWarning } from './validation.js';
 
 let equipmentData;
@@ -69,6 +69,13 @@ function buildSimpleWeaponSelect(count = 1) {
 function buildChoiceBlock(choice, idx) {
   const wrapper = document.createElement('div');
   const inputs = [];
+
+  if (choice?.description) {
+    appendEntries(wrapper, [choice.description]);
+  }
+  if (Array.isArray(choice?.entries) && choice.entries.length) {
+    appendEntries(wrapper, choice.entries);
+  }
 
   if (choice.type === 'radio' || choice.type === 'checkbox') {
     choice.options.forEach((opt, i) => {

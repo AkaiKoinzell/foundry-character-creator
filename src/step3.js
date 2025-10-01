@@ -7,6 +7,7 @@ import {
   loadSpells
 } from './data.js';
 import { loadEquipmentData } from './step5.js';
+import { clearAppliedBackground } from './step4.js';
 import { refreshBaseState, rebuildFromClasses } from './step2.js';
 import { updateChoiceSelectOptions, filterDuplicateOptions } from './choice-select-helpers.js';
 import { t } from './i18n.js';
@@ -1153,6 +1154,7 @@ function confirmRaceSelection() {
   if (!currentRaceData || !selectedBaseRace) return false;
   if (!validateRaceChoices()) return false;
   const container = document.getElementById('raceTraits');
+  clearAppliedBackground();
 
   let raceData = JSON.parse(JSON.stringify(currentRaceData));
   let variantInfo = null;

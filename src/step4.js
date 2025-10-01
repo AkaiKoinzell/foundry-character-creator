@@ -20,6 +20,7 @@ import { addUniqueProficiency, pendingReplacements } from './proficiency.js';
 import { renderFeatChoices } from './feat.js';
 
 let currentBackgroundData = null;
+const BACKGROUND_SOURCE = 'Background';
 const pendingSelections = {
   skills: [],
   tools: [],
@@ -28,12 +29,119 @@ const pendingSelections = {
   featRenderer: null,
 };
 
+let appliedBackground = null;
+
 export function resetPendingSelections() {
   pendingSelections.skills = [];
   pendingSelections.tools = [];
   pendingSelections.languages = [];
   pendingSelections.feat = null;
   pendingSelections.featRenderer = null;
+}
+
+function removeProficienciesBySource(source) {
+  const sources = CharacterState.proficiencySources || {};
+  let changed = false;
+  const extract = (type) => {
+    const map = sources[type];
+    if (!map) return [];
+    const values = Object.entries(map)
+      .filter(([, src]) => src === source)
+      .map(([value]) => value);
+    if (!values.length) return [];
+    values.forEach((value) => delete map[value]);
+    if (!Object.keys(map).length) delete sources[type];
+    return values;
+  };
+
+  const removeStrings = (list, toRemove) => {
+    if (!Array.isArray(list) || !toRemove.length) return list;
+    return list.filter((item) => !toRemove.includes(item));
+  };
+
+  const skillVals = extract('skills');
+  if (skillVals.length) {
+    CharacterState.system.skills = removeStrings(
+      CharacterState.system.skills,
+      skillVals
+    );
+    changed = true;
+  }
+
+  const toolVals = extract('tools');
+  if (toolVals.length) {
+    CharacterState.system.tools = removeStrings(
+      CharacterState.system.tools,
+      toolVals
+    );
+    changed = true;
+  }
+
+  const languageVals = extract('languages');
+  if (languageVals.length) {
+    const langs = CharacterState.system.traits?.languages;
+    if (langs && Array.isArray(langs.value)) {
+      langs.value = removeStrings(langs.value, languageVals);
+      changed = true;
+    }
+  }
+
+  const cantripVals = extract('cantrips');
+  if (cantripVals.length) {
+    const cantrips = CharacterState.system.spells?.cantrips;
+    if (Array.isArray(cantrips)) {
+      CharacterState.system.spells.cantrips = removeStrings(
+        cantrips,
+        cantripVals
+      );
+      changed = true;
+    }
+  }
+
+  const weaponVals = extract('weapons');
+  if (weaponVals.length) {
+    const weapons = CharacterState.system.weapons;
+    if (Array.isArray(weapons)) {
+      CharacterState.system.weapons = removeStrings(weapons, weaponVals);
+      changed = true;
+    }
+  }
+
+  const infusionVals = extract('infusion');
+  if (infusionVals.length) {
+    const infusions = CharacterState.infusions || [];
+    CharacterState.infusions = infusions.filter((inf) => {
+      const name = typeof inf === 'string' ? inf : inf?.name;
+      return !infusionVals.includes(name);
+    });
+    changed = true;
+  }
+
+  return changed;
+}
+
+export function clearAppliedBackground() {
+  const details = CharacterState.system?.details;
+  const hadBackground = !!details?.background;
+  const removed = removeProficienciesBySource(BACKGROUND_SOURCE);
+
+  let changed = removed;
+
+  if (appliedBackground?.feat) {
+    const before = CharacterState.feats || [];
+    CharacterState.feats = before.filter(
+      (feat) => feat.name !== appliedBackground.feat
+    );
+    if (before.length !== CharacterState.feats.length) changed = true;
+  }
+
+  if (hadBackground && details) {
+    details.background = '';
+    changed = true;
+  }
+  appliedBackground = null;
+
+  return changed;
 }
 const choiceAccordions = {
   skills: null,
@@ -332,28 +440,51 @@ async function confirmBackgroundSelection() {
   if (!validateBackgroundChoices()) return false;
 
   const container = document.getElementById('backgroundFeatures');
+  clearAppliedBackground();
   CharacterState.system.details.background = currentBackgroundData.name;
+
+  let chosenFeatName = '';
 
   const replacements = [];
 
   (currentBackgroundData.skills || []).forEach((s) => {
-    const sel = addUniqueProficiency('skills', s, container);
+    const sel = addUniqueProficiency(
+      'skills',
+      s,
+      container,
+      BACKGROUND_SOURCE
+    );
     if (sel) replacements.push(sel);
   });
   pendingSelections.skills.forEach((sel) => {
-    const repl = addUniqueProficiency('skills', sel.value, container);
+    const repl = addUniqueProficiency(
+      'skills',
+      sel.value,
+      container,
+      BACKGROUND_SOURCE
+    );
     if (repl) replacements.push(repl);
     sel.disabled = true;
   });
 
   if (Array.isArray(currentBackgroundData.tools)) {
     currentBackgroundData.tools.forEach((t) => {
-      const sel = addUniqueProficiency('tools', t, container, 'Background');
+      const sel = addUniqueProficiency(
+        'tools',
+        t,
+        container,
+        BACKGROUND_SOURCE
+      );
       if (sel) replacements.push(sel);
     });
   }
   pendingSelections.tools.forEach((sel) => {
-    const repl = addUniqueProficiency('tools', sel.value, container, 'Background');
+    const repl = addUniqueProficiency(
+      'tools',
+      sel.value,
+      container,
+      BACKGROUND_SOURCE
+    );
     if (repl) replacements.push(repl);
     sel.disabled = true;
   });
@@ -368,7 +499,7 @@ async function confirmBackgroundSelection() {
         'languages',
         l,
         container,
-        'Background'
+        BACKGROUND_SOURCE
       );
       if (sel) replacements.push(sel);
     });
@@ -378,7 +509,7 @@ async function confirmBackgroundSelection() {
       'languages',
       sel.value,
       container,
-      'Background'
+      BACKGROUND_SOURCE
     );
     if (repl) replacements.push(repl);
     sel.disabled = true;
@@ -392,6 +523,7 @@ async function confirmBackgroundSelection() {
     }
     CharacterState.feats = Array.from(featMap.values());
     pendingSelections.feat.disabled = true;
+    chosenFeatName = pendingSelections.feat.value;
   }
 
   resetPendingSelections();
@@ -400,6 +532,10 @@ async function confirmBackgroundSelection() {
   rebuildFromClasses();
 
   const finalize = () => {
+    appliedBackground = {
+      name: CharacterState.system.details.background || '',
+      feat: chosenFeatName,
+    };
     logCharacterState();
     main.setCurrentStepComplete?.(true);
   };
@@ -455,6 +591,11 @@ export async function loadStep4(force = false) {
     changeBtn.parentNode.replaceChild(newBtn, changeBtn);
     changeBtn = newBtn;
     changeBtn.addEventListener('click', () => {
+      const changed = clearAppliedBackground();
+      if (changed) {
+        refreshBaseState();
+        rebuildFromClasses();
+      }
       currentBackgroundData = null;
       resetPendingSelections();
       const list = document.getElementById('backgroundList');

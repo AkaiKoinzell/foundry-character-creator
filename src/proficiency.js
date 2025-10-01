@@ -107,6 +107,15 @@ export function pendingReplacements(type) {
   );
 }
 
+function recordProficiencySource(state, type, value, source) {
+  if (!source || !value) return;
+  state.proficiencySources = state.proficiencySources || {};
+  const map =
+    (state.proficiencySources[type] =
+      state.proficiencySources[type] || {});
+  map[value] = source;
+}
+
 export function addUniqueProficiency(
   type,
   value,
@@ -118,13 +127,7 @@ export function addUniqueProficiency(
   const list = getProficiencyList(type, state);
   if (!list.includes(value)) {
     list.push(value);
-    if (source) {
-      state.proficiencySources = state.proficiencySources || {};
-      const map =
-        (state.proficiencySources[type] =
-          state.proficiencySources[type] || {});
-      map[value] = source;
-    }
+    recordProficiencySource(state, type, value, source);
     if (state === CharacterState) logCharacterState();
     return null;
   }
@@ -150,6 +153,7 @@ export function addUniqueProficiency(
   sel.addEventListener('change', () => {
     if (sel.value && !list.includes(sel.value)) {
       list.push(sel.value);
+      recordProficiencySource(state, type, sel.value, source);
       sel.disabled = true;
       pending.delete(sel);
       if (state === CharacterState) logCharacterState();

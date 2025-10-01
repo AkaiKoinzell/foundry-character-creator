@@ -261,11 +261,14 @@ Promise.resolve().then(async () => {
     // ignore; this path is only for test environments that need spy overrides
   }
 });
+let accordionIdCounter = 0;
+
 export function createAccordionItem(title, content, isChoice = false, description = '') {
   const item = document.createElement('div');
   item.className = 'accordion-item' + (isChoice ? ' user-choice' : '');
 
   const header = document.createElement('button');
+  header.type = 'button';
   header.className = 'accordion-header';
 
   if (description) {
@@ -283,12 +286,33 @@ export function createAccordionItem(title, content, isChoice = false, descriptio
   if (typeof content === 'string') body.textContent = content;
   else body.appendChild(content);
 
+  const panelId = `accordion-panel-${++accordionIdCounter}`;
+  body.id = panelId;
+  header.setAttribute('aria-controls', panelId);
+
+  const setExpanded = expanded => {
+    const isExpanded = !!expanded;
+    header.classList.toggle('active', isExpanded);
+    body.classList.toggle('show', isExpanded);
+    header.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+    body.setAttribute('aria-hidden', isExpanded ? 'false' : 'true');
+  };
+
+  const getExpanded = () => header.classList.contains('active');
+
+  setExpanded(isChoice);
+
   header.addEventListener('click', () => {
-    header.classList.toggle('active');
-    body.classList.toggle('show');
+    setExpanded(!getExpanded());
   });
 
   item.append(header, body);
+
+  item.setAccordionExpanded = setExpanded;
+  item.isAccordionExpanded = getExpanded;
+  item.accordionHeader = header;
+  item.accordionContent = body;
+
   return item;
 }
 

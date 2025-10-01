@@ -277,8 +277,29 @@ function compileClassFeatures(cls) {
     const hasSubclassFeats = Array.isArray(cls.subclassData?.features_by_level?.[lvl])
       && (cls.subclassData.features_by_level[lvl] || []).length > 0;
     if (hasSubclassFeats) {
-      const PLACEHOLDER_RE = /(Specialist|Domain|Archetype|College|Path|Oath|Tradition|Circle|Patron|Order|School)\s+feature$/i;
-      feats = feats.filter(f => !PLACEHOLDER_RE.test(f?.name || ''));
+      const isSubclassPlaceholder = (name = '') => {
+        const n = String(name || '').trim();
+        const PLACEHOLDER_RE = /(Specialist|Domain|Archetype|College|Path|Oath|Tradition|Circle|Patron|Order|School)\s+feature$/i;
+        if (PLACEHOLDER_RE.test(n)) return true;
+        const BARE_NAMES = new Set([
+          'Artificer Specialist',
+          'Divine Domain',
+          'Martial Archetype',
+          'Roguish Archetype',
+          'Sorcerous Origin',
+          'Sacred Oath',
+          'Otherworldly Patron',
+          'Druid Circle',
+          'Primal Path',
+          'Monastic Tradition',
+          'Bard College',
+          'Arcane Tradition',
+          'Ranger Archetype',
+          'Ranger Conclave',
+        ]);
+        return BARE_NAMES.has(n);
+      };
+      feats = feats.filter(f => !isSubclassPlaceholder(f?.name || ''));
     }
     feats.forEach(f => {
       cls.features.push({
@@ -541,6 +562,161 @@ function renderClassEditor(cls, index) {
   const skillChoiceSelectMap = new Map();
   const repeatedChoiceState = new Map();
 
+  const stemToken = token => {
+    return token
+      .replace(/(ions|ion|ings|ing|ments|ment|ances|ance)$/g, '')
+      .replace(/(ers|ies|ied|ed|es|ly|s)$/g, '')
+      .replace(/e$/g, '');
+  };
+
+  const tokenizeName = name => {
+    if (!name) return [];
+    const tokens = String(name)
+      .toLowerCase()
+      .split(/[^a-z0-9]+/g)
+      .map(token => stemToken(token))
+      .filter(token => token.length > 2);
+    return Array.from(new Set(tokens));
+  };
+
+  const entryReferencesNames = (entry, names) => {
+    if (!entry || !names.size) return false;
+    if (Array.isArray(entry)) {
+      return entry.some(item => entryReferencesNames(item, names));
+    }
+    if (typeof entry === 'string') return false;
+    if (typeof entry !== 'object') return false;
+
+    if (
+      entry.type === 'refClassFeature' &&
+      typeof entry.classFeature === 'string'
+    ) {
+      const refName = entry.classFeature.split('|')[0]?.trim().toLowerCase();
+      if (refName && names.has(refName)) return true;
+    }
+
+    if (Array.isArray(entry.entries) && entryReferencesNames(entry.entries, names)) {
+      return true;
+    }
+    if (Array.isArray(entry.items) && entryReferencesNames(entry.items, names)) {
+      return true;
+    }
+    if (entry.entry && entryReferencesNames(entry.entry, names)) {
+      return true;
+    }
+    return false;
+  };
+
+  const featureReferencesNames = (feature, names) => {
+    if (!feature || !names.size) return false;
+    const name = String(feature.name || '').toLowerCase();
+    if (names.has(name)) return false;
+    return entryReferencesNames(feature.entries, names);
+  };
+
+  // Normalize text for comparison by:
+  // - Converting 5etools-style tokens like "{@item artisan's tools|phb}" to a
+  //   readable label (e.g. "artisan's tools")
+  // - Collapsing whitespace and lowercasing
+  const normalizeText = (str) => {
+    const toText = String(str || '').replace(/\{@[^}]+}/g, (match) => {
+      const inner = match.slice(2, -1); // remove {@ and }
+      const parts = inner.split('|');
+      const head = parts[0] || '';
+      const headParts = head.split(' ');
+      headParts.shift(); // drop token type (e.g., 'item', 'spell', 'i')
+      const primary = headParts.join(' ').trim();
+      if (primary) return primary;
+      for (let i = 1; i < parts.length; i += 1) {
+        const segment = parts[i]?.trim();
+        if (segment) return segment;
+      }
+      return head.trim();
+    });
+    return toText.replace(/\s+/g, ' ').trim().toLowerCase();
+  };
+
+  const entriesContainText = (entries, text) => {
+    if (!Array.isArray(entries) || !text) return false;
+    const target = normalizeText(text);
+    if (!target) return false;
+    const queue = [...entries];
+    while (queue.length) {
+      const entry = queue.shift();
+      if (!entry) continue;
+      if (typeof entry === 'string') {
+        if (normalizeText(entry) === target) return true;
+        continue;
+      }
+      if (Array.isArray(entry)) {
+        queue.push(...entry);
+        continue;
+      }
+      if (typeof entry !== 'object') continue;
+      if (entry.description && normalizeText(entry.description) === target) return true;
+      if (entry.name && normalizeText(entry.name) === target) return true;
+      if (entry.entry) {
+        if (entriesContainText([entry.entry], text)) return true;
+      }
+      if (Array.isArray(entry.entries) && entriesContainText(entry.entries, text)) return true;
+      if (Array.isArray(entry.items) && entriesContainText(entry.items, text)) return true;
+    }
+    return false;
+  };
+
+  const popMatchingFeatures = (features, choice) => {
+    if (!Array.isArray(features) || !features.length) return [];
+    const choiceTokens = tokenizeName(choice?.name || '');
+    if (!choiceTokens.length) return [];
+
+    const matched = [];
+    const matchedNames = new Set();
+
+    for (let idx = features.length - 1; idx >= 0; idx -= 1) {
+      const feature = features[idx];
+      const featureTokens = tokenizeName(feature?.name || '');
+      if (!featureTokens.length) continue;
+      const featureTokenSet = new Set(featureTokens);
+      const matches = choiceTokens.every(token => featureTokenSet.has(token));
+      if (matches) {
+        matched.unshift(features.splice(idx, 1)[0]);
+        if (feature?.name) matchedNames.add(String(feature.name).toLowerCase());
+      }
+    }
+
+    if (matchedNames.size) {
+      for (let idx = features.length - 1; idx >= 0; idx -= 1) {
+        const feature = features[idx];
+        if (featureReferencesNames(feature, matchedNames)) {
+          matched.unshift(features.splice(idx, 1)[0]);
+          if (feature?.name) matchedNames.add(String(feature.name).toLowerCase());
+        }
+      }
+    }
+
+    return matched;
+  };
+
+  const appendFeatureDetails = (container, feature) => {
+    if (!feature) return;
+    const hasEntries = Array.isArray(feature.entries) && feature.entries.length;
+    const shouldShowDescription =
+      feature.description &&
+      (!hasEntries || !entriesContainText(feature.entries, feature.description));
+    if (shouldShowDescription) {
+      container.appendChild(createElement('p', feature.description));
+    }
+    if (hasEntries) {
+      appendEntries(container, feature.entries);
+    }
+  };
+
+  const attachChoiceFeatures = (container, choice, features) => {
+    const matched = popMatchingFeatures(features, choice);
+    matched.forEach(feature => appendFeatureDetails(container, feature));
+    return matched;
+  };
+
   const updateInfusionDescription = (descriptionEl, baseText, total, delta) => {
     if (!descriptionEl) return;
     const totalSuffix = total ? ` (${total} total)` : '';
@@ -570,13 +746,7 @@ function renderClassEditor(cls, index) {
     const currentCount = state.count || state.choiceSelects.length;
     const delta = Math.max(0, targetCount - currentCount);
 
-    const fIdx = features.findIndex(f => f.name === choice.name);
-    if (fIdx >= 0) {
-      const feature = features.splice(fIdx, 1)[0];
-      if (feature.description)
-        state.container.appendChild(createElement('p', feature.description));
-      appendEntries(state.container, feature.entries);
-    }
+    attachChoiceFeatures(state.container, choice, features);
 
     cls.choiceSelections = cls.choiceSelections || {};
     const existing = cls.choiceSelections[choice.name] || [];
@@ -660,6 +830,10 @@ function renderClassEditor(cls, index) {
       // Cap required skill choices to available unique options
       const skillOpts = (clsDef.skill_proficiencies.options || []).slice();
       const knownSkills = new Set(CharacterState.system.skills || []);
+      // Do not filter out this class's own previously selected skills,
+      // otherwise a re-render (e.g., after selecting a subclass) would
+      // drop them from the select options and visually clear the value.
+      (cls.skills || []).filter(Boolean).forEach((sk) => knownSkills.delete(sk));
       const availSkills = skillOpts.filter(opt => !knownSkills.has(opt));
       const skillCount = Math.min(
         clsDef.skill_proficiencies.choose || 0,
@@ -807,18 +981,28 @@ function renderClassEditor(cls, index) {
         subContainer,
         true
       );
-      const subclassHeader = subclassAccordion.querySelector('.accordion-header');
-      const subclassBody = subclassAccordion.querySelector('.accordion-content');
+      const subclassHeader =
+        subclassAccordion.accordionHeader ||
+        subclassAccordion.querySelector('.accordion-header');
+      const subclassBody =
+        subclassAccordion.accordionContent ||
+        subclassAccordion.querySelector('.accordion-content');
+      const setSubclassExpanded =
+        subclassAccordion.setAccordionExpanded ||
+        ((expanded) => {
+          subclassHeader.classList.toggle('active', !!expanded);
+          subclassBody.classList.toggle('show', !!expanded);
+        });
+      const getSubclassExpanded =
+        subclassAccordion.isAccordionExpanded ||
+        (() => subclassHeader.classList.contains('active'));
       const shouldOpen =
         cls.uiState.subclassOpen !== undefined
           ? cls.uiState.subclassOpen
           : !cls.subclass;
-      if (shouldOpen) {
-        subclassHeader.classList.add('active');
-        subclassBody.classList.add('show');
-      }
+      setSubclassExpanded(shouldOpen);
       subclassHeader.addEventListener('click', () => {
-        cls.uiState.subclassOpen = subclassHeader.classList.contains('active');
+        cls.uiState.subclassOpen = getSubclassExpanded();
       });
       accordion.appendChild(subclassAccordion);
     }
@@ -842,12 +1026,33 @@ function renderClassEditor(cls, index) {
       ];
 
       // If subclass provides concrete features at this level, hide generic
-      // placeholder entries like "Divine Domain feature", "Artificer Specialist Feature", etc.
+      // placeholder entries like "Divine Domain"/"Artificer Specialist"
       const hasSubclassFeats = Array.isArray(cls.subclassData?.features_by_level?.[lvl])
         && (cls.subclassData.features_by_level[lvl] || []).length > 0;
       if (hasSubclassFeats) {
-        const PLACEHOLDER_RE = /(Specialist|Domain|Archetype|College|Path|Oath|Tradition|Circle|Patron|Order|School)\s+feature$/i;
-        features = features.filter(f => !PLACEHOLDER_RE.test(f?.name || ''));
+        const isSubclassPlaceholder = (name = '') => {
+          const n = String(name || '').trim();
+          const PLACEHOLDER_RE = /(Specialist|Domain|Archetype|College|Path|Oath|Tradition|Circle|Patron|Order|School)\s+feature$/i;
+          if (PLACEHOLDER_RE.test(n)) return true;
+          const BARE_NAMES = new Set([
+            'Artificer Specialist',
+            'Divine Domain',
+            'Martial Archetype',
+            'Roguish Archetype',
+            'Sorcerous Origin',
+            'Sacred Oath',
+            'Otherworldly Patron',
+            'Druid Circle',
+            'Primal Path',
+            'Monastic Tradition',
+            'Bard College',
+            'Arcane Tradition',
+            'Ranger Archetype',
+            'Ranger Conclave',
+          ]);
+          return BARE_NAMES.has(n);
+        };
+        features = features.filter(f => !isSubclassPlaceholder(f?.name || ''));
       }
 
       // track effective counts for gating
@@ -866,13 +1071,7 @@ function renderClassEditor(cls, index) {
 
         const cContainer = document.createElement('div');
 
-        const fIdx = features.findIndex(f => f.name === choice.name);
-        if (fIdx >= 0) {
-          const feature = features.splice(fIdx, 1)[0];
-          if (feature.description)
-            cContainer.appendChild(createElement('p', feature.description));
-          appendEntries(cContainer, feature.entries);
-        }
+        attachChoiceFeatures(cContainer, choice, features);
 
         const baseDescription = choice.description || '';
         let descriptionEl = null;
@@ -931,9 +1130,9 @@ function renderClassEditor(cls, index) {
         // Determine effective number of selects to render based on availability
         let toCreate = count;
         if (isExpertise) {
-          // Expertise must choose from currently proficient skills
-          const profSkills = Array.from(CharacterState.system.skills || []);
-          toCreate = Math.min(count, profSkills.length);
+          // Always render full number of selects; the options list
+          // updates dynamically as proficiencies are chosen elsewhere.
+          toCreate = count;
         } else if (choice.type === 'skills' || choice.type === 'tools' || choice.type === 'languages') {
           const base = Array.isArray(choice.selection) ? choice.selection.slice() : [];
           const knownList = getProficiencyList(choice.type) || [];

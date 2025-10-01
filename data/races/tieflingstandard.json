@@ -9,8 +9,14 @@
 		"humanoid"
 	],
 	"size": [
-		"S",
-		"M"
+		{
+			"choose": {
+				"from": [
+					"S",
+					"M"
+				]
+			}
+		}
 	],
 	"speed": 30,
 	"darkvision": 60,

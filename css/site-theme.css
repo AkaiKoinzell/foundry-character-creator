@@ -389,6 +389,8 @@ th {
   background-color: var(--choice-color);
   border-color: var(--choice-color);
   color: #fff;
+  /* Allow users to toggle these like any other accordion */
+  cursor: pointer;
 }
 
 .accordion-item.user-choice .accordion-header:hover,

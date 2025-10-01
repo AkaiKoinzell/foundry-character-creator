@@ -25,4 +25,34 @@
       }
     ]
   }
+  ,
+  "choices": [
+    {
+      "level": 3,
+      "name": "Bonus Proficiencies",
+      "description": "Choose three skills to gain proficiency in.",
+      "count": 3,
+      "type": "skills",
+      "selection": [
+        "Acrobatics",
+        "Animal Handling",
+        "Arcana",
+        "Athletics",
+        "Deception",
+        "History",
+        "Insight",
+        "Intimidation",
+        "Investigation",
+        "Medicine",
+        "Nature",
+        "Perception",
+        "Performance",
+        "Persuasion",
+        "Religion",
+        "Sleight of Hand",
+        "Stealth",
+        "Survival"
+      ]
+    }
+  ]
 }

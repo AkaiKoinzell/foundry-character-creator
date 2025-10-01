@@ -56,7 +56,13 @@ export function renderSpellChoices(cls) {
   const allSelects = [];
 
   function getKnownLimit() {
-    return cls.spellcasting?.spellsPerLevel?.[cls.level] || 0;
+    const base = cls.spellcasting?.spellsPerLevel?.[cls.level] || 0;
+    // Subtract cantrips (chosen separately) so the limit reflects
+    // only 1st–9th level spells for classes like Bard at level 1.
+    const cantripCount = Array.isArray(CharacterState.system.spells?.cantrips)
+      ? CharacterState.system.spells.cantrips.length
+      : 0;
+    return Math.max(0, base - cantripCount);
   }
 
   function selectedCount() {
@@ -74,7 +80,9 @@ export function renderSpellChoices(cls) {
   }
 
   function levelCaps() {
-    // Use standard slot table caps for non-pact casters.
+    // Use current slot table as a practical per-level cap for known spells at
+    // that level. This mirrors the earlier behavior the user liked and keeps
+    // choices intuitive at low levels (e.g., Bard 1: 2 first‑level spells).
     const caps = {};
     const spellState = CharacterState.system.spells || {};
     for (let i = 1; i <= 9; i++) {

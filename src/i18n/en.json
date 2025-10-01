@@ -64,6 +64,7 @@
   "levelCap": "Total level cannot exceed {max}",
   "maxScoreLevel1": "Ability scores cannot exceed 17 at level 1",
   "spellsKnown": "Spells Known",
+  "spellsKnownNonCantrip": "Spells Known (1st–9th)",
   "remaining": "remaining",
   "add": "Add",
   "selectSpell": "Select spell",

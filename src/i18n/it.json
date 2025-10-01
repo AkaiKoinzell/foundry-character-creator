@@ -64,6 +64,7 @@
   "levelCap": "Il livello totale non può superare {max}",
   "maxScoreLevel1": "I punteggi delle caratteristiche non possono superare 17 al livello 1",
   "spellsKnown": "Incantesimi Conosciuti",
+  "spellsKnownNonCantrip": "Incantesimi Conosciuti (1–9)",
   "remaining": "rimanenti",
   "add": "Aggiungi",
   "selectSpell": "Seleziona incantesimo",

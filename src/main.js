@@ -191,6 +191,12 @@ function showStep(step) {
       bar.style.width = `${((step - 1) / (TOTAL_STEPS - 1)) * 100}%`;
     }
     currentStep = step;
+
+    // Ensure the active step button is visible in the horizontal scroller on mobile
+    const activeStepBtn = document.getElementById(`btnStep${step}`);
+    try {
+      activeStepBtn?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    } catch (_) { /* no-op */ }
     if (CharacterState.showHelp) {
       // Placeholder for contextual help integration
       console.log(`Help: display guidance for step ${step}`);

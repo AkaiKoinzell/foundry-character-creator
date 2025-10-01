@@ -414,6 +414,18 @@ th {
     margin: 10px auto;
   }
 
+  /* Turn step nav into a single-row horizontal scroller */
+  nav {
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    gap: 8px;
+    padding: 0 6px;
+  }
+
+  nav .btn {
+    flex: 0 0 auto;
+  }
+
   header.banner {
     padding: 14px;
   }
@@ -441,7 +453,26 @@ th {
 
 @media screen and (max-width: 480px) {
   nav { gap: 6px; }
+  /* Step buttons look like compact chips */
+  nav .btn {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.95rem;
+    border-radius: 999px;
+  }
+
+  /* Reduce overall button padding slightly elsewhere */
   .btn { padding: 0.5rem 0.75rem; }
+
+  /* Smaller headings inside steps for readability */
+  .step h2 { font-size: 1.25rem; }
+  .step { padding: 14px; }
+
+  /* Accordion compaction */
+  .accordion-header { padding: 8px; font-size: 0.95rem; }
+  .accordion-content.show { padding: 8px; }
+
+  /* Smaller banner title on very small screens */
+  header.banner h1 { font-size: 1.25rem; }
   .pointbuy-table th,
   .pointbuy-table td {
     font-size: 0.85rem;

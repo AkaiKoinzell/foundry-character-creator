@@ -6,6 +6,7 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
+    "serve": "node scripts/serve.mjs --port=5173",
     "validate:races": "node scripts/validate-races.js",
     "test": "npm run validate:races && node --experimental-vm-modules ./node_modules/jest/bin/jest.js"
   },

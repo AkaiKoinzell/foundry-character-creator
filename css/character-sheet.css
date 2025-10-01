@@ -170,3 +170,48 @@
 .character-sheet.compact ul {
   margin: 0.25rem 0 0.25rem 1rem;
 }
+
+/*
+  Responsive layout for the rendered character sheet
+  - Collapse to two columns on tablets
+  - Stack to a single column on small phones
+*/
+@media (max-width: 1024px) {
+  .character-sheet {
+    grid-template-columns: 1fr 1fr !important;
+    grid-template-areas:
+      "header header"
+      "abilities skills"
+      "features features"
+      "equipment equipment"
+      "tools-languages spells"
+      "backstory backstory";
+  }
+
+  .character-sheet .ability-box {
+    width: 72px;
+    height: 82px;
+  }
+}
+
+@media (max-width: 680px) {
+  /* Let sections flow naturally in a single column for readability */
+  .character-sheet:not(.compact) {
+    display: block !important;
+    padding: 16px;
+  }
+  .character-sheet:not(.compact) section,
+  .character-sheet:not(.compact) .char-header {
+    margin-bottom: 12px;
+  }
+  .character-sheet:not(.compact) .ability-list {
+    justify-content: space-between;
+  }
+  .character-sheet:not(.compact) .ability-box {
+    width: 64px;
+    height: 74px;
+  }
+  .character-sheet:not(.compact) .ability-box .score {
+    font-size: 1.4em;
+  }
+}

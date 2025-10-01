@@ -82,6 +82,8 @@ nav {
   gap: 10px;
   flex-wrap: wrap;
   margin-bottom: 20px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 #progressContainer {
@@ -163,6 +165,7 @@ label {
   width: 100%;
   max-width: 400px;
   box-sizing: border-box;
+  font-size: 16px;
 }
 
 .form-control:focus {
@@ -196,6 +199,7 @@ th {
   align-items: center;
   gap: 10px;
   margin-top: 10px;
+  flex-wrap: wrap;
 }
 
 #spellSelectionContainer,
@@ -300,11 +304,13 @@ th {
   background-color: var(--accent-color);
   color: #fff;
   border: none;
-  padding: 0.5rem 0.75rem;
+  padding: 0.75rem;
   border-radius: 50%;
   cursor: pointer;
   opacity: 0.8;
   margin: 0 20px;
+  min-width: 44px;
+  min-height: 44px;
 }
 
 .arrow-btn:hover {
@@ -408,6 +414,19 @@ th {
     margin: 10px auto;
   }
 
+  header.banner {
+    padding: 14px;
+  }
+
+  .header-top {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  header.banner h1 {
+    font-size: 1.5rem;
+  }
+
   .pointbuy-table .btn {
     display: block;
     width: 100%;
@@ -421,6 +440,8 @@ th {
 }
 
 @media screen and (max-width: 480px) {
+  nav { gap: 6px; }
+  .btn { padding: 0.5rem 0.75rem; }
   .pointbuy-table th,
   .pointbuy-table td {
     font-size: 0.85rem;

@@ -718,6 +718,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     exportPdf(CharacterState).catch((err) => console.error(err));
   });
 
+
     // Step 1 inputs ----------------------------------------------------------
     const userNameEl = document.getElementById("userName");
     const characterNameEl = document.getElementById("characterName");

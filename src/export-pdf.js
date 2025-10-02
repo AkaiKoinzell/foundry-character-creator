@@ -94,9 +94,17 @@ export async function exportPdf(state) {
   // Let height expand to fit content to avoid clipping during capture
   sheet.style.minHeight = "unset";
   sheet.style.height = "auto";
-  // Allow rows to size to content naturally
+  // Fixed 4-column layout matching your design
+  sheet.style.alignItems = 'stretch';
   sheet.style.gridTemplateRows = "auto auto auto auto auto";
-  sheet.style.gridTemplateColumns = "0.9fr 1.1fr 1.6fr";
+  sheet.style.gridTemplateColumns = "0.9fr 0.35fr 0.75fr 1.6fr";
+  sheet.style.gridTemplateAreas = [
+    '"header header header header"',
+    '"abilities skills skills features"',
+    '"tools-languages tools-languages spells spells"',
+    '"tools-languages tools-languages spells spells"',
+    '"backstory backstory backstory backstory"',
+  ].join(' ');
   sheet.style.gap = "16px";
 
   sectionsToExpand.forEach((section) => {
@@ -185,34 +193,90 @@ export async function exportPdf(state) {
 
   if (featuresSection) {
     rememberStyle(featuresSection, ["gridRow"]);
-    if (!hasEquipment && !hasInfusions) {
-      featuresSection.style.gridRow = "2 / span 2";
-    } else {
-      featuresSection.style.gridRow = "auto";
+    featuresSection.style.gridRow = "auto";
+  }
+
+  // Hide equipment/infusions to follow the requested layout
+  if (equipmentSection) {
+    rememberStyle(equipmentSection, ["display"]);
+    equipmentSection.style.display = "none";
+  }
+  if (infusionsSection) {
+    rememberStyle(infusionsSection, ["display"]);
+    infusionsSection.style.display = "none";
+  }
+
+  // Abilities: two-column grid
+  const abilityList = sheet.querySelector('.ability-list');
+  if (abilityList) {
+    rememberStyle(abilityList, ["display", "gridTemplateColumns", "gap", "justifyItems", "alignItems"]);
+    abilityList.style.display = 'grid';
+    abilityList.style.gridTemplateColumns = 'repeat(2, minmax(68px, 1fr))';
+    abilityList.style.gap = '8px';
+    abilityList.style.justifyItems = 'center';
+    abilityList.style.alignItems = 'start';
+  }
+
+  // Skills: right padding and line height
+  if (sheet.querySelector('.skills')) {
+    const skills = sheet.querySelector('.skills');
+    rememberStyle(skills, ["paddingRight"]);
+    skills.style.paddingRight = '16px';
+    const ul = skills.querySelector('ul');
+    if (ul) {
+      rememberStyle(ul, ["lineHeight", "paddingRight"]);
+      ul.style.lineHeight = '1.3';
+      ul.style.paddingRight = '4px';
     }
   }
 
-  const midRow = hasEquipment
-    ? '"abilities skills equipment"'
-    : hasInfusions
-    ? '"abilities skills infusions"'
-    : '"abilities skills features"';
-  const hasToolsLanguages = Boolean(
-    languagesSection &&
-    languagesSection.style.display !== "none" &&
-    languagesSection.textContent.trim()
-  );
-  const tlRow = hasToolsLanguages
-    ? '"tools-languages spells spells"'
-    : '"spells spells spells"';
-  const templateRows = [
-    '"header header header"',
-    '"abilities skills features"',
-    midRow,
-    tlRow,
-    '"backstory backstory backstory"',
-  ];
-  sheet.style.gridTemplateAreas = templateRows.join(" ");
+  // Features / Tools-Languages: denser text and stronger border
+  if (featuresSection) {
+    rememberStyle(featuresSection, ["fontSize", "lineHeight", "borderWidth", "textAlign"]);
+    featuresSection.style.fontSize = '0.9rem';
+    featuresSection.style.lineHeight = '1.2';
+    featuresSection.style.borderWidth = '2px';
+    featuresSection.style.textAlign = 'left';
+  }
+  if (languagesSection) {
+    rememberStyle(languagesSection, ["fontSize", "lineHeight", "borderWidth", "textAlign", "minHeight"]);
+    languagesSection.style.fontSize = '0.9rem';
+    languagesSection.style.lineHeight = '1.2';
+    languagesSection.style.borderWidth = '2px';
+    languagesSection.style.textAlign = 'left';
+    languagesSection.style.minHeight = '310px';
+  }
+
+  // Spells: two columns and a bit taller
+  if (spellsSection) {
+    rememberStyle(spellsSection, ["borderWidth", "minHeight"]);
+    spellsSection.style.borderWidth = '2px';
+    spellsSection.style.minHeight = '310px';
+    const sUl = spellsSection.querySelector('ul');
+    if (sUl) {
+      rememberStyle(sUl, ["columnCount", "columnGap", "paddingLeft", "margin"]);
+      sUl.style.columnCount = '2';
+      sUl.style.columnGap = '16px';
+      sUl.style.paddingLeft = '1.1rem';
+      sUl.style.margin = '.25rem 0';
+    }
+  }
+
+  // Backstory: trim padding and set min-height
+  if (backstorySection) {
+    rememberStyle(backstorySection, ["borderWidth", "minHeight", "paddingLeft", "textAlign"]);
+    backstorySection.style.borderWidth = '2px';
+    backstorySection.style.minHeight = '460px';
+    backstorySection.style.paddingLeft = '2px';
+    backstorySection.style.textAlign = 'left';
+    const renderDiv = backstorySection.querySelector('.textarea-render');
+    if (renderDiv) {
+      rememberStyle(renderDiv, ["marginLeft", "paddingLeft", "textAlign"]);
+      renderDiv.style.marginLeft = '0';
+      renderDiv.style.paddingLeft = '0';
+      renderDiv.style.textAlign = 'left';
+    }
+  }
 
   const scale =
     typeof window !== "undefined" && window.devicePixelRatio
@@ -346,3 +410,215 @@ export async function exportPdf(state) {
 }
 
 export default exportPdf;
+
+/**
+ * Download a standalone HTML snapshot of the character sheet using the same
+ * compact export layout as the PDF. This gives you something you can edit.
+ */
+export async function downloadExportHtml(state) {
+  const sheet = document.getElementById("characterSheet");
+  if (!sheet) throw new Error("Character sheet not found");
+
+  const pxPerMm = 96 / 25.4;
+  const a4WidthPx = Math.round(210 * pxPerMm);
+  const a4HeightPx = Math.round(297 * pxPerMm);
+
+  const sectionsToExpand = Array.from(
+    sheet.querySelectorAll(
+      ".features, .spells, .backstory, .equipment, .infusions"
+    )
+  );
+  const minHeightFractions = {};
+  const textAreas = Array.from(sheet.querySelectorAll("textarea"));
+  const optionalEmptySections = Array.from(
+    sheet.querySelectorAll(".equipment, .infusions")
+  );
+  const languagesSection = sheet.querySelector(".tools-languages");
+  const spellsSection = sheet.querySelector(".spells");
+  const backstorySection = sheet.querySelector(".backstory");
+  const equipmentSection = sheet.querySelector(".equipment");
+  const infusionsSection = sheet.querySelector(".infusions");
+  const featuresSection = sheet.querySelector(".features");
+
+  const revertActions = [];
+  const rememberStyle = (el, props) => {
+    const prev = props.reduce((acc, prop) => {
+      acc[prop] = el.style[prop];
+      return acc;
+    }, {});
+    revertActions.push(() => {
+      props.forEach((prop) => {
+        el.style[prop] = prev[prop];
+      });
+    });
+  };
+
+  // Apply export layout tweaks
+  rememberStyle(sheet, [
+    "width",
+    "maxWidth",
+    "minHeight",
+    "height",
+    "gridTemplateRows",
+    "gridTemplateColumns",
+    "gridTemplateAreas",
+    "gap",
+  ]);
+  sheet.classList.add('compact');
+  sheet.style.width = `${a4WidthPx}px`;
+  sheet.style.maxWidth = "unset";
+  sheet.style.minHeight = "unset";
+  sheet.style.height = "auto";
+  sheet.style.gridTemplateRows = "auto auto auto auto auto";
+  sheet.style.gridTemplateColumns = "0.9fr 1.1fr 1.6fr";
+  sheet.style.gap = "16px";
+
+  sectionsToExpand.forEach((section) => {
+    rememberStyle(section, ["height", "minHeight", "maxHeight", "overflow"]);
+    section.style.height = "auto";
+    const baseHeight = section.scrollHeight;
+    const cls = Array.from(section.classList).find((name) =>
+      Object.prototype.hasOwnProperty.call(minHeightFractions, name)
+    );
+    const boostedHeight = cls
+      ? Math.max(baseHeight, Math.round(a4HeightPx * minHeightFractions[cls]))
+      : baseHeight;
+    section.style.minHeight = `${boostedHeight}px`;
+    section.style.maxHeight = "none";
+    section.style.overflow = "visible";
+  });
+
+  const restoreTextareas = [];
+  textAreas.forEach((area) => {
+    const cs = window.getComputedStyle(area);
+    const placeholder = document.createElement('div');
+    placeholder.className = 'textarea-render';
+    placeholder.textContent = area.value || '';
+    placeholder.style.whiteSpace = 'pre-wrap';
+    placeholder.style.wordWrap = 'break-word';
+    placeholder.style.width = '100%';
+    placeholder.style.minHeight = `${area.scrollHeight || area.clientHeight || 0}px`;
+    placeholder.style.border = 'none';
+    placeholder.style.background = 'transparent';
+    placeholder.style.padding = '0';
+    placeholder.style.margin = '0';
+    placeholder.style.fontFamily = cs.fontFamily;
+    placeholder.style.fontSize = cs.fontSize;
+    placeholder.style.lineHeight = '1.2';
+    placeholder.style.color = cs.color;
+    try {
+      const isBackstory = area.closest('.backstory') != null || area.id === 'backstoryInput';
+      if (isBackstory && (area.value?.length || 0) > 500) {
+        placeholder.style.columnCount = '2';
+        placeholder.style.columnGap = '12px';
+      }
+    } catch (_) { /* ignore */ }
+    area.insertAdjacentElement('afterend', placeholder);
+    rememberStyle(area, ["display"]);
+    area.style.display = 'none';
+    restoreTextareas.push(() => {
+      placeholder.remove();
+      area.style.display = '';
+    });
+  });
+  revertActions.push(() => restoreTextareas.forEach((fn) => fn()))
+
+  optionalEmptySections.forEach((section) => {
+    if (!section.textContent.trim()) {
+      rememberStyle(section, ["display"]);
+      section.style.display = "none";
+    }
+  });
+
+  [languagesSection, spellsSection].forEach((section) => {
+    if (!section) return;
+    rememberStyle(section, ["alignSelf"]);
+    section.style.alignSelf = "start";
+  });
+
+  if (backstorySection) {
+    rememberStyle(backstorySection, ["alignSelf", "minHeight"]);
+    backstorySection.style.alignSelf = "start";
+    backstorySection.style.minHeight = "0";
+  }
+
+  const hasEquipment = Boolean(
+    equipmentSection && equipmentSection.style.display !== "none" && equipmentSection.textContent.trim()
+  );
+  const hasInfusions = Boolean(
+    infusionsSection && infusionsSection.style.display !== "none" && infusionsSection.textContent.trim()
+  );
+
+  if (infusionsSection) {
+    rememberStyle(infusionsSection, ["gridArea"]);
+    infusionsSection.style.gridArea = "infusions";
+  }
+
+  if (featuresSection) {
+    rememberStyle(featuresSection, ["gridRow"]);
+    if (!hasEquipment && !hasInfusions) {
+      featuresSection.style.gridRow = "2 / span 2";
+    } else {
+      featuresSection.style.gridRow = "auto";
+    }
+  }
+
+  const midRow = hasEquipment
+    ? '"abilities skills equipment"'
+    : hasInfusions
+    ? '"abilities skills infusions"'
+    : '"abilities skills features"';
+  const hasToolsLanguages = Boolean(
+    languagesSection &&
+    languagesSection.style.display !== "none" &&
+    languagesSection.textContent.trim()
+  );
+  const tlRow = hasToolsLanguages
+    ? '"tools-languages spells spells"'
+    : '"spells spells spells"';
+  const templateRows = [
+    '"header header header"',
+    '"abilities skills features"',
+    midRow,
+    tlRow,
+    '"backstory backstory backstory"',
+  ];
+  sheet.style.gridTemplateAreas = templateRows.join(" ");
+
+  // Ensure each top-level child has inline grid-area for portability
+  Array.from(sheet.children).forEach((child) => {
+    if (!(child instanceof HTMLElement)) return;
+    const cl = child.classList;
+    const area = cl.contains('char-header') ? 'header'
+      : cl.contains('abilities') ? 'abilities'
+      : cl.contains('skills') ? 'skills'
+      : cl.contains('features') ? 'features'
+      : cl.contains('equipment') ? 'equipment'
+      : cl.contains('tools-languages') ? 'tools-languages'
+      : cl.contains('spells') ? 'spells'
+      : cl.contains('backstory') ? 'backstory'
+      : cl.contains('infusions') ? 'infusions'
+      : '';
+    if (area) child.style.gridArea = area;
+  });
+
+  let html;
+  try {
+    const clone = sheet.cloneNode(true);
+    const title = state?.name ? `${state.name} – Character Sheet` : 'Character Sheet';
+    html = `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${title}</title><style>${SNAPSHOT_CSS}</style></head><body>${clone.outerHTML}</body></html>`;
+  } finally {
+    sheet.classList.remove('compact');
+    revertActions.reverse().forEach((revert) => revert());
+  }
+
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${state?.name || 'character'}-export.html`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}

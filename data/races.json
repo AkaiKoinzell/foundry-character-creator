@@ -1,9 +1,7 @@
 {
     "items": {
         "Aarakocra": "data/races/aarakocra.json",
-        "Aasimar (Fallen)": "data/races/aasimarfallen.json",
-        "Aasimar (Protector)": "data/races/aasimarprotector.json",
-        "Aasimar (Scourge)": "data/races/aasimarscourge.json",
+        "Aasimar": "data/races/aasimar.json",
         "Altered": "data/races/altered.json",
         "Bugbear": "data/races/bugbear.json",
         "Centaur": "data/races/centaur.json",

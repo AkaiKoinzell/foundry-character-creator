@@ -4,7 +4,8 @@ import {
   fetchJsonWithRetry,
   loadRaces,
   logCharacterState,
-  loadSpells
+  loadSpells,
+  totalLevel
 } from './data.js';
 import { loadEquipmentData } from './step5.js';
 import { clearAppliedBackground } from './step4.js';
@@ -659,7 +660,16 @@ async function renderSelectedRace() {
   const header = document.createElement('h3');
   header.textContent = currentRaceData.name;
   accordion.appendChild(header);
-  let lastVariantNode = header;
+  const levelCandidates = [
+    totalLevel(),
+    Number(CharacterState.system?.details?.level),
+    Number(CharacterState.system?.attributes?.level),
+    Number(CharacterState.level),
+  ].filter((lvl) => Number.isFinite(lvl) && lvl >= 0);
+  const currentLevel = levelCandidates.length
+    ? Math.max(...levelCandidates)
+    : 0;
+  const variantAccordions = new Map();
 
   const entryMap = {};
   const entryList = (currentRaceData.entries || []).filter(
@@ -701,7 +711,56 @@ async function renderSelectedRace() {
 
   (currentRaceData.entries || []).forEach((entry) => {
     if (!entry.data?.overwrite || !Array.isArray(entry.entries)) return;
+    const key = entry.data.overwrite || entry.name;
+    const minLevel = Number(entry.data.minLevel) || 0;
+    const meetsLevel = !minLevel || currentLevel >= minLevel;
+    const savedChoice = (CharacterState.raceChoices?.variants || []).find(
+      (variant) => variant.overwrite === entry.name
+    );
+
+    if (!meetsLevel) {
+      const lockedContent = document.createElement('div');
+      lockedContent.appendChild(
+        createElement(
+          'p',
+          t('raceChoiceLockedUntilLevel', { level: minLevel })
+        )
+      );
+      entry.entries.forEach((opt) => {
+        const block = document.createElement('div');
+        if (opt.name) {
+          const heading = createElement('p');
+          heading.appendChild(createElement('strong', opt.name));
+          block.appendChild(heading);
+        }
+        if (opt.entries) appendEntries(block, opt.entries);
+        lockedContent.appendChild(block);
+      });
+      if (savedChoice?.choice) {
+        lockedContent.appendChild(
+          createElement(
+            'p',
+            t('raceChoiceExistingSelection', { choice: savedChoice.choice })
+          )
+        );
+      }
+      const lockedAcc = createAccordionItem(entry.name, lockedContent, false);
+      lockedAcc.classList.add('locked-choice');
+      if (!variantAccordions.has(key)) variantAccordions.set(key, []);
+      variantAccordions.get(key).push(lockedAcc);
+      if (entry.name) usedEntryNames.add(entry.name);
+      return;
+    }
+
     const variantContent = document.createElement('div');
+    if (minLevel > 0) {
+      variantContent.appendChild(
+        createElement(
+          'p',
+          t('raceChoiceLevelRequirementMet', { level: minLevel })
+        )
+      );
+    }
     const group = [];
     const dataMap = {};
     const optMap = {};
@@ -752,8 +811,8 @@ async function renderSelectedRace() {
     });
     const acc = createAccordionItem(entry.name, variantContent, true);
     acc.classList.add('needs-selection');
-    accordion.insertBefore(acc, lastVariantNode.nextSibling);
-    lastVariantNode = acc;
+    if (!variantAccordions.has(key)) variantAccordions.set(key, []);
+    variantAccordions.get(key).push(acc);
     pendingRaceChoices.variants.push({ radios: group, dataMap, optMap, container: acc, overwrite: entry.name });
     if (entry.name) usedEntryNames.add(entry.name);
   });
@@ -1477,13 +1536,24 @@ async function renderSelectedRace() {
 
   const traitsDiv = document.createElement('div');
   traitsDiv.id = 'raceTraits';
+  const appendedVariantKeys = new Set();
   Object.values(entryMap).forEach(e => {
     if (!e.name || usedEntryNames.has(e.name)) return;
     const body = document.createElement('div');
     if (e.description)
       body.appendChild(createElement('p', e.description));
     appendEntries(body, e.entries);
-    accordion.appendChild(createAccordionItem(e.name, body));
+    const traitAcc = createAccordionItem(e.name, body);
+    accordion.appendChild(traitAcc);
+    const variantsForEntry = variantAccordions.get(e.name);
+    if (variantsForEntry) {
+      variantsForEntry.forEach((node) => accordion.appendChild(node));
+      appendedVariantKeys.add(e.name);
+    }
+  });
+  variantAccordions.forEach((nodes, key) => {
+    if (appendedVariantKeys.has(key)) return;
+    nodes.forEach((node) => accordion.appendChild(node));
   });
   accordion.appendChild(traitsDiv);
   validateRaceChoices();

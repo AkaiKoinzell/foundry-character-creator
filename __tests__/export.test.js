@@ -30,7 +30,8 @@ describe("exportFoundryActor", () => {
         wis: 2,
         cha: 2,
       },
-      raceChoices: { spells: [], spellAbility: "", size: "", alterations: {}, resist: "", tools: [], weapons: [], languages: [] },
+      backgroundChoices: { skills: [], tools: [], languages: [], feat: '' },
+      raceChoices: { spells: [], spellAbility: "", size: "", alterations: {}, resist: "", tools: [], weapons: [], languages: [], skills: [], variants: [] },
       knownSpells: {},
       system: {
         abilities: {

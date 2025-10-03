@@ -19,7 +19,24 @@ beforeEach(async () => {
   loadEquipment = jest.fn();
   jest.unstable_mockModule('../src/data.js', () => ({
     DATA: {},
-    CharacterState: { classes: [{ name: 'Test', level: 1 }], equipment: [] },
+    CharacterState: {
+      classes: [{ name: 'Test', level: 1 }],
+      equipment: [],
+      equipmentChoices: { className: '', choices: [] },
+      backgroundChoices: { skills: [], tools: [], languages: [], feat: '' },
+      raceChoices: {
+        spells: [],
+        spellAbility: '',
+        size: '',
+        alterations: {},
+        resist: '',
+        tools: [],
+        weapons: [],
+        languages: [],
+        skills: [],
+        variants: [],
+      },
+    },
     loadSpells: jest.fn(),
     loadEquipment,
   }));
@@ -76,5 +93,35 @@ describe('step5 re-entry', () => {
     expect(loadEquipment).toHaveBeenCalledTimes(2);
     const accs = document.querySelectorAll('#equipmentSelections .accordion');
     expect(accs).toHaveLength(1);
+  });
+
+  test('restores prior selections when revisiting', async () => {
+    loadEquipment.mockResolvedValueOnce({
+      standard: [],
+      classes: {
+        Test: {
+          fixed: [],
+          choices: [
+            {
+              type: 'radio',
+              label: 'Weapon Choice',
+              options: [
+                { value: 'Mace', label: 'Mace' },
+                { value: 'Warhammer', label: 'Warhammer' },
+              ],
+            },
+          ],
+        },
+      },
+    });
+    CharacterState.equipmentChoices = {
+      className: 'Test',
+      choices: [{ id: 'choice-0', type: 'radio', option: 'Warhammer', extras: [] }],
+    };
+
+    await loadStep5(true);
+
+    const selected = document.querySelector('input[value="Warhammer"]');
+    expect(selected?.checked).toBe(true);
   });
 });

@@ -42,6 +42,8 @@ describe('renderCharacterSheet features and backstory', () => {
         skills: [],
       },
       knownSpells: {},
+      backgroundChoices: { skills: [], tools: [], languages: [], feat: '' },
+      raceChoices: { spells: [], spellAbility: '', size: '', alterations: {}, resist: '', tools: [], weapons: [], languages: [], skills: [], variants: [] },
     });
     renderCharacterSheet();
     const html = document.getElementById('characterSheet').innerHTML;
@@ -51,5 +53,48 @@ describe('renderCharacterSheet features and backstory', () => {
     expect(html).toContain('Darkvision (Race)');
     expect(html).toContain('<h3>Backstory</h3>');
     expect(html).toContain('Born in a small village.');
+  });
+
+  test('race row shows subrace when present', () => {
+    document.body.innerHTML = '<div id="characterSheet"></div>';
+    Object.assign(CharacterState, {
+      playerName: 'Tester',
+      name: 'Hero',
+      classes: [],
+      raceFeatures: [],
+      feats: [],
+      equipment: [],
+      system: {
+        details: {
+          race: 'Half-Elf',
+          subrace: 'Half-Elf (Variant; Drow Descent)',
+          origin: '',
+          backstory: '',
+          age: '',
+          background: '',
+        },
+        abilities: {
+          str: { value: 8 },
+          dex: { value: 8 },
+          con: { value: 8 },
+          int: { value: 8 },
+          wis: { value: 8 },
+          cha: { value: 8 },
+        },
+        traits: { languages: { value: [] } },
+        tools: [],
+        skills: [],
+        spells: { cantrips: [] },
+      },
+      knownSpells: {},
+      backgroundChoices: { skills: [], tools: [], languages: [], feat: '' },
+      raceChoices: { spells: [], spellAbility: '', size: '', alterations: {}, resist: '', tools: [], weapons: [], languages: [], skills: [], variants: [] },
+      infusions: [],
+    });
+    renderCharacterSheet();
+    const raceRow = Array.from(
+      document.querySelector('.char-header')?.querySelectorAll('div') || []
+    ).find((div) => div.textContent.startsWith('Race:'));
+    expect(raceRow?.textContent).toBe('Race: Half-Elf (Variant; Drow Descent)');
   });
 });

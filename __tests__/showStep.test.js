@@ -17,6 +17,7 @@ jest.unstable_mockModule('../src/step4.js', () => ({
 jest.unstable_mockModule('../src/step5.js', () => ({
   loadStep5,
   isStepComplete: jest.fn(),
+  confirmStep: jest.fn(),
   resetEquipmentDataCache: jest.fn(),
 }));
 
@@ -60,6 +61,7 @@ jest.unstable_mockModule('../src/i18n.js', () => ({
 
 jest.unstable_mockModule('../src/export.js', () => ({
   exportFoundryActor: jest.fn(),
+  exportFoundryActorV13: jest.fn(),
 }));
 
 jest.unstable_mockModule('../src/export-pdf.js', () => ({

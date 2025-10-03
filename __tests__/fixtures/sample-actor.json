@@ -61,7 +61,7 @@
       "bonusAbilities": { "str": 2, "dex": 2, "con": 2, "int": 2, "wis": 2, "cha": 2 },
       "baseAbilities": { "str": 8, "dex": 8, "con": 8, "int": 8, "wis": 8, "cha": 8 },
       "languages": ["Common", "Elvish"],
-      "raceChoices": { "spells": [], "spellAbility": "", "size": "", "alterations": {}, "resist": "", "tools": [], "weapons": [], "languages": [] },
+      "raceChoices": { "spells": [], "spellAbility": "", "size": "", "alterations": {}, "resist": "", "tools": [], "weapons": [], "languages": [], "skills": [], "variants": [] },
       "knownSpells": {},
       "tools": [],
       "skills": [],

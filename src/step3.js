@@ -59,6 +59,7 @@ export function resetPendingRaceChoices() {
 }
 
 let raceRenderSeq = 0;
+let suppressVariantChange = false;
 
 function cloneRaceData(data) {
   if (!data || typeof data !== 'object') return data;
@@ -112,6 +113,310 @@ const choiceAccordions = {
   resist: null,
   alterations: null,
 };
+
+const SPELL_SKIP_KEYS = new Set([
+  'ability',
+  'choose',
+  'entries',
+  'name',
+  'type',
+  'meta',
+  'note',
+  'condition',
+]);
+const ABILITY_CODES = new Set(['str', 'dex', 'con', 'int', 'wis', 'cha']);
+const SIZE_LABELS = {
+  T: 'Tiny',
+  S: 'Small',
+  M: 'Medium',
+  L: 'Large',
+  H: 'Huge',
+  G: 'Gargantuan',
+};
+const SIZE_VALUE_TO_CODE = {
+  tiny: 'T',
+  sm: 'S',
+  med: 'M',
+  lg: 'L',
+  huge: 'H',
+  grg: 'G',
+};
+
+function normalizeSpellName(raw) {
+  if (typeof raw !== 'string') return '';
+  let name = raw.trim();
+  if (!name) return '';
+  const hashIndex = name.indexOf('#');
+  if (hashIndex >= 0) name = name.slice(0, hashIndex);
+  const pipeIndex = name.indexOf('|');
+  if (pipeIndex >= 0) name = name.slice(0, pipeIndex);
+  name = name.trim();
+  if (!name) return '';
+  return name.replace(/\b\w/g, (ch) => ch.toUpperCase());
+}
+
+function collectSpellNames(node, acc) {
+  if (!node || acc == null) return;
+  if (typeof node === 'string') {
+    const clean = normalizeSpellName(node);
+    if (clean) acc.add(clean);
+    return;
+  }
+  if (Array.isArray(node)) {
+    node.forEach((item) => collectSpellNames(item, acc));
+    return;
+  }
+  if (typeof node === 'object') {
+    for (const [key, value] of Object.entries(node)) {
+      if (SPELL_SKIP_KEYS.has(key)) continue;
+      collectSpellNames(value, acc);
+    }
+  }
+}
+
+function deriveFixedRaceSpells(additionalSpells) {
+  if (!Array.isArray(additionalSpells) || additionalSpells.length === 0) {
+    return { spells: [], ability: null };
+  }
+  const allowKnown = additionalSpells.length === 1;
+  const spellSet = new Set();
+  let fixedAbility = null;
+
+  additionalSpells.forEach((entry) => {
+    if (!entry || typeof entry !== 'object') return;
+    if (typeof entry.ability === 'string' && !fixedAbility) {
+      fixedAbility = entry.ability.toLowerCase();
+    }
+    if (entry.innate) collectSpellNames(entry.innate, spellSet);
+    if (!allowKnown) return;
+    if (entry.known) collectSpellNames(entry.known, spellSet);
+    if (entry.prepared) collectSpellNames(entry.prepared, spellSet);
+    if (entry.spells) collectSpellNames(entry.spells, spellSet);
+  });
+
+  return { spells: Array.from(spellSet), ability: fixedAbility };
+}
+
+function purgePreviousRaceChoices(draft) {
+  const prev = CharacterState.raceChoices || {};
+  const removeValues = (list, values) => {
+    if (!Array.isArray(list) || !Array.isArray(values) || !values.length) return list;
+    return list.filter((item) => !values.includes(item));
+  };
+
+  if (Array.isArray(prev.skills)) {
+    draft.system.skills = removeValues(draft.system.skills, prev.skills);
+  }
+  if (Array.isArray(prev.tools)) {
+    draft.system.tools = removeValues(draft.system.tools, prev.tools);
+  }
+  if (Array.isArray(prev.weapons)) {
+    draft.system.weapons = removeValues(draft.system.weapons, prev.weapons);
+  }
+  if (Array.isArray(prev.languages)) {
+    const langs = draft.system.traits?.languages;
+    if (langs && Array.isArray(langs.value)) {
+      langs.value = removeValues(langs.value, prev.languages);
+    }
+  }
+  if (Array.isArray(prev.spells)) {
+    const cantrips = draft.system.spells?.cantrips;
+    if (Array.isArray(cantrips)) {
+      draft.system.spells.cantrips = removeValues(cantrips, prev.spells);
+    }
+  }
+  if (prev.resist) {
+    const resist = draft.system.traits?.damageResist;
+    if (Array.isArray(resist)) {
+      draft.system.traits.damageResist = removeValues(resist, [prev.resist]);
+    }
+  }
+}
+
+
+function snapshotRaceSelections() {
+  const snapshot = {
+    size: pendingRaceChoices.size?.value || '',
+    resist: pendingRaceChoices.resist?.value || '',
+    spells: pendingRaceChoices.spells
+      .map((sel) => sel.value)
+      .filter(Boolean),
+    abilities: pendingRaceChoices.abilities
+      .map((sel) => sel.value)
+      .filter(Boolean),
+    tools: pendingRaceChoices.tools.map((sel) => sel.value).filter(Boolean),
+    weapons: pendingRaceChoices.weapons
+      .map((sel) => sel.value)
+      .filter(Boolean),
+    languages: pendingRaceChoices.languages
+      .map((sel) => sel.value)
+      .filter(Boolean),
+    skills: pendingRaceChoices.skills.map((sel) => sel.value).filter(Boolean),
+    alterations: {
+      combo: pendingRaceChoices.alterations.combo?.value || '',
+      minor: pendingRaceChoices.alterations.minor
+        .map((sel) => sel.value)
+        .filter(Boolean),
+      major: pendingRaceChoices.alterations.major
+        .map((sel) => sel.value)
+        .filter(Boolean),
+    },
+    variants: pendingRaceChoices.variants
+      .map((variant) => {
+        const radio = variant.radios.find((r) => r.checked);
+        if (!radio) return null;
+        return { overwrite: variant.overwrite, choice: radio.value };
+      })
+      .filter(Boolean),
+  };
+  return snapshot;
+}
+
+function applyRaceSelections(snapshot = {}) {
+  if (!snapshot) return;
+
+  if (pendingRaceChoices.size) {
+    const sizeCode = SIZE_VALUE_TO_CODE[snapshot.size] || snapshot.size;
+    if (sizeCode) {
+      const label = SIZE_LABELS[sizeCode] || capitalize(sizeCode);
+      ensureOption(pendingRaceChoices.size, sizeCode, label);
+      pendingRaceChoices.size.value = sizeCode;
+      pendingRaceChoices.size.dispatchEvent(new Event('change'));
+    }
+  }
+
+  if (pendingRaceChoices.resist && snapshot.resist) {
+    ensureOption(
+      pendingRaceChoices.resist,
+      snapshot.resist,
+      capitalize(snapshot.resist)
+    );
+    pendingRaceChoices.resist.value = snapshot.resist;
+    pendingRaceChoices.resist.dispatchEvent(new Event('change'));
+  }
+
+  setSelectValues(pendingRaceChoices.skills, snapshot.skills || []);
+  setSelectValues(pendingRaceChoices.tools, snapshot.tools || []);
+  setSelectValues(pendingRaceChoices.languages, snapshot.languages || []);
+  setSelectValues(pendingRaceChoices.weapons, snapshot.weapons || []);
+  setSelectValues(pendingRaceChoices.spells, snapshot.spells || [], {
+    onlyIfPresent: true,
+  });
+  setSelectValues(pendingRaceChoices.abilities, snapshot.abilities || []);
+
+  if (pendingRaceChoices.alterations.combo && snapshot.alterations?.combo) {
+    ensureOption(
+      pendingRaceChoices.alterations.combo,
+      snapshot.alterations.combo,
+      snapshot.alterations.combo
+    );
+    pendingRaceChoices.alterations.combo.value = snapshot.alterations.combo;
+    pendingRaceChoices.alterations.combo.dispatchEvent(new Event('change'));
+  }
+  setSelectValues(
+    pendingRaceChoices.alterations.minor,
+    snapshot.alterations?.minor || []
+  );
+  setSelectValues(
+    pendingRaceChoices.alterations.major,
+    snapshot.alterations?.major || []
+  );
+
+  if (Array.isArray(snapshot.variants)) {
+    snapshot.variants.forEach((variantSnap) => {
+      const variant = pendingRaceChoices.variants.find(
+        (v) => v.overwrite === variantSnap.overwrite
+      );
+      if (!variant) return;
+      const radio = variant.radios.find(
+        (r) => r.value === variantSnap.choice
+      );
+      if (!radio) return;
+      suppressVariantChange = true;
+      radio.checked = true;
+      radio.dispatchEvent(new Event('change'));
+      suppressVariantChange = false;
+    });
+  }
+}
+
+function ensureOption(select, value, label = value) {
+  if (!select || !value) return null;
+  let option = Array.from(select.options).find((opt) => opt.value === value);
+  if (!option) {
+    option = new Option(label || value, value);
+    select.appendChild(option);
+  }
+  return option;
+}
+
+function setSelectValues(selects, values = [], { onlyIfPresent = false } = {}) {
+  if (!Array.isArray(selects) || !selects.length || !Array.isArray(values)) {
+    return;
+  }
+  let idx = 0;
+  selects.forEach((sel) => {
+    if (!(sel instanceof HTMLSelectElement)) return;
+    while (idx < values.length) {
+      const val = values[idx++];
+      if (!val) continue;
+      if (onlyIfPresent) {
+        const match = Array.from(sel.options).find((opt) => opt.value === val);
+        if (!match) continue;
+      } else {
+        ensureOption(sel, val);
+      }
+      sel.value = val;
+      sel.dispatchEvent(new Event('change'));
+      break;
+    }
+  });
+}
+
+async function resolveRaceByName(baseName, subraceName) {
+  if (!baseName || !subraceName) return null;
+  const subraces = DATA.races?.[baseName];
+  if (!Array.isArray(subraces)) return null;
+
+  let match = subraces.find((entry) => entry?.name === subraceName);
+  if (match) return await resolveRaceEntry(match);
+
+  for (const entry of subraces) {
+    const data = await resolveRaceEntry(entry);
+    if (data?.name === subraceName) return data;
+  }
+  return null;
+}
+
+function applyStoredRaceSelections() {
+  applyRaceSelections(CharacterState.raceChoices || {});
+}
+
+async function restoreSelectedRace() {
+  const details = CharacterState.system?.details || {};
+  const base = details.race;
+  const subrace = details.subrace;
+  if (!base || !subrace) return false;
+
+  const race = await resolveRaceByName(base, subrace);
+  if (!race) return false;
+
+  selectedBaseRace = base;
+  currentRaceData = race;
+  pendingRaceChoices.subrace = race.name;
+  await renderSelectedRace();
+
+  const list = document.getElementById('raceList');
+  const features = document.getElementById('raceFeatures');
+  list?.classList.add('hidden');
+  features?.classList.remove('hidden');
+  document.getElementById('raceSearch')?.classList.add('hidden');
+  document.getElementById('changeRace')?.classList.remove('hidden');
+
+  applyStoredRaceSelections();
+  validateRaceChoices();
+  return true;
+}
 
 function validateRaceChoices() {
   const check = (arr, container) =>
@@ -305,6 +610,7 @@ async function renderSelectedRace() {
   const header = document.createElement('h3');
   header.textContent = currentRaceData.name;
   accordion.appendChild(header);
+  let lastVariantNode = header;
 
   const entryMap = {};
   const entryList = (currentRaceData.entries || []).filter(
@@ -359,7 +665,8 @@ async function renderSelectedRace() {
       radio.id = id;
       radio.value = opt.name;
       radio.dataset.type = 'choice';
-      radio.addEventListener('change', () => {
+      radio.addEventListener('change', async () => {
+        if (!radio.checked) return;
         const variant = dataMap[radio.value];
         if (variant?.skillProficiencies === null) {
           pendingRaceChoices.skills = [];
@@ -367,6 +674,21 @@ async function renderSelectedRace() {
           choiceAccordions.skills = null;
         }
         validateRaceChoices();
+        if (suppressVariantChange) return;
+
+        const snapshot = snapshotRaceSelections();
+        snapshot.variants = Array.isArray(snapshot.variants) ? snapshot.variants : [];
+        let variantEntry = snapshot.variants.find(
+          (v) => v.overwrite === entry.name
+        );
+        if (variantEntry) variantEntry.choice = radio.value;
+        else snapshot.variants.push({ overwrite: entry.name, choice: radio.value });
+
+        suppressVariantChange = true;
+        await renderSelectedRace();
+        applyRaceSelections(snapshot);
+        suppressVariantChange = false;
+        main.setCurrentStepComplete?.(false);
       });
       label.appendChild(radio);
       label.appendChild(document.createTextNode(opt.name));
@@ -381,7 +703,8 @@ async function renderSelectedRace() {
     });
     const acc = createAccordionItem(entry.name, variantContent, true);
     acc.classList.add('needs-selection');
-    accordion.appendChild(acc);
+    accordion.insertBefore(acc, lastVariantNode.nextSibling);
+    lastVariantNode = acc;
     pendingRaceChoices.variants.push({ radios: group, dataMap, optMap, container: acc, overwrite: entry.name });
     if (entry.name) usedEntryNames.add(entry.name);
   });
@@ -1158,6 +1481,7 @@ function confirmRaceSelection() {
 
   let raceData = JSON.parse(JSON.stringify(currentRaceData));
   let variantInfo = null;
+  const variantSelections = [];
   pendingRaceChoices.variants.forEach((v) => {
     const sel = v.radios.find((r) => r.checked);
     if (sel) {
@@ -1167,6 +1491,7 @@ function confirmRaceSelection() {
         overwrite: v.overwrite,
       };
       sel.disabled = true;
+      variantSelections.push({ overwrite: v.overwrite, choice: sel.value });
     }
   });
   if (variantInfo) {
@@ -1183,6 +1508,7 @@ function confirmRaceSelection() {
   }
 
   const draft = JSON.parse(JSON.stringify(CharacterState));
+  purgePreviousRaceChoices(draft);
   draft.raceChoices = {
     spells: [],
     spellAbility: '',
@@ -1194,6 +1520,7 @@ function confirmRaceSelection() {
     languages: [],
     skills: [],
     movement: {},
+    variants: variantSelections,
   };
   draft.raceFeatures = [];
 
@@ -1376,10 +1703,27 @@ function confirmRaceSelection() {
       draft.system.traits.damageResist = Array.from(set);
     }
   }
+
+  const { spells: grantedRaceSpells, ability: fixedSpellAbility } =
+    deriveFixedRaceSpells(raceData.additionalSpells);
+
+  grantedRaceSpells.forEach((spell) => {
+    if (!draft.raceChoices.spells.includes(spell)) {
+      draft.raceChoices.spells.push(spell);
+    }
+  });
+
+  if (!draft.raceChoices.spellAbility && fixedSpellAbility) {
+    if (ABILITY_CODES.has(fixedSpellAbility)) {
+      draft.raceChoices.spellAbility = fixedSpellAbility;
+    }
+  }
+
   pendingRaceChoices.spells.forEach((sel) => {
     const repl = addUniqueProficiency('cantrips', sel.value, container, '', draft);
     if (repl) replacements.push(repl);
-    draft.raceChoices.spells.push(sel.value);
+    if (sel.value && !draft.raceChoices.spells.includes(sel.value))
+      draft.raceChoices.spells.push(sel.value);
     sel.disabled = true;
   });
   pendingRaceChoices.abilities.forEach((sel) => {
@@ -1464,8 +1808,6 @@ export async function loadStep3(force = false) {
   const container = document.getElementById('raceList');
   let searchInput = document.getElementById('raceSearch');
   if (!container) return;
-  if (container.childElementCount && !force) return;
-  await renderBaseRaces(searchInput?.value);
 
   if (searchInput) {
     const newInput = searchInput.cloneNode(true);
@@ -1510,6 +1852,11 @@ export async function loadStep3(force = false) {
       validateRaceChoices();
     });
   }
+
+  const restored = await restoreSelectedRace();
+  if (restored) return;
+
+  await renderBaseRaces(searchInput?.value);
 }
 
 export function isStepComplete() {

@@ -46,6 +46,8 @@ export async function generateRandomCharacter() {
     feats: [],
     equipment: [],
     knownSpells: {},
+    backgroundChoices: { skills: [], tools: [], languages: [], feat: '' },
+    equipmentChoices: { className: '', choices: [] },
     raceChoices: {
       spells: [],
       spellAbility: '',
@@ -54,6 +56,7 @@ export async function generateRandomCharacter() {
       resist: '',
       tools: [],
       weapons: [],
+      variants: [],
     },
     bonusAbilities: { str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0 },
     baseAbilities,

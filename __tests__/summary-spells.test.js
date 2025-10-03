@@ -19,7 +19,8 @@ describe('renderCharacterSheet spells', () => {
       feats: [
         { name: 'Magic Initiate', spells: { cantrips: ['Prestidigitation'], level1: 'Shield' } },
       ],
-      raceChoices: { spells: ['Gust of Wind'] },
+      backgroundChoices: { skills: [], tools: [], languages: [], feat: '' },
+      raceChoices: { spells: ['Gust of Wind'], spellAbility: '', size: '', alterations: {}, resist: '', tools: [], weapons: [], languages: [], variants: [], skills: [] },
       equipment: [],
       system: {
         details: { origin: '', backstory: '', age: '', race: '', background: '' },

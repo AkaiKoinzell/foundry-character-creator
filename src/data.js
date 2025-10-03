@@ -1182,6 +1182,16 @@ export const CharacterState = {
     languages: {},
     tools: {},
   },
+  backgroundChoices: {
+    skills: [],
+    tools: [],
+    languages: [],
+    feat: '',
+  },
+  equipmentChoices: {
+    className: '',
+    choices: [],
+  },
   raceChoices: {
     spells: [],
     spellAbility: '',
@@ -1190,6 +1200,7 @@ export const CharacterState = {
     resist: '',
     tools: [],
     weapons: [],
+    variants: [],
   },
   // Tracks the last-applied Step 6 bonus distribution (e.g. { dex: 2, con: 1 })
   bonusPointAllocations: {},

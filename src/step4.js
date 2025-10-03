@@ -27,6 +27,7 @@ const pendingSelections = {
   languages: [],
   feat: null,
   featRenderer: null,
+  featLoader: null,
 };
 
 let appliedBackground = null;
@@ -37,6 +38,7 @@ export function resetPendingSelections() {
   pendingSelections.languages = [];
   pendingSelections.feat = null;
   pendingSelections.featRenderer = null;
+  pendingSelections.featLoader = null;
 }
 
 function removeProficienciesBySource(source) {
@@ -120,6 +122,79 @@ function removeProficienciesBySource(source) {
   return changed;
 }
 
+function ensureSelectOption(select, value, label = value) {
+  if (!(select instanceof HTMLSelectElement) || !value) return null;
+  let option = Array.from(select.options).find((opt) => opt.value === value);
+  if (!option) {
+    option = new Option(label || value, value);
+    select.appendChild(option);
+  }
+  return option;
+}
+
+function setBackgroundSelectValues(selects, values = []) {
+  if (!Array.isArray(selects) || !selects.length || !Array.isArray(values)) {
+    return;
+  }
+  let idx = 0;
+  selects.forEach((sel) => {
+    if (!(sel instanceof HTMLSelectElement)) return;
+    while (idx < values.length) {
+      const val = values[idx++];
+      if (!val) continue;
+      ensureSelectOption(sel, val, val);
+      sel.value = val;
+      sel.dispatchEvent(new Event('change'));
+      break;
+    }
+  });
+}
+
+async function applyStoredBackgroundSelections(bg) {
+  if (!bg) return;
+  const choices = CharacterState.backgroundChoices || {};
+
+  const skillOptions = (choices.skills || []).filter((skill) =>
+    !(bg.skills || []).includes(skill)
+  );
+  setBackgroundSelectValues(pendingSelections.skills, skillOptions);
+
+  const toolOptions = (choices.tools || []).filter((tool) => {
+    const fixed = Array.isArray(bg.tools) ? bg.tools : [];
+    return !fixed.includes(tool);
+  });
+  setBackgroundSelectValues(pendingSelections.tools, toolOptions);
+
+  const langOptions = (choices.languages || []).filter((lang) => {
+    const fixedLangs = Array.isArray(bg.languages) ? bg.languages : [];
+    return !fixedLangs.includes(lang);
+  });
+  setBackgroundSelectValues(pendingSelections.languages, langOptions);
+
+  if (pendingSelections.feat && choices.feat) {
+    pendingSelections.feat.value = choices.feat;
+    if (typeof pendingSelections.featLoader === 'function') {
+      await pendingSelections.featLoader(choices.feat);
+    } else {
+      pendingSelections.feat.dispatchEvent(new Event('change'));
+    }
+  }
+
+  validateBackgroundChoices();
+}
+
+async function restoreSelectedBackground() {
+  const name = CharacterState.system?.details?.background;
+  if (!name) return false;
+  const bg = DATA.backgrounds?.[name];
+  if (!bg) return false;
+  resetPendingSelections();
+  currentBackgroundData = bg;
+  selectBackground(bg);
+  await applyStoredBackgroundSelections(bg);
+  return true;
+}
+
 export function clearAppliedBackground() {
   const details = CharacterState.system?.details;
   const hadBackground = !!details?.background;
@@ -140,6 +215,12 @@ export function clearAppliedBackground() {
     changed = true;
   }
   appliedBackground = null;
+  CharacterState.backgroundChoices = {
+    skills: [],
+    tools: [],
+    languages: [],
+    feat: '',
+  };
 
   return changed;
 }
@@ -367,12 +448,12 @@ function selectBackground(bg) {
       if (taken.has(opt.value)) opt.disabled = true;
     });
     const featChoicesDiv = document.createElement('div');
-    sel.addEventListener('change', async () => {
+    const loadFeatSelection = async (featName) => {
       pendingSelections.featRenderer = null;
       featChoicesDiv.innerHTML = '';
-      if (sel.value) {
+      if (featName) {
         pendingSelections.featRenderer = await renderFeatChoices(
-          sel.value,
+          featName,
           featChoicesDiv,
           validateBackgroundChoices
         );
@@ -389,6 +470,10 @@ function selectBackground(bg) {
         );
       }
       validateBackgroundChoices();
+    };
+    pendingSelections.featLoader = loadFeatSelection;
+    sel.addEventListener('change', () => {
+      loadFeatSelection(sel.value);
     });
     pendingSelections.feat = sel;
     wrapper.appendChild(sel);
@@ -444,6 +529,12 @@ async function confirmBackgroundSelection() {
   CharacterState.system.details.background = currentBackgroundData.name;
 
   let chosenFeatName = '';
+  const choiceRecord = {
+    skills: [],
+    tools: [],
+    languages: [],
+    feat: '',
+  };
 
   const replacements = [];
 
@@ -464,6 +555,7 @@ async function confirmBackgroundSelection() {
       BACKGROUND_SOURCE
     );
     if (repl) replacements.push(repl);
+    if (sel.value) choiceRecord.skills.push(sel.value);
     sel.disabled = true;
   });
 
@@ -486,6 +578,7 @@ async function confirmBackgroundSelection() {
       BACKGROUND_SOURCE
     );
     if (repl) replacements.push(repl);
+    if (sel.value) choiceRecord.tools.push(sel.value);
     sel.disabled = true;
   });
 
@@ -512,6 +605,7 @@ async function confirmBackgroundSelection() {
       BACKGROUND_SOURCE
     );
     if (repl) replacements.push(repl);
+    if (sel.value) choiceRecord.languages.push(sel.value);
     sel.disabled = true;
   });
 
@@ -524,8 +618,10 @@ async function confirmBackgroundSelection() {
     CharacterState.feats = Array.from(featMap.values());
     pendingSelections.feat.disabled = true;
     chosenFeatName = pendingSelections.feat.value;
+    choiceRecord.feat = chosenFeatName;
   }
 
+  CharacterState.backgroundChoices = choiceRecord;
   resetPendingSelections();
 
   refreshBaseState();
@@ -575,8 +671,6 @@ export async function loadStep4(force = false) {
     searchInput?.classList.remove('hidden');
     document.getElementById('backgroundFeatures')?.classList.add('hidden');
   }
-  if (container.childElementCount && !force) return;
-  renderBackgroundList(searchInput?.value);
   if (searchInput) {
     const newInput = searchInput.cloneNode(true);
     searchInput.parentNode.replaceChild(newInput, searchInput);
@@ -612,6 +706,11 @@ export async function loadStep4(force = false) {
       main.invalidateStep(main.TOTAL_STEPS - 1);
       main.invalidateStepsFrom(5);
     });
+  }
+
+  const restored = await restoreSelectedBackground();
+  if (!restored) {
+    renderBackgroundList(searchInput?.value);
   }
 }
 

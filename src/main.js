@@ -29,6 +29,7 @@ import {
 import {
   loadStep5,
   isStepComplete as isStep5Complete,
+  confirmStep as confirmStep5,
   resetEquipmentDataCache,
 } from "./step5.js";
 import { loadStep6, commitAbilities } from "./step6.js";
@@ -41,6 +42,13 @@ import { showToast } from "./ui-helpers.js";
 
 const TOTAL_STEPS = 7;
 const LAST_STEP = TOTAL_STEPS;
+
+const CONFIRM_HANDLERS = {
+  2: confirmStep2,
+  3: confirmStep3,
+  4: confirmStep4,
+  5: confirmStep5,
+};
 
 let currentStep = 1;
 let currentStepComplete = false;
@@ -242,6 +250,8 @@ function renderCharacterSheet() {
   const container = document.getElementById("characterSheet");
   if (!container) return;
 
+  const details = CharacterState.system?.details || {};
+
   const classes = CharacterState.classes.reduce((acc, c) => {
     if (c.name) acc[c.name] = c.level || 0;
     return acc;
@@ -324,10 +334,10 @@ function renderCharacterSheet() {
   const summary = {
     playerName: CharacterState.playerName,
     characterName: CharacterState.name,
-    origin: CharacterState.system.details.origin,
-    age: CharacterState.system.details.age,
-    race: CharacterState.system.details.race,
-    background: CharacterState.system.details.background,
+    origin: details.origin,
+    age: details.age,
+    race: details.subrace || details.race,
+    background: details.background,
     classes,
     totalLevel: Object.values(classes).reduce((a, b) => a + b, 0),
     languages: (CharacterState.system.traits.languages?.value || []).map(
@@ -364,7 +374,6 @@ function renderCharacterSheet() {
     .filter(Boolean)
     .join(" / ");
 
-  const details = CharacterState.system?.details || {};
   const systemAbilities = CharacterState.system?.abilities || {};
   const abilityBoxes = ["str", "dex", "con", "int", "wis", "cha"].map(
     (ab) => {
@@ -403,10 +412,10 @@ function renderCharacterSheet() {
   addHeaderRow("Character:", summary.characterName || "");
   addHeaderRow("Player:", summary.playerName || "");
   addHeaderRow("Class & Level:", classText);
-  addHeaderRow("Race:", details.race || "");
-  addHeaderRow("Background:", details.background || "");
-  addHeaderRow("Provenienza:", details.origin || "");
-  addHeaderRow("Age:", details.age || "");
+  addHeaderRow("Race:", summary.race || "");
+  addHeaderRow("Background:", summary.background || "");
+  addHeaderRow("Provenienza:", summary.origin || "");
+  addHeaderRow("Age:", summary.age || "");
   container.appendChild(header);
 
   const abilitiesSection = document.createElement("section");
@@ -638,7 +647,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   for (let i = 1; i <= TOTAL_STEPS; i++) {
     const btn = document.getElementById(`btnStep${i}`);
     if (btn) {
-      btn.addEventListener("click", () => {
+      btn.addEventListener("click", async () => {
+        if (i === currentStep) return;
+        if (i > currentStep) {
+          const fn = CONFIRM_HANDLERS[currentStep];
+          if (fn) {
+            const ok = await fn();
+            if (!ok) return;
+          }
+        }
         showStep(i);
         if (i === 2) loadStep2(true);
         if (i === 3) loadStep3(true);
@@ -653,13 +670,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (resetBtn) {
       resetBtn.addEventListener("click", () => location.reload());
     }
-    const confirmMap = { 2: confirmStep2, 3: confirmStep3, 4: confirmStep4 };
     const nextArrow = document.getElementById("nextStep");
     if (nextArrow) {
       nextArrow.addEventListener("click", async () => {
         if (nextArrow.disabled) return;
         try {
-          const fn = confirmMap[currentStep];
+          const fn = CONFIRM_HANDLERS[currentStep];
           if (fn) {
             const ok = await fn();
             if (!ok) return;

@@ -78,6 +78,7 @@ function buildChoiceBlock(choice, idx) {
   }
 
   if (choice.type === 'radio' || choice.type === 'checkbox') {
+    const id = `choice-${idx}`;
     choice.options.forEach((opt, i) => {
       const label = document.createElement('label');
       const input = document.createElement('input');
@@ -133,7 +134,67 @@ function buildChoiceBlock(choice, idx) {
 
     const accItem = createAccordionItem(choice.label, wrapper, true);
     accItem.classList.add('needs-selection');
-    choiceBlocks.push({ element: accItem, validator, getValue });
+    const setValue = (saved) => {
+      inputs.forEach(({ input, subSelects }) => {
+        input.checked = false;
+        if (subSelects) {
+          subSelects.forEach((sel) => {
+            sel.value = '';
+            sel.disabled = true;
+          });
+        }
+      });
+      if (!saved) return;
+      if (choice.type === 'radio') {
+        if (saved.type && saved.type !== 'radio') return;
+        const target = inputs.find((info) => info.input.value === saved.option);
+        if (!target) return;
+        target.input.checked = true;
+        target.input.dispatchEvent(new Event('change'));
+        if (target.subSelects && Array.isArray(saved.extras)) {
+          target.subSelects.forEach((sel, index) => {
+            if (saved.extras[index]) {
+              sel.value = saved.extras[index];
+              sel.dispatchEvent(new Event('change'));
+            }
+          });
+        }
+      } else {
+        if (saved.type && saved.type !== 'checkbox') return;
+        (saved.selections || []).forEach((selInfo) => {
+          const target = inputs.find((info) => info.input.value === selInfo.option);
+          if (!target) return;
+          target.input.checked = true;
+          target.input.dispatchEvent(new Event('change'));
+          if (target.subSelects && Array.isArray(selInfo.extras)) {
+            target.subSelects.forEach((sel, index) => {
+              if (selInfo.extras[index]) {
+                sel.value = selInfo.extras[index];
+                sel.dispatchEvent(new Event('change'));
+              }
+            });
+          }
+        });
+      }
+    };
+    const serialize = () => {
+      if (choice.type === 'radio') {
+        const selected = inputs.find((info) => info.input.checked);
+        if (!selected) return { id, type: 'radio', option: '', extras: [] };
+        const extras = selected.subSelects
+          ? selected.subSelects.map((sel) => sel.value)
+          : [];
+        return { id, type: 'radio', option: selected.input.value, extras };
+      }
+      const selections = inputs
+        .filter((info) => info.input.checked)
+        .map((info) => ({
+          option: info.input.value,
+          extras: info.subSelects ? info.subSelects.map((sel) => sel.value) : [],
+        }));
+      return { id, type: 'checkbox', selections };
+    };
+    choiceBlocks.push({ id, element: accItem, validator, getValue, setValue, serialize });
     return accItem;
   }
 
@@ -154,7 +215,16 @@ function buildChoiceBlock(choice, idx) {
 
     const accItem = createAccordionItem(choice.label, wrapper, true);
     accItem.classList.add('needs-selection');
-    choiceBlocks.push({ element: accItem, validator, getValue });
+    const setValue = (saved) => {
+      if (!saved || (saved.type && saved.type !== 'select')) return;
+      if (saved.value) {
+        const option = Array.from(sel.options).find((opt) => opt.value === saved.value);
+        if (option) sel.value = saved.value;
+        sel.dispatchEvent(new Event('change'));
+      }
+    };
+    const serialize = () => ({ id: `choice-${idx}`, type: 'select', value: sel.value || '' });
+    choiceBlocks.push({ id: `choice-${idx}`, element: accItem, validator, getValue, setValue, serialize });
     return accItem;
   }
 
@@ -243,11 +313,40 @@ function renderEquipmentForClass() {
     }
     const accItem = createAccordionItem(t('upgradeOptions'), wrap, true);
     const getValue = () => inputs.filter((i) => i.checked).map((i) => i.value);
-    choiceBlocks.push({ element: accItem, validator: () => true, getValue });
+    const setValue = (saved) => {
+      if (!saved || (saved.type && saved.type !== 'upgrade')) return;
+      const selected = new Set(saved.values || []);
+      inputs.forEach((input) => {
+        input.checked = selected.has(input.value);
+      });
+    };
+    const serialize = () => ({
+      id: 'upgrade',
+      type: 'upgrade',
+      values: inputs.filter((i) => i.checked).map((i) => i.value),
+    });
+    choiceBlocks.push({ id: 'upgrade', element: accItem, validator: () => true, getValue, setValue, serialize });
     accordion.appendChild(accItem);
   }
 
   container.appendChild(accordion);
+  restoreEquipmentChoices();
+}
+
+function restoreEquipmentChoices() {
+  const saved = CharacterState.equipmentChoices || {};
+  const className = getCurrentClass();
+  if (!saved || saved.className !== className) {
+    validateEquipmentSelections();
+    return;
+  }
+  const map = new Map((saved.choices || []).map((entry) => [entry.id, entry]));
+  choiceBlocks.forEach((block) => {
+    const data = map.get(block.id);
+    if (data && typeof block.setValue === 'function') {
+      block.setValue(data);
+    }
+  });
   validateEquipmentSelections();
 }
 
@@ -265,9 +364,8 @@ function validateEquipmentSelections() {
   return equipmentSelectionsValid;
 }
 
-function confirmEquipment() {
-  validateEquipmentSelections();
-  if (!equipmentSelectionsValid) return;
+function commitEquipmentSelections() {
+  if (!validateEquipmentSelections()) return false;
   const selections = [];
   (equipmentData.standard || []).forEach((item) => {
     selections.push({ name: item });
@@ -284,7 +382,23 @@ function confirmEquipment() {
     });
   });
   CharacterState.equipment = selections;
+  const savedChoices = choiceBlocks
+    .map((block) => (typeof block.serialize === 'function' ? block.serialize() : null))
+    .filter(Boolean);
+  CharacterState.equipmentChoices = {
+    className: getCurrentClass(),
+    choices: savedChoices,
+  };
+  return true;
+}
+
+function confirmEquipment() {
+  if (!commitEquipmentSelections()) return;
   main.showStep(main.TOTAL_STEPS - 1);
+}
+
+export function confirmStep() {
+  return commitEquipmentSelections();
 }
 
 export async function loadStep5(force = false) {
@@ -299,9 +413,22 @@ export async function loadStep5(force = false) {
   if (!data) return;
 
   if (force) container.innerHTML = '';
-  if (!force && container.querySelector('.accordion')) return;
+  const existingAccordion = container.querySelector('.accordion');
+  if (!force && existingAccordion) {
+    restoreEquipmentChoices();
+    confirmBtn.addEventListener('click', confirmEquipment);
+    validateEquipmentSelections();
+    return;
+  }
 
-  const initialClass = CharacterState.classes[0]?.name || '';
+  const savedChoices = CharacterState.equipmentChoices || {};
+  const initialClass = (() => {
+    const primary = CharacterState.classes[0]?.name || '';
+    if (savedChoices.className && (CharacterState.classes || []).some((cls) => cls.name === savedChoices.className)) {
+      return savedChoices.className;
+    }
+    return primary;
+  })();
   if (!initialClass) return;
 
   if ((CharacterState.classes || []).length > 1) {

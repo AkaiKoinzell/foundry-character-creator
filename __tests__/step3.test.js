@@ -27,8 +27,8 @@ jest.unstable_mockModule('../src/data.js', () => ({
         cha: { value: 8 },
       },
     },
-    
-    raceChoices: { spells: [], spellAbility: '', size: '', resist: '', tools: [], weapons: [], languages: [], skills: [] },
+    backgroundChoices: { skills: [], tools: [], languages: [], feat: '' },
+    raceChoices: { spells: [], spellAbility: '', size: '', resist: '', tools: [], weapons: [], languages: [], skills: [], variants: [] },
     bonusAbilities: {
       str: 0,
       dex: 0,
@@ -47,6 +47,9 @@ jest.unstable_mockModule('../src/data.js', () => ({
   loadBackgrounds: jest.fn(),
   loadSpells: jest.fn(),
   loadEquipment: jest.fn(),
+  loadFeatDetails: jest.fn(),
+  deriveSubclassData: jest.fn(),
+  loadOptionalFeatures: jest.fn(),
 }));
 
 jest.unstable_mockModule('../src/step2.js', () => ({
@@ -192,7 +195,7 @@ describe('race size selection', () => {
   afterEach(() => {
     CharacterState.system.details = {};
     CharacterState.system.traits.damageResist = [];
-    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [], weapons: [], languages: [], skills: [] };
+    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [], weapons: [], languages: [], skills: [], variants: [] };
   });
 
   test('requires selecting size when multiple options', async () => {
@@ -232,7 +235,7 @@ describe('race damage resistance selection', () => {
   afterEach(() => {
     CharacterState.system.details = {};
     CharacterState.system.traits.damageResist = [];
-    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', weapons: [], languages: [], skills: [] };
+    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', weapons: [], languages: [], skills: [], variants: [] };
   });
 
   test('requires selecting damage type and applies result', async () => {
@@ -262,7 +265,7 @@ describe('Aarakocra selections', () => {
     };
     DATA.languages = [];
     CharacterState.system.details = {};
-    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', weapons: [], languages: [], skills: [] };
+    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', weapons: [], languages: [], skills: [], variants: [] };
     CharacterState.system.traits.damageResist = [];
     const race = {
       name: 'Aarakocra',
@@ -356,6 +359,7 @@ describe('variant feature selection', () => {
       weapons: [],
       languages: [],
       skills: [],
+      variants: [],
     };
   });
 
@@ -372,6 +376,112 @@ describe('variant feature selection', () => {
     expect(await confirmStep()).toBe(true);
     expect(CharacterState.raceChoices.skills).toHaveLength(0);
     expect(CharacterState.raceChoices.weapons).toContain('Longsword');
+  });
+});
+
+describe('race innate spells auto grant', () => {
+  beforeEach(() => {
+    document.body.innerHTML = `
+      <div id="raceList"></div>
+      <div id="raceFeatures"></div>
+      <button id="confirmRaceSelection"></button>
+    `;
+    DATA.races = {
+      HalfElf: [{ name: 'Half-Elf Variant', path: 'half' }],
+    };
+    CharacterState.system.details = {};
+    CharacterState.raceChoices = {
+      spells: [],
+      spellAbility: '',
+      size: '',
+      resist: '',
+      tools: [],
+      weapons: [],
+      languages: [],
+      skills: [],
+      variants: [],
+    };
+    const race = {
+      name: 'Half-Elf Variant',
+      entries: [
+        {
+          type: 'inset',
+          name: 'Variant Feature (Choose 1)',
+          data: { overwrite: 'Skill Versatility' },
+          entries: [
+            {
+              name: 'Skill Versatility',
+              type: 'entries',
+              entries: ['Two skills'],
+            },
+            {
+              name: 'Drow Magic',
+              type: 'entries',
+              entries: ['Innate magic'],
+            },
+          ],
+        },
+      ],
+      additionalSpells: [
+        {
+          ability: 'cha',
+          known: { 1: ['dancing lights#c'] },
+          innate: {
+            3: { daily: { 1: ['faerie fire'] } },
+            5: { daily: { 1: ['darkness'] } },
+          },
+        },
+      ],
+      _versions: [
+        {
+          name: 'Variant; Drow Descent; Drow Magic',
+          source: 'SCAG',
+          _mod: { entries: {} },
+        },
+        {
+          name: 'Variant; Drow Descent; Skill Versatility',
+          source: 'SCAG',
+          additionalSpells: null,
+        },
+      ],
+    };
+    mockFetch.mockImplementation((p) => {
+      if (p === 'half') return Promise.resolve(race);
+      return Promise.resolve({});
+    });
+  });
+
+  afterEach(() => {
+    CharacterState.raceChoices = {
+      spells: [],
+      spellAbility: '',
+      size: '',
+      resist: '',
+      tools: [],
+      weapons: [],
+      languages: [],
+      skills: [],
+      variants: [],
+    };
+  });
+
+  test('grants innate spells to race choices', async () => {
+    await selectBaseRace('HalfElf');
+    const card = document.querySelector('#raceList .class-card');
+    card.click();
+    await new Promise((r) => setTimeout(r, 0));
+    const variantRadio = [...document.querySelectorAll('input[type="radio"]')].find(
+      (el) => el.value === 'Drow Magic'
+    );
+    expect(variantRadio).toBeTruthy();
+    variantRadio.checked = true;
+    variantRadio.dispatchEvent(new Event('change'));
+    await new Promise((r) => setTimeout(r, 0));
+    expect(await confirmStep()).toBe(true);
+    expect(CharacterState.raceChoices.spells).toEqual(
+      expect.arrayContaining(['Dancing Lights', 'Faerie Fire', 'Darkness'])
+    );
+    expect(CharacterState.raceChoices.spellAbility).toBe('cha');
   });
 });
 
@@ -403,6 +513,7 @@ describe('race tool proficiency choices', () => {
       weapons: [],
       languages: [],
       skills: [],
+      variants: [],
     };
     CharacterState.system.tools = [];
   });
@@ -457,6 +568,7 @@ describe('race weapon proficiency choices', () => {
       weapons: [],
       languages: [],
       skills: [],
+      variants: [],
     };
     CharacterState.system.weapons = [];
   });
@@ -609,7 +721,7 @@ describe('duplicate proficiency replacement', () => {
     DATA.languages = ['Common', 'Dwarvish'];
     CharacterState.system.details = {};
     CharacterState.system.traits.damageResist = [];
-    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [], weapons: [], languages: [], skills: [] };
+    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [], weapons: [], languages: [], skills: [], variants: [] };
     CharacterState.system.traits.languages.value = ['Elvish'];
     const race = {
       name: 'Elf (High)',
@@ -657,7 +769,7 @@ describe('change race cleanup', () => {
     };
     CharacterState.system.details = {};
     CharacterState.system.traits.damageResist = [];
-    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [], weapons: [], languages: [], skills: [] };
+    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [], weapons: [], languages: [], skills: [], variants: [] };
     CharacterState.system.skills = [];
     CharacterState.system.traits.languages.value = [];
     CharacterState.system.attributes = {};
@@ -696,6 +808,79 @@ describe('change race cleanup', () => {
   });
 });
 
+describe('loadStep3 restoration', () => {
+  beforeEach(() => {
+    document.body.innerHTML = `
+      <div id="raceList"></div>
+      <div id="raceFeatures" class="hidden"></div>
+      <input id="raceSearch" />
+      <button id="changeRace" class="hidden"></button>
+    `;
+    DATA.races = {
+      'Half-Elf': [{ name: 'Half-Elf Variant', path: 'half' }],
+    };
+    const race = {
+      name: 'Half-Elf Variant',
+      entries: [{ name: 'Darkvision', entries: ['See in dim light.'], type: 'entries' }],
+      additionalSpells: [],
+    };
+    mockFetch.mockImplementation((p) => {
+      if (p === 'half') return Promise.resolve(race);
+      return Promise.resolve({});
+    });
+    CharacterState.system.details = {
+      race: 'Half-Elf',
+      subrace: 'Half-Elf Variant',
+    };
+    CharacterState.raceChoices = {
+      spells: [],
+      spellAbility: 'cha',
+      size: '',
+      alterations: {},
+      resist: '',
+      tools: [],
+      weapons: [],
+      languages: [],
+      skills: [],
+      variants: [],
+    };
+  });
+
+  afterEach(() => {
+    CharacterState.system.details = {};
+    CharacterState.raceChoices = {
+      spells: [],
+      spellAbility: '',
+      size: '',
+      alterations: {},
+      resist: '',
+      tools: [],
+      weapons: [],
+      languages: [],
+      skills: [],
+      variants: [],
+    };
+    mockFetch.mockReset();
+  });
+
+  test('shows previously selected race when revisiting step', async () => {
+    await loadStep3(false);
+    const list = document.getElementById('raceList');
+    const features = document.getElementById('raceFeatures');
+    expect(list.classList.contains('hidden')).toBe(true);
+    expect(features.classList.contains('hidden')).toBe(false);
+    expect(features.querySelector('h3')?.textContent).toBe('Half-Elf Variant');
+  });
+
+  test('restores selection even when step is forced', async () => {
+    await loadStep3(true);
+    const list = document.getElementById('raceList');
+    const features = document.getElementById('raceFeatures');
+    expect(list.classList.contains('hidden')).toBe(true);
+    expect(features.classList.contains('hidden')).toBe(false);
+  });
+});
+
 describe('race skill proficiency choices', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -716,7 +901,7 @@ describe('race skill proficiency choices', () => {
     };
     CharacterState.system.details = {};
     CharacterState.system.traits.damageResist = [];
-    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [], weapons: [], languages: [], skills: [] };
+    CharacterState.raceChoices = { spells: [], spellAbility: '', size: '', resist: '', tools: [], weapons: [], languages: [], skills: [], variants: [] };
     CharacterState.system.skills = [];
     mockFetch.mockImplementation(() => Promise.resolve(race));
   });

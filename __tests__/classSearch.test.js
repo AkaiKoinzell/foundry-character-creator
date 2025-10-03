@@ -8,6 +8,19 @@ jest.unstable_mockModule('../src/data.js', () => {
   const CharacterState = {
     classes: [],
     feats: [],
+    backgroundChoices: { skills: [], tools: [], languages: [], feat: '' },
+    raceChoices: {
+      spells: [],
+      spellAbility: '',
+      size: '',
+      alterations: {},
+      resist: '',
+      tools: [],
+      weapons: [],
+      languages: [],
+      skills: [],
+      variants: [],
+    },
     system: {
       abilities: {
         str: { value: 8 },
@@ -43,6 +56,7 @@ jest.unstable_mockModule('../src/data.js', () => {
     loadInfusions: jest.fn(),
     loadInfusionDetails: jest.fn(),
     loadEquipment: jest.fn(),
+    deriveSubclassData: jest.fn(),
   };
 });
 

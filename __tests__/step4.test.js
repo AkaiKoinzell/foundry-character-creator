@@ -13,6 +13,19 @@ jest.unstable_mockModule('../src/data.js', () => ({
       traits: { languages: { value: [] } },
     },
     showHelp: true,
+    backgroundChoices: { skills: [], tools: [], languages: [], feat: '' },
+    raceChoices: {
+      spells: [],
+      spellAbility: '',
+      size: '',
+      alterations: {},
+      resist: '',
+      tools: [],
+      weapons: [],
+      languages: [],
+      skills: [],
+      variants: [],
+    },
   },
   logCharacterState: jest.fn(),
   fetchJsonWithRetry: jest.fn(),
@@ -72,6 +85,52 @@ describe('change background button', () => {
     expect(cards).toHaveLength(2);
     const search = document.getElementById('backgroundSearch');
     expect(search.classList.contains('hidden')).toBe(false);
+  });
+});
+
+describe('loadStep4 restoration', () => {
+  beforeEach(() => {
+    document.body.innerHTML = `
+      <input id="backgroundSearch" />
+      <div id="backgroundList"></div>
+      <div id="backgroundFeatures" class="hidden"></div>
+      <button id="changeBackground" class="hidden"></button>
+    `;
+    DATA.backgrounds = {
+      Scholar: {
+        name: 'Scholar',
+        entries: [],
+        skillChoices: { choose: 1, options: ['Arcana', 'History'] },
+        toolChoices: { choose: 1, options: ["Calligrapher's Supplies", "Painter's Supplies"] },
+        languages: { choose: 1, options: ['Elvish', 'Dwarvish'] },
+      },
+    };
+    CharacterState.system.details.background = 'Scholar';
+    CharacterState.backgroundChoices = {
+      skills: ['Arcana'],
+      tools: ["Calligrapher's Supplies"],
+      languages: ['Elvish'],
+      feat: '',
+    };
+  });
+
+  afterEach(() => {
+    CharacterState.system.details.background = '';
+    CharacterState.backgroundChoices = { skills: [], tools: [], languages: [], feat: '' };
+  });
+
+  test('shows previously selected background when revisiting step', async () => {
+    await loadStep4(false);
+    const list = document.getElementById('backgroundList');
+    const features = document.getElementById('backgroundFeatures');
+    expect(list.classList.contains('hidden')).toBe(true);
+    expect(features.classList.contains('hidden')).toBe(false);
+    const selectedValues = Array.from(
+      features.querySelectorAll('select')
+    ).map((sel) => sel.value);
+    expect(selectedValues).toEqual(
+      expect.arrayContaining(['Arcana', "Calligrapher's Supplies", 'Elvish'])
+    );
   });
 });
 

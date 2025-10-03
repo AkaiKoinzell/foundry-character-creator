@@ -1,0 +1,25 @@
+{
+  "name": "Agile",
+  "source": "HB",
+  "page": 0,
+  "prerequisite": [
+    {
+      "ability": [
+        {
+          "dex": 13
+        }
+      ]
+    }
+  ],
+  "entries": [
+    "You are agile and responsive. This allows you to react quickly to threats, outpacing your opponents and making impressive leaps.",
+    {
+      "type": "list",
+      "items": [
+        "You have advantage on opportunity attacks.",
+        "If a creature misses you with a melee attack while you are taking the {@action Dodge} action, you can use your reaction to make an opportunity attack against it.",
+        "You can use your Dexterity score instead of your Strength score when determining the distance of your long jump and high jump."
+      ]
+    }
+  ]
+}

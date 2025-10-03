@@ -1,0 +1,18 @@
+{
+  "name": "Cruel",
+  "source": "HB",
+  "page": 0,
+  "entries": [
+    "The challenges and struggles you've faced have led you to delight in inflicting pain and anguish upon others.",
+    "You gain a number of cruelty dice equal to your proficiency bonus. Your cruelty dice are {@dice d6}s. You can roll only one cruelty die per turn, and a cruelty die is spent when you roll it.",
+    {
+      "type": "list",
+      "items": [
+        "When you deal damage to a creature, you can spend one cruelty die to deal extra damage to that creature equal to the number rolled.",
+        "When you score a critical hit, you can spend one cruelty die to gain temporary hit points equal to the number rolled.",
+        "When you make a Charisma ({@skill Intimidation}) check, you can spend one cruelty die and add the number rolled to the check."
+      ]
+    },
+    "You regain all expended cruelty dice when you finish a long rest."
+  ]
+}

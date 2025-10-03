@@ -1,0 +1,21 @@
+{
+  "name": "Tinkerer's Infusion",
+  "source": "HB",
+  "page": 0,
+  "prerequisite": [
+    {
+      "spellcasting2020": true
+    }
+  ],
+  "entries": [
+    "By studying arcane science, you have learned how to channel power into an item.",
+    {
+      "type": "list",
+      "items": [
+        "You learn one {@filter infuse item option|optionalfeatures|feature type=AI} of your choice from the artificer class. You can infuse only one item at a time in this way. If the infusion has a prerequisite, you can choose that infusion only if you are an artificer who meets the prerequisite.",
+        "If an infused item you use requires a target to make a saving throw to resist the item's effects, the save DC equals {@dc 8} + your proficiency bonus + your Intelligence modifier.",
+        "Whenever you gain a level, you can replace the infusion with another one from the artificer class."
+      ]
+    }
+  ]
+}

@@ -600,6 +600,55 @@ async function renderSubraceCards(base, search = '') {
     container.appendChild(card);
   }
 }
+
+async function showSubraceListView() {
+  if (!selectedBaseRace) return false;
+  currentRaceData = null;
+  resetPendingRaceChoices();
+  const list = document.getElementById('raceList');
+  const features = document.getElementById('raceFeatures');
+  const searchInput = document.getElementById('raceSearch');
+  list?.classList.remove('hidden');
+  if (features) {
+    features.classList.add('hidden');
+    features.innerHTML = '<div id="raceTraits"></div>';
+  }
+  if (searchInput) searchInput.classList.remove('hidden');
+  const term = searchInput?.value || '';
+  await renderSubraceCards(selectedBaseRace, term);
+  validateRaceChoices();
+  return true;
+}
+
+async function showBaseRaceListView() {
+  selectedBaseRace = '';
+  currentRaceData = null;
+  resetPendingRaceChoices();
+  const list = document.getElementById('raceList');
+  const features = document.getElementById('raceFeatures');
+  const searchInput = document.getElementById('raceSearch');
+  list?.classList.remove('hidden');
+  if (features) {
+    features.classList.add('hidden');
+    features.innerHTML = '<div id="raceTraits"></div>';
+  }
+  if (searchInput) searchInput.classList.remove('hidden');
+  const term = searchInput?.value || '';
+  await renderBaseRaces(term);
+  validateRaceChoices();
+  return true;
+}
+
+async function handleRaceBackNavigation() {
+  if (currentRaceData) {
+    return await showSubraceListView();
+  }
+  if (selectedBaseRace) {
+    return await showBaseRaceListView();
+  }
+  return false;
+}
+
 async function renderSelectedRace() {
   const accordion = document.getElementById('raceFeatures');
   if (!currentRaceData || !accordion) return;
@@ -1803,6 +1852,7 @@ function confirmRaceSelection() {
 }
 
 export async function loadStep3(force = false) {
+  main.registerStepBackHandler?.(3, handleRaceBackNavigation);
   if (force) resetPendingRaceChoices();
   await loadRaces(force);
   const container = document.getElementById('raceList');

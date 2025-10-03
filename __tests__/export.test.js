@@ -1,4 +1,4 @@
-import { exportFoundryActor } from "../src/export.js";
+import { exportFoundryActor, exportFoundryActorV13 } from "../src/export.js";
 import fs from "fs";
 
 const template = JSON.parse(
@@ -137,5 +137,89 @@ describe("exportFoundryActor", () => {
         (i) => i.name === "Enhanced Defense" && i.type === "feat"
       )
     ).toBeTruthy();
+  });
+
+  test("exportFoundryActorV13 preserves spell slots, movement, and hp", async () => {
+    const baseAbility = (value = 10) => ({ value });
+    const state = {
+      playerName: "Alice",
+      name: "Arcane Hero",
+      type: "character",
+      classes: [
+        { name: "Wizard", level: 5 },
+        { name: "Warlock", level: 3 },
+      ],
+      feats: [],
+      equipment: [],
+      knownSpells: {},
+      baseAbilities: {
+        str: 10,
+        dex: 11,
+        con: 12,
+        int: 17,
+        wis: 13,
+        cha: 14,
+      },
+      bonusAbilities: {
+        str: 0,
+        dex: 0,
+        con: 0,
+        int: 0,
+        wis: 0,
+        cha: 0,
+      },
+      system: {
+        abilities: {
+          str: baseAbility(10),
+          dex: baseAbility(11),
+          con: baseAbility(12),
+          int: baseAbility(17),
+          wis: baseAbility(13),
+          cha: baseAbility(14),
+        },
+        skills: [],
+        expertise: [],
+        tools: [],
+        details: {
+          background: "Sage",
+          race: "High Elf",
+          backstory: "",
+        },
+        traits: {
+          languages: { value: ["Common", "Elvish"] },
+        },
+        currency: {},
+        attributes: {
+          hp: { value: 12, max: 18, temp: 1, tempmax: 2, bonuses: { hitDice: "+1" } },
+          movement: { walk: 30, fly: 40, swim: 20, units: "ft", hover: true },
+          spellcasting: "int",
+        },
+        spells: {
+          cantrips: ["Fire Bolt"],
+          spell1: { value: 3, max: 4 },
+          spell2: { value: 2, max: 3 },
+          pact: { value: 2, max: 2, level: 2 },
+        },
+      },
+      prototypeToken: { name: "Arcane Hero", actorLink: true, disposition: 1 },
+    };
+
+    const actor = await exportFoundryActorV13(state);
+
+    expect(actor.system.spells.spell1).toMatchObject({ value: 3, max: 4 });
+    expect(actor.system.spells.spell2).toMatchObject({ value: 2, max: 3 });
+    expect(actor.system.spells.pact).toMatchObject({ value: 2, max: 2, level: 2 });
+
+    expect(actor.system.attributes.movement.walk).toBe(30);
+    expect(actor.system.attributes.movement.fly).toBe(40);
+    expect(actor.system.attributes.movement.swim).toBe(20);
+    expect(actor.system.attributes.movement.units).toBe("ft");
+    expect(actor.system.attributes.movement.hover).toBe(true);
+
+    expect(actor.system.attributes.hp.value).toBe(12);
+    expect(actor.system.attributes.hp.max).toBe(18);
+    expect(actor.system.attributes.hp.temp).toBe(1);
+    expect(actor.system.attributes.hp.tempmax).toBe(2);
+    expect(actor.system.attributes.hp.bonuses).toEqual({ hitDice: "+1" });
   });
 });

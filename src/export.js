@@ -409,6 +409,23 @@ function toLanguageKey(name) {
 
 function buildFoundrySystem(state) {
   const sys = state.system || {};
+  const spellState = sys.spells || {};
+  const slotEntry = (key) => {
+    const src = spellState[key] || {};
+    const out = {
+      value: src.value ?? 0,
+      max: src.max ?? 0,
+    };
+    if (Object.prototype.hasOwnProperty.call(src, "override")) {
+      out.override = src.override;
+    }
+    return out;
+  };
+
+  const pactState = spellState.pact || {};
+  const movementState = sys.attributes?.movement || {};
+  const hpState = sys.attributes?.hp || {};
+
   const system = {
     currency: { pp: 0, gp: 0, ep: 0, sp: 0, cp: 0, ...(sys.currency || {}) },
     abilities: buildFoundryAbilities(state),
@@ -423,29 +440,37 @@ function buildFoundrySystem(state) {
     skills: buildFoundrySkills(state),
     tools: buildFoundryTools(state),
     spells: {
-      spell1: { value: 0 },
-      spell2: { value: 0 },
-      spell3: { value: 0 },
-      spell4: { value: 0 },
-      spell5: { value: 0 },
-      spell6: { value: 0 },
-      spell7: { value: 0 },
-      spell8: { value: 0 },
-      spell9: { value: 0 },
-      pact: { value: 0 },
+      spell1: slotEntry("spell1"),
+      spell2: slotEntry("spell2"),
+      spell3: slotEntry("spell3"),
+      spell4: slotEntry("spell4"),
+      spell5: slotEntry("spell5"),
+      spell6: slotEntry("spell6"),
+      spell7: slotEntry("spell7"),
+      spell8: slotEntry("spell8"),
+      spell9: slotEntry("spell9"),
+      pact: {
+        value: pactState.value ?? 0,
+        max: pactState.max ?? 0,
+        level: pactState.level ?? 0,
+      },
     },
     attributes: {
       ac: { calc: "default" },
       init: { ability: "", roll: { min: null, max: null, mode: 0 }, bonus: "" },
       movement: {
-        burrow: null,
-        climb: null,
-        fly: null,
-        swim: null,
-        walk: null,
-        units: null,
-        hover: false,
-        ignoredDifficultTerrain: [],
+        burrow: movementState.burrow ?? null,
+        climb: movementState.climb ?? null,
+        fly: movementState.fly ?? null,
+        swim: movementState.swim ?? null,
+        walk: movementState.walk ?? null,
+        units: movementState.units ?? null,
+        hover: Boolean(movementState.hover),
+        ignoredDifficultTerrain: Array.isArray(
+          movementState.ignoredDifficultTerrain
+        )
+          ? [...movementState.ignoredDifficultTerrain]
+          : [],
       },
       attunement: { max: 3 },
       senses: {
@@ -466,11 +491,11 @@ function buildFoundrySystem(state) {
       },
       loyalty: {},
       hp: {
-        value: sys.attributes?.hp?.value ?? 0,
-        max: null,
-        temp: 0,
-        tempmax: 0,
-        bonuses: {},
+        value: hpState.value ?? 0,
+        max: hpState.max ?? null,
+        temp: hpState.temp ?? 0,
+        tempmax: hpState.tempmax ?? 0,
+        bonuses: hpState.bonuses ? { ...hpState.bonuses } : {},
       },
       death: {
         roll: { min: null, max: null, mode: 0 },

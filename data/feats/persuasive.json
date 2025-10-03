@@ -1,0 +1,32 @@
+{
+  "name": "Persuasive",
+  "source": "HB",
+  "page": 0,
+  "ability": [
+    {
+      "cha": 1
+    }
+  ],
+  "skillProficiencies": [
+    {
+      "choose": {
+        "from": [
+          "deception",
+          "intimidation",
+          "persuasion"
+        ]
+      }
+    }
+  ],
+  "entries": [
+    "You truly have a talent for persuading people to do what you say.",
+    {
+      "type": "list",
+      "items": [
+        "Increase your Charisma score by 1, to a maximum of 20.",
+        "You gain proficiency in one of the following skills of your choice: {@skill Deception}, {@skill Intimidation}, or {@skill Persuasion}.",
+        "If you speak to a creature that can understand you for at least 1 minute, you can try to manipulate it. At the end of the conversation, the target must succeed on a Wisdom saving throw against a DC equal to {@dc 8} + your proficiency bonus + your Charisma modifier or be {@condition charmed} or {@condition frightened} by you (your choice) or another creature you choose. The target is charmed or frightened in this way for 1 hour, until it is attacked or damaged, or until it witnesses its allies being attacked or damaged. This is not a magical effect."
+      ]
+    }
+  ]
+}

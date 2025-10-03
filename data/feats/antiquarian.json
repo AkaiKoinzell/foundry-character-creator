@@ -1,0 +1,21 @@
+{
+  "name": "Antiquarian",
+  "source": "HB",
+  "page": 0,
+  "ability": [
+    {
+      "int": 1
+    }
+  ],
+  "entries": [
+    "You are an expert in establishing the provenance, antiquity, value, and function of objects and discoveries.",
+    {
+      "type": "list",
+      "items": [
+        "Increase your Intelligence score by 1, to a maximum of 20.",
+        "You have advantage on Intelligence ({@skill Arcana}) and Intelligence ({@skill History}) checks when trying to learn information about an item.",
+        "You can spend 1 minute studying an object to replicate the effects of the {@spell identify|phb} spell on it."
+      ]
+    }
+  ]
+}

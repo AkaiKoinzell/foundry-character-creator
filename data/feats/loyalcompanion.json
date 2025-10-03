@@ -1,0 +1,15 @@
+{
+  "name": "Loyal Companion",
+  "source": "HB",
+  "page": 0,
+  "entries": [
+    "You have learned how to bond a loyal spirit to your will and how to care for this essence.",
+    {
+      "type": "list",
+      "items": [
+        "You learn the {@spell find steed|phb} spell. Once you cast this spell in this way, you cannot cast it in this way again until you finish a long rest. You can also cast the spell using spell slots you have of the appropriate level. The spellcasting ability for this spell is Intelligence, Wisdom, or Charisma (choose when you select this feat).",
+        "When a creature you summoned that is within 60 feet of you is reduced to 0 hit points, you can use your reaction to drop it to 1 hit point instead. You can use this reaction a number of times equal to your proficiency bonus, and you regain all expended uses when you finish a long rest."
+      ]
+    }
+  ]
+}

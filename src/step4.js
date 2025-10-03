@@ -268,6 +268,28 @@ export function renderBackgroundList(query = '') {
   }
 }
 
+
+async function handleBackgroundBackNavigation() {
+  if (!currentBackgroundData) return false;
+  currentBackgroundData = null;
+  resetPendingSelections();
+  const list = document.getElementById('backgroundList');
+  const features = document.getElementById('backgroundFeatures');
+  const search = document.getElementById('backgroundSearch');
+  const changeBtn = document.getElementById('changeBackground');
+  list?.classList.remove('hidden');
+  search?.classList.remove('hidden');
+  if (features) {
+    features.classList.add('hidden');
+    features.innerHTML = '';
+  }
+  changeBtn?.classList.add('hidden');
+  renderBackgroundList(search?.value || '');
+  validateBackgroundChoices();
+  main.setCurrentStepComplete?.(isStepComplete());
+  return true;
+}
+
 function selectBackground(bg) {
   currentBackgroundData = bg;
   const list = document.getElementById('backgroundList');
@@ -656,6 +678,7 @@ async function confirmBackgroundSelection() {
 }
 
 export async function loadStep4(force = false) {
+  main.registerStepBackHandler?.(4, handleBackgroundBackNavigation);
   try {
     await loadBackgrounds(force);
   } catch (err) {

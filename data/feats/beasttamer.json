@@ -1,0 +1,30 @@
+{
+  "name": "Beast Tamer",
+  "source": "HB",
+  "page": 0,
+  "prerequisite": [
+    {
+      "ability": [
+        {
+          "wis": 13
+        }
+      ]
+    }
+  ],
+  "skillProficiencies": [
+    {
+      "animal handling": true
+    }
+  ],
+  "entries": [
+    "People have used animals in their war efforts since time immemorial. As a beast tamer, you teach animals to fight and survive on the battlefield, and your care makes your companions stronger.",
+    {
+      "type": "list",
+      "items": [
+        "You gain proficiency in the {@skill Animal Handling} skill.",
+        "Once on each of your turns when you take the {@action Attack}, {@action Dash}, {@action Disengage}, or {@action Help} action or bonus action, you can command a beast or a monstrosity that is friendly to you or charmed by you to take the same action. If you do not issue a command, the creature takes the {@action Dodge} action. It can still move and take its reaction on its own. If the target has an Intelligence of 4 or higher or is under the control of another creature, the command fails. The DM can have you make a Wisdom ({@skill Animal Handling}) check to issue more complex commands.",
+        "When you finish a long rest, you can choose a number of friendly beasts or monstrosities up to your Wisdom modifier and take special care of them. Each chosen creature gains a bonus to ability checks and weapon attack rolls equal to your Wisdom modifier, and its hit point maximum increases by twice your level. These benefits last until the creature finishes its next long rest, and a creature can benefit from only one source of this feature at a time."
+      ]
+    }
+  ]
+}

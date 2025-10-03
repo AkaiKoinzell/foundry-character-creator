@@ -1,0 +1,22 @@
+{
+  "name": "Die Hard",
+  "source": "HB",
+  "page": 0,
+  "ability": [
+    {
+      "con": 1
+    }
+  ],
+  "entries": [
+    "Your grit and tenacity keep you on your feet when others would fall.",
+    {
+      "type": "list",
+      "items": [
+        "Increase your Constitution score by 1, to a maximum of 20.",
+        "You have advantage on death saving throws.",
+        "When you are at 0 hit points and regain hit points, you can spend one Hit Die, roll it, and regain additional hit points equal to the number rolled + your Constitution modifier (minimum of 1).",
+        "Effects that would drop you to 1 hit point instead of 0 do not trigger this feat's final benefit."
+      ]
+    }
+  ]
+}

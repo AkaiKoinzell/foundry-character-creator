@@ -1,0 +1,37 @@
+{
+  "name": "Erudite",
+  "source": "HB",
+  "page": 0,
+  "prerequisite": [
+    {
+      "ability": [
+        {
+          "int": 13
+        }
+      ]
+    }
+  ],
+  "skillProficiencies": [
+    {
+      "choose": {
+        "from": [
+          "arcana",
+          "history",
+          "nature",
+          "religion"
+        ],
+        "count": 2
+      }
+    }
+  ],
+  "entries": [
+    "You have studied so much that you carry encyclopedic knowledge at your fingertips.",
+    {
+      "type": "list",
+      "items": [
+        "You become proficient in two skills of your choice chosen from Arcana, History, Nature, or Religion.",
+        "When you take the {@action Help} action to aid another creature, that creature gains a bonus to the check equal to your proficiency bonus, as you share pertinent advice and historical examples. To receive this bonus, the creature must be able to understand you."
+      ]
+    }
+  ]
+}

@@ -58,6 +58,13 @@ const invalidatedSteps = new Set();
 
 let customDataReloadPromise = null;
 
+const backHandlers = new Map();
+
+export function registerStepBackHandler(step, handler) {
+  if (typeof handler === "function") backHandlers.set(step, handler);
+  else backHandlers.delete(step);
+}
+
 async function refreshCustomDataCaches() {
   try {
     resetEquipmentDataCache();
@@ -689,10 +696,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const prevArrow = document.getElementById("prevStep");
     if (prevArrow) {
-      prevArrow.addEventListener("click", () => {
-        if (currentStep > 1) {
-          showStep(currentStep - 1);
+      prevArrow.addEventListener("click", async () => {
+        if (currentStep <= 1) return;
+        const handler = backHandlers.get(currentStep);
+        if (handler) {
+          try {
+            const handled = await handler();
+            if (handled) return;
+          } catch (err) {
+            console.error("Step back handler failed", err);
+          }
         }
+        showStep(currentStep - 1);
       });
     }
 

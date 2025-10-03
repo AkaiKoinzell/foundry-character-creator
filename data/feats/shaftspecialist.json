@@ -1,0 +1,27 @@
+{
+  "name": "Shaft Specialist",
+  "source": "HB",
+  "page": 0,
+  "ability": [
+    {
+      "choose": {
+        "from": [
+          "str",
+          "dex"
+        ],
+        "amount": 1
+      }
+    }
+  ],
+  "entries": [
+    "You have learned the secrets of how to wield a polearm with unrivaled grace and precision.",
+    {
+      "type": "list",
+      "items": [
+        "Increase your Strength or Dexterity score by 1, to a maximum of 20.",
+        "While you are holding a quarterstaff, spear, glaive, halberd, or pike with two hands, you gain a +1 bonus to AC.",
+        "A quarterstaff, spear, glaive, halberd, or pike has the finesse property when you wield it."
+      ]
+    }
+  ]
+}

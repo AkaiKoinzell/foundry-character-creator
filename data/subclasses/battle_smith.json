@@ -1,41 +1,145 @@
 {
   "name": "Battle Smith",
-  "description": "A combination of protector and medic who uses magic to bolster allies and constructs.",
+  "description": "A blend of protector and battlefield medic who fights alongside a trusted construct companion.",
   "features_by_level": {
     "3": [
       {
-        "name": "Tool Proficiency",
-        "description": "You gain proficiency with smith's tools. If you already have it, gain proficiency with another set of artisan's tools of your choice."
-      },
-      {
-        "name": "Battle Smith Spells",
-        "description": "You always have certain spells prepared: 3rd\u2014heroism, shield; 5th\u2014branding smite, warding bond; 9th\u2014aura of vitality, conjure barrage; 13th\u2014aura of purity, fire shield; 17th\u2014banishing smite, mass cure wounds. These count as artificer spells for you and don't count against spells prepared."
+        "name": "Battle Smith",
+        "entries": [
+          "Armies require protection, and someone has to put things back together if defenses fail. A combination of protector and medic, a Battle Smith is an expert at defending others and repairing both material and personnel. To aid in their work, Battle Smiths are usually accompanied by a steel defender, a protective companion of their own creation. Many soldiers tell stories of nearly dying before being saved by a Battle Smith and a steel defender.",
+          "Battle Smiths played a key role in House Cannith's work on battle constructs and the original warforged, and after the Last War, these artificers led efforts to aid those who were injured in the war's horrific battles.",
+          {
+            "type": "refSubclassFeature",
+            "subclassFeature": "Tool Proficiency|Artificer|TCE|Battle Smith|TCE|3"
+          },
+          {
+            "type": "refSubclassFeature",
+            "subclassFeature": "Battle Smith Spells|Artificer|TCE|Battle Smith|TCE|3"
+          },
+          {
+            "type": "refSubclassFeature",
+            "subclassFeature": "Battle Ready|Artificer|TCE|Battle Smith|TCE|3"
+          },
+          {
+            "type": "refSubclassFeature",
+            "subclassFeature": "Steel Defender|Artificer|TCE|Battle Smith|TCE|3"
+          }
+        ]
       },
       {
         "name": "Battle Ready",
-        "description": "You gain proficiency with martial weapons, and you can use Intelligence instead of Strength or Dexterity for the attack and damage rolls of magic weapons."
+        "entries": [
+          "When you reach 3rd level, your combat training and your experiments with magic have paid off in two ways:",
+          {
+            "type": "list",
+            "items": [
+              "You gain proficiency with {@filter martial weapons|items|type=martial weapon}.",
+              "When you attack with a magic weapon, you can use your Intelligence modifier, instead of Strength or Dexterity modifier, for the attack and damage rolls."
+            ]
+          }
+        ],
+        "header": 1
+      },
+      {
+        "name": "Battle Smith Spells",
+        "entries": [
+          "Starting at 3rd level, you always have certain spells prepared after you reach particular levels in this class, as shown in the Battle Smith Spells table. These spells count as artificer spells for you, but they don't count against the number of artificer spells you prepare.",
+          {
+            "type": "table",
+            "caption": "Battle Smith Spells",
+            "colLabels": [
+              "Artificer Level",
+              "Spell"
+            ],
+            "colStyles": [
+              "col-2 text-center",
+              "col-10"
+            ],
+            "rows": [
+              [
+                "3rd",
+                "{@spell heroism}, {@spell shield}"
+              ],
+              [
+                "5th",
+                "{@spell branding smite}, {@spell warding bond}"
+              ],
+              [
+                "9th",
+                "{@spell aura of vitality}, {@spell conjure barrage}"
+              ],
+              [
+                "13th",
+                "{@spell aura of purity}, {@spell fire shield}"
+              ],
+              [
+                "17th",
+                "{@spell banishing smite}, {@spell mass cure wounds}"
+              ]
+            ]
+          }
+        ],
+        "header": 1
       },
       {
         "name": "Steel Defender",
-        "description": "You create a steel defender companion that acts on your initiative. It can move and use its reaction on its own, but it takes the Dodge action unless you command it with a bonus action. It has its own stat block using your proficiency bonus, can be healed by mending, and can be revived with a spell slot. You can build a new one after a long rest."
+        "entries": [
+          "By 3rd level, your tinkering has borne you a faithful companion, a {@creature steel defender|tce}. It is friendly to you and your companions, and it obeys your commands. See this creature's game statistics in the steel defender stat block, which uses your proficiency bonus (PB) in several places. You determine the creature's appearance and whether it has two legs or four; your choice has no effect on its game statistics.",
+          "In combat, the defender shares your initiative count, but it takes its turn immediately after yours. It can move and use its reaction on its own, but the only action it takes on its turn is the {@action Dodge} action, unless you take a bonus action on your turn to command it to take another action. That action can be one in its stat block or some other action. If you are {@condition incapacitated}, the defender can take any action of its choice, not just {@action Dodge}.",
+          "If the {@spell mending} spell is cast on it, it regains {@dice 2d6} hit points. If it has died within the last hour, you can use your {@item smith's tools|PHB} as an action to revive it, provided you are within 5 feet of it and you expend a spell slot of 1st level or higher. The steel defender returns to life after 1 minute with all its hit points restored.",
+          "At the end of a long rest, you can create a new steel defender if you have your {@item smith's tools|PHB} with you. If you already have a steel defender from this feature, the first one immediately perishes. The defender also perishes if you die."
+        ],
+        "header": 1
+      },
+      {
+        "name": "Tool Proficiency",
+        "entries": [
+          "When you adopt this specialization at 3rd level, you gain proficiency with {@item smith's tools|PHB}. If you already have this proficiency, you gain proficiency with one other type of {@item artisan's tools|PHB} of your choice."
+        ],
+        "header": 1
       }
     ],
     "5": [
       {
         "name": "Extra Attack",
-        "description": "You can attack twice, instead of once, whenever you take the Attack action on your turn."
+        "entries": [
+          "Starting at 5th level, you can attack twice, rather than once, whenever you take the {@action Attack} action on your turn."
+        ],
+        "header": 2
       }
     ],
     "9": [
       {
         "name": "Arcane Jolt",
-        "description": "When you or your steel defender hits with a magic weapon attack, you can deal an extra 2d6 force damage to the target or restore 2d6 hit points to a creature or object within 30 ft of the target. Uses equal to your Intelligence modifier per long rest, once per turn."
+        "entries": [
+          "At 9th level, you learn new ways to channel arcane energy to harm or heal. When either you hit a target with a magic weapon attack or your steel defender hits a target, you can channel magical energy through the strike to create one of the following effects:",
+          {
+            "type": "list",
+            "items": [
+              "The target takes an extra {@damage 2d6} force damage.",
+              "Choose one creature or object you can see within 30 feet of the target. Healing energy flows into the chosen recipient, restoring {@dice 2d6} hit points to it."
+            ]
+          },
+          "You can use this energy a number of times equal to your Intelligence modifier (minimum of once), but you can do so no more than once on a turn. You regain all expended uses when you finish a long rest."
+        ],
+        "header": 2
       }
     ],
     "15": [
       {
         "name": "Improved Defender",
-        "description": "Arcane Jolt's extra damage or healing becomes 4d6. Your steel defender's AC increases by 2, and its Deflect Attack reaction deals 1d4 + your Intelligence modifier force damage to the attacker."
+        "entries": [
+          "At 15th level, your Arcane Jolt and steel defender become more powerful:",
+          {
+            "type": "list",
+            "items": [
+              "The extra damage and the healing of your Arcane Jolt both increase to {@damage 4d6}.",
+              "Your steel defender gains a +2 bonus to Armor Class.",
+              "Whenever your steel defender uses its Deflect Attack, the attacker takes force damage equal to {@damage 1d4} + your Intelligence modifier."
+            ]
+          }
+        ],
+        "header": 2
       }
     ]
   }

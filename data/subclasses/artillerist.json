@@ -1,37 +1,152 @@
 {
   "name": "Artillerist",
-  "description": "You specialize in using magic to hurl energy and explosions on the battlefield.",
+  "description": "You specialize in using magic to hurl energy and explosions across the battlefield.",
   "features_by_level": {
     "3": [
       {
-        "name": "Tool Proficiency",
-        "description": "You gain proficiency with woodcarver's tools. If you already have it, gain proficiency with another set of artisan's tools of your choice."
+        "name": "Artillerist",
+        "entries": [
+          "An Artillerist specializes in using magic to hurl energy, projectiles, and explosions on a battlefield. This destructive power was valued by all the armies of the Last War. Now that the war is over, some members of this specialization have sought to build a more peaceful world by using their powers to fight the resurgence of strife in Khorvaire.",
+          "The gnome artificer Vi, an unlikely yet key member of House Cannith's warforged project, has been especially vocal about making things right: \"It's about time we fixed things instead of blowing them all to hell.\"",
+          {
+            "type": "refSubclassFeature",
+            "subclassFeature": "Tool Proficiency|Artificer|TCE|Artillerist|TCE|3"
+          },
+          {
+            "type": "refSubclassFeature",
+            "subclassFeature": "Artillerist Spells|Artificer|TCE|Artillerist|TCE|3"
+          },
+          {
+            "type": "refSubclassFeature",
+            "subclassFeature": "Eldritch Cannon|Artificer|TCE|Artillerist|TCE|3"
+          }
+        ]
       },
       {
         "name": "Artillerist Spells",
-        "description": "You always have certain spells prepared: 3rd\u2014shield, thunderwave; 5th\u2014scorching ray, shatter; 9th\u2014fireball, wind wall; 13th\u2014ice storm, wall of fire; 17th\u2014cone of cold, wall of force. These count as artificer spells for you and don't count against spells prepared."
+        "entries": [
+          "Starting at 3rd level, you always have certain spells prepared after you reach particular levels in this class, as shown in the Artillerist Spells table. These spells count as artificer spells for you, but they don't count against the number of artificer spells you prepare.",
+          {
+            "type": "table",
+            "caption": "Artillerist Spells",
+            "colLabels": [
+              "Artificer Level",
+              "Spell"
+            ],
+            "colStyles": [
+              "col-2 text-center",
+              "col-10"
+            ],
+            "rows": [
+              [
+                "3rd",
+                "{@spell shield}, {@spell thunderwave}"
+              ],
+              [
+                "5th",
+                "{@spell scorching ray}, {@spell shatter}"
+              ],
+              [
+                "9th",
+                "{@spell fireball}, {@spell wind wall}"
+              ],
+              [
+                "13th",
+                "{@spell ice storm}, {@spell wall of fire}"
+              ],
+              [
+                "17th",
+                "{@spell cone of cold}, {@spell wall of force}"
+              ]
+            ]
+          }
+        ],
+        "header": 1
       },
       {
         "name": "Eldritch Cannon",
-        "description": "As an action, use woodcarver's or smith's tools to create a Small or Tiny magical cannon. Once per long rest or by expending a spell slot, you can create a cannon that lasts for up to 1 hour and can be activated as a bonus action to produce a flamethrower, force ballista, or protector effect. It has AC 18, hit points equal to five times your artificer level, and can move 15 ft as part of the activation."
+        "entries": [
+          "At 3rd level, you learn how to create a magical cannon. Using {@item woodcarver's tools|PHB} or {@item smith's tools|PHB}, you can take an action to magically create a Small or Tiny eldritch cannon in an unoccupied space on a horizontal surface within 5 feet of you. A Small eldritch cannon occupies its space, and a Tiny one can be held in one hand.",
+          "Once you create a cannon, you can't do so again until you finish a long rest or until you expend a spell slot of 1st level or higher. You can have only one cannon at a time and can't create one while your cannon is present.",
+          "The cannon is a magical object. Regardless of size, the cannon has an AC of 18 and a number of hit points equal to five times your artificer level. It is immune to poison damage and psychic damage, and all conditions. If it is forced to make an ability check or a saving throw, treat all its ability scores as 10 (+0). If the {@spell mending} spell is cast on it, it regains {@dice 2d6} hit points. It disappears if it is reduced to 0 hit points or after 1 hour. You can dismiss it early as an action.",
+          "When you create the cannon, you determine its appearance and whether it has legs. You also decide which type it is, choosing from the options on the Eldritch Cannons table. On each of your turns, you can take a bonus action to cause the cannon to activate if you are within 60 feet of it. As part of the same bonus action, you can direct the cannon to walk or climb up to 15 feet to an unoccupied space, provided it has legs.",
+          {
+            "type": "table",
+            "caption": "Eldritch Cannons",
+            "colLabels": [
+              "Cannon",
+              "Activation"
+            ],
+            "colStyles": [
+              "col-2",
+              "col-10"
+            ],
+            "rows": [
+              [
+                "{@object Eldritch Cannon, Flamethrower|TCE|Flamethrower}",
+                "The cannon exhales fire in an adjacent 15-foot cone that you designate. Each creature in that area must make a Dexterity saving throw against your spell save DC, taking {@damage 2d8} fire damage on a failed save or half as much damage on a successful one. The fire ignites any flammable objects in the area that aren't being worn or carried."
+              ],
+              [
+                "{@object Eldritch Cannon, Force Ballista|TCE|Force Ballista}",
+                "Make a ranged spell attack, originating from the cannon, at one creature or object within 120 feet of it. On a hit, the target takes {@damage 2d8} force damage, and if the target is a creature, it is pushed up to 5 feet away from the cannon."
+              ],
+              [
+                "{@object Eldritch Cannon, Protector|TCE|Protector}",
+                "The cannon emits a burst of positive energy that grants itself and each creature of your choice within 10 feet of it a number of temporary hit points equal to {@damage 1d8} + your Intelligence modifier (minimum of +1)."
+              ]
+            ]
+          }
+        ],
+        "header": 1
+      },
+      {
+        "name": "Tool Proficiency",
+        "entries": [
+          "When you adopt this specialization at 3rd level, you gain proficiency with {@item woodcarver's tools|PHB}. If you already have this proficiency, you gain proficiency with one other type of {@item artisan's tools|PHB} of your choice."
+        ],
+        "header": 1
       }
     ],
     "5": [
       {
         "name": "Arcane Firearm",
-        "description": "At the end of a long rest, you can carve sigils into a wand, staff, or rod to use as an arcane firearm. When you cast an artificer spell through it, roll a d8 and add the number rolled to one damage roll of the spell."
+        "entries": [
+          "At 5th level, you know how to turn a wand, staff, or rod into an arcane firearm, a conduit for your destructive spells. When you finish a long rest, you can use {@item woodcarver's tools|PHB} to carve special sigils into a wand, staff, or rod and thereby turn it into your arcane firearm. The sigils disappear from the object if you later carve them on a different item. The sigils otherwise last indefinitely.",
+          "You can use your arcane firearm as a spellcasting focus for your artificer spells. When you cast an artificer spell through the firearm, roll a {@damage d8}, and you gain a bonus to one of the spell's damage rolls equal to the number rolled."
+        ],
+        "header": 2
       }
     ],
     "9": [
       {
         "name": "Explosive Cannon",
-        "description": "Your eldritch cannons deal an extra d8 damage. As an action, you can detonate a cannon to deal 3d8 force damage to creatures within 20 feet (Dexterity save for half), destroying the cannon."
+        "entries": [
+          "Starting at 9th level, every eldritch cannon you create is more destructive:",
+          {
+            "type": "list",
+            "items": [
+              "The cannon's damage rolls all increase by {@damage 1d8}.",
+              "As an action, you can command the cannon to detonate if you are within 60 feet of it. Doing so destroys the cannon and forces each creature within 20 feet of it to make a Dexterity saving throw against your spell save DC, taking {@damage 3d8} force damage on a failed save or half as much damage on a successful one."
+            ]
+          }
+        ],
+        "header": 2
       }
     ],
     "15": [
       {
         "name": "Fortified Position",
-        "description": "You and your allies have half cover while within 10 ft of any eldritch cannon you create. You can maintain two cannons at once and can activate both with the same bonus action."
+        "entries": [
+          "Starting at 15th level, you're a master at forming well-defended emplacements using Eldritch Cannon:",
+          {
+            "type": "list",
+            "items": [
+              "You and your allies have {@quickref Cover||3||half cover} while within 10 feet of a cannon you create with Eldritch Cannon, as a result of a shimmering field of magical protection that the cannon emits.",
+              "You can now have two cannons at the same time. You can create two with the same action (but not the same spell slot), and you can activate both of them with the same bonus action. You determine whether the cannons are identical to each other or different. You can't create a third cannon while you have two."
+            ]
+          }
+        ],
+        "header": 2
       }
     ]
   }

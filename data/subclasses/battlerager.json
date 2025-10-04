@@ -1,33 +1,65 @@
 {
   "name": "Battlerager",
-  "description": "Dwarven warriors who hurl themselves into battle clad in spiked armor.",
+  "description": "Shield dwarves clad in spiked armor who hurl themselves gleefully into battle.",
   "features_by_level": {
     "3": [
       {
-        "name": "Restriction\u2014Dwarves Only",
-        "description": "Only dwarves can choose this path, though a DM may lift this restriction to suit the campaign."
+        "name": "Path of the Battlerager",
+        "entries": [
+          "Known as Kuldjargh (literally \"axe idiot\") in Dwarvish, battleragers are dwarf followers of the gods of war and take the Path of the Battlerager. They specialize in wearing bulky, {@item spiked armor|scag} and throwing themselves into combat, striking with their body itself and giving themselves over to the fury of battle.",
+          {
+            "type": "refSubclassFeature",
+            "subclassFeature": "Restriction\u2014Dwarves Only|Barbarian||Battlerager|SCAG|3"
+          },
+          {
+            "type": "refSubclassFeature",
+            "subclassFeature": "Battlerager Armor|Barbarian||Battlerager|SCAG|3"
+          }
+        ]
       },
       {
         "name": "Battlerager Armor",
-        "description": "While wearing spiked armor and raging, you can use a bonus action to make a melee attack for 1d4 piercing damage and deal 3 piercing damage when you successfully grapple."
+        "entries": [
+          "When you choose this path at 3rd level, you gain the ability to use {@item spiked armor|scag} as a weapon.",
+          "While you are wearing {@item spiked armor|scag} and are raging, you can use a bonus action to make one melee weapon attack with your armor spikes at a target within 5 feet of you. If the attack hits, the spikes deal {@damage 1d4} piercing damage. You use your Strength modifier for the attack and damage rolls.",
+          "Additionally, when you use the {@action Attack} action to grapple a creature, the target takes 3 piercing damage if your grapple check succeeds."
+        ],
+        "header": 1
+      },
+      {
+        "name": "Restriction\u2014Dwarves Only",
+        "entries": [
+          "Only dwarves can follow the Path of the Battlerager. The battlerager fills a particular niche in dwarven society and culture.",
+          "Your DM can lift this restriction to better suit the campaign. The restriction exists for the Forgotten Realms. It might not apply to your DM's setting or your DM's version of the Realms."
+        ],
+        "header": 1
       }
     ],
     "6": [
       {
         "name": "Reckless Abandon",
-        "description": "When you use Reckless Attack while raging, you gain temporary hit points equal to your Constitution modifier."
+        "entries": [
+          "Beginning at 6th level, when you use Reckless Attack while raging, you also gain temporary hit points equal to your Constitution modifier (minimum of 1). They vanish if any of them are left when your rage ends."
+        ],
+        "header": 2
       }
     ],
     "10": [
       {
         "name": "Battlerager Charge",
-        "description": "You can take the Dash action as a bonus action while you are raging."
+        "entries": [
+          "Beginning at 10th level, you can take the {@action Dash} action as a bonus action while you are raging."
+        ],
+        "header": 2
       }
     ],
     "14": [
       {
         "name": "Spiked Retribution",
-        "description": "While raging in spiked armor, a creature that hits you with a melee attack takes 3 piercing damage if it is within 5 feet of you."
+        "entries": [
+          "Starting at 14th level, when a creature within 5 feet of you hits you with a melee attack, the attacker takes 3 piercing damage if you are raging, aren't {@condition incapacitated}, and are wearing {@item spiked armor|scag}."
+        ],
+        "header": 2
       }
     ]
   }

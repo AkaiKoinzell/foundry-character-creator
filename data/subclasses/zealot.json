@@ -1,37 +1,68 @@
 {
   "name": "Zealot",
-  "description": "Barbarians whose rage is infused with divine power, driving them to fight beyond death.",
+  "description": "Fanatical warriors whose rage is blessed by divine fury and persistence.",
   "features_by_level": {
     "3": [
       {
+        "name": "Path of the Zealot",
+        "entries": [
+          "Some deities inspire their followers to pitch themselves into a ferocious battle fury. These barbarians are zealots\u2014warriors who channel their rage into powerful displays of divine power.",
+          "A variety of gods across the worlds of D&D inspire their followers to embrace this path. Tempus from the Forgotten Realms and Hextor and Erythnul of Greyhawk are all prime examples. In general, the gods who inspire zealots are deities of combat, destruction, and violence. Not all are evil, but few are good.",
+          {
+            "type": "refSubclassFeature",
+            "subclassFeature": "Divine Fury|Barbarian||Zealot|XGE|3"
+          },
+          {
+            "type": "refSubclassFeature",
+            "subclassFeature": "Warrior of the Gods|Barbarian||Zealot|XGE|3"
+          }
+        ]
+      },
+      {
         "name": "Divine Fury",
-        "description": "While raging, the first creature you hit on each of your turns takes extra necrotic or radiant damage equal to 1d6 + half your barbarian level."
+        "entries": [
+          "Starting when you choose this path at 3rd level, you can channel divine fury into your weapon strikes. While you're raging, the first creature you hit on each of your turns with a weapon attack takes extra damage equal to {@damage 1d6} + half your barbarian level. The extra damage is necrotic or radiant; you choose the type of damage when you gain this feature."
+        ],
+        "header": 1
       },
       {
         "name": "Warrior of the Gods",
-        "description": "Spells that restore you to life don't require material components."
+        "entries": [
+          "At 3rd level, your soul is marked for endless battle. If a spell, such as {@spell raise dead}, has the sole effect of restoring you to life (but not undeath), the caster doesn't need material components to cast the spell on you."
+        ],
+        "header": 1
       }
     ],
     "6": [
       {
         "name": "Fanatical Focus",
-        "description": "If you fail a saving throw while raging, you can reroll it, using the new result. Once per rage."
+        "entries": [
+          "Starting at 6th level, the divine power that fuels your rage can protect you. If you fail a saving throw while you're raging, you can reroll it, and you must use the new roll. You can use this ability only once per rage."
+        ],
+        "header": 2
       }
     ],
     "10": [
       {
         "name": "Zealous Presence",
-        "description": "As a bonus action, give up to ten creatures within 60 feet advantage on attack rolls and saving throws until the start of your next turn. Once per long rest."
+        "entries": [
+          "At 10th level, you learn to channel divine power to inspire zealotry in others. As a bonus action, you unleash a battle cry infused with divine energy. Up to ten other creatures of your choice within 60 feet of you that can hear you gain advantage on attack rolls and saving throws until the start of your next turn.",
+          "Once you use this feature, you can't use it again until you finish a long rest."
+        ],
+        "header": 2
       }
     ],
     "14": [
       {
         "name": "Rage beyond Death",
-        "description": "While raging, having 0 hit points doesn't knock you unconscious. You still make death saves and only die after your rage ends if you still have 0 hit points."
+        "entries": [
+          "Beginning at 14th level, the divine power that fuels your rage allows you to shrug off fatal blows.",
+          "While you're raging, having 0 hit points doesn't knock you {@condition unconscious}. You still must make death saving throws, and you suffer the normal effects of taking damage while at 0 hit points. However, if you would die due to failing death saving throws, you don't die until your rage ends, and you die then only if you still have 0 hit points."
+        ],
+        "header": 2
       }
     ]
-  }
-  ,
+  },
   "choices": [
     {
       "level": 3,
@@ -39,7 +70,10 @@
       "description": "Choose necrotic or radiant damage for Divine Fury",
       "count": 1,
       "type": "damage type",
-      "selection": ["Necrotic", "Radiant"]
+      "selection": [
+        "Necrotic",
+        "Radiant"
+      ]
     }
   ]
 }

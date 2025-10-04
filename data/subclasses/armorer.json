@@ -1,45 +1,249 @@
 {
   "name": "Armorer",
-  "description": "You modify armor to function as a magical second skin.",
+  "description": "You modify armor to function as a magical second skin infused with arcane power.",
   "features_by_level": {
     "3": [
       {
-        "name": "Tools of the Trade",
-        "description": "You gain proficiency with heavy armor and smith's tools. If you already have smith's tools proficiency, gain proficiency with another set of artisan's tools of your choice."
+        "name": "Armorer",
+        "entries": [
+          "An artificer who specializes as an Armorer modifies armor to function almost like a second skin. The armor is enhanced to hone the artificer's magic, unleash potent attacks, and generate a formidable defense. The artificer bonds with this armor, becoming one with it even as they experiment with it and refine its magical capabilities.",
+          {
+            "type": "refSubclassFeature",
+            "subclassFeature": "Tools of the Trade|Artificer|TCE|Armorer|TCE|3"
+          },
+          {
+            "type": "refSubclassFeature",
+            "subclassFeature": "Armorer Spells|Artificer|TCE|Armorer|TCE|3"
+          },
+          {
+            "type": "refSubclassFeature",
+            "subclassFeature": "Arcane Armor|Artificer|TCE|Armorer|TCE|3"
+          },
+          {
+            "type": "refSubclassFeature",
+            "subclassFeature": "Armor Model|Artificer|TCE|Armorer|TCE|3"
+          }
+        ]
       },
       {
-        "name": "Armorer Spells",
-        "description": "You always have certain spells prepared: 3rd\u2014magic missile, thunderwave; 5th\u2014mirror image, shatter; 9th\u2014hypnotic pattern, lightning bolt; 13th\u2014fire shield, greater invisibility; 17th\u2014passwall, wall of force. These count as artificer spells for you and don't count against spells prepared."
+        "name": "Dampening Field",
+        "entries": [
+          "You have advantage on Dexterity ({@skill Stealth}) checks. If the armor normally imposes disadvantage on such checks, the advantage and disadvantage cancel each other, as normal."
+        ],
+        "type": "item"
+      },
+      {
+        "name": "Defensive Field",
+        "entries": [
+          "As a bonus action, you can gain temporary hit points equal to your level in this class, replacing any temporary hit points you already have. You lose these temporary hit points if you doff the armor. You can use this bonus action a number of times equal to your proficiency bonus, and you regain all expended uses when you finish a long rest."
+        ],
+        "type": "item"
+      },
+      {
+        "name": "Lightning Launcher",
+        "entries": [
+          "A gemlike node appears on one of your armored fists or on the chest (your choice). It counts as a simple ranged weapon, with a normal range of 90 feet and a long range of 300 feet, and it deals {@damage 1d6} lightning damage on a hit. Once on each of your turns when you hit a creature with it, you can deal an extra {@damage 1d6} lightning damage to that target."
+        ],
+        "type": "item"
+      },
+      {
+        "name": "Powered Steps",
+        "entries": [
+          "Your walking speed increases by 5 feet."
+        ],
+        "type": "item"
+      },
+      {
+        "name": "Thunder Gauntlets",
+        "entries": [
+          "Each of the armor's gauntlets counts as a simple melee weapon while you aren't holding anything in it, and it deals {@damage 1d8} thunder damage on a hit. A creature hit by the gauntlet has disadvantage on attack rolls against targets other than you until the start of your next turn, as the armor magically emits a distracting pulse when the creature attacks someone else."
+        ],
+        "type": "item"
       },
       {
         "name": "Arcane Armor",
-        "description": "As an action, turn a suit of armor you're wearing into Arcane Armor. It ignores Strength requirements, can serve as your spellcasting focus, attaches to you and can't be removed, covers your body, and can be donned or doffed as an action."
+        "entries": [
+          "{@i 3rd-level Armorer feature}",
+          "Your metallurgical pursuits have led to you making armor a conduit for your magic. As an action, you can turn a suit of armor you are wearing into Arcane Armor, provided you have {@item smith's tools|PHB} in hand.",
+          "You gain the following benefits while wearing this armor:",
+          {
+            "type": "list",
+            "items": [
+              "If the armor normally has a Strength requirement, the arcane armor lacks this requirement for you.",
+              "You can use the arcane armor as a spellcasting focus for your artificer spells.",
+              "The armor attaches to you and can't be removed against your will. It also expands to cover your entire body, although you can retract or deploy the helmet as a bonus action. The armor replaces any missing limbs, functioning identically to a limb it replaces.",
+              "You can doff or don the armor as an action. The armor continues to be Arcane Armor until you don another suit of armor or you die."
+            ]
+          }
+        ],
+        "header": 1
       },
       {
         "name": "Armor Model",
-        "description": "Choose Guardian or Infiltrator model for your arcane armor. Guardian grants thunder gauntlets (1d8 thunder damage, imposes disadvantage on attacks against others) and a Defensive Field that grants temporary hit points equal to your artificer level as a bonus action, proficiency bonus times per long rest. Infiltrator grants a lightning launcher (90/300 ft, 1d6 lightning plus an extra 1d6 once per turn), Powered Steps (+5 ft speed), and a Dampening Field (advantage on Stealth and negates armor Stealth disadvantage). You can change the model after a short or long rest with smith's tools."
+        "entries": [
+          "{@i 3rd-level Armorer feature}",
+          "You can customize your Arcane Armor. When you do so, choose one of the following armor models: Guardian or Infiltrator. The model you choose gives you special benefits while you wear it.",
+          "Each model includes a special weapon. When you attack with that weapon, you can add your Intelligence modifier, instead of Strength or Dexterity, to the attack and damage rolls.",
+          "You can change the armor's model whenever you finish a short or long rest, provided you have {@item smith's tools|PHB} in hand.",
+          {
+            "type": "entries",
+            "entries": [
+              {
+                "type": "entries",
+                "name": "Guardian",
+                "entries": [
+                  "You design your armor to be in the front line of conflict. It has the following features:",
+                  {
+                    "type": "list",
+                    "style": "list-hang-notitle",
+                    "items": [
+                      {
+                        "type": "refSubclassFeature",
+                        "subclassFeature": "Thunder Gauntlets|Artificer|TCE|Armorer|TCE|3"
+                      },
+                      {
+                        "type": "refSubclassFeature",
+                        "subclassFeature": "Defensive Field|Artificer|TCE|Armorer|TCE|3"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "entries",
+                "name": "Infiltrator",
+                "entries": [
+                  "You customize your armor for subtle undertakings. It has the following features:",
+                  {
+                    "type": "list",
+                    "style": "list-hang-notitle",
+                    "items": [
+                      {
+                        "type": "refSubclassFeature",
+                        "subclassFeature": "Lightning Launcher|Artificer|TCE|Armorer|TCE|3"
+                      },
+                      {
+                        "type": "refSubclassFeature",
+                        "subclassFeature": "Powered Steps|Artificer|TCE|Armorer|TCE|3"
+                      },
+                      {
+                        "type": "refSubclassFeature",
+                        "subclassFeature": "Dampening Field|Artificer|TCE|Armorer|TCE|3"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "header": 1
+      },
+      {
+        "name": "Armorer Spells",
+        "entries": [
+          "{@i 3rd-level Armorer feature}",
+          "You always have certain spells prepared after you reach particular levels in this class, as shown in the Armorer Spells table. These spells count as artificer spells for you, but they don't count against the number of artificer spells you prepare.",
+          {
+            "type": "table",
+            "caption": "Armorer Spells",
+            "colLabels": [
+              "Artificer Level",
+              "Spell"
+            ],
+            "colStyles": [
+              "col-2 text-center",
+              "col-10"
+            ],
+            "rows": [
+              [
+                "3rd",
+                "{@spell magic missile}, {@spell thunderwave}"
+              ],
+              [
+                "5th",
+                "{@spell mirror image}, {@spell shatter}"
+              ],
+              [
+                "9th",
+                "{@spell hypnotic pattern}, {@spell lightning bolt}"
+              ],
+              [
+                "13th",
+                "{@spell fire shield}, {@spell greater invisibility}"
+              ],
+              [
+                "17th",
+                "{@spell passwall}, {@spell wall of force}"
+              ]
+            ]
+          }
+        ],
+        "header": 1
+      },
+      {
+        "name": "Tools of the Trade",
+        "entries": [
+          "{@i 3rd-level Armorer feature}",
+          "You gain proficiency with heavy armor. You also gain proficiency with {@item smith's tools|PHB}. If you already have this tool proficiency, you gain proficiency with one other type of {@item artisan's tools|PHB} of your choice."
+        ],
+        "header": 1
       }
     ],
     "5": [
       {
         "name": "Extra Attack",
-        "description": "You can attack twice, instead of once, whenever you take the Attack action on your turn."
+        "entries": [
+          "{@i 5th-level Armorer feature}",
+          "You can attack twice, rather than once, whenever you take the {@action Attack} action on your turn."
+        ],
+        "header": 2
       }
     ],
     "9": [
       {
         "name": "Armor Modifications",
-        "description": "Your arcane armor counts as separate items\u2014armor, boots, helmet, and special weapon\u2014for infusions. You can infuse two additional items, but they must be part of the armor."
+        "entries": [
+          "{@i 9th-level Armorer feature}",
+          "You learn how to use your artificer infusions to specially modify your Arcane Armor. That armor now counts as separate items for the purposes of your Infuse Items feature: armor (the chest piece), boots, helmet, and the armor's special weapon. Each of those items can bear one of your infusions, and the infusions transfer over if you change your armor's model with the Armor Model feature. In addition, the maximum number of items you can infuse at once increases by 2, but those extra items must be part of your Arcane Armor."
+        ],
+        "header": 2
       }
     ],
     "15": [
       {
+        "name": "Guardian",
+        "entries": [
+          "When a Huge or smaller creature you can see ends its turn within 30 feet of you, you can use your reaction to magically force it to make a Strength saving throw against your spell save DC. On a failed save, you pull the creature up to 25 feet directly to an unoccupied space. If you pull the target to a space within 5 feet of you, you can make a melee weapon attack against it as part of this reaction.",
+          "You can use this reaction a number of times equal to your proficiency bonus, and you regain all expended uses of it when you finish a long rest."
+        ],
+        "header": 2
+      },
+      {
+        "name": "Infiltrator",
+        "entries": [
+          "Any creature that takes lightning damage from your Lightning Launcher glimmers with magical light until the start of your next turn. The glimmering creature sheds dim light in a 5-foot radius, and it has disadvantage on attack rolls against you, as the light jolts it if it attacks you. In addition, the next attack roll against it has advantage, and if that attack hits, the target takes an extra {@damage 1d6} lightning damage."
+        ],
+        "header": 2
+      },
+      {
         "name": "Perfected Armor",
-        "description": "Guardian: as a reaction when a creature ends its turn within 30 ft, you can pull it up to 25 ft and make a melee attack if it's within 5 ft; uses equal to your proficiency bonus per long rest. Infiltrator: creatures hit by your lightning launcher shed light and have disadvantage on attack rolls against you until your next turn; the next attack roll against the target has advantage and deals an extra 1d6 lightning damage on a hit."
+        "entries": [
+          "{@i 15th-level Armorer feature}",
+          "Your Arcane Armor gains additional benefits based on its model, as shown below.",
+          {
+            "type": "refSubclassFeature",
+            "subclassFeature": "Guardian|Artificer|TCE|Armorer|TCE|15"
+          },
+          {
+            "type": "refSubclassFeature",
+            "subclassFeature": "Infiltrator|Artificer|TCE|Armorer|TCE|15"
+          }
+        ],
+        "header": 2
       }
     ]
-  }
-  ,
+  },
   "choices": [
     {
       "level": 3,
@@ -47,7 +251,10 @@
       "description": "Choose a model for your Arcane Armor",
       "count": 1,
       "type": "Armor Model",
-      "selection": ["Guardian", "Infiltrator"]
+      "selection": [
+        "Guardian",
+        "Infiltrator"
+      ]
     }
   ]
 }

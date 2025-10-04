@@ -1437,8 +1437,21 @@ function renderClassEditor(cls, index) {
               body.appendChild(createElement('p', f.description));
             }
           }
-          if (hasEntries) appendEntries(body, f.entries);
-          if (!spellInfoTarget && /spellcasting/i.test(f.name || '')) {
+          let entriesToRender = f.entries;
+          if (hasEntries) {
+            const seenStrings = new Set();
+            entriesToRender = f.entries.filter((entry) => {
+              if (typeof entry === 'string') {
+                const key = normalizeFeatureText(entry);
+                if (!key) return false;
+                if (seenStrings.has(key)) return false;
+                seenStrings.add(key);
+              }
+              return true;
+            });
+            appendEntries(body, entriesToRender);
+          }
+          if (!spellInfoTarget && /(spellcasting|pact magic)/i.test(f.name || '')) {
             spellInfoTarget = body;
           }
           accordion.appendChild(

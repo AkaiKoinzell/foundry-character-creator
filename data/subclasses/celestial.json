@@ -1,33 +1,50 @@
 {
   "name": "The Celestial",
-  "description": "Your patron is a powerful being of the Upper Planes.",
+  "description": "Your patron is a powerful being of the Upper Planes, granting you access to radiant magic and restorative power.",
   "features_by_level": {
     "1": [
       {
         "name": "Bonus Cantrips",
-        "description": "Description for Bonus Cantrips."
+        "entries": [
+          "At 1st level, you learn the {@spell light} and {@spell sacred flame} cantrips. They count as warlock cantrips for you, but they don't count against the number of cantrips you know."
+        ]
       },
       {
         "name": "Healing Light",
-        "description": "Description for Healing Light."
+        "entries": [
+          "You gain the ability to channel celestial energy to heal wounds. You have a pool of d6s that you spend to fuel this healing. The number of dice in the pool equals 1 + your warlock level.",
+          "As a bonus action, you can heal one creature you can see within 60 feet of you, spending dice from the pool. The maximum number of dice you can spend at once equals your Charisma modifier (minimum of one die). Roll the spent dice, add them together, and restore a number of hit points equal to the total.",
+          "Your pool regains all expended dice when you finish a long rest."
+        ]
       }
     ],
     "6": [
       {
         "name": "Radiant Soul",
-        "description": "Description for Radiant Soul."
+        "entries": [
+          "Your link to the Celestial allows you to serve as a conduit for radiant energy. You gain resistance to radiant damage.",
+          "When you cast a spell that deals radiant or fire damage, you can add your Charisma modifier to one damage roll of that spell against one of its targets.",
+          "In addition, when you cast such a spell, you can spend 1 use of your Healing Light feature to heal one creature you can see within 30 feet of you. The creature regains hit points equal to the roll of the Healing Light die you spend."
+        ]
       }
     ],
     "10": [
       {
         "name": "Celestial Resilience",
-        "description": "Description for Celestial Resilience."
+        "entries": [
+          "You gain temporary hit points whenever you finish a short or long rest. These temporary hit points equal your warlock level + your Charisma modifier.",
+          "Additionally, choose up to five creatures you can see at the end of the rest. Those creatures each gain temporary hit points equal to half your warlock level + your Charisma modifier."
+        ]
       }
     ],
     "14": [
       {
         "name": "Searing Vengeance",
-        "description": "Description for Searing Vengeance."
+        "entries": [
+          "The radiant energy you channel allows you to resist death. When you take damage that would reduce you to 0 hit points, you can use your reaction to instead drop to 1 hit point and release a burst of searing light.",
+          "Each creature of your choice within 30 feet of you must make a Constitution saving throw against your warlock spell save DC. A creature takes {@damage 2d8} radiant damage and is {@condition blinded} until the end of your next turn on a failed save, or half as much damage and isn't blinded on a success.",
+          "Once you use this feature, you can't use it again until you finish a long rest."
+        ]
       }
     ]
   }

@@ -41,6 +41,21 @@ export function resetPendingSelections() {
   pendingSelections.featLoader = null;
 }
 
+async function ensureLanguageListLoaded() {
+  if (Array.isArray(DATA.languages) && DATA.languages.length) return;
+  try {
+    const langs = await fetchJsonWithRetry('data/languages.json', 'languages');
+    const list = Array.isArray(langs?.languages)
+      ? langs.languages
+      : Array.isArray(langs)
+      ? langs
+      : [];
+    DATA.languages = list;
+  } catch (err) {
+    console.error('Unable to load languages', err);
+  }
+}
+
 function removeProficienciesBySource(source) {
   const sources = CharacterState.proficiencySources || {};
   let changed = false;
@@ -190,7 +205,12 @@ async function restoreSelectedBackground() {
   if (!bg) return false;
   resetPendingSelections();
   currentBackgroundData = bg;
-  selectBackground(bg);
+  try {
+    await selectBackground(bg);
+  } catch (err) {
+    console.error('Failed to restore background', err);
+    return false;
+  }
   await applyStoredBackgroundSelections(bg);
   return true;
 }
@@ -257,11 +277,18 @@ export function renderBackgroundList(query = '') {
           `${t('featOptions')}: ${bg.featOptions.join(', ')}`
         )
       );
+    const onSelect = async () => {
+      try {
+        await selectBackground(bg);
+      } catch (err) {
+        console.error('Failed to select background', err);
+      }
+    };
     const card = createSelectableCard(
       name,
       bg.short || bg.description || bg.summary || bg.desc || '',
       details,
-      () => selectBackground(bg),
+      onSelect,
       t('details')
     );
     container.appendChild(card);
@@ -290,7 +317,7 @@ async function handleBackgroundBackNavigation() {
   return true;
 }
 
-function selectBackground(bg) {
+async function selectBackground(bg) {
   currentBackgroundData = bg;
   const list = document.getElementById('backgroundList');
   list?.classList.add('hidden');
@@ -311,6 +338,14 @@ function selectBackground(bg) {
   choiceAccordions.tools = null;
   choiceAccordions.languages = null;
   choiceAccordions.feat = null;
+
+  const needsLanguageChoices =
+    currentBackgroundData.languages &&
+    !Array.isArray(currentBackgroundData.languages) &&
+    currentBackgroundData.languages.choose;
+  if (needsLanguageChoices) {
+    await ensureLanguageListLoaded();
+  }
 
   // Details summary
   const details = document.createElement('div');
@@ -413,11 +448,7 @@ function selectBackground(bg) {
     choiceAccordions.tools = acc;
   }
 
-  if (
-    currentBackgroundData.languages &&
-    !Array.isArray(currentBackgroundData.languages) &&
-    currentBackgroundData.languages.choose
-  ) {
+  if (needsLanguageChoices) {
     const wrapper = document.createElement('div');
     appendFeatureDesc(wrapper, 'language');
     const langOpts = currentBackgroundData.languages.options?.length
@@ -604,10 +635,7 @@ async function confirmBackgroundSelection() {
     sel.disabled = true;
   });
 
-  if (!Array.isArray(DATA.languages) || !DATA.languages.length) {
-    const langs = await fetchJsonWithRetry('data/languages.json', 'languages');
-    DATA.languages = langs.languages || langs;
-  }
+  await ensureLanguageListLoaded();
   if (Array.isArray(currentBackgroundData.languages)) {
     currentBackgroundData.languages.forEach((l) => {
       const sel = addUniqueProficiency(

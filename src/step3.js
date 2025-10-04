@@ -175,6 +175,17 @@ function collectSpellNames(node, acc) {
   }
 }
 
+function createChoiceSection() {
+  const container = document.createElement('div');
+  const controls = document.createElement('div');
+  controls.className = 'choice-controls';
+  container.appendChild(controls);
+  const info = document.createElement('div');
+  info.className = 'choice-info';
+  container.appendChild(info);
+  return { container, controls, info };
+}
+
 function deriveFixedRaceSpells(additionalSpells) {
   if (!Array.isArray(additionalSpells) || additionalSpells.length === 0) {
     return { spells: [], ability: null };
@@ -710,7 +721,19 @@ async function renderSelectedRace() {
   let spellEntryUsed = false;
 
   (currentRaceData.entries || []).forEach((entry) => {
-    if (!entry.data?.overwrite || !Array.isArray(entry.entries)) return;
+    if (!entry?.data?.overwrite || !Array.isArray(entry.entries)) return;
+
+    const optionEntries = [];
+    const supplementalEntries = [];
+    (entry.entries || []).forEach((opt) => {
+      if (opt && typeof opt === 'object' && typeof opt.name === 'string' && opt.name.trim()) {
+        optionEntries.push(opt);
+      } else if (opt) {
+        supplementalEntries.push(opt);
+      }
+    });
+    if (!optionEntries.length) return;
+
     const key = entry.data.overwrite || entry.name;
     const minLevel = Number(entry.data.minLevel) || 0;
     const meetsLevel = !minLevel || currentLevel >= minLevel;
@@ -761,10 +784,13 @@ async function renderSelectedRace() {
         )
       );
     }
+    if (supplementalEntries.length) {
+      appendEntries(variantContent, supplementalEntries);
+    }
     const group = [];
     const dataMap = {};
     const optMap = {};
-    (entry.entries || []).forEach((opt, idx) => {
+    optionEntries.forEach((opt, idx) => {
       const id = `var-${slugify(opt.name)}-${idx}`;
       const label = document.createElement('label');
       const radio = document.createElement('input');
@@ -821,7 +847,7 @@ async function renderSelectedRace() {
     Array.isArray(currentRaceData.size) &&
     currentRaceData.size.length > 1
   ) {
-    const sizeContent = document.createElement('div');
+    const { container: sizeContent, controls: sizeControls, info: sizeInfo } = createChoiceSection();
     const sel = document.createElement('select');
     sel.replaceChildren(new Option(t('select'), ''));
     const sizeNames = {
@@ -841,13 +867,13 @@ async function renderSelectedRace() {
     sel.dataset.type = 'choice';
     sel.dataset.choice = 'size';
     sel.addEventListener('change', validateRaceChoices);
-    sizeContent.appendChild(sel);
+    sizeControls.appendChild(sel);
     pendingRaceChoices.size = sel;
     const sizeEntry = consumeEntry((e) => entryNameMatches(e, /^size$/i));
     if (sizeEntry) {
       if (sizeEntry.description)
-        sizeContent.appendChild(createElement('p', sizeEntry.description));
-      appendEntries(sizeContent, sizeEntry.entries);
+        sizeInfo.appendChild(createElement('p', sizeEntry.description));
+      appendEntries(sizeInfo, sizeEntry.entries);
     }
     const acc = createAccordionItem(t('size'), sizeContent, true);
     acc.classList.add('needs-selection');
@@ -870,7 +896,7 @@ async function renderSelectedRace() {
       }
     });
     if (raceSkills.length || pendingAny > 0 || chooseGroups.length) {
-      const skillContent = document.createElement('div');
+      const { container: skillContent, controls: skillControls, info: skillInfo } = createChoiceSection();
       const skillEntry = consumeEntry(
         (e) =>
           entryNameMatches(e, /skill/i) ||
@@ -878,13 +904,11 @@ async function renderSelectedRace() {
       );
       if (skillEntry) {
         if (skillEntry.description)
-          skillContent.appendChild(createElement('p', skillEntry.description));
-        appendEntries(skillContent, skillEntry.entries);
+          skillInfo.appendChild(createElement('p', skillEntry.description));
+        appendEntries(skillInfo, skillEntry.entries);
       }
       if (raceSkills.length) {
-        const p = document.createElement('p');
-        p.textContent = raceSkills.join(', ');
-        skillContent.appendChild(p);
+        skillInfo.appendChild(createElement('p', raceSkills.join(', ')));
       }
       // Compute how many selections are actually possible and cap UI accordingly
       const known = new Set([...CharacterState.system.skills, ...raceSkills]);
@@ -918,7 +942,7 @@ async function renderSelectedRace() {
           updateChoiceSelectOptions(pendingRaceChoices.skills, 'skills');
           validateRaceChoices();
         });
-        skillContent.appendChild(sel);
+        skillControls.appendChild(sel);
         pendingRaceChoices.skills.push(sel);
       }
 
@@ -939,7 +963,7 @@ async function renderSelectedRace() {
             updateChoiceSelectOptions(pendingRaceChoices.skills, 'skills');
             validateRaceChoices();
           });
-          skillContent.appendChild(sel);
+          skillControls.appendChild(sel);
           pendingRaceChoices.skills.push(sel);
         }
       });

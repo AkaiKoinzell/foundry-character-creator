@@ -50,6 +50,7 @@ jest.unstable_mockModule('../src/data.js', () => ({
   loadFeatDetails: jest.fn(),
   deriveSubclassData: jest.fn(),
   loadOptionalFeatures: jest.fn(),
+  totalLevel: jest.fn(() => 1),
 }));
 
 jest.unstable_mockModule('../src/step2.js', () => ({

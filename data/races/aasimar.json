@@ -7,9 +7,15 @@
     ],
     "lineage": "VRGR",
     "size": [
-        "S",
-        "M"
-    ],
+		{
+			"choose": {
+				"from": [
+					"S",
+					"M"
+				]
+			}
+		}
+	],
     "speed": 30,
     "age": {
         "max": 180

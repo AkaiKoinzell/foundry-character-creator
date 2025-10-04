@@ -3,6 +3,15 @@ import { t } from './i18n.js';
 import { updateStep2Completion } from './step2.js';
 import { createElement, createDetailsSection } from './ui-helpers.js';
 
+const ABILITY_TO_CODE = {
+  Strength: 'str',
+  Dexterity: 'dex',
+  Constitution: 'con',
+  Intelligence: 'int',
+  Wisdom: 'wis',
+  Charisma: 'cha',
+};
+
 // Disable duplicate selection of the same spell across all selects
 export function updateSpellSelectOptions(selects) {
   const counts = new Map();
@@ -56,13 +65,36 @@ export function renderSpellChoices(cls) {
   const allSelects = [];
 
   function getKnownLimit() {
-    const base = cls.spellcasting?.spellsPerLevel?.[cls.level] || 0;
-    // Subtract cantrips (chosen separately) so the limit reflects
-    // only 1st–9th level spells for classes like Bard at level 1.
-    const cantripCount = Array.isArray(CharacterState.system.spells?.cantrips)
-      ? CharacterState.system.spells.cantrips.length
-      : 0;
-    return Math.max(0, base - cantripCount);
+    const base = Number(cls.spellcasting?.spellsPerLevel?.[cls.level]) || 0;
+    if (base > 0) {
+      // Subtract cantrips (chosen separately) so the limit reflects
+      // only 1st–9th level spells for classes like Bard at level 1.
+      const cantripCount = Array.isArray(CharacterState.system.spells?.cantrips)
+        ? CharacterState.system.spells.cantrips.length
+        : 0;
+      return Math.max(0, base - cantripCount);
+    }
+    updateSpellSlots();
+    const spellState = CharacterState.system.spells || {};
+    const abilityName = cls.spellcasting?.ability;
+    let abilityPrepared = 0;
+    if (abilityName) {
+      const code = ABILITY_TO_CODE[abilityName] || abilityName?.slice(0, 3)?.toLowerCase();
+      const abilityScore = CharacterState.system.abilities?.[code]?.value;
+      if (typeof abilityScore === 'number') {
+        const abilityMod = Math.floor((abilityScore - 10) / 2);
+        abilityPrepared = Math.max(1, (Number(cls.level) || 0) + abilityMod);
+      }
+    }
+    let total = 0;
+    for (let i = 1; i <= 9; i++) {
+      total += Number(spellState[`spell${i}`]?.max) || 0;
+    }
+    if (spellState.pact) {
+      total += Number(spellState.pact.max) || 0;
+    }
+    const levelFallback = Number(cls.level) || 1;
+    return Math.max(abilityPrepared, total, levelFallback);
   }
 
   function selectedCount() {

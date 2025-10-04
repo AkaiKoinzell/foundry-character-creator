@@ -41,6 +41,28 @@ const abilityMap = {
   Charisma: 'cha',
 };
 
+const SPELL_SELECTION_CLASSES = new Set([
+  'Bard',
+  'Sorcerer',
+  'Warlock',
+  'Wizard',
+  'Ranger',
+]);
+
+const SPELL_SELECTION_SUBCLASSES = new Set([
+  'Fighter:Eldritch Knight',
+  'Rogue:Arcane Trickster',
+]);
+
+function classRequiresSpellSelection(cls) {
+  if (!cls) return false;
+  if (cls.spellcasting?.type === 'known') return true;
+  if (SPELL_SELECTION_CLASSES.has(cls.name)) return true;
+  const subclass = cls.subclass || '';
+  if (subclass && SPELL_SELECTION_SUBCLASSES.has(`${cls.name}:${subclass}`)) return true;
+  return false;
+}
+
 // Snapshot of the character's proficiencies and abilities before any class
 // data is applied. This allows us to cleanly rebuild the derived state when a
 // class is edited or removed.
@@ -54,6 +76,72 @@ const baseState = {
   abilities: {},
   expertise: [],
 };
+
+function normalizeFeatureText(value = '') {
+  return String(value)
+    .replace(/\{@[^}]+}/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
+function firstEntryText(entries) {
+  if (!Array.isArray(entries)) return '';
+  for (const entry of entries) {
+    if (!entry) continue;
+    if (typeof entry === 'string') {
+      const text = entry.trim();
+      if (text) return text;
+      continue;
+    }
+    if (typeof entry.description === 'string') {
+      const text = entry.description.trim();
+      if (text) return text;
+    }
+    if (typeof entry.entry === 'string') {
+      const text = entry.entry.trim();
+      if (text) return text;
+    } else if (entry.entry) {
+      const nested = firstEntryText([entry.entry]);
+      if (nested) return nested;
+    }
+    if (Array.isArray(entry.entries)) {
+      const nested = firstEntryText(entry.entries);
+      if (nested) return nested;
+    }
+    if (Array.isArray(entry.items)) {
+      const nested = firstEntryText(entry.items);
+      if (nested) return nested;
+    }
+  }
+  return '';
+}
+
+function collectEntryTexts(entries, acc = new Set()) {
+  if (!Array.isArray(entries)) return acc;
+  entries.forEach(entry => {
+    if (!entry) return;
+    if (typeof entry === 'string') {
+      const text = normalizeFeatureText(entry);
+      if (text) acc.add(text);
+      return;
+    }
+    if (typeof entry !== 'object') return;
+    if (typeof entry.description === 'string') {
+      const text = normalizeFeatureText(entry.description);
+      if (text) acc.add(text);
+    }
+    if (typeof entry.entry === 'string') {
+      const text = normalizeFeatureText(entry.entry);
+      if (text) acc.add(text);
+    } else if (entry.entry) {
+      collectEntryTexts([entry.entry], acc);
+    }
+    if (Array.isArray(entry.entries)) collectEntryTexts(entry.entries, acc);
+    if (Array.isArray(entry.items)) collectEntryTexts(entry.items, acc);
+  });
+  return acc;
+}
 
 function refreshBaseState() {
   baseState.skills = [...CharacterState.system.skills];
@@ -541,13 +629,26 @@ function renderClassEditor(cls, index) {
     compileClassFeatures(cls);
     rebuildFromClasses();
     (CharacterState.classes || []).forEach(c => {
-      if (c.spellcasting?.type === 'known' && c.spellItem) {
-        const newRenderer = renderSpellChoices(c);
-        const newItem = createAccordionItem(t('spellsKnown'), newRenderer.element, true);
+      if (!classRequiresSpellSelection(c) || !c.spellItem) return;
+      const newRenderer = renderSpellChoices(c);
+      if (c.spellItem.dataset?.spellContainer === 'inline') {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'spell-choice-inline';
+        wrapper.dataset.spellContainer = 'inline';
+        wrapper.appendChild(createElement('h4', t('spellsKnown')));
+        wrapper.appendChild(newRenderer.element);
+        c.spellItem.replaceWith(wrapper);
+        c.spellItem = wrapper;
+      } else {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'spell-choice-inline';
+        wrapper.dataset.spellContainer = 'accordion';
+        wrapper.appendChild(newRenderer.element);
+        const newItem = createAccordionItem(t('spellsKnown'), wrapper, true);
         c.spellItem.parentNode.replaceChild(newItem, c.spellItem);
-        c.spellRenderer = newRenderer;
         c.spellItem = newItem;
       }
+      c.spellRenderer = newRenderer;
     });
     renderSelectedClasses();
     updateStep2Completion();
@@ -561,6 +662,7 @@ function renderClassEditor(cls, index) {
   const skillChoiceSelects = [];
   const skillChoiceSelectMap = new Map();
   const repeatedChoiceState = new Map();
+  let spellInfoTarget = null;
 
   const stemToken = token => {
     return token
@@ -746,7 +848,7 @@ function renderClassEditor(cls, index) {
     const currentCount = state.count || state.choiceSelects.length;
     const delta = Math.max(0, targetCount - currentCount);
 
-    attachChoiceFeatures(state.container, choice, features);
+    attachChoiceFeatures(state.infoWrapper || state.container, choice, features);
 
     cls.choiceSelections = cls.choiceSelections || {};
     const existing = cls.choiceSelections[choice.name] || [];
@@ -786,7 +888,7 @@ function renderClassEditor(cls, index) {
           entry.slot = idx;
           entry.option = sel.value;
           arr[idx] = entry;
-          handleASISelection(sel, state.container, entry, cls);
+          handleASISelection(sel, state.choiceWrapper || state.container, entry, cls);
           updateChoiceSelectOptions(
             state.choiceSelects,
             choice.type,
@@ -801,8 +903,8 @@ function renderClassEditor(cls, index) {
           updateFeatSelectOptions();
           updateStep2Completion();
         });
-        state.container.appendChild(sel);
-        if (stored) handleASISelection(sel, state.container, stored, cls);
+        (state.choiceWrapper || state.container).appendChild(sel);
+        if (stored) handleASISelection(sel, state.choiceWrapper || state.container, stored, cls);
       }
       state.optionsPromise.then(() => {
         updateChoiceSelectOptions(
@@ -1070,20 +1172,26 @@ function renderClassEditor(cls, index) {
         }
 
         const cContainer = document.createElement('div');
+        const choiceWrapper = document.createElement('div');
+        choiceWrapper.className = 'choice-controls';
+        cContainer.appendChild(choiceWrapper);
+        const infoWrapper = document.createElement('div');
+        infoWrapper.className = 'choice-info';
+        cContainer.appendChild(infoWrapper);
 
-        attachChoiceFeatures(cContainer, choice, features);
+        attachChoiceFeatures(infoWrapper, choice, features);
 
         const baseDescription = choice.description || '';
         let descriptionEl = null;
         if (baseDescription) {
           descriptionEl = createElement('p', baseDescription);
-          cContainer.appendChild(descriptionEl);
+          choiceWrapper.appendChild(descriptionEl);
         } else if (isInfusionChoice) {
           descriptionEl = createElement('p', '');
-          cContainer.appendChild(descriptionEl);
+          choiceWrapper.appendChild(descriptionEl);
         }
 
-        appendEntries(cContainer, choice.entries);
+        appendEntries(infoWrapper, choice.entries);
 
         let count = choice.count || 1;
         if (isInfusionChoice) {
@@ -1169,7 +1277,7 @@ function renderClassEditor(cls, index) {
               );
               updateStep2Completion();
             });
-            cContainer.appendChild(sel);
+            choiceWrapper.appendChild(sel);
           } else {
             sel.dataset.type = 'choice';
             sel.dataset.choiceName = choice.name;
@@ -1242,7 +1350,7 @@ function renderClassEditor(cls, index) {
               entry.type = choice.type;
               entry.slot = i;
               entry.option = sel.value;
-              handleASISelection(sel, cContainer, entry, cls);
+              handleASISelection(sel, choiceWrapper, entry, cls);
               updateChoiceSelectOptions(choiceSelects, choice.type, skillSelects, skillChoiceSelects);
               if (choice.type === 'skills') {
                 updateSkillSelectOptions(skillSelects, skillChoiceSelects);
@@ -1258,9 +1366,9 @@ function renderClassEditor(cls, index) {
               updateFeatSelectOptions();
               updateStep2Completion();
             });
-            cContainer.appendChild(sel);
+            choiceWrapper.appendChild(sel);
             if (stored) {
-              handleASISelection(sel, cContainer, stored, cls);
+              handleASISelection(sel, choiceWrapper, stored, cls);
             }
           }
         }
@@ -1294,6 +1402,8 @@ function renderClassEditor(cls, index) {
           const optionsPromise = infusionOptionsPromise || Promise.resolve([]);
           repeatedChoiceState.set(choiceKey, {
             container: cContainer,
+            choiceWrapper,
+            infoWrapper,
             choiceSelects,
             descriptionEl,
             optionsPromise,
@@ -1319,9 +1429,18 @@ function renderClassEditor(cls, index) {
           );
         } else {
           const body = document.createElement('div');
-          if (f.description)
-            body.appendChild(createElement('p', f.description));
-          appendEntries(body, f.entries);
+          const hasEntries = Array.isArray(f.entries) && f.entries.length > 0;
+          const entryTextSet = collectEntryTexts(f.entries);
+          if (f.description) {
+            const summaryText = normalizeFeatureText(f.description);
+            if (!hasEntries || (summaryText && !entryTextSet.has(summaryText))) {
+              body.appendChild(createElement('p', f.description));
+            }
+          }
+          if (hasEntries) appendEntries(body, f.entries);
+          if (!spellInfoTarget && /spellcasting/i.test(f.name || '')) {
+            spellInfoTarget = body;
+          }
           accordion.appendChild(
             createAccordionItem(`${t('level')} ${lvl}: ${f.name}`, body)
           );
@@ -1330,10 +1449,23 @@ function renderClassEditor(cls, index) {
     }
   }
 
-  if (cls.spellcasting?.type === 'known') {
+  if (classRequiresSpellSelection(cls)) {
     cls.spellRenderer = renderSpellChoices(cls);
-    cls.spellItem = createAccordionItem(t('spellsKnown'), cls.spellRenderer.element, true);
-    accordion.appendChild(cls.spellItem);
+    const wrapper = document.createElement('div');
+    wrapper.className = 'spell-choice-inline';
+    wrapper.dataset.spellContainer = spellInfoTarget ? 'inline' : 'accordion';
+    if (spellInfoTarget) {
+      wrapper.appendChild(createElement('h4', t('spellsKnown')));
+    }
+    wrapper.appendChild(cls.spellRenderer.element);
+    if (spellInfoTarget) {
+      spellInfoTarget.appendChild(wrapper);
+      cls.spellItem = wrapper;
+    } else {
+      const accItem = createAccordionItem(t('spellsKnown'), wrapper, true);
+      accordion.appendChild(accItem);
+      cls.spellItem = accItem;
+    }
   }
 
   card.appendChild(accordion);
@@ -1492,7 +1624,7 @@ function classHasPendingChoices(cls) {
       }
     }
   }
-  if (cls.spellcasting?.type === 'known') {
+  if (classRequiresSpellSelection(cls)) {
     if (!cls.spellRenderer || !cls.spellRenderer.isComplete()) return true;
   }
   return false;

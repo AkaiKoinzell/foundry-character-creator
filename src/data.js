@@ -53,6 +53,79 @@ const WORD_NUMBER_MAP = {
   ten: 10,
 };
 
+const ARTISAN_TOOLS = [
+  "Alchemist's Supplies",
+  "Brewer's Supplies",
+  "Calligrapher's Supplies",
+  "Carpenter's Tools",
+  "Cartographer's Tools",
+  "Cobbler's Tools",
+  "Cook's Utensils",
+  "Glassblower's Tools",
+  "Jeweler's Tools",
+  "Leatherworker's Tools",
+  "Mason's Tools",
+  "Painter's Supplies",
+  "Potter's Tools",
+  "Smith's Tools",
+  "Tinker's Tools",
+  "Weaver's Tools",
+  "Woodcarver's Tools",
+];
+
+const MUSICAL_INSTRUMENTS = [
+  'Bagpipes',
+  'Drum',
+  'Dulcimer',
+  'Flute',
+  'Lute',
+  'Lyre',
+  'Horn',
+  'Pan Flute',
+  'Shawm',
+  'Viol',
+];
+
+const GAMING_SETS = ['Dice Set', 'Dragonchess Set', 'Playing Card Set', 'Three-Dragon Ante Set'];
+
+const STANDARD_LANGUAGES = [
+  'Common',
+  'Dwarvish',
+  'Elvish',
+  'Giant',
+  'Gnomish',
+  'Goblin',
+  'Halfling',
+  'Orc',
+];
+
+const COMMON_MISC_TOOLS = [
+  "Alchemist's Supplies",
+  "Calligrapher's Supplies",
+  "Cartographer's Tools",
+  "Disguise Kit",
+  "Forgery Kit",
+  "Herbalism Kit",
+  "Navigator's Tools",
+  "Poisoner's Kit",
+  "Thieves' Tools",
+  'Vehicles (Air)',
+  'Vehicles (Land)',
+  'Vehicles (Space)',
+  'Vehicles (Water)',
+];
+
+const ALL_TOOL_OPTIONS = Array.from(
+  new Set([
+    ...ARTISAN_TOOLS,
+    ...MUSICAL_INSTRUMENTS,
+    ...GAMING_SETS,
+    ...COMMON_MISC_TOOLS,
+  ])
+).sort((a, b) => a.localeCompare(b));
+
+const EQUIPMENT_NAME_NORMALIZER = /[^a-z0-9]+/g;
+
 const DEFAULT_ASI_DESCRIPTION =
   'Increase one ability score by 2, two ability scores by 1, or take a feat if allowed.';
 
@@ -86,12 +159,73 @@ function deepClone(value) {
   }
 }
 
+function titleCaseName(str = '') {
+  return String(str)
+    .replace(/[_-]+/g, ' ')
+    .replace(/\|.*$/, '')
+    .replace(/\b\w/g, (m) => m.toUpperCase())
+    .replace(/'\w/g, (m) => m.toUpperCase());
+}
+
+function stripSourceSuffix(text = '') {
+  return String(text).split('|')[0];
+}
+
+function formatSkillName(name = '') {
+  const key = String(name).toLowerCase();
+  return SKILL_LABELS[key] || titleCaseName(name);
+}
+
+function formatToolName(name = '') {
+  return titleCaseName(stripSourceSuffix(name));
+}
+
+function formatLanguageName(name = '') {
+  return titleCaseName(stripSourceSuffix(name));
+}
+
+function expandToolOption(option = '') {
+  const key = stripSourceSuffix(option).toLowerCase();
+  if (key === 'gaming set' || key === 'anygamingset') return [...GAMING_SETS];
+  if (key === 'anymusicalinstrument' || key === 'musical instrument') return [...MUSICAL_INSTRUMENTS];
+  if (key === 'anyartisanstool' || key === "artisan's tools" || key === 'artisans tools') return [...ARTISAN_TOOLS];
+  if (key === 'anytool' || key === 'tool') return [...ALL_TOOL_OPTIONS];
+  return [formatToolName(option)];
+}
+
+function expandLanguageCategory(category = '', count = 1) {
+  const key = category.toLowerCase();
+  if (key === 'anystandard') {
+    return [{ choose: count, options: [...STANDARD_LANGUAGES], label: 'Standard Languages' }];
+  }
+  if (key === 'any') {
+    return [{ choose: count, options: [], allowAny: true, label: 'Languages' }];
+  }
+  if (key === 'other') {
+    return [{ choose: count, options: [], label: 'Other Languages' }];
+  }
+  return [];
+}
+
+function mergeChoiceGroups(existing, addition) {
+  if (!addition) return existing;
+  if (!existing) return Array.isArray(addition) ? addition : [addition];
+  const list = Array.isArray(existing) ? existing : [existing];
+  if (Array.isArray(addition)) list.push(...addition);
+  else list.push(addition);
+  return list;
+}
+
 let BASE_CLASSES = null;
+let BASE_CLASS_RAW = null;
 let BASE_BACKGROUNDS = null;
 let BASE_RACES = null;
 let BASE_SPELLS = null;
 let BASE_FEATS = null;
 let BASE_EQUIPMENT = null;
+let ALLOWED_FEAT_SET = new Set();
+let BASE_EQUIPMENT_MAP = null;
+let PLUTONIUM_ITEM_MAP = null;
 
 function mergeClassData() {
   const classes = Array.isArray(BASE_CLASSES) ? BASE_CLASSES.map((c) => ({ ...c })) : [];
@@ -127,6 +261,461 @@ function mergeBackgroundData() {
     });
   }
   DATA.backgrounds = merged;
+}
+
+function normalizeLegacyBackground(bg) {
+  if (!bg || typeof bg !== 'object') return null;
+  const normalized = {
+    name: bg.name || '',
+    skills: Array.isArray(bg.skills) ? [...bg.skills] : [],
+    tools: Array.isArray(bg.tools) ? [...bg.tools] : [],
+    featOptions: Array.isArray(bg.featOptions) ? [...bg.featOptions] : [],
+    entries: deepClone(bg.entries) || [],
+  };
+  if (bg.toolChoices) normalized.toolChoices = deepClone(bg.toolChoices);
+  if (bg.languageChoices) normalized.languageChoices = deepClone(bg.languageChoices);
+  if (Array.isArray(bg.languages)) normalized.languages = [...bg.languages];
+  else if (bg.languages && typeof bg.languages === 'object') normalized.languages = deepClone(bg.languages);
+  if (bg.skillChoices) normalized.skillChoices = deepClone(bg.skillChoices);
+  if (bg.source) normalized.source = bg.source;
+  if (bg.description) normalized.description = bg.description;
+  return normalized;
+}
+
+function unionStringLists(a = [], b = []) {
+  const arrA = Array.isArray(a) ? a : [];
+  const arrB = Array.isArray(b) ? b : [];
+  return Array.from(new Set([...arrA, ...arrB].filter(Boolean))).sort((x, y) =>
+    String(x).localeCompare(String(y))
+  );
+}
+
+export function isFeatAllowed(name) {
+  if (!name) return false;
+  if (!ALLOWED_FEAT_SET.size) return true;
+  return ALLOWED_FEAT_SET.has(featKey(name));
+}
+
+function equipmentKey(name = '') {
+  if (!name) return '';
+  return String(name)
+    .toLowerCase()
+    .replace(/\(.*?\)/g, ' ')
+    .replace(EQUIPMENT_NAME_NORMALIZER, ' ')
+    .trim()
+    .replace(/\s+/g, ' ');
+}
+
+function collectEquipmentNames(config = {}) {
+  const names = new Set();
+  const addName = (value) => {
+    if (!value || typeof value !== 'string') return;
+    const trimmed = value.trim();
+    if (trimmed) names.add(trimmed);
+  };
+
+  (config.standard || []).forEach(addName);
+
+  Object.values(config.classes || {}).forEach((cls) => {
+    if (!cls || typeof cls !== 'object') return;
+    (cls.fixed || []).forEach(addName);
+    (cls.choices || []).forEach((choice) => {
+      if (!choice || typeof choice !== 'object') return;
+      const opts = choice.options || choice.items || [];
+      if (!Array.isArray(opts)) return;
+      opts.forEach((opt) => {
+        if (typeof opt === 'string') addName(opt);
+        else if (opt && typeof opt === 'object') {
+          if (opt.value) addName(opt.value);
+          if (Array.isArray(opt.items)) opt.items.forEach(addName);
+        }
+      });
+    });
+  });
+
+  Object.values(config.upgrades || {}).forEach((list) => {
+    if (Array.isArray(list)) list.forEach(addName);
+  });
+
+  return names;
+}
+
+function mergeBackgroundRecords(base, additions) {
+  const merged = deepClone(base) || {};
+  if (additions && typeof additions === 'object') {
+    if (Array.isArray(additions.skills)) {
+      merged.skills = unionStringLists(merged.skills, additions.skills);
+    }
+    if (!merged.skillChoices && additions.skillChoices) {
+      merged.skillChoices = deepClone(additions.skillChoices);
+    }
+
+    if (Array.isArray(additions.tools)) {
+      merged.tools = unionStringLists(merged.tools, additions.tools);
+    }
+    if (!merged.toolChoices && additions.toolChoices) {
+      merged.toolChoices = deepClone(additions.toolChoices);
+    }
+
+    if (Array.isArray(additions.languages)) {
+      if (Array.isArray(merged.languages)) {
+        merged.languages = unionStringLists(merged.languages, additions.languages);
+      } else if (!merged.languages) {
+        merged.languages = [...additions.languages];
+      }
+    }
+    if (!merged.languageChoices && additions.languageChoices) {
+      merged.languageChoices = deepClone(additions.languageChoices);
+    }
+
+    if (Array.isArray(additions.featOptions) && additions.featOptions.length) {
+      merged.featOptions = unionStringLists(merged.featOptions, additions.featOptions);
+    }
+
+    if ((!merged.entries || merged.entries.length === 0) && additions.entries) {
+      merged.entries = deepClone(additions.entries);
+    }
+
+    if (!merged.source && additions.source) merged.source = additions.source;
+  }
+  if (Array.isArray(merged.featOptions) && merged.featOptions.length) {
+    merged.featOptions = merged.featOptions.filter((name) => isFeatAllowed(name));
+  }
+  return merged;
+}
+
+function isEmptyValue(value) {
+  if (value == null) return true;
+  if (Array.isArray(value)) return value.length === 0;
+  if (typeof value === 'object') return Object.keys(value).length === 0;
+  return false;
+}
+
+function normalizeLegacyRace(race) {
+  return deepClone(race) || null;
+}
+
+function normalizeRaceFromPlutonium(entry) {
+  return deepClone(entry) || null;
+}
+
+function featKey(name = '') {
+  return String(name || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+}
+
+let PLUTONIUM_FEAT_CACHE = null;
+
+async function loadPlutoniumFeatMap() {
+  if (PLUTONIUM_FEAT_CACHE) return PLUTONIUM_FEAT_CACHE;
+  const raw = await fetchJsonWithRetry(
+    'data/Foundry_Data/plutonium/data/feats.json',
+    'Plutonium feats'
+  );
+  const list = Array.isArray(raw?.feat) ? raw.feat : [];
+  const map = new Map();
+  const getPriority = (entry) => {
+    const source = String(entry?.source || '').toUpperCase();
+    if (source === 'PHB') return 0;
+    if (source === 'XPHB') return 1;
+    return 2;
+  };
+  list.forEach((entry) => {
+    if (!entry || typeof entry !== 'object') return;
+    const name = entry.name;
+    if (!name) return;
+    const key = featKey(name);
+    const priority = getPriority(entry);
+    const existing = map.get(key);
+    if (!existing || priority < existing.priority) {
+      map.set(key, { priority, entry });
+    }
+  });
+  PLUTONIUM_FEAT_CACHE = map;
+  return map;
+}
+
+async function loadPlutoniumItemMap() {
+  if (PLUTONIUM_ITEM_MAP) return PLUTONIUM_ITEM_MAP;
+  let raw;
+  try {
+    raw = await fetchJsonWithRetry(
+      'data/Foundry_Data/plutonium/data/foundry-items.json',
+      'Plutonium items'
+    );
+  } catch (err) {
+    console.warn('Unable to load Plutonium item data', err);
+    PLUTONIUM_ITEM_MAP = new Map();
+    return PLUTONIUM_ITEM_MAP;
+  }
+  const entries = [];
+  if (Array.isArray(raw?.item)) entries.push(...raw.item);
+  if (Array.isArray(raw?.magicvariant)) entries.push(...raw.magicvariant);
+  const map = new Map();
+  const getPriority = (entry) => {
+    const source = String(entry?.source || '').toUpperCase();
+    if (source === 'PHB') return 0;
+    if (source === 'XPHB') return 1;
+    return 2;
+  };
+  entries.forEach((entry) => {
+    if (!entry || typeof entry !== 'object') return;
+    const name = entry.name;
+    if (!name) return;
+    const key = equipmentKey(name);
+    if (!key) return;
+    const priority = getPriority(entry);
+    const existing = map.get(key);
+    if (!existing || priority < existing.priority) {
+      map.set(key, { priority, entry });
+    }
+  });
+  PLUTONIUM_ITEM_MAP = map;
+  return map;
+}
+
+function mergeFeatRecords(base, additions) {
+  const merged = deepClone(base) || {};
+  if (!additions || typeof additions !== 'object') return merged;
+
+  if (!merged.source && additions.source) merged.source = additions.source;
+  if (!merged.page && additions.page) merged.page = additions.page;
+  if (!merged.prerequisite && additions.prerequisite)
+    merged.prerequisite = deepClone(additions.prerequisite);
+  if (Array.isArray(merged.prerequisite) && !merged.prerequisite.length && additions.prerequisite)
+    merged.prerequisite = deepClone(additions.prerequisite);
+
+  if (!merged.ability && additions.ability) merged.ability = deepClone(additions.ability);
+  if (Array.isArray(merged.ability) && !merged.ability.length && additions.ability)
+    merged.ability = deepClone(additions.ability);
+
+  if (!merged.entries || !merged.entries.length) {
+    if (additions.entries) merged.entries = deepClone(additions.entries);
+  } else if (Array.isArray(additions.entries) && additions.entries.length) {
+    const existingSerialized = new Set(
+      merged.entries.map((entry) => JSON.stringify(entry))
+    );
+    additions.entries.forEach((entry) => {
+      if (!entry) return;
+      const serialized = JSON.stringify(entry);
+      if (!existingSerialized.has(serialized)) {
+        merged.entries.push(deepClone(entry));
+        existingSerialized.add(serialized);
+      }
+    });
+  }
+
+  ['additionalSpells', 'otherSources', 'reprintedAs'].forEach((key) => {
+    if (additions[key] && !merged[key]) merged[key] = deepClone(additions[key]);
+  });
+
+  if (!merged.tags && additions.tags) merged.tags = deepClone(additions.tags);
+
+  return merged;
+}
+
+function mergeRaceRecords(base, additions) {
+  const merged = deepClone(base) || {};
+  if (!additions || typeof additions !== 'object') return merged;
+
+  Object.entries(additions).forEach(([key, value]) => {
+    if (value == null || key === 'name') return;
+    const existing = merged[key];
+    if (key === 'entries' && Array.isArray(existing) && Array.isArray(value) && existing.length) {
+      const existingNames = new Set(
+        existing
+          .filter((entry) => entry && typeof entry === 'object' && entry.name)
+          .map((entry) => entry.name)
+      );
+      value.forEach((entry) => {
+        if (!entry) return;
+        if (entry.name && existingNames.has(entry.name)) return;
+        existing.push(deepClone(entry));
+      });
+      return;
+    }
+
+    if (isEmptyValue(existing)) {
+      merged[key] = deepClone(value);
+    }
+  });
+
+  return merged;
+}
+
+function raceKey(name = '') {
+  return String(name).toLowerCase().replace(/[^a-z0-9]+/g, '');
+}
+
+function buildSkillDataFromPlutonium(skillProficiencies = []) {
+  const fixed = new Set();
+  const choiceGroups = [];
+
+  skillProficiencies.forEach((block) => {
+    if (!block || typeof block !== 'object') return;
+    Object.entries(block).forEach(([key, val]) => {
+      if (key === 'choose') return;
+      if (val === true) {
+        fixed.add(formatSkillName(key));
+      } else if (typeof val === 'number' && key.toLowerCase() === 'any') {
+        choiceGroups.push({
+          choose: val,
+          options: Object.values(SKILL_LABELS),
+          label: 'Skills',
+        });
+      }
+    });
+    const choose = block.choose;
+    if (choose && typeof choose === 'object') {
+      const count = Number(choose.count || choose.number || choose.choose || 1) || 1;
+      const options = Array.isArray(choose.from)
+        ? choose.from.map(formatSkillName)
+        : [];
+      const formatted = options.length
+        ? Array.from(new Set(options)).sort((a, b) => a.localeCompare(b))
+        : Object.values(SKILL_LABELS);
+      choiceGroups.push({ choose: count, options: formatted, label: 'Skills' });
+    }
+  });
+
+  return {
+    skills: Array.from(fixed).sort((a, b) => a.localeCompare(b)),
+    skillChoices:
+      choiceGroups.length === 0
+        ? null
+        : choiceGroups.length === 1
+        ? choiceGroups[0]
+        : choiceGroups,
+  };
+}
+
+function buildToolDataFromPlutonium(toolProficiencies = []) {
+  const fixed = new Set();
+  const choiceGroups = [];
+
+  const addChoiceGroup = (chooseCount, options, label) => {
+    if (!chooseCount || !options || !options.length) return;
+    choiceGroups.push({
+      choose: chooseCount,
+      options: Array.from(new Set(options.map(formatToolName))).sort((a, b) =>
+        a.localeCompare(b)
+      ),
+      ...(label ? { label } : {}),
+    });
+  };
+
+  toolProficiencies.forEach((block) => {
+    if (!block || typeof block !== 'object') return;
+    Object.entries(block).forEach(([key, val]) => {
+      if (key === 'choose') return;
+      const normalizedKey = stripSourceSuffix(key).toLowerCase();
+      if (val === true) {
+        expandToolOption(key).forEach((tool) => fixed.add(tool));
+      } else if (typeof val === 'number') {
+        const options = expandToolOption(key);
+        addChoiceGroup(val, options, formatToolName(key));
+      }
+    });
+    const choose = block.choose;
+    if (choose && typeof choose === 'object') {
+      const count = Number(choose.count || choose.number || choose.choose || 1) || 1;
+      const options = Array.isArray(choose.from)
+        ? choose.from.flatMap((opt) => expandToolOption(opt))
+        : [];
+      addChoiceGroup(count, options, 'Tools');
+    }
+  });
+
+  return {
+    tools: Array.from(fixed).sort((a, b) => a.localeCompare(b)),
+    toolChoices:
+      choiceGroups.length === 0
+        ? null
+        : choiceGroups.length === 1
+        ? choiceGroups[0]
+        : choiceGroups,
+  };
+}
+
+function buildLanguageDataFromPlutonium(languageProficiencies = []) {
+  const fixed = new Set();
+  let choiceGroups = [];
+
+  languageProficiencies.forEach((block) => {
+    if (!block || typeof block !== 'object') return;
+    Object.entries(block).forEach(([key, val]) => {
+      if (key === 'choose') return;
+      if (val === true) {
+        fixed.add(formatLanguageName(key));
+      } else if (typeof val === 'number') {
+        choiceGroups = mergeChoiceGroups(choiceGroups, expandLanguageCategory(key, val));
+      }
+    });
+    const choose = block.choose;
+    if (choose && typeof choose === 'object') {
+      const count = Number(choose.count || choose.number || choose.choose || 1) || 1;
+      const options = Array.isArray(choose.from)
+        ? choose.from.map(formatLanguageName)
+        : [];
+      const group = {
+        choose: count,
+        options: options.length ? Array.from(new Set(options)).sort((a, b) => a.localeCompare(b)) : [],
+        label: 'Languages',
+      };
+      choiceGroups = mergeChoiceGroups(choiceGroups, group);
+    }
+  });
+
+  const languageChoices = (() => {
+    if (!choiceGroups || choiceGroups.length === 0) return null;
+    return choiceGroups.length === 1 ? choiceGroups[0] : choiceGroups;
+  })();
+
+  return {
+    languages: Array.from(fixed).sort((a, b) => a.localeCompare(b)),
+    languageChoices,
+  };
+}
+
+function extractFeatOptionsFromPlutonium(feats = []) {
+  const out = new Set();
+  feats.forEach((group) => {
+    if (!group || typeof group !== 'object') return;
+    Object.entries(group).forEach(([raw, value]) => {
+      if (!value) return;
+      const name = titleCaseName(stripSourceSuffix(raw));
+      if (name) out.add(name);
+    });
+  });
+  return Array.from(out).sort((a, b) => a.localeCompare(b));
+}
+
+function normalizeBackgroundFromPlutonium(entry) {
+  if (!entry || typeof entry !== 'object') return null;
+  const name = entry.name;
+  if (!name) return null;
+
+  const normalized = {
+    name,
+    source: entry.source || '',
+    entries: deepClone(entry.entries) || [],
+  };
+
+  const skillData = buildSkillDataFromPlutonium(entry.skillProficiencies || []);
+  normalized.skills = skillData.skills;
+  if (skillData.skillChoices) normalized.skillChoices = skillData.skillChoices;
+
+  const toolData = buildToolDataFromPlutonium(entry.toolProficiencies || []);
+  normalized.tools = toolData.tools;
+  if (toolData.toolChoices) normalized.toolChoices = toolData.toolChoices;
+
+  const languageData = buildLanguageDataFromPlutonium(entry.languageProficiencies || []);
+  normalized.languages = languageData.languages;
+  if (languageData.languageChoices) normalized.languageChoices = languageData.languageChoices;
+
+  const featOptions = extractFeatOptionsFromPlutonium(entry.feats || []);
+  if (featOptions.length) normalized.featOptions = featOptions;
+
+  return normalized;
 }
 
 function sanitizeCustomRace(entry) {
@@ -404,11 +993,12 @@ export async function fetchJsonWithRetry(
  * Fetches class data from the JSON index if it hasn't been loaded yet.
  * The resulting array of class objects is stored on `DATA.classes`.
  */
+const PLUTONIUM_CLASS_BASE_PATH = 'data/Foundry_Data/plutonium/data/class';
+
 export async function loadClasses(forceReload = false) {
   if (!forceReload && Array.isArray(DATA.classes) && DATA.classes.length) return;
 
   if (!BASE_CLASSES || forceReload) {
-    const index = await fetchJsonWithRetry('data/classes.json', 'class index');
     let optionalFeatures = {};
     try {
       optionalFeatures = await fetchJsonWithRetry(
@@ -419,12 +1009,66 @@ export async function loadClasses(forceReload = false) {
       console.warn('Optional features unavailable', err);
     }
 
-    BASE_CLASSES = await Promise.all(
-      Object.values(index.items || {}).map(async (path) => {
-        const raw = await fetchJsonWithRetry(path, `class at ${path}`);
-        return normalizeClassData(raw, optionalFeatures);
+    const plutoniumIndex = await fetchJsonWithRetry(
+      `${PLUTONIUM_CLASS_BASE_PATH}/index.json`,
+      'Plutonium class index'
+    );
+    const plutoniumFiles = Array.isArray(plutoniumIndex)
+      ? plutoniumIndex
+      : Object.values(plutoniumIndex || {});
+
+    const plutoniumRaw = await Promise.all(
+      plutoniumFiles.map(async (file) => {
+        if (typeof file !== 'string') return null;
+        const path = `${PLUTONIUM_CLASS_BASE_PATH}/${file}`;
+        try {
+          return await fetchJsonWithRetry(path, `class at ${path}`);
+        } catch (err) {
+          console.warn('Failed to load class data', path, err);
+          return null;
+        }
       })
     );
+
+    const plutoniumByName = new Map();
+    plutoniumRaw
+      .filter(Boolean)
+      .forEach((raw) => {
+        const name = raw?.class?.[0]?.name;
+        if (!name) return;
+        const key = name.toLowerCase();
+        const existing = plutoniumByName.get(key);
+        if (!existing) plutoniumByName.set(key, raw);
+      });
+
+    const legacyIndex = await fetchJsonWithRetry('data/classes.json', 'class index');
+    const legacyItems = legacyIndex.items || {};
+    const allowedNames = Object.keys(legacyItems);
+
+    BASE_CLASS_RAW = [];
+    const normalized = [];
+
+    for (const name of allowedNames) {
+      const key = name.toLowerCase();
+      let raw = plutoniumByName.get(key);
+      if (!raw) {
+        const path = legacyItems[name];
+        if (path) {
+          try {
+            raw = await fetchJsonWithRetry(path, `class at ${path}`);
+          } catch (err) {
+            console.warn('Unable to load legacy class data', name, err);
+            raw = null;
+          }
+        }
+      }
+      if (!raw) continue;
+      BASE_CLASS_RAW.push(raw);
+      const normalizedClass = normalizeClassData(raw, optionalFeatures);
+      if (normalizedClass) normalized.push(normalizedClass);
+    }
+
+    BASE_CLASSES = normalized;
   }
 
   mergeClassData();
@@ -440,6 +1084,7 @@ export async function loadFeats(forceReload = false) {
     BASE_FEATS = Object.keys(json.feats || {});
   }
   mergeFeatData(BASE_FEATS || []);
+  ALLOWED_FEAT_SET = new Set((DATA.feats || []).map((name) => featKey(name)));
 }
 
 /**
@@ -485,9 +1130,22 @@ export async function loadFeatDetails(name) {
   }
   const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '');
   const path = `data/feats/${slug}.json`;
-  const feat = await fetchJsonWithRetry(path, `feat ${name}`);
-  DATA.featDetails[name] = feat;
-  return feat;
+  let feat = null;
+  try {
+    feat = await fetchJsonWithRetry(path, `feat ${name}`);
+  } catch (err) {
+    console.warn('Unable to load legacy feat data', name, err);
+  }
+  let merged = feat;
+  try {
+    const map = await loadPlutoniumFeatMap();
+    const addition = map.get(featKey(name))?.entry;
+    if (addition) merged = mergeFeatRecords(feat, addition);
+  } catch (err) {
+    console.warn('Unable to merge Plutonium feat data', name, err);
+  }
+  DATA.featDetails[name] = merged;
+  return merged;
 }
 
 /**
@@ -514,18 +1172,60 @@ export async function loadBackgrounds(forceReload = false) {
   if (!forceReload && DATA.backgrounds && Object.keys(DATA.backgrounds).length) return;
 
   if (!BASE_BACKGROUNDS || forceReload) {
-    const index = await fetchJsonWithRetry(
+    const rawPlutonium = await fetchJsonWithRetry(
+      'data/Foundry_Data/plutonium/data/backgrounds.json',
+      'Plutonium backgrounds'
+    );
+
+    const plutoniumEntries = Array.isArray(rawPlutonium?.background)
+      ? rawPlutonium.background
+      : [];
+    const plutoniumByName = new Map();
+
+    const getPriority = (entry) => {
+      const source = String(entry?.source || '').toUpperCase();
+      if (source === 'PHB') return 0;
+      if (source === 'XPHB') return 1;
+      if (entry?.edition === 'one') return 3;
+      return 2;
+    };
+
+    plutoniumEntries.forEach((entry) => {
+      if (!entry || typeof entry !== 'object') return;
+      const name = entry.name;
+      if (!name) return;
+      const key = name.toLowerCase();
+      const priority = getPriority(entry);
+      const existing = plutoniumByName.get(key);
+      if (!existing || priority < existing.priority) {
+        plutoniumByName.set(key, { priority, entry });
+      }
+    });
+
+    const legacyIndex = await fetchJsonWithRetry(
       'data/backgrounds.json',
       'background index'
     );
-    const entries = index.items || {};
+    const legacyItems = legacyIndex.items || {};
+
     const collection = {};
 
     await Promise.all(
-      Object.entries(entries).map(async ([name, path]) => {
-        const bg = await fetchJsonWithRetry(path, `background at ${path}`);
-        if (!bg.name) bg.name = name;
-        collection[name] = bg;
+      Object.entries(legacyItems).map(async ([name, path]) => {
+        let base;
+        try {
+          base = await fetchJsonWithRetry(path, `background at ${path}`);
+        } catch (err) {
+          console.warn('Unable to load legacy background', name, err);
+          base = null;
+        }
+        if (!base) return;
+        const normalizedLegacy = normalizeLegacyBackground(base);
+        const plutoniumEntry = plutoniumByName.get(name.toLowerCase());
+        const normalizedPlutonium = plutoniumEntry
+          ? normalizeBackgroundFromPlutonium(plutoniumEntry.entry)
+          : null;
+        collection[name] = mergeBackgroundRecords(normalizedLegacy, normalizedPlutonium);
       })
     );
 
@@ -542,17 +1242,73 @@ export async function loadRaces(forceReload = false) {
   if (!forceReload && DATA.races && Object.keys(DATA.races).length) return;
 
   if (!BASE_RACES || forceReload) {
+    const plutoniumRaw = await fetchJsonWithRetry(
+      'data/Foundry_Data/plutonium/data/races.json',
+      'Plutonium races'
+    );
+
+    const plutoniumEntries = Array.isArray(plutoniumRaw?.race) ? plutoniumRaw.race : [];
+    const plutoniumByName = new Map();
+
+    const getPriority = (entry) => {
+      const source = String(entry?.source || '').toUpperCase();
+      if (source === 'PHB') return 0;
+      if (source === 'XPHB') return 1;
+      if (entry?.edition === 'one') return 3;
+      return 2;
+    };
+
+    plutoniumEntries.forEach((entry) => {
+      if (!entry || typeof entry !== 'object') return;
+      const name = entry.name;
+      if (!name) return;
+      const key = raceKey(name);
+      const priority = getPriority(entry);
+      const existing = plutoniumByName.get(key);
+      if (!existing || priority < existing.priority) {
+        plutoniumByName.set(key, { priority, entry });
+      }
+    });
+
     const index = await fetchJsonWithRetry('data/races.json', 'race index');
     const entries = index.items || {};
     const groups = {};
 
     await Promise.all(
-      Object.values(entries).map(async (path) => {
-        const race = await fetchJsonWithRetry(path, `race at ${path}`);
-        const base = race.raceName || race.name;
-        if (!base) return;
-        if (!groups[base]) groups[base] = [];
-        groups[base].push({ name: race.name, path });
+      Object.entries(entries).map(async ([displayName, path]) => {
+        let legacy;
+        try {
+          legacy = await fetchJsonWithRetry(path, `race at ${path}`);
+        } catch (err) {
+          console.warn('Unable to load legacy race', displayName, err);
+          legacy = null;
+        }
+        if (!legacy) return;
+
+        const baseName = legacy.raceName || legacy.name;
+        if (!baseName) return;
+
+        const legacyNormalized = normalizeLegacyRace(legacy);
+        const key = raceKey(displayName);
+        let plutoniumEntry = plutoniumByName.get(key);
+        if (!plutoniumEntry) {
+          plutoniumEntry = plutoniumByName.get(raceKey(legacy.name));
+        }
+        const merged = mergeRaceRecords(
+          legacyNormalized,
+          plutoniumEntry ? normalizeRaceFromPlutonium(plutoniumEntry.entry) : null
+        );
+        merged.name = merged.name || displayName;
+        merged.source = merged.source || legacy.source || (plutoniumEntry?.entry?.source ?? '');
+
+        const entry = {
+          name: merged.name,
+          data: merged,
+        };
+        if (legacy.isCustom) entry.isCustom = true;
+
+        if (!groups[baseName]) groups[baseName] = [];
+        groups[baseName].push(entry);
       })
     );
 
@@ -598,8 +1354,25 @@ export async function loadEquipment(forceReload = false) {
   if (!BASE_EQUIPMENT || forceReload) {
     BASE_EQUIPMENT = await fetchJsonWithRetry('data/equipment.json', 'equipment');
   }
-  DATA.equipment = mergeEquipmentDataInternal();
-  return DATA.equipment;
+  const equipment = mergeEquipmentDataInternal();
+  const allowedNames = collectEquipmentNames(equipment);
+  let detailMap = {};
+  try {
+    const plutoniumMap = await loadPlutoniumItemMap();
+    const entries = {};
+    allowedNames.forEach((name) => {
+      const key = equipmentKey(name);
+      if (!key) return;
+      const entry = plutoniumMap.get(key)?.entry;
+      if (entry) entries[name] = deepClone(entry);
+    });
+    detailMap = entries;
+  } catch (err) {
+    console.warn('Unable to merge Plutonium equipment data', err);
+  }
+  DATA.equipment = equipment;
+  DATA.equipmentDetails = detailMap;
+  return equipment;
 }
 
 export function normalizeClassData(raw, optionalFeaturesMap = {}) {
@@ -667,8 +1440,8 @@ export function normalizeClassData(raw, optionalFeaturesMap = {}) {
  */
 export function deriveSubclassData(className, subclassName) {
   try {
-    if (!Array.isArray(BASE_CLASSES)) return null;
-    const raw = BASE_CLASSES.find((c) => c?.class?.[0]?.name === className);
+    if (!Array.isArray(BASE_CLASS_RAW)) return null;
+    const raw = BASE_CLASS_RAW.find((c) => c?.class?.[0]?.name === className);
     if (!raw) return null;
     const sc = (raw.subclass || []).find((s) => s?.name === subclassName);
     if (!sc) return null;

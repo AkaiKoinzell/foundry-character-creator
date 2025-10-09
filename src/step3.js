@@ -185,6 +185,31 @@ function createChoiceSection() {
   container.appendChild(info);
   return { container, controls, info };
 }
+function appendEntryDetails(target, entry) {
+  if (!entry) return;
+  const entryList = [];
+  if (Array.isArray(entry.entries)) entryList.push(...entry.entries);
+  if (entry.entry) entryList.push(entry.entry);
+  const description = typeof entry.description === 'string' ? entry.description : '';
+
+  let entryText = '';
+  if (entryList.length) {
+    const tempEntries = document.createElement('div');
+    appendEntries(tempEntries, entryList);
+    entryText = tempEntries.textContent.trim();
+    while (tempEntries.firstChild) target.appendChild(tempEntries.firstChild);
+  }
+
+  if (description) {
+    const tempDesc = document.createElement('div');
+    appendEntries(tempDesc, [description]);
+    const descText = tempDesc.textContent.trim();
+    if (!entryText || !entryText.includes(descText)) {
+      while (tempDesc.firstChild) target.appendChild(tempDesc.firstChild);
+    }
+  }
+}
+
 
 function deriveFixedRaceSpells(additionalSpells) {
   if (!Array.isArray(additionalSpells) || additionalSpells.length === 0) {
@@ -903,9 +928,7 @@ async function renderSelectedRace() {
           entryContainsAllText(e, [/skill/i, /proficien/i])
       );
       if (skillEntry) {
-        if (skillEntry.description)
-          skillInfo.appendChild(createElement('p', skillEntry.description));
-        appendEntries(skillInfo, skillEntry.entries);
+        appendEntryDetails(skillInfo, skillEntry);
       }
       if (raceSkills.length) {
         skillInfo.appendChild(createElement('p', raceSkills.join(', ')));
@@ -1000,9 +1023,7 @@ async function renderSelectedRace() {
           entryContainsAllText(e, [/tool/i, /proficien/i])
       );
       if (toolEntry) {
-        if (toolEntry.description)
-          toolContent.appendChild(createElement('p', toolEntry.description));
-        appendEntries(toolContent, toolEntry.entries);
+        appendEntryDetails(toolContent, toolEntry);
       }
       if (raceTools.length) {
         const p = document.createElement('p');
@@ -1101,9 +1122,7 @@ async function renderSelectedRace() {
           entryContainsAllText(e, [/weapon/i, /proficien/i])
       );
       if (weaponEntry) {
-        if (weaponEntry.description)
-          weaponContent.appendChild(createElement('p', weaponEntry.description));
-        appendEntries(weaponContent, weaponEntry.entries);
+        appendEntryDetails(weaponContent, weaponEntry);
       }
       if (raceWeapons.length) {
         weaponContent.appendChild(createElement('p', raceWeapons.join(', ')));
@@ -1202,9 +1221,7 @@ async function renderSelectedRace() {
       const langContent = document.createElement('div');
       const langEntry = consumeEntry((e) => entryNameMatches(e, /languages?/i));
       if (langEntry) {
-        if (langEntry.description)
-          langContent.appendChild(createElement('p', langEntry.description));
-        appendEntries(langContent, langEntry.entries);
+        appendEntryDetails(langContent, langEntry);
       }
       if (raceLang.length) {
         langContent.appendChild(
@@ -1265,9 +1282,7 @@ async function renderSelectedRace() {
           entryContainsText(e, /resist/i)
       );
       if (resistEntry) {
-        if (resistEntry.description)
-          resistContent.appendChild(createElement('p', resistEntry.description));
-        appendEntries(resistContent, resistEntry.entries);
+        appendEntryDetails(resistContent, resistEntry);
       }
       if (fixed.length) {
         resistContent.appendChild(createElement('p', fixed.join(', ')));
@@ -1564,9 +1579,7 @@ async function renderSelectedRace() {
   Object.values(entryMap).forEach(e => {
     if (!e.name || usedEntryNames.has(e.name)) return;
     const body = document.createElement('div');
-    if (e.description)
-      body.appendChild(createElement('p', e.description));
-    appendEntries(body, e.entries);
+    appendEntryDetails(body, e);
     const traitAcc = createAccordionItem(e.name, body);
     accordion.appendChild(traitAcc);
     const variantsForEntry = variantAccordions.get(e.name);

@@ -37,6 +37,7 @@ jest.unstable_mockModule('../src/data.js', () => ({
   loadRaces: jest.fn(),
   loadSpells: jest.fn(),
   loadFeatDetails: jest.fn(),
+  isFeatAllowed: jest.fn(() => true),
 }));
 
 jest.unstable_mockModule('../src/step2.js', () => ({

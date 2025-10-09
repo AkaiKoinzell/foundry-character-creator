@@ -39,6 +39,7 @@ beforeEach(async () => {
     },
     loadSpells: jest.fn(),
     loadEquipment,
+    isFeatAllowed: jest.fn(() => true),
   }));
   jest.unstable_mockModule('../src/i18n.js', () => ({ t: (k) => k }));
   jest.unstable_mockModule('../src/main.js', () => ({

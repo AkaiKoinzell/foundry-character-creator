@@ -57,6 +57,7 @@ jest.unstable_mockModule('../src/data.js', () => {
     loadInfusionDetails: jest.fn(),
     loadEquipment: jest.fn(),
     deriveSubclassData: jest.fn(),
+    isFeatAllowed: jest.fn(() => true),
   };
 });
 

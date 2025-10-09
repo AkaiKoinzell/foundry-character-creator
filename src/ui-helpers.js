@@ -11,26 +11,52 @@ export function createElement(tag, text) {
 }
 
 export function parse5eLinks(str) {
-  const TOKEN_URLS = {
-    spell: 'spells',
-    condition: 'conditions',
-    item: 'items',
-    class: 'classes',
-    skill: 'skills',
-    feat: 'feats',
-    race: 'races',
-    background: 'backgrounds',
-    monster: 'bestiary',
+  const URL_BUILDERS = {
+    spell: (name, source) => {
+      const base = `https://5e.tools/#spells:${encodeURIComponent(name.toLowerCase())}`;
+      return source ? `${base}_${source.toLowerCase()}` : base;
+    },
+    item: (name, source) => {
+      const base = `https://5e.tools/#items:${encodeURIComponent(name.toLowerCase())}`;
+      return source ? `${base}_${source.toLowerCase()}` : base;
+    },
+    condition: (name, source) => {
+      const base = `https://5e.tools/#conditions:${name.toLowerCase()}`;
+      return source ? `${base}_${source.toLowerCase()}` : base;
+    },
+    book: (_, __, segments) => {
+      const [book, chapter = '', section = '', page = '0'] = segments;
+      return `https://5e.tools/book.html#${book.toLowerCase()},${chapter},${encodeURIComponent(section)},${page}`;
+    },
   };
 
-  return (str || '').replace(/\{@(\w+)\s([^}|]+)(?:\|[^}]+)?}/g, (match, type, name) => {
-    const kind = type.toLowerCase();
-    if (kind === 'i' || kind === 'italic') return `<em>${name}</em>`;
-    if (kind === 'b' || kind === 'bold') return `<strong>${name}</strong>`;
-    const base = TOKEN_URLS[kind];
-    if (!base) return match;
-    const slug = encodeURIComponent(name.trim().toLowerCase());
-    return `<a href="https://5e.tools/#${base}:${slug}" target="_blank" rel="noopener noreferrer">${name}</a>`;
+  return (str || '').replace(/\{@([^}]+)\}/g, (match, inner) => {
+    const [rawTag, rest = ''] = inner.split(/\s(.+)/, 2);
+    const tag = (rawTag || '').toLowerCase();
+    const segments = rest ? rest.split('|') : [''];
+    const name = segments[0] ? segments[0].trim() : '';
+
+    if (tag === 'i' || tag === 'italic') return `<em>${name}</em>`;
+    if (tag === 'b' || tag === 'bold') return `<strong>${name}</strong>`;
+    if (tag === 'dice') return name;
+    if (tag === 'dc') return `DC ${name}`;
+    if (tag === 'scaledlevel') {
+      const textSegment = segments.find((seg) => seg.startsWith('text='));
+      if (textSegment) return textSegment.slice(5);
+      return segments[1] || name.split(' ').pop() || name;
+    }
+
+    const builder = URL_BUILDERS[tag];
+    if (!builder) return match;
+
+    if (tag === 'book') {
+      const url = builder('', '', segments.map((seg) => seg.trim()));
+      return `<a href="${url}" target="_blank" rel="noopener noreferrer">${name}</a>`;
+    }
+
+    const source = segments[1] ? segments[1].trim() : '';
+    const url = builder(name, source, segments.map((seg) => seg.trim()));
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer">${name}</a>`;
   });
 }
 

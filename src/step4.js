@@ -4,6 +4,7 @@ import {
   logCharacterState,
   fetchJsonWithRetry,
   loadBackgrounds,
+  isFeatAllowed,
 } from './data.js';
 import { refreshBaseState, rebuildFromClasses } from './step2.js';
 import { updateChoiceSelectOptions } from './choice-select-helpers.js';
@@ -251,6 +252,12 @@ const choiceAccordions = {
   feat: null
 };
 
+function toChoiceArray(value) {
+  if (!value) return [];
+  if (Array.isArray(value)) return value.filter(Boolean);
+  return [value];
+}
+
 export function renderBackgroundList(query = '') {
   const container = document.getElementById('backgroundList');
   if (!container) return;
@@ -318,7 +325,7 @@ async function handleBackgroundBackNavigation() {
 }
 
 async function selectBackground(bg) {
-  currentBackgroundData = bg;
+  currentBackgroundData = bg ? JSON.parse(JSON.stringify(bg)) : null;
   const list = document.getElementById('backgroundList');
   list?.classList.add('hidden');
   document.getElementById('backgroundSearch')?.classList.add('hidden');
@@ -339,11 +346,22 @@ async function selectBackground(bg) {
   choiceAccordions.languages = null;
   choiceAccordions.feat = null;
 
-  const needsLanguageChoices =
-    currentBackgroundData.languages &&
-    !Array.isArray(currentBackgroundData.languages) &&
-    currentBackgroundData.languages.choose;
-  if (needsLanguageChoices) {
+  const skillChoiceGroups = toChoiceArray(currentBackgroundData.skillChoices).filter(
+    (group) => group && group.choose
+  );
+  const toolChoiceGroups = toChoiceArray(currentBackgroundData.toolChoices || (
+    currentBackgroundData.tools && !Array.isArray(currentBackgroundData.tools)
+      ? currentBackgroundData.tools
+      : null
+  )).filter((group) => group && group.choose);
+  const languageChoiceGroups = toChoiceArray(
+    currentBackgroundData.languageChoices ||
+      (currentBackgroundData.languages && !Array.isArray(currentBackgroundData.languages)
+        ? currentBackgroundData.languages
+        : null)
+  ).filter((group) => group && group.choose);
+
+  if (languageChoiceGroups.length) {
     await ensureLanguageListLoaded();
   }
 
@@ -356,6 +374,16 @@ async function selectBackground(bg) {
         `${t('skills')}: ${currentBackgroundData.skills.join(', ')}`
       )
     );
+  if (skillChoiceGroups.length) {
+    const summary = skillChoiceGroups
+      .map((group) => {
+        const count = group.choose || 1;
+        const label = group.label ? ` (${group.label})` : '';
+        return `Choose ${count}${label}`;
+      })
+      .join('; ');
+    details.appendChild(createElement('p', `${t('skills')}: ${summary}`));
+  }
   if (Array.isArray(currentBackgroundData.tools) && currentBackgroundData.tools.length)
     details.appendChild(
       createElement(
@@ -363,6 +391,16 @@ async function selectBackground(bg) {
         `${t('tools')}: ${currentBackgroundData.tools.join(', ')}`
       )
     );
+  if (toolChoiceGroups.length) {
+    const summary = toolChoiceGroups
+      .map((group) => {
+        const count = group.choose || 1;
+        const label = group.label ? ` (${group.label})` : '';
+        return `Choose ${count}${label}`;
+      })
+      .join('; ');
+    details.appendChild(createElement('p', `${t('tools')}: ${summary}`));
+  }
   if (Array.isArray(currentBackgroundData.languages) && currentBackgroundData.languages.length)
     details.appendChild(
       createElement(
@@ -370,7 +408,21 @@ async function selectBackground(bg) {
         `${t('languages')}: ${currentBackgroundData.languages.join(', ')}`
       )
     );
-  if (currentBackgroundData.featOptions && currentBackgroundData.featOptions.length)
+  if (languageChoiceGroups.length) {
+    const summary = languageChoiceGroups
+      .map((group) => {
+        const count = group.choose || 1;
+        const label = group.label ? ` (${group.label})` : '';
+        return `Choose ${count}${label}`;
+      })
+      .join('; ');
+    details.appendChild(createElement('p', `${t('languages')}: ${summary}`));
+  }
+  if (Array.isArray(currentBackgroundData?.featOptions)) {
+    currentBackgroundData.featOptions = currentBackgroundData.featOptions.filter(isFeatAllowed);
+  }
+
+  if (currentBackgroundData?.featOptions && currentBackgroundData.featOptions.length)
     details.appendChild(
       createElement(
         'p',
@@ -380,36 +432,65 @@ async function selectBackground(bg) {
   features.appendChild(createAccordionItem(t('details'), details));
 
   // Choices --------------------------------------------------
+
+function appendEntryDetails(target, entry) {
+  if (!entry) return;
+  const entryList = [];
+  if (Array.isArray(entry.entries)) entryList.push(...entry.entries);
+  if (entry.entry) entryList.push(entry.entry);
+  const description = typeof entry.description === 'string' ? entry.description : '';
+
+  let entryText = '';
+  if (entryList.length) {
+    const tempEntries = document.createElement('div');
+    appendEntries(tempEntries, entryList);
+    entryText = tempEntries.textContent.trim();
+    while (tempEntries.firstChild) target.appendChild(tempEntries.firstChild);
+  }
+
+  if (description) {
+    const tempDesc = document.createElement('div');
+    appendEntries(tempDesc, [description]);
+    const descText = tempDesc.textContent.trim();
+    if (!entryText || !entryText.includes(descText)) {
+      while (tempDesc.firstChild) target.appendChild(tempDesc.firstChild);
+    }
+  }
+}
   const appendFeatureDesc = (wrapper, key) => {
     const entry = (currentBackgroundData.entries || []).find(
       e => e.name && e.name.toLowerCase().includes(key)
     );
-    if (entry) {
-      if (entry.description)
-        wrapper.appendChild(createElement('p', entry.description));
-      appendEntries(wrapper, entry.entries);
-    }
+    if (entry) appendEntryDetails(wrapper, entry);
   };
 
-  if (currentBackgroundData.skillChoices?.choose) {
+  if (skillChoiceGroups.length) {
     const wrapper = document.createElement('div');
     appendFeatureDesc(wrapper, 'skill');
-    for (let i = 0; i < currentBackgroundData.skillChoices.choose; i++) {
-      const sel = document.createElement('select');
-      sel.replaceChildren(new Option(t('selectSkill'), ''));
-      currentBackgroundData.skillChoices.options.forEach((opt) => {
-        const o = document.createElement('option');
-        o.value = opt;
-        o.textContent = opt;
-        sel.appendChild(o);
-      });
-      sel.addEventListener('change', () => {
-        updateChoiceSelectOptions(pendingSelections.skills, 'skills');
-        validateBackgroundChoices();
-      });
-      pendingSelections.skills.push(sel);
-      wrapper.appendChild(sel);
-    }
+    skillChoiceGroups.forEach((group, idx) => {
+      if (skillChoiceGroups.length > 1 || group.label) {
+        const label = group.label ? `${group.label}` : `${t('skills')} ${idx + 1}`;
+        wrapper.appendChild(createElement('p', label));
+      }
+      const options = Array.isArray(group.options) ? group.options : [];
+      const count = group.choose || 1;
+      for (let i = 0; i < count; i++) {
+        const sel = document.createElement('select');
+        sel.replaceChildren(new Option(t('selectSkill'), ''));
+        options.forEach((opt) => {
+          const o = document.createElement('option');
+          o.value = opt;
+          o.textContent = opt;
+          sel.appendChild(o);
+        });
+        sel.addEventListener('change', () => {
+          updateChoiceSelectOptions(pendingSelections.skills, 'skills');
+          validateBackgroundChoices();
+        });
+        pendingSelections.skills.push(sel);
+        wrapper.appendChild(sel);
+      }
+    });
     updateChoiceSelectOptions(pendingSelections.skills, 'skills');
     const acc = createAccordionItem(t('skills'), wrapper, true);
     acc.classList.add('needs-selection');
@@ -417,30 +498,33 @@ async function selectBackground(bg) {
     choiceAccordions.skills = acc;
   }
 
-  const toolData =
-    currentBackgroundData.toolChoices ||
-    (currentBackgroundData.tools && !Array.isArray(currentBackgroundData.tools)
-      ? currentBackgroundData.tools
-      : null);
-  if (toolData?.choose) {
+  if (toolChoiceGroups.length) {
     const wrapper = document.createElement('div');
     appendFeatureDesc(wrapper, 'tool');
-    for (let i = 0; i < toolData.choose; i++) {
-      const sel = document.createElement('select');
-      sel.replaceChildren(new Option(t('selectTool'), ''));
-      (toolData.options || []).forEach((opt) => {
-        const o = document.createElement('option');
-        o.value = opt;
-        o.textContent = opt;
-        sel.appendChild(o);
-      });
-      sel.addEventListener('change', () => {
-        updateChoiceSelectOptions(pendingSelections.tools, 'tools');
-        validateBackgroundChoices();
-      });
-      pendingSelections.tools.push(sel);
-      wrapper.appendChild(sel);
-    }
+    toolChoiceGroups.forEach((group, idx) => {
+      if (toolChoiceGroups.length > 1 || group.label) {
+        const label = group.label ? `${group.label}` : `${t('tools')} ${idx + 1}`;
+        wrapper.appendChild(createElement('p', label));
+      }
+      const options = Array.isArray(group.options) ? group.options : [];
+      const count = group.choose || 1;
+      for (let i = 0; i < count; i++) {
+        const sel = document.createElement('select');
+        sel.replaceChildren(new Option(t('selectTool'), ''));
+        options.forEach((opt) => {
+          const o = document.createElement('option');
+          o.value = opt;
+          o.textContent = opt;
+          sel.appendChild(o);
+        });
+        sel.addEventListener('change', () => {
+          updateChoiceSelectOptions(pendingSelections.tools, 'tools');
+          validateBackgroundChoices();
+        });
+        pendingSelections.tools.push(sel);
+        wrapper.appendChild(sel);
+      }
+    });
     updateChoiceSelectOptions(pendingSelections.tools, 'tools');
     const acc = createAccordionItem(t('tools'), wrapper, true);
     acc.classList.add('needs-selection');
@@ -448,28 +532,35 @@ async function selectBackground(bg) {
     choiceAccordions.tools = acc;
   }
 
-  if (needsLanguageChoices) {
+  if (languageChoiceGroups.length) {
     const wrapper = document.createElement('div');
     appendFeatureDesc(wrapper, 'language');
-    const langOpts = currentBackgroundData.languages.options?.length
-      ? currentBackgroundData.languages.options
-      : DATA.languages || [];
-    for (let i = 0; i < currentBackgroundData.languages.choose; i++) {
-      const sel = document.createElement('select');
-      sel.replaceChildren(new Option(t('selectLanguage'), ''));
-      langOpts.forEach((l) => {
-        const o = document.createElement('option');
-        o.value = l;
-        o.textContent = l;
-        sel.appendChild(o);
-      });
-      sel.addEventListener('change', () => {
-        updateChoiceSelectOptions(pendingSelections.languages, 'languages');
-        validateBackgroundChoices();
-      });
-      pendingSelections.languages.push(sel);
-      wrapper.appendChild(sel);
-    }
+    languageChoiceGroups.forEach((group, idx) => {
+      if (languageChoiceGroups.length > 1 || group.label) {
+        const label = group.label ? `${group.label}` : `${t('languages')} ${idx + 1}`;
+        wrapper.appendChild(createElement('p', label));
+      }
+      const options = Array.isArray(group.options) && group.options.length
+        ? group.options
+        : DATA.languages || [];
+      const count = group.choose || 1;
+      for (let i = 0; i < count; i++) {
+        const sel = document.createElement('select');
+        sel.replaceChildren(new Option(t('selectLanguage'), ''));
+        options.forEach((l) => {
+          const o = document.createElement('option');
+          o.value = l;
+          o.textContent = l;
+          sel.appendChild(o);
+        });
+        sel.addEventListener('change', () => {
+          updateChoiceSelectOptions(pendingSelections.languages, 'languages');
+          validateBackgroundChoices();
+        });
+        pendingSelections.languages.push(sel);
+        wrapper.appendChild(sel);
+      }
+    });
     updateChoiceSelectOptions(pendingSelections.languages, 'languages');
     const acc = createAccordionItem(t('languages'), wrapper, true);
     acc.classList.add('needs-selection');

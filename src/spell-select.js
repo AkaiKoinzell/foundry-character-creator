@@ -1,4 +1,5 @@
 import { CharacterState, updateSpellSlots, loadSpells } from './data.js';
+import { buildPlutoniumSpellItem } from './plutonium-data.js';
 import { t } from './i18n.js';
 import { updateStep2Completion } from './step2.js';
 import { createElement, createDetailsSection } from './ui-helpers.js';
@@ -141,7 +142,9 @@ export function renderSpellChoices(cls) {
       (remaining ? ` (${remaining} ${t('remaining') || 'remaining'})` : '');
   }
 
-  function refreshDetails() {
+  const spellDetailCache = new Map();
+
+  async function refreshDetails() {
     detailSection.content.innerHTML = '';
     const selected = allSelects.map((sel) => sel.value).filter(Boolean);
     if (!selected.length) {
@@ -150,34 +153,95 @@ export function renderSpellChoices(cls) {
       return;
     }
     const seen = new Set();
-    selected.forEach((name) => {
+    for (const name of selected) {
       if (!name || seen.has(name)) return;
       seen.add(name);
       const block = document.createElement('div');
       block.className = 'spell-detail-block';
       block.appendChild(createElement('h4', name));
-      const spell = spells.find((s) => s.name === name);
-      if (spell) {
-        if (typeof spell.level === 'number') {
-          block.appendChild(createElement('p', `${t('level')} ${spell.level}`));
+
+      const base = spells.find((s) => s.name === name);
+      let enriched = spellDetailCache.get(name);
+      if (!enriched) {
+        try {
+          enriched = await buildPlutoniumSpellItem(name, {});
+        } catch (_) { /* ignore */ }
+        if (enriched) spellDetailCache.set(name, enriched);
+      }
+
+      if (enriched?.system) {
+        const sys = enriched.system;
+        // Mechanics summary
+        const lines = [];
+        const actType = sys.activation?.type;
+        if (actType) lines.push(`${t('castingTime') || 'Casting Time'}: ${actType}`);
+        const range = sys.range;
+        if (range && (range.value || range.units || range.type)) {
+          const parts = [];
+          if (range.value) parts.push(range.value);
+          if (range.units) parts.push(range.units);
+          if (range.type && !range.units) parts.push(range.type);
+          lines.push(`${t('range') || 'Range'}: ${parts.join(' ')}`);
         }
-        if (spell.school) {
-          block.appendChild(createElement('p', `${t('spellSchool')}: ${spell.school}`));
+        const dur = sys.duration;
+        if (dur && (dur.value || dur.units)) {
+          const dv = [dur.value, dur.units].filter(Boolean).join(' ');
+          lines.push(`${t('duration') || 'Duration'}: ${dv}${dur.concentration ? ` (${t('concentration') || 'Concentration'})` : ''}`);
         }
-        if (Array.isArray(spell.spell_list) && spell.spell_list.length) {
-          block.appendChild(
-            createElement('p', `${t('spellAvailableTo')}: ${spell.spell_list.join(', ')}`)
-          );
+        const props = Array.isArray(sys.properties) ? sys.properties : [];
+        if (props.length) {
+          const comp = props
+            .map((p) => {
+              if (p === 'vocal') return 'V';
+              if (p === 'somatic') return 'S';
+              if (p === 'material') return 'M';
+              if (p === 'ritual') return t('ritual') || 'Ritual';
+              return p;
+            })
+            .join(', ');
+          const mat = sys.materials?.value ? ` (${sys.materials.value})` : '';
+          lines.push(`${t('components') || 'Components'}: ${comp}${mat}`);
         }
-        if (typeof spell.ritual === 'boolean') {
-          block.appendChild(
-            createElement('p', `${t('spellRitual')}: ${spell.ritual ? t('yes') : t('no')}`)
-          );
+        const save = sys.save?.ability;
+        if (save) lines.push(`${t('savingThrow') || 'Saving Throw'}: ${save.toUpperCase()}`);
+
+        if (lines.length) {
+          const ul = document.createElement('ul');
+          lines.forEach((ln) => ul.appendChild(createElement('li', ln)));
+          block.appendChild(ul);
+        }
+        if (sys.description?.value) {
+          const div = document.createElement('div');
+          div.className = 'spell-description';
+          div.innerHTML = sys.description.value;
+          block.appendChild(div);
+        }
+      } else {
+        // Fallback to base minimal info
+        const spell = base;
+        if (spell) {
+          if (typeof spell.level === 'number') {
+            block.appendChild(createElement('p', `${t('level')} ${spell.level}`));
+          }
+          if (spell.school) {
+            block.appendChild(createElement('p', `${t('spellSchool')}: ${spell.school}`));
+          }
+          if (Array.isArray(spell.spell_list) && spell.spell_list.length) {
+            block.appendChild(
+              createElement('p', `${t('spellAvailableTo')}: ${spell.spell_list.join(', ')}`)
+            );
+          }
+          if (typeof spell.ritual === 'boolean') {
+            block.appendChild(
+              createElement('p', `${t('spellRitual')}: ${spell.ritual ? t('yes') : t('no')}`)
+            );
+          }
+        } else {
+          block.appendChild(createElement('p', t('noDetailsAvailable')));
         }
       }
-      if (block.childElementCount === 1) block.appendChild(createElement('p', t('noDetailsAvailable')));
       detailSection.content.appendChild(block);
-    });
+    }
     detailSection.wrapper.classList.remove('hidden');
   }
 

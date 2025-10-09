@@ -1,5 +1,9 @@
 // --- Internal helpers ----------------------------------------------------
 import { DATA, loadFeatDetails, fetchJsonWithRetry, deriveSubclassData } from './data.js';
+import {
+  buildPlutoniumSpellItem,
+  buildPlutoniumFeatItem,
+} from './plutonium-data.js';
 
 const CLASS_PROGRESSION = {
   Artificer: "half",
@@ -262,6 +266,7 @@ const SKILL_CODE_BY_NAME = {
   Survival: "sur",
 };
 
+
 // Default governing ability by skill (lowercase ability codes)
 const SKILL_ABILITY = {
   acr: "dex",
@@ -311,6 +316,13 @@ function mapAbilityNameToCode(name) {
   };
   return map[n] || "";
 }
+
+// Normalizers used for allowlist checks
+const NAME_KEY_NORMALIZER = /[^a-z0-9]+/g;
+const FEAT_NAME_KEY = (name) =>
+  String(name || '').toLowerCase().replace(NAME_KEY_NORMALIZER, '');
+const SPELL_NAME_KEY = (name) =>
+  String(name || '').toLowerCase().replace(NAME_KEY_NORMALIZER, '');
 
 function buildFoundryAbilities(state) {
   const src = state.system?.abilities || {};
@@ -646,6 +658,56 @@ const EQUIPMENT_KNOWN = {
   'rations (10 days)': { type: 'loot' },
 };
 
+// Basic weapon stat table to enrich mundane weapons with damage/properties
+const WEAPON_STATS = {
+  'dagger': { dmg: '1d4', type: 'piercing', properties: ['fin', 'lgt', 'thr'], range: { value: 20, long: 60 } },
+  'club': { dmg: '1d4', type: 'bludgeoning', properties: ['lgt'] },
+  'sickle': { dmg: '1d4', type: 'slashing', properties: ['lgt'] },
+  'whip': { dmg: '1d4', type: 'slashing', properties: ['fin', 'rch'] },
+  'shortsword': { dmg: '1d6', type: 'piercing', properties: ['fin', 'lgt'] },
+  'handaxe': { dmg: '1d6', type: 'slashing', properties: ['lgt', 'thr'], range: { value: 20, long: 60 } },
+  'mace': { dmg: '1d6', type: 'bludgeoning', properties: [] },
+  'javelin': { dmg: '1d6', type: 'piercing', properties: ['thr'], range: { value: 30, long: 120 } },
+  'spear': { dmg: '1d6', type: 'piercing', properties: ['thr', 'ver'], range: { value: 20, long: 60 }, versatile: '1d8' },
+  'quarterstaff': { dmg: '1d6', type: 'bludgeoning', properties: ['ver'], versatile: '1d8' },
+  'scimitar': { dmg: '1d6', type: 'slashing', properties: ['fin', 'lgt'] },
+  'rapier': { dmg: '1d8', type: 'piercing', properties: ['fin'] },
+  'longsword': { dmg: '1d8', type: 'slashing', properties: ['ver'], versatile: '1d10' },
+  'warhammer': { dmg: '1d8', type: 'bludgeoning', properties: ['ver'], versatile: '1d10' },
+  'battleaxe': { dmg: '1d8', type: 'slashing', properties: ['ver'], versatile: '1d10' },
+  'war pick': { dmg: '1d8', type: 'piercing', properties: [] },
+  'flail': { dmg: '1d8', type: 'bludgeoning', properties: [] },
+  'glaive': { dmg: '1d10', type: 'slashing', properties: ['hvy', 'two', 'rch'] },
+  'pike': { dmg: '1d10', type: 'piercing', properties: ['hvy', 'two', 'rch'] },
+  'trident': { dmg: '1d6', type: 'piercing', properties: ['thr', 'ver'], range: { value: 20, long: 60 }, versatile: '1d8' },
+  'maul': { dmg: '2d6', type: 'bludgeoning', properties: ['hvy', 'two'] },
+  'greatsword': { dmg: '2d6', type: 'slashing', properties: ['hvy', 'two'] },
+  'greataxe': { dmg: '1d12', type: 'slashing', properties: ['hvy', 'two'] },
+  'light crossbow': { dmg: '1d8', type: 'piercing', properties: ['amm', 'two', 'lod'], range: { value: 80, long: 320 } },
+  'heavy crossbow': { dmg: '1d10', type: 'piercing', properties: ['amm', 'two', 'hvy', 'lod'], range: { value: 100, long: 400 } },
+  'hand crossbow': { dmg: '1d6', type: 'piercing', properties: ['amm', 'lgt', 'lod'], range: { value: 30, long: 120 } },
+  'shortbow': { dmg: '1d6', type: 'piercing', properties: ['amm', 'two'], range: { value: 80, long: 320 } },
+  'longbow': { dmg: '1d8', type: 'piercing', properties: ['amm', 'two', 'hvy'], range: { value: 150, long: 600 } },
+  'dart': { dmg: '1d4', type: 'piercing', properties: ['thr', 'fin'], range: { value: 20, long: 60 } },
+  'sling': { dmg: '1d4', type: 'bludgeoning', properties: ['amm'], range: { value: 30, long: 120 } },
+};
+
+let CUSTOM_WEAPON_STATS = null;
+async function loadCustomWeaponStats() {
+  if (CUSTOM_WEAPON_STATS !== null) return CUSTOM_WEAPON_STATS;
+  CUSTOM_WEAPON_STATS = {};
+  try {
+    const json = await fetchJsonWithRetry('data/weapon-stats.json', 'weapon stats');
+    if (json && typeof json === 'object') {
+      Object.entries(json).forEach(([k, v]) => {
+        if (!k || !v) return;
+        CUSTOM_WEAPON_STATS[String(k).toLowerCase()] = v;
+      });
+    }
+  } catch (_) { /* optional */ }
+  return CUSTOM_WEAPON_STATS;
+}
+
 function singularize(name) {
   const n = String(name || '').trim();
   if (/handaxes$/i.test(n)) return n.replace(/handaxes$/i, 'handaxe');
@@ -720,7 +782,160 @@ function enrichEquipmentEntry(e) {
       },
     };
   }
+  // Enrich weapon damage/properties for mundane weapons
+  if (type === 'weapon') {
+    const w = (CUSTOM_WEAPON_STATS && CUSTOM_WEAPON_STATS[key]) || WEAPON_STATS[key];
+    if (w) {
+      sys.damage = { parts: [[w.dmg, w.type]], versatile: w.versatile || '' };
+      if (w.range) sys.range = { value: w.range.value, long: w.range.long, units: 'ft' };
+      // dnd5e v13 uses abbreviated property codes in system.properties
+      sys.properties = Array.isArray(w.properties) ? [...w.properties] : [];
+    }
+  }
   return { name: e.name, type, system: sys };
+}
+
+// Attach limited mechanics to well-known class features to make them usable immediately
+function attachFeatureMechanics(item, { className = '', classLevels = {}, featureLevel = 1, abilityMods = {} } = {}) {
+  const name = String(item?.name || '').toLowerCase();
+  const levels = classLevels || {};
+
+  const pushActivity = (act) => {
+    const acts = item.activities || [];
+    acts.push(act);
+    item.activities = acts;
+  };
+
+  const pushEffect = (effName, changes) => {
+    const efe = {
+      name: effName,
+      disabled: false,
+      transfer: true,
+      duration: {},
+      changes: changes.map((c) => ({ key: c.key, mode: c.mode || 'ADD', value: c.value })),
+    };
+    const arr = Array.isArray(item.effects) ? item.effects : [];
+    arr.push(efe);
+    item.effects = arr;
+  };
+
+  // Fighter: Second Wind (Lv 1)
+  if (className === 'Fighter' && /second wind/i.test(item.name)) {
+    item.system.uses = { value: 0, max: '1', recovery: ['sr'], spent: 0 };
+    pushActivity({
+      name: 'Second Wind',
+      type: 'heal',
+      activation: { type: 'bonus' },
+      healing: { parts: [[`1d10 + ${levels.Fighter || featureLevel}`, 'healing']] },
+    });
+    return;
+  }
+
+  // Fighter: Action Surge (Lv 2, 17+ two uses)
+  if (className === 'Fighter' && /action surge/i.test(item.name)) {
+    const lvl = levels.Fighter || featureLevel;
+    const max = lvl >= 17 ? '2' : '1';
+    item.system.uses = { value: 0, max, recovery: ['sr'], spent: 0 };
+    pushActivity({ name: 'Action Surge', type: 'utility', activation: { type: 'special' } });
+    return;
+  }
+
+  // Barbarian: Rage (uses per LR; simple progression)
+  if (className === 'Barbarian' && /rage/i.test(item.name)) {
+    const lvl = levels.Barbarian || featureLevel;
+    let max = 2; // 1-2: 2 uses, 3-5: 2 uses; adjust from 6 onward
+    if (lvl >= 6) max = 3;
+    if (lvl >= 12) max = 4;
+    if (lvl >= 17) max = 5;
+    if (lvl >= 20) max = 6; // cap at 6 as an approximation
+    item.system.uses = { value: 0, max: String(max), recovery: ['lr'], spent: 0 };
+    pushActivity({ name: 'Rage', type: 'utility', activation: { type: 'bonus' } });
+    return;
+  }
+
+  // Bard: Bardic Inspiration (Lv 1) — uses = CHA mod (min 1), die d6
+  if (className === 'Bard' && /bardic inspiration/i.test(item.name)) {
+    const cha = Number(abilityMods?.cha ?? 0);
+    const max = Math.max(1, cha);
+    item.system.uses = { value: 0, max: String(max), recovery: ['lr'], spent: 0 };
+    pushActivity({ name: 'Bardic Inspiration (d6)', type: 'utility', activation: { type: 'bonus' } });
+    return;
+  }
+
+  // Paladin: Divine Sense (Lv 1) — uses = 1 + CHA mod
+  if (className === 'Paladin' && /divine sense/i.test(item.name)) {
+    const cha = Number(abilityMods?.cha ?? 0);
+    const max = Math.max(1, 1 + cha);
+    item.system.uses = { value: 0, max: String(max), recovery: ['lr'], spent: 0 };
+    pushActivity({ name: 'Divine Sense', type: 'utility', activation: { type: 'action' } });
+    return;
+  }
+
+  // Paladin: Lay on Hands (Lv 1) — pool 5 * level
+  if (className === 'Paladin' && /lay on hands/i.test(item.name)) {
+    const lvl = levels.Paladin || featureLevel;
+    const pool = Math.max(5, 5 * lvl);
+    item.system.uses = { value: 0, max: String(pool), recovery: ['lr'], spent: 0 };
+    pushActivity({ name: 'Lay on Hands', type: 'heal', activation: { type: 'action' }, healing: { parts: [['1', 'healing']] } });
+    return;
+  }
+
+  // Rogue: Sneak Attack (Lv 1) — 1d6 + scaling; here we set 1d6 as baseline
+  if (className === 'Rogue' && /sneak attack/i.test(item.name)) {
+    const lvl = levels.Rogue || featureLevel;
+    const dice = Math.ceil(lvl / 2); // 1d6 at 1, 2d6 at 3, etc.
+    pushActivity({ name: `Sneak Attack (${dice}d6)`, type: 'damage', activation: { type: 'special' }, damage: { parts: [[`${dice}d6`, 'piercing']] } });
+    return;
+  }
+
+  // Wizard: Arcane Recovery (Lv 1)
+  if (className === 'Wizard' && /arcane recovery/i.test(item.name)) {
+    item.system.uses = { value: 0, max: '1', recovery: ['lr'], spent: 0 };
+    pushActivity({ name: 'Arcane Recovery', type: 'utility', activation: { type: 'special' } });
+    return;
+  }
+
+  // Fighter: Fighting Style — Archery (Lv 1): +2 bonus to ranged weapon attack rolls
+  if (/fighting style/i.test(item.name) && /archery/i.test(item.name)) {
+    pushEffect('Archery', [
+      { key: 'system.bonuses.rwak.attack', value: '+2' },
+    ]);
+    return;
+  }
+
+  // Fighter: Fighting Style — Defense (Lv 1): +1 AC while wearing armor (approximate as unconditional)
+  if (/fighting style/i.test(item.name) && /defense/i.test(item.name)) {
+    pushEffect('Defense', [
+      { key: 'system.attributes.ac.bonus', value: '+1' },
+    ]);
+    return;
+  }
+
+  // Fighter: Fighting Style — Dueling (Lv 1): +2 damage with a one-handed melee weapon (approximate as unconditional)
+  if (/fighting style/i.test(item.name) && /dueling/i.test(item.name)) {
+    pushEffect('Dueling', [
+      { key: 'system.bonuses.mwak.damage', value: '+2' },
+    ]);
+    return;
+  }
+
+  // Monk: Martial Arts (Lv 1): add an Unarmed Strike (1d4) activity (bonus action)
+  if (className === 'Monk' && /martial arts/i.test(item.name)) {
+    pushActivity({
+      name: 'Unarmed Strike (1d4)',
+      type: 'damage',
+      activation: { type: 'bonus' },
+      damage: { parts: [['1d4', 'bludgeoning']] },
+    });
+    return;
+  }
+
+  // Warlock (Hexblade): Hexblade's Curse (Lv 1): 1/short rest, bonus action
+  if (/hexblade.*curse/i.test(item.name) || /hexblade's curse/i.test(item.name)) {
+    item.system.uses = { value: 0, max: '1', recovery: ['sr'], spent: 0 };
+    pushActivity({ name: "Hexblade's Curse", type: 'utility', activation: { type: 'bonus' } });
+    return;
+  }
 }
 
 export async function exportFoundryActorV13(state) {
@@ -728,6 +943,21 @@ export async function exportFoundryActorV13(state) {
   const system = buildFoundrySystem(state);
 
   const items = [];
+  const classLevelMap = {};
+  // Build ability modifiers for feature mechanics
+  const abilityMods = (() => {
+    const out = { str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0 };
+    try {
+      const abs = state.system?.abilities || {};
+      for (const k of Object.keys(out)) {
+        const v = Number(abs?.[k]?.value) || 10;
+        out[k] = Math.floor((v - 10) / 2);
+      }
+    } catch (_) { /* ignore */ }
+    return out;
+  })();
+  // Load optional custom weapon stats before enriching equipment
+  try { await loadCustomWeaponStats(); } catch (_) { /* ignore */ }
   const defaultIcon = (type) => {
     if (type === "spell") return "icons/svg/book.svg";
     if (type === "weapon") return "icons/svg/sword.svg";
@@ -747,6 +977,7 @@ export async function exportFoundryActorV13(state) {
     type,
     system: systemData,
     effects: [],
+    activities: [],
     folder: null,
     sort: 0,
     ownership: { default: 0 },
@@ -805,6 +1036,8 @@ export async function exportFoundryActorV13(state) {
   };
   for (let i = 0; i < (state.classes || []).length; i++) {
     const cls = state.classes[i];
+    // Build map of class levels for feature mechanics
+    classLevelMap[cls.name] = Number(cls.level) || 0;
     const idf = CLASS_IDENTIFIERS[cls.name] || slugifyIdentifier(cls.name);
     let classDesc = '';
     try {
@@ -835,8 +1068,33 @@ export async function exportFoundryActorV13(state) {
   }
 
   // Feats
-  for (const feat of (state.feats || [])) {
+  const allowedFeatSet = new Set(
+    (DATA.feats || []).map((f) =>
+      FEAT_NAME_KEY(typeof f === 'string' ? f : f?.name || f)
+    )
+  );
+  for (const feat of state.feats || []) {
     const name = typeof feat === 'string' ? feat : feat.name;
+    const source =
+      (typeof feat === 'object' && (feat.source || feat.system?.source?.book)) || '';
+    let built = null;
+    if (!allowedFeatSet.size || allowedFeatSet.has(FEAT_NAME_KEY(name))) {
+      try {
+        built = await buildPlutoniumFeatItem(name, { source });
+      } catch (err) {
+        console.warn('Failed to build Plutonium feat', name, err);
+      }
+    }
+
+    if (built) {
+      const item = makeItem(built.name, built.type, built.system, built.img);
+      item.effects = built.effects || [];
+      item.activities = built.activities || [];
+      item.flags = { ...(built.flags || {}) };
+      items.push(item);
+      continue;
+    }
+
     let desc = '';
     try {
       const detail = await loadFeatDetails(name);
@@ -859,7 +1117,20 @@ export async function exportFoundryActorV13(state) {
   for (const line of eqLines) {
     for (const parsed of parseEquipmentLine(line)) {
       const enriched = enrichEquipmentEntry(parsed);
-      items.push(makeItem(enriched.name, enriched.type, enriched.system));
+      const item = makeItem(enriched.name, enriched.type, enriched.system);
+      // Merge Plutonium item details if available (DATA.equipmentDetails)
+      try {
+        const detailsMap = DATA?.equipmentDetails || {};
+        const details = detailsMap[enriched.name];
+        if (details && details.system && typeof details.system === 'object') {
+          // Shallow merge is sufficient for common cases; enhance as needed
+          item.system = { ...item.system, ...details.system };
+        }
+        if (details?.effects) item.effects = details.effects;
+        if (details?.activities) item.activities = details.activities;
+        if (details?.img) item.img = details.img;
+      } catch (_) { /* ignore */ }
+      items.push(item);
     }
   }
 
@@ -914,6 +1185,7 @@ export async function exportFoundryActorV13(state) {
               advancement: [],
               prerequisites: { items: [], repeatable: false },
             });
+            attachFeatureMechanics(feat, { className: cls.name, classLevels: classLevelMap, featureLevel: fl, abilityMods });
             items.push(feat);
           });
         }
@@ -929,7 +1201,41 @@ export async function exportFoundryActorV13(state) {
   } catch (_) { /* ignore */ }
 
   // Spells
-  const addSpell = (name, lvlHint = null) => {
+  const allowedSpellSet = new Set(
+    (Array.isArray(DATA.spells) ? DATA.spells : []).map((s) =>
+      SPELL_NAME_KEY(typeof s === 'string' ? s : s?.name || s)
+    )
+  );
+  const addSpell = async (name, lvlHint = null, options = {}) => {
+    if (allowedSpellSet.size && !allowedSpellSet.has(SPELL_NAME_KEY(name))) return;
+    const tryBuild = async () => {
+      const ability = options.ability || system.attributes?.spellcasting || '';
+      const preparationMode = options.preparationMode || 'prepared';
+      const prepared = options.prepared ?? true;
+      return buildPlutoniumSpellItem(name, {
+        source: options.source || '',
+        ability,
+        preparationMode,
+        prepared,
+      });
+    };
+
+    let built = null;
+    try {
+      built = await tryBuild();
+    } catch (err) {
+      console.warn('Failed to build Plutonium spell', name, err);
+    }
+
+    if (built) {
+      const item = makeItem(built.name, built.type, built.system, built.img);
+      item.effects = built.effects || [];
+      item.activities = built.activities || [];
+      item.flags = { ...(built.flags || {}) };
+      items.push(item);
+      return;
+    }
+
     const getLvl = (nm, hint) => {
       if (hint != null) return Number(hint) || 0;
       try {
@@ -944,32 +1250,41 @@ export async function exportFoundryActorV13(state) {
       return 0;
     };
     const level = getLvl(name, lvlHint);
-    items.push(
-      makeItem(name, "spell", { level, preparation: {} })
-    );
+    items.push(makeItem(name, 'spell', { level, preparation: {} }));
   };
 
   // From structured knownSpells map (className -> { level: [names] })
   if (state.knownSpells) {
-    Object.values(state.knownSpells).forEach((byLevel) => {
-      Object.entries(byLevel).forEach(([lvl, names]) => {
-        (names || []).forEach((name) => addSpell(name, Number(lvl)));
-      });
-    });
+    for (const byLevel of Object.values(state.knownSpells)) {
+      for (const [lvl, names] of Object.entries(byLevel)) {
+        for (const name of names || []) {
+          await addSpell(name, Number(lvl));
+        }
+      }
+    }
   }
   // From cantrips array on system
-  (state.system?.spells?.cantrips || []).forEach((name) => addSpell(name, 0));
+  for (const name of state.system?.spells?.cantrips || []) {
+    await addSpell(name, 0, { preparationMode: 'innate', prepared: true });
+  }
   // From race choices
-  (state.raceChoices?.spells || []).forEach((name) => addSpell(name, null));
+  for (const name of state.raceChoices?.spells || []) {
+    await addSpell(name, null);
+  }
   // From feats that declare granted spells
-  (state.feats || []).forEach((f) => {
+  for (const f of state.feats || []) {
     const sp = f?.spells || f?.system?.spells;
-    if (!sp) return;
-    Object.values(sp).forEach((v) => {
-      if (Array.isArray(v)) v.forEach((n) => addSpell(n, null));
-      else if (typeof v === "string") addSpell(v, null);
-    });
-  });
+    if (!sp) continue;
+    for (const value of Object.values(sp)) {
+      if (Array.isArray(value)) {
+        for (const spellName of value) {
+          await addSpell(spellName, null);
+        }
+      } else if (typeof value === 'string') {
+        await addSpell(value, null);
+      }
+    }
+  }
 
   const actor = {
     name: state.name,

@@ -1,0 +1,10 @@
+{
+  "BMT": "spells-bmt.json",
+  "EGW": "spells-egw.json",
+  "FTD": "spells-ftd.json",
+  "PHB": "spells-phb.json",
+  "SatO": "spells-sato.json",
+  "TCE": "spells-tce.json",
+  "XGE": "spells-xge.json",
+  "XPHB": "spells-xphb.json"
+}

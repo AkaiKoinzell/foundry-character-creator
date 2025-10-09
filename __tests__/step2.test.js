@@ -171,7 +171,13 @@ describe('feature descriptions', () => {
   test('Fighting Style and Second Wind descriptions render', () => {
     const __dirname = path.dirname(fileURLToPath(import.meta.url));
     const fighterRaw = JSON.parse(
-      readFileSync(path.join(__dirname, '../data/classes/fighter.json'), 'utf8')
+      readFileSync(
+        path.join(
+          __dirname,
+          '../data/Foundry_Data/plutonium/data/class/class-fighter.json'
+        ),
+        'utf8'
+      )
     );
     DATA.classes = [normalizeClassData(fighterRaw)];
     CharacterState.showHelp = false;
@@ -212,7 +218,13 @@ describe('optional class choices', () => {
   test('unselected optional choices do not block completion', () => {
     const __dirname = path.dirname(fileURLToPath(import.meta.url));
     const barbarianData = JSON.parse(
-      readFileSync(path.join(__dirname, '../data/classes/barbarian.json'), 'utf8')
+      readFileSync(
+        path.join(
+          __dirname,
+          '../data/Foundry_Data/plutonium/data/class/class-barbarian.json'
+        ),
+        'utf8'
+      )
     );
     const prevClasses = DATA.classes;
     DATA.classes = [barbarianData];

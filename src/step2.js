@@ -77,72 +77,31 @@ const baseState = {
   expertise: [],
 };
 
-function normalizeFeatureText(value = '') {
-  return String(value)
-    .replace(/\{@[^}]+}/g, '')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .toLowerCase();
-}
 
-function firstEntryText(entries) {
-  if (!Array.isArray(entries)) return '';
-  for (const entry of entries) {
-    if (!entry) continue;
-    if (typeof entry === 'string') {
-      const text = entry.trim();
-      if (text) return text;
-      continue;
-    }
-    if (typeof entry.description === 'string') {
-      const text = entry.description.trim();
-      if (text) return text;
-    }
-    if (typeof entry.entry === 'string') {
-      const text = entry.entry.trim();
-      if (text) return text;
-    } else if (entry.entry) {
-      const nested = firstEntryText([entry.entry]);
-      if (nested) return nested;
-    }
-    if (Array.isArray(entry.entries)) {
-      const nested = firstEntryText(entry.entries);
-      if (nested) return nested;
-    }
-    if (Array.isArray(entry.items)) {
-      const nested = firstEntryText(entry.items);
-      if (nested) return nested;
+function appendFeatureContent(target, feature) {
+  if (!feature) return;
+  const entryList = [];
+  if (Array.isArray(feature.entries)) entryList.push(...feature.entries);
+  if (feature.entry) entryList.push(feature.entry);
+  const description = typeof feature.description === 'string' ? feature.description : '';
+
+  let entryText = '';
+  if (entryList.length) {
+    const tempEntries = document.createElement('div');
+    appendEntries(tempEntries, entryList);
+    entryText = tempEntries.textContent.trim();
+    while (tempEntries.firstChild) target.appendChild(tempEntries.firstChild);
+  }
+
+  if (description) {
+    const tempDesc = document.createElement('div');
+    appendEntries(tempDesc, [description]);
+    const descText = tempDesc.textContent.trim();
+    if (!entryText || !entryText.includes(descText)) {
+      while (tempDesc.firstChild) target.appendChild(tempDesc.firstChild);
     }
   }
-  return '';
 }
-
-function collectEntryTexts(entries, acc = new Set()) {
-  if (!Array.isArray(entries)) return acc;
-  entries.forEach(entry => {
-    if (!entry) return;
-    if (typeof entry === 'string') {
-      const text = normalizeFeatureText(entry);
-      if (text) acc.add(text);
-      return;
-    }
-    if (typeof entry !== 'object') return;
-    if (typeof entry.description === 'string') {
-      const text = normalizeFeatureText(entry.description);
-      if (text) acc.add(text);
-    }
-    if (typeof entry.entry === 'string') {
-      const text = normalizeFeatureText(entry.entry);
-      if (text) acc.add(text);
-    } else if (entry.entry) {
-      collectEntryTexts([entry.entry], acc);
-    }
-    if (Array.isArray(entry.entries)) collectEntryTexts(entry.entries, acc);
-    if (Array.isArray(entry.items)) collectEntryTexts(entry.items, acc);
-  });
-  return acc;
-}
-
 function refreshBaseState() {
   baseState.skills = [...CharacterState.system.skills];
   baseState.tools = [...CharacterState.system.tools];
@@ -1429,28 +1388,7 @@ function renderClassEditor(cls, index) {
           );
         } else {
           const body = document.createElement('div');
-          const hasEntries = Array.isArray(f.entries) && f.entries.length > 0;
-          const entryTextSet = collectEntryTexts(f.entries);
-          if (f.description) {
-            const summaryText = normalizeFeatureText(f.description);
-            if (!hasEntries || (summaryText && !entryTextSet.has(summaryText))) {
-              body.appendChild(createElement('p', f.description));
-            }
-          }
-          let entriesToRender = f.entries;
-          if (hasEntries) {
-            const seenStrings = new Set();
-            entriesToRender = f.entries.filter((entry) => {
-              if (typeof entry === 'string') {
-                const key = normalizeFeatureText(entry);
-                if (!key) return false;
-                if (seenStrings.has(key)) return false;
-                seenStrings.add(key);
-              }
-              return true;
-            });
-            appendEntries(body, entriesToRender);
-          }
+          appendFeatureContent(body, f);
           if (!spellInfoTarget && /(spellcasting|pact magic)/i.test(f.name || '')) {
             spellInfoTarget = body;
           }
